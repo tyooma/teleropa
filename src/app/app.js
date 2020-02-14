@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { View, StatusBar, Platform, Alert } from 'react-native';
 
 import { ReduxNetworkProvider } from 'react-native-offline';
@@ -6,7 +6,13 @@ import { ReduxNetworkProvider } from 'react-native-offline';
 import firebase from 'react-native-firebase';
 import AsyncStorage from '@react-native-community/async-storage';
 
-import { createStackNavigator, createDrawerNavigator, createAppContainer } from 'react-navigation';
+import {
+  createStackNavigator,
+  createDrawerNavigator,
+  createAppContainer,
+  createSwitchNavigator,
+  createBottomTabNavigator
+} from 'react-navigation';
 import DeviceInfo from 'react-native-device-info';
 import Orientation from 'react-native-orientation';
 import SplashScreen from 'react-native-splash-screen'
@@ -64,7 +70,7 @@ import CategoryInfo from '../screens/category-info';
 import NoNetwork from '../screens/no-network';
 import DeliveryService from '../screens/delivery-service';
 
-import {initUserData} from './initapp';
+import { initUserData } from './initapp';
 
 import BackButton from '../common/header-buttons/back-button';
 
@@ -78,10 +84,10 @@ export const store = createStore(reducers);
 export default class App extends Component {
 
   componentDidMount() {
-    if(!DeviceInfo.isTablet()) {
-        Orientation.lockToPortrait();
+    if (!DeviceInfo.isTablet()) {
+      Orientation.lockToPortrait();
     } else {
-        Orientation.lockToLandscape();
+      Orientation.lockToLandscape();
     }
     console.log('loaded: ', store.getState().app.loaded);
     this.checkPermission();
@@ -89,39 +95,39 @@ export default class App extends Component {
     initUserData(store);
   }
 
-  
+
 
   async checkPermission() {
     const enabled = await firebase.messaging().hasPermission();
     if (enabled) {
-        this.getToken();
+      this.getToken();
     } else {
-        this.requestPermission();
+      this.requestPermission();
     }
   }
-  
+
 
   async getToken() {
     let fcmToken = await AsyncStorage.getItem('fcmToken');
     if (!fcmToken) {
-        fcmToken = await firebase.messaging().getToken();
-        if (fcmToken) {
-            console.log('fcmToken', fcmToken)
-            // user has a device token
-            await AsyncStorage.setItem('fcmToken', fcmToken);
-        }
+      fcmToken = await firebase.messaging().getToken();
+      if (fcmToken) {
+        console.log('fcmToken', fcmToken)
+        // user has a device token
+        await AsyncStorage.setItem('fcmToken', fcmToken);
+      }
     }
   }
-  
+
 
   async requestPermission() {
     try {
-        await firebase.messaging().requestPermission();
-        // User has authorised
-        this.getToken();
+      await firebase.messaging().requestPermission();
+      // User has authorised
+      this.getToken();
     } catch (error) {
-        // User has rejected permissions
-        console.log('permission rejected');
+      // User has rejected permissions
+      console.log('permission rejected');
     }
   }
 
@@ -135,18 +141,18 @@ export default class App extends Component {
     * Triggered when a particular notification has been received in foreground
     * */
     this.notificationListener = firebase.notifications().onNotification((notification) => {
-        console.log('notificationListener', notification)
-        const { title, body } = notification;
-        this.showAlert(title, body);
+      console.log('notificationListener', notification)
+      const { title, body } = notification;
+      this.showAlert(title, body);
     });
 
     /*
     * If your app is in background, you can listen for when a notification is clicked / tapped / opened as follows:
     * */
     this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
-        console.log('notificationOpenedListener', notificationOpen.notification)
-        const { title, body } = notificationOpen.notification;
-        this.showAlert(title, body);
+      console.log('notificationOpenedListener', notificationOpen.notification)
+      const { title, body } = notificationOpen.notification;
+      this.showAlert(title, body);
     });
 
     /*
@@ -154,9 +160,9 @@ export default class App extends Component {
     * */
     const notificationOpen = await firebase.notifications().getInitialNotification();
     if (notificationOpen) {
-        console.log('notificationOpen', notificationOpen.notification)
-        const { title, data } = notificationOpen.notification;
-        this.showAlert(title, data.text);
+      console.log('notificationOpen', notificationOpen.notification)
+      const { title, data } = notificationOpen.notification;
+      this.showAlert(title, data.text);
     }
     /*
     * Triggered for data only payload in foreground
@@ -171,7 +177,7 @@ export default class App extends Component {
     Alert.alert(
       title, body,
       [
-          { text: 'OK', onPress: () => console.log('OK Pressed') },
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
       ],
       { cancelable: false },
     );
@@ -184,30 +190,30 @@ export default class App extends Component {
     const subscribe = store.subscribe(() => {
       const localStore = store.getState()
       console.log('REDUX-STORE', localStore)
-      if(this.state.isConnected !== localStore.network.isConnected) {
-        this.setState({isConnected: !this.state.isConnected})
+      if (this.state.isConnected !== localStore.network.isConnected) {
+        this.setState({ isConnected: !this.state.isConnected })
       }
-      if(store.getState().app.loaded) {
+      if (store.getState().app.loaded) {
         SplashScreen.hide();
       }
     })
-    
+
     return (
       <Provider store={store}>
         <ReduxNetworkProvider
-          pingServerUrl = 'https://www.teleropa.de/'
+          pingServerUrl='https://www.teleropa.de/'
         >
-            {this.state.isConnected ? 
-              <View style={{flex: 1}}>
-                  <StatusBar backgroundColor="#c00017" barStyle="light-content" />
-                  <AppContainer
-                    ref={navigatorRef => {
-                      NavigationService.setTopLevelNavigator(navigatorRef);
-                    }}
-                  />
-              </View>
-              : <NoNetwork />
-              }
+          {this.state.isConnected ?
+            <View style={{ flex: 1 }}>
+              <StatusBar backgroundColor="#c00017" barStyle="light-content" />
+              <AppContainer
+                ref={navigatorRef => {
+                  NavigationService.setTopLevelNavigator(navigatorRef);
+                }}
+              />
+            </View>
+            : <NoNetwork />
+          }
         </ReduxNetworkProvider>
       </Provider>
     );
@@ -262,7 +268,7 @@ const AppStackNavigator = createStackNavigator(
   },
   {
     headerTitleStyle: {
-        color: 'rgb(0, 255, 63)',
+      color: 'rgb(0, 255, 63)',
     },
     initialRouteName: 'Main',
     // initialRouteName: this.state.network ? 'Main' : <NoNetwork />,
@@ -294,10 +300,22 @@ const AppStackNavigator = createStackNavigator(
 );
 
 const AppDrawerNavigator = createDrawerNavigator(
-  {App: AppStackNavigator},
-  {contentComponent: SideMenuView,
-  drawerWidth: 290}
+  { App: AppStackNavigator },
+  {
+    contentComponent: SideMenuView,
+    drawerWidth: 290
+  }
 );
 
-const AppContainer = createAppContainer(AppDrawerNavigator);
+const AppBotomBarNavigator = createBottomTabNavigator({
+  Startseite: AppDrawerNavigator,
+  cart: Cart,
+  profile: Profile
+})
+
+const AppSwitchNaigator = createSwitchNavigator({
+  drawer: AppBotomBarNavigator
+})
+
+const AppContainer = createAppContainer(AppSwitchNaigator);
 
