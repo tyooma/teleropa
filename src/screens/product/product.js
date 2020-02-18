@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 
 import {
   View,
+  Alert,
 } from 'react-native';
 
 import { createMaterialTopTabNavigator, createAppContainer } from 'react-navigation'
 
 
-import {SearchButton} from '../../common/header-buttons'
+import { SearchButton } from '../../common/header-buttons'
 
 import { connect } from 'react-redux'
 
@@ -26,91 +27,99 @@ import {
 } from '../../gets/productPosts';
 
 class Product extends Component {
-  
+
   static navigationOptions = ({ navigation }) => {
-    console.log(navigation.getParam('id'))
-    return({
-        title: navigation.getParam('name'),
-        headerRight: (
-          <View style={{ flexDirection: "row", marginRight: 9 }}>
-            <SearchButton />
-          </View>
-        )
-      })
-    };
+    navigation.getParam('id');
+    return ({
+      title: navigation.getParam('name'),
+      headerRight: (
+        <View style={{ flexDirection: "row", marginRight: 9 }}>
+          <SearchButton />
+        </View>
+      )
+    })
+  };
 
-    state = {
-      id: 0,
-      images: [],
-      info: {
-          productName: '',
-          productSalePercent: '',
-          stock: 0,
-          salePrice: 0,
-          price: 0,
-          companyPrice: 0,
-          rate: 0,
-          siteURL: ''
-      },
-      productDescription: '',
-      productDetails: '',
-      productPackage: '',
-      productVideo: '',
-      productReviews: '',
-      productSimilar: []
-    }
+  state = {
+    id: 0,
+    images: [],
+    info: {
+      productName: '',
+      productSalePercent: '',
+      stock: 0,
+      salePrice: 0,
+      price: 0,
+      companyPrice: 0,
+      rate: 0,
+      siteURL: ''
+    },
+    productDescription: '',
+    productDetails: '',
+    productPackage: '',
+    productVideo: '',
+    productReviews: '',
+    productSimilar: [],
+  }
 
-    initProduct = async (id) => {
-      getFullProductData(id).then(({
-        companyPrice,
-        description_details,
-        description_long,
-        description_package,
-        description_video,
-        imgURLs,
-        price,
-        productName,
-        productSalePercent,
-        rate,
-        reviews,
-        salePrice,
-        similarProductIDs,
-        siteURL,
-        stock
-      }) => 
+  initProduct = async (id) => {
+    console.log('///////////////// id', id)
+    getFullProductData(id)
+      .then(response => response.json())
+      .then(responseJson => {
+        console.log("responseJson responseJson responseJson", responseJson);
+        if (responseJson.status == '404') {
+          Alert.alert(
+            "Alarm",
+            "Error 404 niet gevonden",
+            [
+              {
+                text: "OK",
+                onPress: () => {
+                  this.props.navigation.goBack();
+                },
+              },
+            ],
+            { cancelable: false }
+          );
+        }
+
         this.setState({
-            id,
-            images: imgURLs,
-            info: {
-                productName,
-                productSalePercent: productSalePercent,
-                stock,
-                salePrice,
-                price,
-                companyPrice,
-                rate,
-                siteURL
-            },
-            productDescription: description_long,
-            productDetails: description_details,
-            productPackage: description_package,
-            productVideo: description_video,
-            productReviews: reviews,
-            productSimilar: similarProductIDs
-        }))
-      // const getImages = getFullSizeProductImages(id).then(images => { this.setState({images: images.imgURLs}); console.log('images')})
-      // const getInfo = getProductInfo(id).then(info => { this.setState({info}); console.log('info') })
-      // const getProducts = getSimilarProducts(id).then(similar => { this.setState({productSimilar: similar.productIDs}); console.log('similar')})
-      // const getDesc = getProductDescription(id).then(description => { this.setState({productDescription: description.text}); console.log('desc')})
-      // const getPackage = getProductPackage(id).then(packageInfo => { this.setState({productPackage: packageInfo.data}); console.log('packageInfo')})
-      // const getDetails = getProductDetails(id).then(details => { this.setState({productDetails: details.data}); console.log('details')})
-      // const getReviews = getProductReviews(id).then(reviews => { this.setState({productReviews: reviews.reviewsItems}); console.log('reviews')})
-      // const getVideo = getProductVideo(id).then(video => { this.setState({productVideo: video.data}); console.log('video')})
-    
-      // Promise.all([getImages, getInfo, getDesc, getProducts, getPackage, getDetails, getReviews, getVideo]).then(() => {
-      //         this.setState({id})
-      //     })
-    }
+          id: id,
+          images: responseJson.imgURLs,
+          info: {
+            productName: responseJson.productName,
+            productSalePercent: responseJson.productSalePercent,
+            stock: responseJson.stock,
+            salePrice: responseJson.salePrice,
+            price: responseJson.price,
+            companyPrice: responseJson.companyPrice,
+            rate: responseJson.rate,
+            siteURL: responseJson.siteURL
+          },
+          productDescription: responseJson.description_long,
+          productDetails: responseJson.description_details,
+          productPackage: responseJson.description_package,
+          productVideo: responseJson.description_video,
+          productReviews: responseJson.reviews,
+          productSimilar: responseJson.similarProductIDs
+        });
+      });
+    // .then(({  
+    // })
+    // const getImages = getFullSizeProductImages(id).then(images => { this.setState({images: images.imgURLs}); console.log('images')})
+    // const getInfo = getProductInfo(id).then(info => { this.setState({info}); console.log('info') })
+    // const getProducts = getSimilarProducts(id).then(similar => { this.setState({productSimilar: similar.productIDs}); console.log('similar')})
+    // const getDesc = getProductDescription(id).then(description => { this.setState({productDescription: description.text}); console.log('desc')})
+    // const getPackage = getProductPackage(id).then(packageInfo => { this.setState({productPackage: packageInfo.data}); console.log('packageInfo')})
+    // const getDetails = getProductDetails(id).then(details => { this.setState({productDetails: details.data}); console.log('details')})
+    // const getReviews = getProductReviews(id).then(reviews => { this.setState({productReviews: reviews.reviewsItems}); console.log('reviews')})
+    // const getVideo = getProductVideo(id).then(video => { this.setState({productVideo: video.data}); console.log('video')})
+
+    // Promise.all([getImages, getInfo, getDesc, getProducts, getPackage, getDetails, getReviews, getVideo]).then(() => {
+    //         this.setState({id})
+    //     })    
+    // )
+  }
 
   constructor(props) {
     super(props)
@@ -121,17 +130,17 @@ class Product extends Component {
   }
 
 
-  shouldComponentUpdate(nextProps, {images, info, productDescription, id}) {
-    if(id){
+  shouldComponentUpdate(nextProps, { images, info, productDescription, id }) {
+    if (id) {
       return true
     }
     return false
   }
-  
+
 
   render() {
-    
-    console.log(this.state)
+
+    console.log('this.state  RENDER in product.js', this.state)
     const tabOptions = {
       lazy: true,
       tabBarOptions: {
@@ -148,7 +157,7 @@ class Product extends Component {
           height: 1.7,
           marginBottom: 1.7
         },
-        style: {  
+        style: {
           height: 42,
           backgroundColor: '#c00017'
         },
@@ -163,62 +172,66 @@ class Product extends Component {
         }
       },
     }
+
     const ID = this.props.navigation.getParam('id')
     const name = this.props.navigation.getParam('name')
     const Tab = createMaterialTopTabNavigator({
-      Beschreibung: { 
-          screen: props => 
-              <ProductDescription 
-                  {...props} 
-                  id={this.state.id} 
-                  name={name} 
-                  images={this.state.images} 
-                  productInfo={this.state.info} 
-                  productSimilar={this.state.productSimilar} 
-                  productDescription={this.state.productDescription}
-              />
+      Beschreibung: {
+        screen: props =>
+          <ProductDescription
+            {...props}
+            // id={this.state.id}
+            id={ID}
+            name={name}
+            images={this.state.images}
+            productInfo={this.state.info}
+            productSimilar={this.state.productSimilar}
+            productDescription={this.state.productDescription}
+          />
       },
-      'Technische Details' : { 
-          screen : props => 
-              <ProductSpecs 
-                  {...props} 
-                  id={this.state.id} 
-                  name={name} 
-                  details={this.state.productDetails}
-              />
+      'Technische Details': {
+        screen: props =>
+          <ProductSpecs
+            {...props}
+            id={this.state.id}
+            name={name}
+            details={this.state.productDetails}
+          />
       },
-      Lieferumfang: { 
-          screen : props => 
-              <ProductPackage 
-                  {...props} 
-                  id={this.state.id} 
-                  name={name} 
-                  packageInfo={this.state.productPackage} 
-              />
-          },
-      Video: { 
-          screen : props => 
-              <ProductVideo 
-                  {...props} 
-                  id={this.state.id} 
-                  name={name} 
-                  videoID={this.state.productVideo} 
-              />
-          },
-      Bewertungen: { 
-          screen : props => 
-              <ProductReviews 
-                  {...props} 
-                  id={this.state.id} 
-                  name={name} 
-                  reviews={this.state.productReviews}
-              />
-          }
+      Lieferumfang: {
+        screen: props =>
+          <ProductPackage
+            {...props}
+            id={this.state.id}
+            name={name}
+            packageInfo={this.state.productPackage}
+          />
+      },
+      Video: {
+        screen: props =>
+          <ProductVideo
+            {...props}
+            id={this.state.id}
+            name={name}
+            videoID={this.state.productVideo}
+          />
+      },
+      Bewertungen: {
+        screen: props =>
+          <ProductReviews
+            {...props}
+            id={this.state.id}
+            name={name}
+            reviews={this.state.productReviews}
+          />
+      }
     }, tabOptions);
+
     const Aaa = createAppContainer(Tab);
     // return Tab;
     return <Aaa />;
-  } 
+  }
+
 }
 // console.log(123);
 // const Container = createAppContainer(Tab);
