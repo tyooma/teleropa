@@ -116,16 +116,16 @@ const styles = {
     color: '#fff',
     marginLeft: 20
   },
-  whatsUpButton: {
-    marginTop: 20,
-    height: 39,
-    width: '100%',
-    flexDirection: 'row',
-    borderRadius: 3.3,
-    backgroundColor: '#3f911b',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
+  // whatsUpButton: {
+  //   marginTop: 20,
+  //   height: 39,
+  //   width: '100%',
+  //   flexDirection: 'row',
+  //   borderRadius: 3.3,
+  //   backgroundColor: '#3f911b',
+  //   alignItems: 'center',
+  //   justifyContent: 'center'
+  // },
   line: {
     height: 0.5,
     backgroundColor: '#a0a0a0',

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StatusBar, Platform, Alert } from 'react-native';
+import { View, StatusBar, Platform, Alert, Linking } from 'react-native';
 
 import { ReduxNetworkProvider } from 'react-native-offline';
 
@@ -25,6 +25,7 @@ import reducers from '../reducers';
 import NavigationService from '../navigation-service';
 import { sWidth } from '../helpers/screenSize';
 
+import WhatsApp from '../screens/whatsapp'
 import UserTypeSelection from '../screens/user-type-selection';
 import HotLine from '../screens/hot-line';
 import Subscribe from '../screens/subscribe';
@@ -73,6 +74,8 @@ import DeliveryService from '../screens/delivery-service';
 import { initUserData } from './initapp';
 
 import BackButton from '../common/header-buttons/back-button';
+
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import { YellowBox } from 'react-native';
 
@@ -307,11 +310,42 @@ const AppDrawerNavigator = createDrawerNavigator(
   }
 );
 
-const AppBotomBarNavigator = createBottomTabNavigator({
-  Startseite: AppDrawerNavigator,
-  cart: Cart,
-  profile: Profile
-})
+const AppBotomBarNavigator = createBottomTabNavigator(
+  {
+    Startseite: AppDrawerNavigator,
+    cart: Cart,
+    help: WhatsApp,
+    profile: Profile
+  },
+  {
+    defaultNavigationOptions: ({ navigation }) => ({
+      tabBarIcon: ({ focused, horizontal, tintColor }) => {
+        const { routeName } = navigation.state;
+        let IconComponent = Ionicons;
+        let iconName;
+        if (routeName === 'Startseite') {
+          iconName = `home${focused ? '' : '-outline'}`;
+          // Sometimes we want to add badges to some icons. 
+          // You can check the implementation below.
+          // IconComponent = HomeIconWithBadge; 
+        } else if (routeName === 'cart') {
+          iconName = `cart`;
+          //IconComponent = CartIconWithBadge; 
+        } else if (routeName === 'help') {
+          iconName = `information-circle`;
+        } else if (routeName === 'profile') {
+          iconName = `person-circle`;
+        }
+
+        // You can return any component that you like here!
+        return <IconComponent name={iconName} size={25} color={tintColor} />;
+      },
+    }),
+    tabBarOptions: {
+      activeTintColor: 'red',
+      inactiveTintColor: 'gray',
+    }
+  })
 
 const AppSwitchNaigator = createSwitchNavigator({
   drawer: AppBotomBarNavigator

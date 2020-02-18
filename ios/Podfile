@@ -11,6 +11,8 @@ target 'teleropa' do
 
   pod 'ReactNativePayments', :path => '../node_modules/react-native-payments'
 
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
   target 'teleropaTests' do
     inherit! :search_paths
     # Pods for testing
