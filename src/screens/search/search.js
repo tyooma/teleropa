@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { View, Image, TextInput, TouchableOpacity, Text, SafeAreaView, Platform, ScrollView, StyleSheet, FlatList, Alert } from 'react-native';
+import { View, Image, TextInput, TouchableOpacity, Text, SafeAreaView, Platform, ScrollView, StyleSheet, FlatList, ToastAndroid } from 'react-native';
 
 import FooterButton from '../../common/footer-button';
 
@@ -80,7 +80,8 @@ export default class Search extends Component {
         sortBy: '',
         loaded: false,
         searchText: '',
-        searchStory: []
+        searchStory: [],
+        isSearching: false,
     }
 
     handleSearchSubmit() {
@@ -142,7 +143,7 @@ export default class Search extends Component {
         this.setState({ showResult: searchText.length >= 3 })
         if (searchText.length >= 3) {
             // this.abortController.abort()
-            this.setState({ loaded: false, products: [], from: 0, ids: [] })
+            this.setState({ loaded: false, products: [], from: 0, ids: [], })
             this.getProductsIDs(searchText)
         }
     }
@@ -186,7 +187,7 @@ export default class Search extends Component {
             // this.getData(0)
 
         } else {
-            this.setState({ originalIDs: ids, filteredIDs: ids, loaded: true })
+            this.setState({ originalIDs: ids, filteredIDs: ids, loaded: true, })
             this.findMinMaxPrice()
             this.getData(0)
         }
@@ -232,59 +233,49 @@ export default class Search extends Component {
             return this.getSearchStory()
         }
 
-        //if (!this.state.loaded || this.state.products.length == 0) return <Loading />
+        //if (!this.state.loaded || this.state.products.length < 1) return <Loading />
         if (!this.state.loaded) return <Loading />
         const { minPrice, maxPrice, fromPrice, toPrice, sortBy } = this.state
+        console.log("this1 isSearching", this)
         return (
             <View style={{ flex: 1 }}>
                 {/* <FilterButton /> */}
                 <View style={styles.productsLine}>
-                    {this.state.products.length == 0 ? Alert.alert(
-                        "Alarm",
-                        "Nicht verfügbar",
-                        [
-                            {
-                                text: "OK",
-                                onPress: () => {
-                                    //this.props.navigation.goBack();
-                                    return this.getSearchStory()
-                                },
-                            },
-                        ],
-                        { cancelable: false }
-                    )
-                        :
-                        <FlatList
-                            // contentContainerStyle={{paddingLeft: 18}}
-                            data={this.state.products}
-                            renderItem={({ item }) => {
-                                const { companyPrice, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, id } = item
-                                return (
-                                    <View style={{ paddingBottom: 8 }}>
-                                        <ProductListItem
-                                            name={productName}
-                                            price={price}
-                                            salePrice={salePrice}
-                                            companyPrice={companyPrice}
-                                            rate={rate}
-                                            stock={stock}
-                                            id={id}
-                                            imageURL={previewImgURL}
-                                            salePercent={productSalePercent ? productSalePercent.int : null}
-                                        />
-                                    </View>
-                                )
-                                // }
-                            }}
-                            columnWrapperStyle={{ flexWrap: 'wrap' }}
-                            numColumns={4}
-                            ListHeaderComponent={<FilterButton minPrice={minPrice} maxPrice={maxPrice} fromPrice={fromPrice} toPrice={toPrice} sortBy={sortBy} />}
-                            ListFooterComponent={this.state.filteredIDs.length > this.state.products.length && (this.state.from + 12 === this.state.products.length) ? <FooterButton text='More products' onPress={() => { this.getData(this.state.from + 12) }} /> : null}
-                            initialNumToRender={3}
-                            windowSize={2}
-                            keyExtractor={item => item.id}
-                        />
-                    }
+                    {this.state.products.length == 0 &&
+                        ToastAndroid.showWithGravity(
+                            "Nicht verfügbar",
+                            ToastAndroid.LONG,
+                            ToastAndroid.CENTER,
+                        )}
+                    <FlatList
+                        data={this.state.products}
+                        renderItem={({ item }) => {
+                            const { companyPrice, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, id } = item
+                            return (
+                                <View style={{ paddingBottom: 8 }}>
+                                    <ProductListItem
+                                        name={productName}
+                                        price={price}
+                                        salePrice={salePrice}
+                                        companyPrice={companyPrice}
+                                        rate={rate}
+                                        stock={stock}
+                                        id={id}
+                                        imageURL={previewImgURL}
+                                        salePercent={productSalePercent ? productSalePercent.int : null}
+                                    />
+                                </View>
+                            )
+                            // }
+                        }}
+                        columnWrapperStyle={{ flexWrap: 'wrap' }}
+                        numColumns={4}
+                        ListHeaderComponent={<FilterButton minPrice={minPrice} maxPrice={maxPrice} fromPrice={fromPrice} toPrice={toPrice} sortBy={sortBy} />}
+                        ListFooterComponent={this.state.filteredIDs.length > this.state.products.length && (this.state.from + 12 === this.state.products.length) ? <FooterButton text='More products' onPress={() => { this.getData(this.state.from + 12) }} /> : null}
+                        initialNumToRender={3}
+                        windowSize={2}
+                        keyExtractor={item => item.id}
+                    />
                 </View>
             </View>
         )
