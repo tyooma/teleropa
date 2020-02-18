@@ -154,7 +154,7 @@ dependencies {
     implementation "com.google.firebase:firebase-core:16.0.9"
     implementation "com.google.firebase:firebase-messaging:18.0.0"
     implementation project(':react-native-image-picker')
-    //implementation project(':react-native-restart')
+    implementation project(':react-native-restart')
     implementation project(':react-native-splash-screen')
     implementation project(':@react-native-community_netinfo')
     implementation project(':@react-native-community_async-storage')
@@ -175,3 +175,5 @@ task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'
 }
+
+apply plugin: 'com.google.gms.google-services'

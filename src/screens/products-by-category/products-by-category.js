@@ -15,21 +15,23 @@ import { getPreviewProductData, getProductsByCategory } from '../../gets/product
 import Loading from '../loading'
 
 export default class ProductsByCategory extends Component {
-    
-    static navigationOptions = ({navigation}) => {
+
+    static navigationOptions = ({ navigation }) => {
         const cmsText = navigation.getParam('cmsText', null)
         const name = navigation.getParam('categoryName', 'Kategorien')
         return {
             title: name,
             headerRight: (
-                <View style={{flexDirection: 'row', marginRight: 9}}>
-                    {cmsText ? <CategoryInfoButton cmsText={cmsText} name={name} /> : null}
+                <View style={{ flexDirection: 'row', marginRight: 9 }}>
+                    {/* {cmsText ? <CategoryInfoButton cmsText={cmsText} name={name} /> : null} */}
+                    <CategoryInfoButton cmsText={cmsText} name={name} />
                     <SearchButton />
                 </View>
-        )}
+            )
+        }
     }
 
-    state={
+    state = {
         IDs: [],
         data: [],
         from: 0,
@@ -39,21 +41,23 @@ export default class ProductsByCategory extends Component {
     getProductsIDs() {
         // const id = 1
         const id = this.props.navigation.getParam('categoryID', null)
-        console.log("IDDDSADASD", id)
-        // getProductsByCategory(id).then(res => this.getIDs(res.products))
-        getProductsByCategory(id).then(res => {
-            console.log('AAAAAAAAA', res);
-            this.setState({
-                data:  res.products,
-                IDs: res.productsCount,
-                loaded: true,
+        // getProductsByCategory(id).then(res => this.getIDs(res.products))        
+        console.log('id in getProductsIDs() передача getProductsByCategory в products-by-category.js', id)
+        getProductsByCategory(id)
+            .then(response => response.json())
+            .then(responseJson => {
+                console.log('responseJson  передача getProductsByCategory в products-by-category.js', responseJson)
+                this.setState({
+                    data: responseJson.products,
+                    IDs: responseJson.productsCount,
+                    loaded: true,
+                });
             });
-        })
     }
 
     getIDs(IDs) {
-        this.setState({IDs, loaded: true})
-        console.log(IDs)
+        this.setState({ IDs, loaded: true })
+        console.log('getIDs(IDs).products.by-category.js', IDs)
         this.getData(0)
     }
 
@@ -75,12 +79,12 @@ export default class ProductsByCategory extends Component {
     }
 
     render() {
-        console.log(this.state)
 
-        if(!this.state.loaded) {
+        console.log("this.state RENDER() in products-by-category.js", this.state)
+        if (!this.state.loaded) {
             return <Loading />
         }
-        if(this.state.IDs.length < 1) {
+        if (this.state.IDs.length < 1) {
             return (
                 <View style={styles.noProductsContainer}>
                     <Image source={require('../../assets/message-icons/no-categorie-products.png')} style={styles.noProductImage} />
@@ -92,43 +96,42 @@ export default class ProductsByCategory extends Component {
         // console.log(this.getproduct)
         return (
             <View>
-                    <FlatList 
-                        // contentContainerStyle={{paddingLeft: 18}}
-                        data={this.state.data}
-                        renderItem={({item}) => {
-                            const { companyPrice, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, id } = item
-                            // getProductInfo(item)
-                            // getProductInfo(item).then(e => console.log(e))
-                            // console.log(item)
-                            // console.log(item, <SelfLoadingProductListItem id={item} />)
-                            // if (<SelfLoadingProductListItem id={item} />) {
-                            // console.log(item)
-                            return (
-                                <View style={{paddingBottom: 8}}>
-                                    <ProductListItem 
-                                        name={productName}
-                                        price={price}
-                                        companyPrice={companyPrice}
-                                        salePrice={salePrice}
-                                        rate={rate}
-                                        stock={stock}
-                                        id={id}
-                                        imageURL={previewImgURL}
-                                        salePercent={productSalePercent ? productSalePercent.int : null}
-                                    /> 
-                                </View>
-                            )
-                            // }
-                        }}
-                        columnWrapperStyle={{flexWrap: 'wrap'}}
-                        numColumns={4}
-                        ListFooterComponent={this.state.IDs.length > this.state.data.length && (this.state.from+12 === this.state.data.length) ? <FooterButton text='More products' onPress={() => {this.getData(this.state.from+12)}} /> : null}
-                        // ListFooterComponent={<TouchableOpacity onPress={() => {this.getData(this.state.from+12)}} ><Text>END</Text></TouchableOpacity>}
-                        initialNumToRender={12}
-                        windowSize={4}
-                        keyExtractor={item => item.siteURL}
-                    />
-            </View>   
+                <FlatList
+                    // contentContainerStyle={{paddingLeft: 18}}
+                    data={this.state.data}
+                    renderItem={({ item }) => {
+                        const { companyPrice, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, productID } = item
+                        // getProductInfo(item)
+                        // getProductInfo(item).then(e => console.log(e))
+                        // console.log(item)
+                        // console.log(item, <SelfLoadingProductListItem id={item} />)
+                        // if (<SelfLoadingProductListItem id={item} />) {                        
+                        return (
+                            <View style={{ paddingBottom: 8 }}>
+                                <ProductListItem
+                                    name={productName}
+                                    price={price}
+                                    companyPrice={companyPrice}
+                                    salePrice={salePrice}
+                                    rate={rate}
+                                    stock={stock}
+                                    id={productID}
+                                    imageURL={previewImgURL}
+                                    salePercent={productSalePercent ? productSalePercent.int : null}
+                                />
+                            </View>
+                        )
+                        // }
+                    }}
+                    columnWrapperStyle={{ flexWrap: 'wrap' }}
+                    numColumns={4}
+                    ListFooterComponent={this.state.IDs.length > this.state.data.length && (this.state.from + 12 === this.state.data.length) ? <FooterButton text='More products' onPress={() => { this.getData(this.state.from + 12) }} /> : null}
+                    // ListFooterComponent={<TouchableOpacity onPress={() => {this.getData(this.state.from+12)}} ><Text>END</Text></TouchableOpacity>}
+                    initialNumToRender={12}
+                    windowSize={4}
+                    keyExtractor={item => item.siteURL}
+                />
+            </View>
         )
     }
 }

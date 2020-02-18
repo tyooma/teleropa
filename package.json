@@ -25,6 +25,7 @@
     "react-native-payments": "^0.7.1",
     "react-native-reanimated": "^1.7.0",
     "react-native-render-html": "^4.1.2",
+    "react-native-restart": "0.0.13",
     "react-native-root-toast": "^3.0.2",
     "react-native-screens": "^2.0.0-beta.2",
     "react-native-shadow": "^1.2.2",

@@ -9,7 +9,7 @@ import io.invertase.firebase.RNFirebasePackage;
 import io.invertase.firebase.messaging.RNFirebaseMessagingPackage; 
 import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
 import com.imagepicker.ImagePickerPackage;
-//import com.avishayil.rnrestart.ReactNativeRestartPackage;
+import com.avishayil.rnrestart.ReactNativeRestartPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.reactnativecommunity.netinfo.NetInfoPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
@@ -45,7 +45,7 @@ public class MainApplication extends Application implements ReactApplication {
             new RNFirebaseMessagingPackage(),
             new RNFirebaseNotificationsPackage(),
             new ImagePickerPackage(),
-            //new ReactNativeRestartPackage(),
+            new ReactNativeRestartPackage(),
             new SplashScreenReactPackage(),
             new NetInfoPackage(),
             new AsyncStoragePackage(),
