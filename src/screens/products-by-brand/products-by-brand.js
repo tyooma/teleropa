@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, FlatList, Text, Image } from 'react-native'
+import { View, FlatList, Text, Image, Alert } from 'react-native'
 
 import { SearchButton } from '../../common/header-buttons';
 
@@ -15,19 +15,20 @@ import { getPreviewProductData, getProductsBySupplier } from '../../gets/product
 import Loading from '../loading'
 
 export default class ProductsByBrand extends Component {
-    
-    static navigationOptions = ({navigation}) => {
+
+    static navigationOptions = ({ navigation }) => {
 
         return {
             title: navigation.getParam('brand', 'error'),
             headerRight: (
-                <View style={{flexDirection: 'row', marginRight: 9}}>
+                <View style={{ flexDirection: 'row', marginRight: 9 }}>
                     <SearchButton />
                 </View>
-        )}
+            )
+        }
     }
 
-    state={
+    state = {
         IDs: [],
         data: [],
         from: 0,
@@ -36,15 +37,30 @@ export default class ProductsByBrand extends Component {
 
     getProductsIDs() {
         const id = this.props.navigation.getParam('supplierID')
-        console.log(id)
         // getProductsByBrand(id).then(res => this.getIDs(res.products))
         getProductsBySupplier(id).then(res => {
-            console.log('AAAAAAAAA', res);
-            this.setState({
-                data:  res.products,
-                IDs: res.productsCount,
-                loaded: true,
-            });
+            console.log('res  передача getProductsByCategory в products-by-brand.js', res)
+            if (res.stock > 0) {
+                this.setState({
+                    data: res.products,
+                    IDs: res.productsCount,
+                    loaded: true,
+                });
+            } else {
+                Alert.alert(
+                    "Alarm",
+                    "Nicht verfügbar",
+                    [
+                        {
+                            text: "OK",
+                            onPress: () => {
+                                this.props.navigation.goBack();
+                            },
+                        },
+                    ],
+                    { cancelable: false }
+                );
+            }
         });
     }
 
@@ -73,17 +89,15 @@ export default class ProductsByBrand extends Component {
     // }
 
     componentDidMount() {
-        console.log(this.state)
-        console.log(this.props)
         this.getProductsIDs()
     }
 
     render() {
-        console.log(this.state)
-        if(!this.state.loaded) {
+        console.log('this.state в products-by-brand.js', this.state)
+        if (!this.state.loaded) {
             return <Loading />
         }
-        if(this.state.data.length < 1) {
+        if (this.state.data.length < 1) {
             return (
                 <View style={styles.noProductsContainer}>
                     <Image source={require('../../assets/message-icons/no-categorie-products.png')} style={styles.noProductImage} />
@@ -93,37 +107,39 @@ export default class ProductsByBrand extends Component {
         }
         return (
             <View>
-                    <FlatList 
-                        // contentContainerStyle={{paddingLeft: 18}}
-                        data={this.state.data}
-                        renderItem={({item}, index) => {
-                            console.log(item, index);
-                            const { companyPrice, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, id } = item
-                            return (
-                                <View style={{paddingBottom: 8}}>
-                                    <ProductListItem 
-                                        name={productName}
-                                        price={price}
-                                        companyPrice={companyPrice}
-                                        salePrice={salePrice}
-                                        rate={rate}
-                                        stock={stock}
-                                        id={id}
-                                        imageURL={previewImgURL}
-                                        salePercent={productSalePercent ? productSalePercent.int : null}
-                                    /> 
-                                </View>
-                            )
-                            // }
-                        }}
-                        columnWrapperStyle={{flexWrap: 'wrap'}}
-                        numColumns={4}
-                        // ListFooterComponent={this.state.IDs.length > this.state.data.length && (this.state.from+12 === this.state.data.length) ? <FooterButton text='More products' onPress={() => {this.getData(this.state.from+12)}} /> : null}
-                        initialNumToRender={12}
-                        windowSize={4}
-                        keyExtractor={item => item.siteURL}
-                    />
-            </View>   
+                <FlatList
+                    // contentContainerStyle={{paddingLeft: 18}}
+                    data={this.state.data}
+                    renderItem={({ item }, index) => {
+                        const { companyPrice, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, productID } = item
+                        return (
+                            <View style={{ paddingBottom: 8 }}>
+                                {/* {stock > 0 ? */}
+                                <ProductListItem
+                                    name={productName}
+                                    price={price}
+                                    companyPrice={companyPrice}
+                                    salePrice={salePrice}
+                                    rate={rate}
+                                    stock={stock}
+                                    id={productID}
+                                    imageURL={previewImgURL}
+                                    salePercent={productSalePercent ? productSalePercent.int : null}
+                                />
+                                {/* : null
+                                } */}
+                            </View>
+                        )
+                        // }
+                    }}
+                    columnWrapperStyle={{ flexWrap: 'wrap' }}
+                    numColumns={4}
+                    // ListFooterComponent={this.state.IDs.length > this.state.data.length && (this.state.from+12 === this.state.data.length) ? <FooterButton text='More products' onPress={() => {this.getData(this.state.from+12)}} /> : null}
+                    initialNumToRender={12}
+                    windowSize={4}
+                    keyExtractor={item => item.siteURL}
+                />
+            </View>
         )
     }
 }

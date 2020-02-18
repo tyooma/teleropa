@@ -16,8 +16,7 @@ import NavigationService from '../../navigation-service';
 
 import { sWidth } from '../../helpers/screenSize';
 
-function ProductListItem({imageURL, name, price, salePrice, favourite, id, stock, rate, salePercent, userID, deleteAction, companyPrice, ...props }) {
-
+function ProductListItem({ imageURL, name, price, salePrice, favourite, id, stock, rate, salePercent, userID, deleteAction, companyPrice, ...props }) {
     getStock = () => {
         if (stock > 0) {
             return (
@@ -27,17 +26,17 @@ function ProductListItem({imageURL, name, price, salePrice, favourite, id, stock
             )
         }
         return (
-            <Text style={[styles.inStock, {color: '#d10019'}]}>
-                    Nicht verfügbar
+            <Text style={[styles.inStock, { color: '#d10019' }]}>
+                Nicht verfügbar
             </Text>
         )
     }
 
     getFavButton = (productID) => {
-        if(userID!=='notloggedin' && userID) {
+        if (userID !== 'notloggedin' && userID) {
             if (favourite) {
                 return (
-                    <TouchableOpacity onPress={() => {deleteFavourite(userID, id); deleteAction()}} style={styles.favButton}>
+                    <TouchableOpacity onPress={() => { deleteFavourite(userID, id); deleteAction() }} style={styles.favButton}>
                         <Image source={require('../../assets/icons-color/009-close-white.png')} style={styles.favDelButtonIcon} key={'deleteButton'} />
                     </TouchableOpacity>
                 )
@@ -53,26 +52,26 @@ function ProductListItem({imageURL, name, price, salePrice, favourite, id, stock
     getPrice = () => {
         console.log()
         const showingPrice = props.userInfo.selectedUserType === 'EK' ? price : companyPrice
-        if(salePrice!='0' && salePrice) {
-            return(
+        if (salePrice != '0' && salePrice) {
+            return (
                 <>
                     <Text style={styles.prevPrice}>
-                        {salePrice}<Text style={{fontSize: 10}}>€</Text>
+                        {salePrice}<Text style={{ fontSize: 10 }}>€</Text>
                     </Text>
                     <Text style={styles.salePrice}>
-                        {showingPrice}<Text style={{fontSize: 16}}>€</Text>
+                        {showingPrice}<Text style={{ fontSize: 16 }}>€</Text>
                     </Text>
                 </>
             )
         }
-        return(
+        return (
             <>
                 <Text style={styles.prevPrice}>
-                    <Text style={{fontSize: 10}}></Text>
+                    <Text style={{ fontSize: 10 }}></Text>
                 </Text>
 
                 <Text style={styles.price}>
-                    {showingPrice}<Text style={{fontSize: 16}}>€</Text>
+                    {showingPrice}<Text style={{ fontSize: 16 }}>€</Text>
                 </Text>
             </>
         )
@@ -80,7 +79,7 @@ function ProductListItem({imageURL, name, price, salePrice, favourite, id, stock
 
     getSalePercentBlock = () => {
         if (salePercent) {
-            return(
+            return (
                 <View style={styles.salePercentContainer}>
                     <Text style={styles.salePercentText}>
                         {salePercent}%
@@ -92,19 +91,19 @@ function ProductListItem({imageURL, name, price, salePrice, favourite, id, stock
 
     getCartButton = () => {
         if (stock > 0) {
-            return(
-                <TouchableOpacity 
-                    style={[styles.cartButton, {backgroundColor: '#3f911b'}]} 
+            return (
+                <TouchableOpacity
+                    style={[styles.cartButton, { backgroundColor: '#3f911b' }]}
                     onPress={() => addToCart(id)}
                 >
-                    <Image style={{width: 22, height: 18, resizeMode: 'contain'}} source={require('../../assets/icons-color/002-shopping2.png')} key={'cart'} />
+                    <Image style={{ width: 22, height: 18, resizeMode: 'contain' }} source={require('../../assets/icons-color/002-shopping2.png')} key={'cart'} />
                 </TouchableOpacity>
             )
         }
-        return(
-            <TouchableOpacity 
-                style={[styles.cartButton, {opacity: .4}]} 
-                // onPress={() => addToCart(id)}
+        return (
+            <TouchableOpacity
+                style={[styles.cartButton, { opacity: .4 }]}
+            // onPress={() => addToCart(id)}
             >
                 {/* <Image style={{width: 22, height: 18, resizeMode: 'contain'}} source={require('../../assets/icons-color/002-shopping-cart-green.png')} key={'cart'} /> */}
                 <Text>Nicht verfügbar</Text>
@@ -114,29 +113,29 @@ function ProductListItem({imageURL, name, price, salePrice, favourite, id, stock
 
     getImage = () => {
         if (!imageURL) {
-            return  (
+            return (
                 <ImageLoader source={require('../../assets/message-icons/no-photo.png')} style={styles.productImage} imageStyle={styles.productImage} key={'no-photo'}>
                     {this.getSalePercentBlock()}
                 </ImageLoader>)
         }
         return (
-                <ImageLoader source={{uri: imageURL}} style={styles.productImage} imageStyle={styles.productImage} key={imageURL}>
-                    {this.getSalePercentBlock()}
-                </ImageLoader>)
-        }
+            <ImageLoader source={{ uri: imageURL }} style={styles.productImage} imageStyle={styles.productImage} key={imageURL}>
+                {this.getSalePercentBlock()}
+            </ImageLoader>)
+    }
 
     return (
-        <TouchableOpacity style={styles.productContainer} onPress={() => NavigationService.push('Product', {id: id, name: name}) } >
-            <View style={{flex: 1}}>
+        <TouchableOpacity style={styles.productContainer} onPress={() => NavigationService.push('Product', { id: id, name: name })} >
+            <View style={{ flex: 1 }}>
                 {/* <ImageLoader source={{uri: imageURL}} style={styles.productImage} imageStyle={styles.productImage} key={imageURL}> */}
-                    {this.getImage()}
+                {this.getImage()}
             </View>
-            
+
             {getFavButton()}
 
 
             <Text style={styles.name} numberOfLines={2} >{name}</Text>
-            <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 13, flexWrap: 'wrap'}}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 13, flexWrap: 'wrap' }}>
                 {getStock()}
                 <Text style={styles.id}>
                     Artikelnummer: {id}
@@ -145,8 +144,8 @@ function ProductListItem({imageURL, name, price, salePrice, favourite, id, stock
 
             {getPrice()}
 
-            <View style={{flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'wrap', alignItems: 'center', marginBottom: 18, marginTop: 12}}>
-                <Rating rating={rate}/>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'wrap', alignItems: 'center', marginBottom: 18, marginTop: 12 }}>
+                <Rating rating={rate} />
                 {this.getCartButton()}
             </View>
 
@@ -155,7 +154,7 @@ function ProductListItem({imageURL, name, price, salePrice, favourite, id, stock
 }
 
 // const width = Dimensions.get('window').width > 600 ? (Dimensions.get('window').width - 72)/3 > 0 ? alert(12) : alert(123) : (Dimensions.get('window').width - 54)/2 
-const width = sWidth > 600 ? sWidth > 900 ? (sWidth - 90)/4 : (sWidth - 72)/3 : (sWidth - 54)/2 
+const width = sWidth > 600 ? sWidth > 900 ? (sWidth - 90) / 4 : (sWidth - 72) / 3 : (sWidth - 54) / 2
 
 const styles = {
     productContainer: {
@@ -254,14 +253,14 @@ const styles = {
         borderColor: '#3f911b',
         minWidth: 70,
         borderWidth: 1,
-        height: 32, 
-        justifyContent: 'center', 
+        height: 32,
+        justifyContent: 'center',
         alignItems: 'center'
     }
 }
 
-const mapStateToProps = ({userID, userInfo}) => (
-    {userID, userInfo}
+const mapStateToProps = ({ userID, userInfo }) => (
+    { userID, userInfo }
 )
 
 export default connect(mapStateToProps)(ProductListItem)

@@ -105,7 +105,7 @@ export default class ProductsByCategory extends Component {
                         // getProductInfo(item).then(e => console.log(e))
                         // console.log(item)
                         // console.log(item, <SelfLoadingProductListItem id={item} />)
-                        // if (<SelfLoadingProductListItem id={item} />) {                        
+                        // if (<SelfLoadingProductListItem id={item} />) {                                                
                         return (
                             <View style={{ paddingBottom: 8 }}>
                                 <ProductListItem
