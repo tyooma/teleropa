@@ -75,7 +75,7 @@ import { initUserData } from './initapp';
 
 import BackButton from '../common/header-buttons/back-button';
 
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Icons from 'react-native-vector-icons/Ionicons';
 
 import { YellowBox } from 'react-native';
 
@@ -314,27 +314,29 @@ const AppBotomBarNavigator = createBottomTabNavigator(
   {
     Startseite: AppDrawerNavigator,
     cart: Cart,
-    help: WhatsApp,
+    Help: WhatsApp,
     profile: Profile
   },
   {
     defaultNavigationOptions: ({ navigation }) => ({
       tabBarIcon: ({ focused, horizontal, tintColor }) => {
         const { routeName } = navigation.state;
-        let IconComponent = Ionicons;
+        let IconComponent = Icons;
         let iconName;
         if (routeName === 'Startseite') {
-          iconName = `home${focused ? '' : '-outline'}`;
+          // iconName = `home${focused ? '' : '-outline'}`;
+          iconName = `ios-home`;
+
           // Sometimes we want to add badges to some icons. 
           // You can check the implementation below.
           // IconComponent = HomeIconWithBadge; 
         } else if (routeName === 'cart') {
-          iconName = `cart`;
+          iconName = `ios-cart`;
           //IconComponent = CartIconWithBadge; 
-        } else if (routeName === 'help') {
-          iconName = `information-circle`;
+        } else if (routeName === 'Help') {
+          iconName = `ios-help-circle-outline`;
         } else if (routeName === 'profile') {
-          iconName = `person-circle`;
+          iconName = `ios-person`;
         }
 
         // You can return any component that you like here!
