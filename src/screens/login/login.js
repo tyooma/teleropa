@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
 import { View, Text, Image, TouchableOpacity, ScrollView, Alert } from 'react-native';
 
-// import RNRestart from 'react-native-restart';
+import RNRestart from 'react-native-restart';
 
 import { connect } from 'react-redux';
 
@@ -72,7 +72,7 @@ class Login extends Component {
               onPress: async () => {
                 await this.props.setLoggedUserId('notloggedin')
                 await this.props.setLoggedUserInfo({})
-                // await RNRestart.Restart()
+                await RNRestart.Restart()
               }
             }
           ],
