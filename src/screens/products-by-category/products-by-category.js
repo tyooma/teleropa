@@ -41,12 +41,9 @@ export default class ProductsByCategory extends Component {
     getProductsIDs() {
         // const id = 1
         const id = this.props.navigation.getParam('categoryID', null)
-        // getProductsByCategory(id).then(res => this.getIDs(res.products))        
-        console.log('id in getProductsIDs() передача getProductsByCategory в products-by-category.js', id)
         getProductsByCategory(id)
             .then(response => response.json())
             .then(responseJson => {
-                console.log('responseJson  передача getProductsByCategory в products-by-category.js', responseJson)
                 this.setState({
                     data: responseJson.products,
                     IDs: responseJson.productsCount,
@@ -57,7 +54,6 @@ export default class ProductsByCategory extends Component {
 
     getIDs(IDs) {
         this.setState({ IDs, loaded: true })
-        console.log('getIDs(IDs).products.by-category.js', IDs)
         this.getData(0)
     }
 
@@ -98,7 +94,8 @@ export default class ProductsByCategory extends Component {
             <View>
                 <FlatList
                     // contentContainerStyle={{paddingLeft: 18}}
-                    data={this.state.data}
+                    // data={this.state.data}
+                    data={this.state.data.filter(item => item.stock > 0)}
                     renderItem={({ item }) => {
                         const { companyPrice, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, productID } = item
                         // getProductInfo(item)

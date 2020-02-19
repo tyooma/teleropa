@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { View, Text, Image, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
 
 import ImageLoader from '../../helpers/image-loader';
 
