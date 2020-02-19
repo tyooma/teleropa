@@ -202,8 +202,8 @@ export default class App extends Component {
       }
     })
 
-    
-    
+
+
     return (
       <Provider store={store}>
         <ReduxNetworkProvider
@@ -305,6 +305,7 @@ const AppStackNavigator = createStackNavigator(
   }
 );
 
+
 const AppDrawerNavigator = createDrawerNavigator(
   { App: AppStackNavigator },
   {
@@ -313,13 +314,21 @@ const AppDrawerNavigator = createDrawerNavigator(
   }
 );
 
+handlePress = () => {
+  Linking.openURL('whatsapp://send?phone=380993700153')
+};
 
 
 const AppBotomBarNavigator = createBottomTabNavigator(
   {
     Startseite: AppDrawerNavigator,
     cart: Cart,
-    Help: WhatsApp,
+    Help: {
+        screen: () =>  null,
+      navigationOptions: {
+        tabBarOnPress: handlePress
+      }
+    },
     profile: Profile
   },
   {

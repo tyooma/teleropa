@@ -6,6 +6,7 @@ import { setCart } from '../actions/cart-actions'
 
 export async function getCart() {
     return await AsyncStorage.getItem('Cart')
+    
 }
 
 export async function addToCart(id) {

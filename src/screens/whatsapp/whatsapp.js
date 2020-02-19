@@ -4,8 +4,8 @@ import { Text, View, Button, Linking } from 'react-native';
 class Whatsapp extends React.Component {
 
 
-    // componentDidMount() {
-    //     Linking.openURL('whatsapp://send?text=hello&phone=380993700153')
+    // handlePress = () => {
+    //     Linking.openURL('whatsapp://send?text=hello&phone=380993700153').start()
     // }
 
     render() {
@@ -16,6 +16,7 @@ class Whatsapp extends React.Component {
                     onPress={() => Linking.openURL('whatsapp://send?phone=380993700153')}
                 ></Button>
             </View>
+           
         );
     }
 }

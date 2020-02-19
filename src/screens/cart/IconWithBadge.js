@@ -4,7 +4,7 @@ import Icons from 'react-native-vector-icons/Ionicons';
 
 
 class IconWithBadge extends React.Component {
-    render() {
+     render() {
       const { name, badgeCount, color, size } = this.props;      
       return (
         <View style={{ width: 24, height: 24, margin: 5 }}>
