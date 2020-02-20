@@ -2,7 +2,6 @@ import React from 'react';
 import { Text, View } from 'react-native';
 import Icons from 'react-native-vector-icons/Ionicons';
 
-
 class IconWithBadge extends React.Component {
      render() {
       const { name, badgeCount, color, size } = this.props;      

@@ -315,7 +315,7 @@ const AppDrawerNavigator = createDrawerNavigator(
 );
 
 handlePress = () => {
-  Linking.openURL('whatsapp://send?phone=380993700153')
+  Linking.openURL('whatsapp://send?phone=491707046434')
 };
 
 
@@ -324,7 +324,7 @@ const AppBotomBarNavigator = createBottomTabNavigator(
     Startseite: AppDrawerNavigator,
     cart: Cart,
     Help: {
-        screen: () =>  null,
+      screen: () => null,
       navigationOptions: {
         tabBarOnPress: handlePress
       }

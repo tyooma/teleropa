@@ -1,35 +1,14 @@
 import React from 'react';
 import IconWithBadge from '../cart/IconWithBadge'
 import AsyncStorage from '@react-native-community/async-storage'
-
-
-// const CartIconWithBadge = props => {
-//     state = { temp: 0 }
-//     async function badgeCountChecker() {
-//         var sum = 0;
-//         await AsyncStorage.getItem('Cart', (err, res) => {
-//             let arr = JSON.parse(res);
-//             arr.forEach(element => sum += element.count);
-
-//             console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", sum)
-//         });
-//         return sum;
-//     };
-//     badgeCountChecker().then((kkk) => {
-//         console.log("BBBBBBBBBBBBBBBBBBBBBBBBBBBBB", kkk)
-//         temp = kkk;
-//         this.setState({temp:kkk})
-//     }).catch((error) => { console.log("SASDKASDJASHDJHADFHJGADSHFJGAJGHFHA", error) });
-
-
-//     // You should pass down the badgeCount in some other ways like context, redux, mobx or event emitters.
-//     return <IconWithBadge {...props} badgeCount={this.state.temp} />;
-// };
+import { connect } from 'react-redux'
+import { Provider } from 'react-redux'
+import { store } from '../../app/app'
 
 class CartIconWithBadge extends React.Component {
     state = {
-        temp: 0,
-        flag: false
+        cartItemCount: 0,
+        cartItemFlag: false
     };
 
     badgeCountChecker() {
@@ -38,21 +17,29 @@ class CartIconWithBadge extends React.Component {
             let arr = JSON.parse(res);
             arr.forEach(element => sum += element.count);
             this.setState({
-                temp: sum,
-                flag: true
+                cartItemCount: sum,
+                cartItemFlag: true
             })
         });
     };
 
 
     render() {
-        if (!this.state.flag) {
+        if (!this.state.cartItemFlag) {
             this.badgeCountChecker();
         }
         return (
-            <IconWithBadge {...this.props} badgeCount={this.state.temp} />
+            <Provider store={store}>
+                <IconWithBadge {...this.props} badgeCount={this.state.cartItemCount} />
+            </Provider>
+
         )
     }
 }
+// const mapStateToProps = (state) => {
+//     return {
+//         badgeCountChecker();
+//     }
+// }
 
-export default CartIconWithBadge
+export default connect()(CartIconWithBadge)
