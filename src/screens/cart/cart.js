@@ -191,6 +191,8 @@ class Cart extends Component {
     }
 
     getProductsCards() {
+        console.log("products sum " +  this.state.products.length)
+
         return this.state.products.map(({id, previewImgURL, productName, price, companyPrice, stock, count}) => {
             return (
                 <CartItem 

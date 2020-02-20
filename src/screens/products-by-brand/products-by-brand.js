@@ -38,14 +38,14 @@ export default class ProductsByBrand extends Component {
     getProductsIDs() {
         const id = this.props.navigation.getParam('supplierID')
         // getProductsByBrand(id).then(res => this.getIDs(res.products))
-        getProductsBySupplier(id).then(res => {
-
-            this.setState({
-                data: res.products,
-                IDs: res.productsCount,
-                loaded: true,
+        getProductsBySupplier(id)
+            .then(res => {
+                this.setState({
+                    data: res.products,
+                    IDs: res.productsCount,
+                    loaded: true,
+                });
             });
-        });
     }
 
     // getIDs(IDs) {
@@ -93,12 +93,12 @@ export default class ProductsByBrand extends Component {
             <View>
                 <FlatList
                     // contentContainerStyle={{paddingLeft: 18}}
-                    data={this.state.data}
+                    data={this.state.data.filter(item => item.stock > 0)}
+                    // data={this.state.data}
                     renderItem={({ item }, index) => {
                         const { companyPrice, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, productID } = item
                         return (
                             <View style={{ paddingBottom: 8 }}>
-                                {/* {stock > 0 ? */}
                                 <ProductListItem
                                     name={productName}
                                     price={price}
@@ -110,8 +110,6 @@ export default class ProductsByBrand extends Component {
                                     imageURL={previewImgURL}
                                     salePercent={productSalePercent ? productSalePercent.int : null}
                                 />
-                                {/* : null
-                                } */}
                             </View>
                         )
                         // }

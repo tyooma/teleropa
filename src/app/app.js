@@ -76,6 +76,7 @@ import { initUserData } from './initapp';
 import BackButton from '../common/header-buttons/back-button';
 
 import Icons from 'react-native-vector-icons/Ionicons';
+import CartIconWithBadge from '../screens/cart/CartIconWithBadge';
 
 import { YellowBox } from 'react-native';
 
@@ -201,6 +202,8 @@ export default class App extends Component {
       }
     })
 
+    
+    
     return (
       <Provider store={store}>
         <ReduxNetworkProvider
@@ -310,6 +313,8 @@ const AppDrawerNavigator = createDrawerNavigator(
   }
 );
 
+
+
 const AppBotomBarNavigator = createBottomTabNavigator(
   {
     Startseite: AppDrawerNavigator,
@@ -329,9 +334,10 @@ const AppBotomBarNavigator = createBottomTabNavigator(
 
           // Sometimes we want to add badges to some icons. 
           // You can check the implementation below.
-          // IconComponent = HomeIconWithBadge; 
+          // IconComponent = IconWithBadge; 
         } else if (routeName === 'cart') {
           iconName = `ios-cart`;
+          IconComponent = CartIconWithBadge;
           //IconComponent = CartIconWithBadge; 
         } else if (routeName === 'Help') {
           iconName = `ios-help-circle-outline`;
