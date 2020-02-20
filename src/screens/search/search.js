@@ -195,6 +195,8 @@ export default class Search extends Component {
     }
 
     getData(from) {
+        console.log("FROM", from);
+        console.log("this.state.filteredIDs", this.state.filteredIDs);
         this.setState({ from })
         this.state.filteredIDs.filter(({ productID }, key) => {
             // console.log(id, key)
@@ -211,6 +213,9 @@ export default class Search extends Component {
                     .catch(e => console.log(productID, e))
             }
         })
+        if (this.state.products.length == 0 && this.state.filteredIDs.length == 0) {
+            this.showTaost()
+        }
     }
 
 
@@ -228,6 +233,14 @@ export default class Search extends Component {
         return null
     }
 
+    showTaost() {
+        ToastAndroid.showWithGravity(
+            "Nicht verfügbar",
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+        )
+    }
+
     renderHelper() {
         console.log('this.state in search.js', this.state);
         if (!this.state.showResult) {
@@ -241,12 +254,6 @@ export default class Search extends Component {
             <View style={{ flex: 1 }}>
                 {/* <FilterButton /> */}
                 <View style={styles.productsLine}>
-                    {/* {this.state.products.length == 0 &&
-                    ToastAndroid.showWithGravity(
-                        "Nicht verfügbar",
-                        ToastAndroid.LONG,
-                        ToastAndroid.CENTER,
-                    )} */}
                     <FlatList
                         data={this.state.products}
                         renderItem={({ item }) => {
@@ -271,13 +278,9 @@ export default class Search extends Component {
                         columnWrapperStyle={{ flexWrap: 'wrap' }}
                         numColumns={4}
                         ListHeaderComponent={
-                            this.state.products.length != 0 ?
-                                <FilterButton minPrice={minPrice} maxPrice={maxPrice} fromPrice={fromPrice} toPrice={toPrice} sortBy={sortBy} /> :
-                                ToastAndroid.showWithGravity(
-                                    "Nicht verfügbar",
-                                    ToastAndroid.LONG,
-                                    ToastAndroid.CENTER,
-                                )
+                            !this.state.products.length == 0 && !this.state.filteredIDs.length ?
+                                <FilterButton minPrice={minPrice} maxPrice={maxPrice} fromPrice={fromPrice} toPrice={toPrice} sortBy={sortBy} />
+                                : null
                         }
                         ListFooterComponent={this.state.filteredIDs.length > this.state.products.length && (this.state.from + 12 === this.state.products.length) ? <FooterButton text='More products' onPress={() => { this.getData(this.state.from + 12) }} /> : null}
                         initialNumToRender={3}
