@@ -62,7 +62,10 @@ export default class Search extends Component {
                 <CustomHeader
                     value={params.searchText}
                     onChangeText={value => params.onChangeSearch(value)}
-                    onEndEditing={() => params.onSubmit()}
+                    onEndEditing={() => {
+                        if (params.searchText)
+                            params.onSubmit()
+                    }}
                 />
             )
         })
@@ -136,8 +139,6 @@ export default class Search extends Component {
     }
 
     onSearchChange(searchText) {
-        // console.log('searchText',searchText)
-        // alert('asd')
         this.setState({ searchText })
         this.props.navigation.setParams({ searchText })
         this.setState({ showResult: searchText.length >= 3 })
@@ -194,6 +195,8 @@ export default class Search extends Component {
     }
 
     getData(from) {
+        console.log("FROM", from);
+        console.log("this.state.filteredIDs", this.state.filteredIDs);
         this.setState({ from })
         this.state.filteredIDs.filter(({ productID }, key) => {
             // console.log(id, key)
@@ -210,6 +213,9 @@ export default class Search extends Component {
                     .catch(e => console.log(productID, e))
             }
         })
+        if (this.state.products.length == 0 && this.state.filteredIDs.length == 0) {
+            this.showTaost()
+        }
     }
 
 
@@ -227,6 +233,14 @@ export default class Search extends Component {
         return null
     }
 
+    showTaost() {
+        ToastAndroid.showWithGravity(
+            "Nicht verfügbar",
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+        )
+    }
+
     renderHelper() {
         console.log('this.state in search.js', this.state);
         if (!this.state.showResult) {
@@ -236,17 +250,10 @@ export default class Search extends Component {
         //if (!this.state.loaded || this.state.products.length < 1) return <Loading />
         if (!this.state.loaded) return <Loading />
         const { minPrice, maxPrice, fromPrice, toPrice, sortBy } = this.state
-        console.log("this1 isSearching", this)
         return (
             <View style={{ flex: 1 }}>
                 {/* <FilterButton /> */}
                 <View style={styles.productsLine}>
-                    {this.state.products.length == 0 &&
-                        ToastAndroid.showWithGravity(
-                            "Nicht verfügbar",
-                            ToastAndroid.LONG,
-                            ToastAndroid.CENTER,
-                        )}
                     <FlatList
                         data={this.state.products}
                         renderItem={({ item }) => {
@@ -270,14 +277,18 @@ export default class Search extends Component {
                         }}
                         columnWrapperStyle={{ flexWrap: 'wrap' }}
                         numColumns={4}
-                        ListHeaderComponent={<FilterButton minPrice={minPrice} maxPrice={maxPrice} fromPrice={fromPrice} toPrice={toPrice} sortBy={sortBy} />}
+                        ListHeaderComponent={
+                            !this.state.products.length == 0 && !this.state.filteredIDs.length ?
+                                <FilterButton minPrice={minPrice} maxPrice={maxPrice} fromPrice={fromPrice} toPrice={toPrice} sortBy={sortBy} />
+                                : null
+                        }
                         ListFooterComponent={this.state.filteredIDs.length > this.state.products.length && (this.state.from + 12 === this.state.products.length) ? <FooterButton text='More products' onPress={() => { this.getData(this.state.from + 12) }} /> : null}
                         initialNumToRender={3}
                         windowSize={2}
                         keyExtractor={item => item.id}
                     />
                 </View>
-            </View>
+            </View >
         )
     }
 
@@ -329,7 +340,7 @@ const styles = StyleSheet.create({
     productsLine: {
         flexDirection: 'row',
         // marginTop: 6,
-        // marginBottom: 30,
+        // marginBottom: 30,        
         flexWrap: 'wrap'
     }
 })
