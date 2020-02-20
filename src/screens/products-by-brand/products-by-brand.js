@@ -39,27 +39,12 @@ export default class ProductsByBrand extends Component {
         const id = this.props.navigation.getParam('supplierID')
         // getProductsByBrand(id).then(res => this.getIDs(res.products))
         getProductsBySupplier(id).then(res => {
-            if (res.stock > 0) {
-                this.setState({
-                    data: res.products,
-                    IDs: res.productsCount,
-                    loaded: true,
-                });
-            } else {
-                Alert.alert(
-                    "Alarm",
-                    "Nicht verfügbar",
-                    [
-                        {
-                            text: "OK",
-                            onPress: () => {
-                                this.props.navigation.goBack();
-                            },
-                        },
-                    ],
-                    { cancelable: false }
-                );
-            }
+
+            this.setState({
+                data: res.products,
+                IDs: res.productsCount,
+                loaded: true,
+            });
         });
     }
 

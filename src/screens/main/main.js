@@ -201,7 +201,7 @@ class Main extends Component {
                         /> 
                     </View>
                     
-                    <View style={{paddingHorizontal: 18, alignItems: 'center', jusifyContent: 'center', width: '100%'}} >
+                    <View style={{paddingHorizontal: 18, alignItems: 'center', justifyContent: 'center', width: '100%'}} >
                         <TouchableOpacity style={styles.bottomButton} onPress={() => this.props.navigation.navigate('Subscribe')}>
                             <Text style={styles.bottomButtonText}>
                                 Newsletter anmelden
