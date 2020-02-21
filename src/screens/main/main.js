@@ -23,18 +23,18 @@ import { MenuButton, SearchButton } from '../../common/header-buttons';
 class Main extends Component {
     
     static navigationOptions = {
-        title: '',
-        headerLeft: (
-            <>
-                <MenuButton />
-                <Image style={{width: 60, height: 30, resizeMode: 'contain'}} source={require('../../assets/teleropa-logo.png')} key={'menuTeleropaLogo'} />
-            </>
-        ),
-        headerRight: (
-            <View style={{flexDirection: 'row', marginRight: 9}}>
-                <SearchButton />
-            </View>
-        )
+        title: 'Startseite',
+        // headerLeft: (
+        //     <>
+        //         <MenuButton />
+        //         <Image style={{width: 60, height: 30, resizeMode: 'contain'}} source={require('../../assets/teleropa-logo.png')} key={'menuTeleropaLogo'} />
+        //     </>
+        // ),
+        // headerRight: (
+        //     <View style={{flexDirection: 'row', marginRight: 9}}>
+        //         <SearchButton />
+        //     </View>
+        // )
     }
 
     state={

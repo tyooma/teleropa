@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, Image, ScrollView, Linking } from 'react-native';
 
 import { connect } from 'react-redux';
 
@@ -15,30 +15,30 @@ import { sHeight } from '../../helpers/screenSize';
 class SideMenuView extends Component {
 
   getStyles(user) {
-    if(this.props.selectedUserType === user) {
+    if (this.props.selectedUserType === user) {
       return {
-          block: styles.selectedUser,
-          text: styles.selectedUserText 
+        block: styles.selectedUser,
+        text: styles.selectedUserText
       }
     }
     return {
       block: styles.unselectedUser,
-      text: styles.unselectedUserText 
+      text: styles.unselectedUserText
     }
   }
 
   setUserType(userType) {
-      this.props.setUserType(userType)
+    this.props.setUserType(userType)
   }
 
   render() {
     const isLoggedIn = this.props.userID !== 'notloggedin' && this.props.loaded
     const loginButtonText = isLoggedIn ? 'Ausloggen' : 'Anmelden'
-    return(
-      <SafeAreaView forceInset={{ bottom: 'never' }} style={{flex: 1, backgroundColor: '#d10019'}}>
-        <View style={{flex: 1, backgroundColor: '#fff', justifyContent: 'flex-end'}}>
+    return (
+      <SafeAreaView forceInset={{ bottom: 'never' }} style={{ flex: 1, backgroundColor: '#d10019' }}>
+        <View style={{ flex: 1, backgroundColor: '#fff', justifyContent: 'flex-end' }}>
           <View style={styles.topContainerStyle}>
-            <View style={{flex: 1, justifyContent: 'center'}}>
+            <View style={{ flex: 1, justifyContent: 'center' }}>
               <Image style={styles.logoStyle} source={require('../../assets/teleropa-logo.png')} key={'sideMenuTeleropaLogo'} />
             </View>
             <View style={styles.userTypeViewStyle}>
@@ -53,26 +53,27 @@ class SideMenuView extends Component {
             </View>
           </View>
           <View style={{ flex: 1 }}>
-            <ScrollView style={{ flex: 1, marginHorizontal: 18, marginVertical: 10}} >
-                <View style={{height: sHeight - 175, justifyContent: 'space-between'}}>
-                    <View style={{flex: 1}}>
-                        <MenuButton text='Startseite' imgSrc={require('../../assets/icons/011-house.png')} route='Main' />
-                        <MenuButton text='Kategorien' imgSrc={require('../../assets/icons/012-menu-1.png')} route='CategoriesList' />
-                        {isLoggedIn ? <MenuButton text='Profil' imgSrc={require('../../assets/icons/013-user.png')} route={'Profile'} /> : null}
-                        {isLoggedIn ? <MenuButton text='Merkliste' imgSrc={require('../../assets/icons/004-heart.png')} route={'Favourite'} /> : null}
-                        <MenuButton text='Warenkorb' imgSrc={require('../../assets/icons/002-shopping-cart.png')} route='Cart' />
-                        <View style={styles.line} />
-                        <MenuButton text='Information' imgSrc={require('../../assets/icons/043-info.png')} route='Info' />
-                        <MenuButton text={loginButtonText} imgSrc={require('../../assets/icons-color/sign-in.png')} route='Login' />
-                    </View>
-                    <TouchableOpacity style={styles.whatsUpButton}>
-                        <Image source={require('../../assets/icons-color/044-whatsapp-white.png')} style={styles.whatsUpImage} key={'whatsUpImage'} />
-                        <Text style={styles.whatsUpButtonText}> Whatsapp Chat </Text>
-                      </TouchableOpacity>
-                </View>                
+            <ScrollView style={{ flex: 1, marginHorizontal: 18, marginVertical: 10 }} >
+              <View style={{ height: sHeight - 175, justifyContent: 'space-between' }}>
+                <View style={{ flex: 1 }}>
+                  <MenuButton text='Startseite' imgSrc={require('../../assets/icons/011-house.png')} route='Main' />
+                  <MenuButton text='Kategorien' imgSrc={require('../../assets/icons/012-menu-1.png')} route='CategoriesList' />
+                  {isLoggedIn ? <MenuButton text='Profil' imgSrc={require('../../assets/icons/013-user.png')} route={'Profile'} /> : null}
+                  {isLoggedIn ? <MenuButton text='Merkliste' imgSrc={require('../../assets/icons/004-heart.png')} route={'Favourite'} /> : null}
+                  <MenuButton text='Warenkorb' imgSrc={require('../../assets/icons/002-shopping-cart.png')} route='Cart' />
+                  <View style={styles.line} />
+                  <MenuButton text='Information' imgSrc={require('../../assets/icons/043-info.png')} route='Info' />
+                  <MenuButton text={loginButtonText} imgSrc={require('../../assets/icons-color/sign-in.png')} route='Login' />
+                </View>
+                {/* <TouchableOpacity style={styles.whatsUpButton} > */}
+                <TouchableOpacity style={styles.whatsUpButton} onPress={() => Linking.openURL('whatsapp://send?phone=491707046434')}>
+                  <Image source={require('../../assets/icons-color/044-whatsapp-white.png')} style={styles.whatsUpImage} key={'whatsUpImage'} />
+                  <Text style={styles.whatsUpButtonText}> Whatsapp Chat </Text>
+                </TouchableOpacity>
+              </View>
             </ScrollView>
           </View>
-          
+
         </View>
       </SafeAreaView>
     )
@@ -80,13 +81,14 @@ class SideMenuView extends Component {
 
 }
 
-const MenuButton = ({text, imgSrc, route, onPress}) => {
+const MenuButton = ({ text, imgSrc, route, onPress }) => {
+  // console.log("--------------------------------------------", route)
   return (
     <TouchableOpacity
       onPress={() => {
-          NavigationService.closeDrawer()
-          NavigationService.navigate(route)
-        }}
+        NavigationService.closeDrawer()
+        NavigationService.navigate(route)
+      }}
       style={styles.buttonContainerStyle}
     >
       <Image source={imgSrc} style={styles.buttonImageStyle} key={imgSrc} />
@@ -116,16 +118,16 @@ const styles = {
     color: '#fff',
     marginLeft: 20
   },
-  // whatsUpButton: {
-  //   marginTop: 20,
-  //   height: 39,
-  //   width: '100%',
-  //   flexDirection: 'row',
-  //   borderRadius: 3.3,
-  //   backgroundColor: '#3f911b',
-  //   alignItems: 'center',
-  //   justifyContent: 'center'
-  // },
+  whatsUpButton: {
+    marginTop: 20,
+    height: 39,
+    width: '100%',
+    flexDirection: 'row',
+    borderRadius: 3.3,
+    backgroundColor: '#3f911b',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
   line: {
     height: 0.5,
     backgroundColor: '#a0a0a0',
