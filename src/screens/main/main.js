@@ -23,18 +23,18 @@ import { MenuButton, SearchButton } from '../../common/header-buttons';
 class Main extends Component {
     
     static navigationOptions = {
-        title: '',
-        headerLeft: (
-            <>
-                <MenuButton />
-                <Image style={{width: 60, height: 30, resizeMode: 'contain'}} source={require('../../assets/teleropa-logo.png')} key={'menuTeleropaLogo'} />
-            </>
-        ),
-        headerRight: (
-            <View style={{flexDirection: 'row', marginRight: 9}}>
-                <SearchButton />
-            </View>
-        )
+        title: 'Startseite',
+        // headerLeft: (
+        //     <>
+        //         <MenuButton />
+        //         <Image style={{width: 60, height: 30, resizeMode: 'contain'}} source={require('../../assets/teleropa-logo.png')} key={'menuTeleropaLogo'} />
+        //     </>
+        // ),
+        // headerRight: (
+        //     <View style={{flexDirection: 'row', marginRight: 9}}>
+        //         <SearchButton />
+        //     </View>
+        // )
     }
 
     state={
@@ -201,7 +201,7 @@ class Main extends Component {
                         /> 
                     </View>
                     
-                    <View style={{paddingHorizontal: 18, alignItems: 'center', jusifyContent: 'center', width: '100%'}} >
+                    <View style={{paddingHorizontal: 18, alignItems: 'center', justifyContent: 'center', width: '100%'}} >
                         <TouchableOpacity style={styles.bottomButton} onPress={() => this.props.navigation.navigate('Subscribe')}>
                             <Text style={styles.bottomButtonText}>
                                 Newsletter anmelden

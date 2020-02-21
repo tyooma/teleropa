@@ -1,25 +1,26 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import Toast from 'react-native-root-toast';
-import {store} from '../app/app'
+import { store } from '../app/app'
 
 import { setCart } from '../actions/cart-actions'
 
 export async function getCart() {
     return await AsyncStorage.getItem('Cart')
+
 }
 
 export async function addToCart(id) {
-    try{
-        await AsyncStorage.getItem('Cart', (err,res) => {
-            if(!res) {
+    try {
+        await AsyncStorage.getItem('Cart', (err, res) => {
+            if (!res) {
                 // alert('empty')
-                AsyncStorage.setItem("Cart",JSON.stringify([]))
+                AsyncStorage.setItem("Cart", JSON.stringify([]))
                 addToCart(id)
             }
             else {
                 const cart = JSON.parse(res)
                 const productInCart = cart.find(product => id === product.id) //searching if item already contain in cart
-                if(productInCart) {
+                if (productInCart) {
                     productInCart.count++
                     const newCart = cart.map(product => {
                         if (product.id === id) {
@@ -33,7 +34,7 @@ export async function addToCart(id) {
                 } else {
                     const newProduct = {
                         id, count: 1
-                    } 
+                    }
                     cart.push(newProduct)
                     store.dispatch(setCart(cart))
                     console.log(cart)
@@ -41,15 +42,16 @@ export async function addToCart(id) {
                 }
                 Toast.show('Artikel wurde in den Warenkorb gelegt', {
                     shadow: false,
-                    backgroundColor: '#505050'
+                    backgroundColor: '#505050',
+                    duration: 1500 //время которое будет отображаться тост при добавлении товара в корзину
                 })
             }
         })
     }
-    catch(e){
+    catch (e) {
         console.wanr(e)
     }
-    
+
 }
 
 export async function minusFromCart(id) {
@@ -62,7 +64,7 @@ export async function minusFromCart(id) {
             } else {
                 productInCart.count--
                 const newCart = cart.map(product => {
-                    if(product.id === id) {
+                    if (product.id === id) {
                         return productInCart
                     }
                     return product
@@ -73,14 +75,14 @@ export async function minusFromCart(id) {
             }
         })
     }
-    catch(e) {
+    catch (e) {
         console.warn(e)
     }
 }
 
 export async function deleteFromCart(id) {
     try {
-        await AsyncStorage.getItem('Cart', (err,res) => {
+        await AsyncStorage.getItem('Cart', (err, res) => {
             const cart = JSON.parse(res)
             const newCart = cart.filter(product => product.id !== id)
             store.dispatch(setCart(newCart))
@@ -88,7 +90,7 @@ export async function deleteFromCart(id) {
             AsyncStorage.setItem('Cart', JSON.stringify(newCart))
         })
     }
-    catch(e) {
+    catch (e) {
         console.warn(e)
     }
 }

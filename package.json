@@ -13,6 +13,8 @@
     "@react-navigation/bottom-tabs": "^5.0.3",
     "@react-navigation/drawer": "^5.0.3",
     "@react-navigation/stack": "^5.0.3",
+    "body-parser": "^1.19.0",
+    "paypal-rest-sdk": "^1.8.1",
     "react": "16.6.3",
     "react-native": "^0.59.4",
     "react-native-device-info": "^1.1.0",

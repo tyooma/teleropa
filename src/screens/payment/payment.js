@@ -65,8 +65,8 @@ export default class Payment extends Component {
         if (response.ok) return response.json()
       })
       .then(response => {
-        console.log('resposne', response)
-        console.log('esponse.access_token', response.access_token)
+        console.log(response)
+        console.log(response.access_token)
         return response.access_token
       })
       .then(access_token => {

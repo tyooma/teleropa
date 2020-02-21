@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StatusBar, Platform, Alert, Linking } from 'react-native';
+import { View, StatusBar, Platform, Alert, Linking, Image } from 'react-native';
 
 import { ReduxNetworkProvider } from 'react-native-offline';
 
@@ -79,6 +79,9 @@ import Icons from 'react-native-vector-icons/Ionicons';
 import CartIconWithBadge from '../screens/cart/CartIconWithBadge';
 
 import { YellowBox } from 'react-native';
+
+import { MenuButton, SearchButton } from '../common/header-buttons';
+
 
 YellowBox.ignoreWarnings(['Require cycle:']);
 console.disableYellowBox = true;
@@ -202,8 +205,8 @@ export default class App extends Component {
       }
     })
 
-    
-    
+
+
     return (
       <Provider store={store}>
         <ReduxNetworkProvider
@@ -226,8 +229,68 @@ export default class App extends Component {
   }
 }
 
+handlePress = () => {
+  Linking.openURL('whatsapp://send?phone=491707046434')
+};
+
+// bottomTabRoute = ({route}) =>{
+//   return(
+//     NavigationService.navigate(route)
+//   )
+// }
+
+const AppBotomBarNavigator = createBottomTabNavigator(
+  {
+    Main: Main,
+
+    cart: Cart,
+
+    Help: {
+      screen: () => null,
+      navigationOptions: {
+        tabBarOnPress: handlePress
+      }
+    },
+
+    profile: Profile
+  },
+  {
+    defaultNavigationOptions: ({ navigation }) => ({
+      tabBarIcon: ({ focused, horizontal, tintColor }) => {
+        const { routeName } = navigation.state;
+        let IconComponent = Icons;
+        let iconName;
+        if (routeName === 'Main') {
+          // iconName = `home${focused ? '' : '-outline'}`;
+          iconName = `ios-home`;
+
+          // Sometimes we want to add badges to some icons. 
+          // You can check the implementation below.
+          // IconComponent = IconWithBadge; 
+        } else if (routeName === 'cart') {
+          iconName = `ios-cart`;
+          IconComponent = CartIconWithBadge;
+          //IconComponent = CartIconWithBadge; 
+        } else if (routeName === 'Help') {
+          iconName = `ios-help-circle-outline`;
+        } else if (routeName === 'profile') {
+          iconName = `ios-person`;
+        }
+
+        // You can return any component that you like here!
+        return <IconComponent name={iconName} size={25} color={tintColor} />;
+      }
+
+    }),
+    tabBarOptions: {
+      activeTintColor: 'red',
+      inactiveTintColor: 'gray',
+    }
+  })
+
 const AppStackNavigator = createStackNavigator(
   {
+    Bottom: AppBotomBarNavigator,
     Intro: UserTypeSelection,
     NoNetwork: NoNetwork,
     HotLine: HotLine,
@@ -276,34 +339,82 @@ const AppStackNavigator = createStackNavigator(
     headerTitleStyle: {
       color: 'rgb(0, 255, 63)',
     },
-    initialRouteName: 'Main',
+    // initialRouteName: 'Main',
     // initialRouteName: this.state.network ? 'Main' : <NoNetwork />,
-    defaultNavigationOptions: {
-      headerBackImage: BackButton,
-      headerBackTitle: null,
-      headerStyle: {
-        backgroundColor: '#d10019'
-      },
-      headerTintColor: '#fff',
-      headerTitleStyle: {
-        fontSize: 16,
-        marginLeft: 0,
-        left: 0
-      },
-      headerTitleContainerStyle: {
-        width: sWidth - 95,
-        marginLeft: 0,
-        justifyContent: 'flex-start',
-        left: 56,
-        paddingLeft: 0
-      },
-      headerLeftContainerStyle: {
-        flex: 1,
-        marginLeft: Platform.OS === 'ios' ? 0 : -10
+    defaultNavigationOptions: ({ navigation }) => {
+      // const { routeName } = navigation.state.routes[navigation.state.index];
+      // console.log("ROUTNAMEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE", routeName)
+      // if (routeName == 'Main') {
+      //   return {
+      //     headerLeft: (
+      //       <>
+      //         <MenuButton />
+      //         <Image style={{ width: 60, height: 30, resizeMode: 'contain' }} source={require('../assets/teleropa-logo.png')} key={'menuTeleropaLogo'} />
+      //       </>
+      //     ),
+      //     headerBackImage: BackButton,
+      //     headerBackTitle: null,
+      //     headerStyle: {
+      //       backgroundColor: '#d10019'
+      //     },
+      //     headerTintColor: '#fff',
+      //     headerTitleStyle: {
+      //       fontSize: 16,
+      //       marginLeft: 0,
+      //       left: 0
+      //     },
+      //     headerTitleContainerStyle: {
+      //       width: sWidth - 95,
+      //       marginLeft: 0,
+      //       justifyContent: 'flex-start',
+      //       left: 56,
+      //       paddingLeft: 0
+      //     },
+      //     headerLeftContainerStyle: {
+      //       flex: 1,
+      //       marginLeft: Platform.OS === 'ios' ? 0 : -10
+      //     }
+      //   }
+      // }
+      return {
+        headerLeft: (
+          <>
+            <MenuButton />
+            <Image style={{ width: 60, height: 30, resizeMode: 'contain' }} source={require('../assets/teleropa-logo.png')} key={'menuTeleropaLogo'} />
+          </>
+        ),
+        headerRight: (
+          <View style={{ flexDirection: 'row', marginRight: 9 }}>
+            <SearchButton />
+          </View>
+        ),
+        headerBackImage: BackButton,
+        headerBackTitle: null,
+        headerStyle: {
+          backgroundColor: '#d10019'
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontSize: 16,
+          marginLeft: 0,
+          left: 0
+        },
+        headerTitleContainerStyle: {
+          width: sWidth - 95,
+          marginLeft: 0,
+          justifyContent: 'flex-start',
+          left: 56,
+          paddingLeft: 0
+        },
+        headerLeftContainerStyle: {
+          flex: 1,
+          marginLeft: Platform.OS === 'ios' ? 0 : -10
+        }
       }
     },
   }
 );
+
 
 const AppDrawerNavigator = createDrawerNavigator(
   { App: AppStackNavigator },
@@ -313,50 +424,10 @@ const AppDrawerNavigator = createDrawerNavigator(
   }
 );
 
-
-
-const AppBotomBarNavigator = createBottomTabNavigator(
-  {
-    Startseite: AppDrawerNavigator,
-    cart: Cart,
-    Help: WhatsApp,
-    profile: Profile
-  },
-  {
-    defaultNavigationOptions: ({ navigation }) => ({
-      tabBarIcon: ({ focused, horizontal, tintColor }) => {
-        const { routeName } = navigation.state;
-        let IconComponent = Icons;
-        let iconName;
-        if (routeName === 'Startseite') {
-          // iconName = `home${focused ? '' : '-outline'}`;
-          iconName = `ios-home`;
-
-          // Sometimes we want to add badges to some icons. 
-          // You can check the implementation below.
-          // IconComponent = IconWithBadge; 
-        } else if (routeName === 'cart') {
-          iconName = `ios-cart`;
-          IconComponent = CartIconWithBadge;
-          //IconComponent = CartIconWithBadge; 
-        } else if (routeName === 'Help') {
-          iconName = `ios-help-circle-outline`;
-        } else if (routeName === 'profile') {
-          iconName = `ios-person`;
-        }
-
-        // You can return any component that you like here!
-        return <IconComponent name={iconName} size={25} color={tintColor} />;
-      },
-    }),
-    tabBarOptions: {
-      activeTintColor: 'red',
-      inactiveTintColor: 'gray',
-    }
-  })
-
 const AppSwitchNaigator = createSwitchNavigator({
-  drawer: AppBotomBarNavigator
+  // Login: Login,
+  drawer: AppDrawerNavigator,
+  
 })
 
 const AppContainer = createAppContainer(AppSwitchNaigator);
