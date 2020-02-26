@@ -6,28 +6,34 @@ import { Provider } from 'react-redux'
 import { store } from '../../app/app'
 
 class CartIconWithBadge extends React.Component {
+
     state = {
         cartItemCount: 0,
-        cartItemFlag: false
     };
+
+    componentWillReceiveProps() {
+        setTimeout(() => { this.badgeCountChecker() }, 5);
+    }
+
 
     badgeCountChecker() {
         var sum = 0;
-        AsyncStorage.getItem('Cart', (err, res) => {
-            let arr = JSON.parse(res);
-            arr.forEach(element => sum += element.count);
-            this.setState({
-                cartItemCount: sum,
-                cartItemFlag: true
-            })
-        });
+        try {
+            AsyncStorage.getItem('Cart', (err, res) => {
+                let arr = JSON.parse(res);                
+                arr.forEach(element => sum += element.count);                
+                this.setState({
+                    cartItemCount: sum,
+                })
+            });
+        } catch (e) {
+            console.warn(e)
+        }
     };
 
 
+
     render() {
-        if (!this.state.cartItemFlag) {
-            this.badgeCountChecker();
-        }
         return (
             <Provider store={store}>
                 <IconWithBadge {...this.props} badgeCount={this.state.cartItemCount} />
@@ -36,10 +42,8 @@ class CartIconWithBadge extends React.Component {
         )
     }
 }
-// const mapStateToProps = (state) => {
-//     return {
-//         badgeCountChecker();
-//     }
-// }
 
-export default connect()(CartIconWithBadge)
+const mapStateToProps = ({ userInfo, cart }) => ({ userInfo, cart })
+
+
+export default connect(mapStateToProps)(CartIconWithBadge)

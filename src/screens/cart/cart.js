@@ -31,6 +31,8 @@ import {
     clearCart
 } from '../../functions/cart-funcs';
 
+import CartIconWithBadge from './CartIconWithBadge'
+
 getStock = (stock, order, pcs) => {
     if (!order) {
         if (stock > 0) {
@@ -52,11 +54,12 @@ getStock = (stock, order, pcs) => {
         </Text>
     )
 }
+// this.props.navigation.navigate('Search', { searchText: data, show: true })
 
 getCounter = (order, pcs, id, onMinus, onAdd) => {
     if (!order) {
         return (
-            <><TouchableOpacity style={styles.minusPlusButton} onPress={() => onMinus(id)}>
+            <><TouchableOpacity style={styles.minusPlusButton} onPress={() => onMinus(id)} >
                 <Image source={require('../../assets/icons/036-minus.png')} style={styles.minusPlusButtonImage} key={'cartMinusItem'} />
             </TouchableOpacity>
                 <Text style={styles.countText}>
@@ -138,7 +141,7 @@ class Cart extends Component {
         promocode: '',
         promocodeData: null,
         discountValue: 0,
-        loaded: false
+        loaded: false,
     }
 
     static navigationOptions = {
@@ -151,7 +154,7 @@ class Cart extends Component {
     }
 
     init() {
-        console.log('INIT', this.props)
+        console.log('INIT in cart.js', this.props)
         const cart = this.props.cart
         if (cart.length > 0 && !this.state.cartReceaved) { this.setState({ cartReceaved: true }) }
         this.props.cart.map(({ id, count }) => {
@@ -191,8 +194,6 @@ class Cart extends Component {
     }
 
     getProductsCards() {
-        // console.log("products sum ",  this.state.products.count)
-
         return this.state.products.map(({ id, previewImgURL, productName, price, companyPrice, stock, count }) => {
             return (
                 <CartItem
@@ -221,16 +222,6 @@ class Cart extends Component {
     }
 
     setPrices() {
-        // console.log(this.state.products)
-
-        // if(this.state.promocodeData) {
-        //     const {percental, minimumcharge, value, description} = this.state.promocodeData
-        //     if (minimumcharge > this.state.productsPrice) {
-        //         alert('Der Gutscheincode kann nicht eingelöst werden, weil Ihr Warenkorb-Wert nicht ausreichend ist.')
-        //         var discount = 0
-        //     }
-        // }
-
         const productsPrice = this.props.userInfo.selectedUserType === 'EK' ?
             this.state.products.reduce((sum, { price, count }) => {
                 return sum + price * count
@@ -265,13 +256,10 @@ class Cart extends Component {
                 return price.toFixed(2)
             }
             if (percental) {
-                console.log(1)
                 return (price - price / 100 * value).toFixed(2)
             }
-            console.log(2)
             return (price - value).toFixed(2)
         }
-        console.log(3)
         return price.toFixed(2)
     }
 
@@ -281,7 +269,6 @@ class Cart extends Component {
             return
         }
         getPromocodeData(this.state.promocode).then(promocodeData => {
-            console.log(promocodeData)
             if (promocodeData.status.code === 'success') {
                 this.setState({ promocodeData })
             }
@@ -304,9 +291,8 @@ class Cart extends Component {
     }
 
     render() {
-        console.log(this.state)
-        console.log("this.state.products.length ", this.state.products.length)
-        console.log('this.props.cart.length', this.props.cart.length)
+        console.log("this.state in cart.js", this.state)
+
         const shadowOpt = {
             width: sWidth,
             height: 50,
@@ -393,7 +379,6 @@ class Cart extends Component {
 }
 
 const mapStateToProps = ({ userInfo, cart }) => ({ userInfo, cart })
-
 export default connect(mapStateToProps)(Cart)
 
 const styles = StyleSheet.create({

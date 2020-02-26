@@ -233,12 +233,6 @@ handlePress = () => {
   Linking.openURL('whatsapp://send?phone=491707046434')
 };
 
-// bottomTabRoute = ({route}) =>{
-//   return(
-//     NavigationService.navigate(route)
-//   )
-// }
-
 const AppBotomBarNavigator = createBottomTabNavigator(
   {
     Main: Main,
@@ -261,26 +255,17 @@ const AppBotomBarNavigator = createBottomTabNavigator(
         let IconComponent = Icons;
         let iconName;
         if (routeName === 'Main') {
-          // iconName = `home${focused ? '' : '-outline'}`;
           iconName = `ios-home`;
-
-          // Sometimes we want to add badges to some icons. 
-          // You can check the implementation below.
-          // IconComponent = IconWithBadge; 
         } else if (routeName === 'cart') {
           iconName = `ios-cart`;
           IconComponent = CartIconWithBadge;
-          //IconComponent = CartIconWithBadge; 
         } else if (routeName === 'Help') {
           iconName = `ios-help-circle-outline`;
         } else if (routeName === 'profile') {
           iconName = `ios-person`;
         }
-
-        // You can return any component that you like here!
         return <IconComponent name={iconName} size={25} color={tintColor} />;
       }
-
     }),
     tabBarOptions: {
       activeTintColor: 'red',
@@ -339,43 +324,9 @@ const AppStackNavigator = createStackNavigator(
     headerTitleStyle: {
       color: 'rgb(0, 255, 63)',
     },
-    // initialRouteName: 'Main',
+    //initialRouteName: 'Main',
     // initialRouteName: this.state.network ? 'Main' : <NoNetwork />,
     defaultNavigationOptions: ({ navigation }) => {
-      // const { routeName } = navigation.state.routes[navigation.state.index];
-      // console.log("ROUTNAMEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE", routeName)
-      // if (routeName == 'Main') {
-      //   return {
-      //     headerLeft: (
-      //       <>
-      //         <MenuButton />
-      //         <Image style={{ width: 60, height: 30, resizeMode: 'contain' }} source={require('../assets/teleropa-logo.png')} key={'menuTeleropaLogo'} />
-      //       </>
-      //     ),
-      //     headerBackImage: BackButton,
-      //     headerBackTitle: null,
-      //     headerStyle: {
-      //       backgroundColor: '#d10019'
-      //     },
-      //     headerTintColor: '#fff',
-      //     headerTitleStyle: {
-      //       fontSize: 16,
-      //       marginLeft: 0,
-      //       left: 0
-      //     },
-      //     headerTitleContainerStyle: {
-      //       width: sWidth - 95,
-      //       marginLeft: 0,
-      //       justifyContent: 'flex-start',
-      //       left: 56,
-      //       paddingLeft: 0
-      //     },
-      //     headerLeftContainerStyle: {
-      //       flex: 1,
-      //       marginLeft: Platform.OS === 'ios' ? 0 : -10
-      //     }
-      //   }
-      // }
       return {
         headerLeft: (
           <>
@@ -387,7 +338,7 @@ const AppStackNavigator = createStackNavigator(
           <View style={{ flexDirection: 'row', marginRight: 9 }}>
             <SearchButton />
           </View>
-        ),
+        ),        
         headerBackImage: BackButton,
         headerBackTitle: null,
         headerStyle: {
@@ -427,7 +378,8 @@ const AppDrawerNavigator = createDrawerNavigator(
 const AppSwitchNaigator = createSwitchNavigator({
   // Login: Login,
   drawer: AppDrawerNavigator,
-  
+  Main: Main,
+
 })
 
 const AppContainer = createAppContainer(AppSwitchNaigator);

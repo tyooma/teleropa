@@ -62,11 +62,10 @@ class Product extends Component {
   }
 
   initProduct = async (id) => {
-    console.log('///////////////// id', id)
     getFullProductData(id)
       .then(response => response.json())
       .then(responseJson => {
-        console.log("responseJson responseJson responseJson", responseJson);
+      
         if (responseJson.status == '404') {
           Alert.alert(
             "Alarm",

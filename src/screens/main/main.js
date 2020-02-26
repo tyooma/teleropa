@@ -14,32 +14,33 @@ import ImageLoader from '../../helpers/image-loader';
 import CategoryWithImageItem from '../../common/category-with-image-item';
 import BrandListItem from '../../common/brand-list-item';
 
-import {sendToken} from '../../posts/authPosts'
+import { sendToken } from '../../posts/authPosts'
 
 import Loading from '../loading';
 
 import { MenuButton, SearchButton } from '../../common/header-buttons';
 
 class Main extends Component {
-    
+
     static navigationOptions = {
-        title: 'Startseite',
-        // headerLeft: (
-        //     <>
-        //         <MenuButton />
-        //         <Image style={{width: 60, height: 30, resizeMode: 'contain'}} source={require('../../assets/teleropa-logo.png')} key={'menuTeleropaLogo'} />
-        //     </>
-        // ),
-        // headerRight: (
-        //     <View style={{flexDirection: 'row', marginRight: 9}}>
-        //         <SearchButton />
-        //     </View>
-        // )
+        // title: 'Startseite',
+        title: '',
+        headerLeft: (
+            <>
+                <MenuButton />
+                <Image style={{ width: 60, height: 30, resizeMode: 'contain' }} source={require('../../assets/teleropa-logo.png')} key={'menuTeleropaLogo'} />
+            </>
+        ),
+        headerRight: (
+            <View style={{ flexDirection: 'row', marginRight: 9 }}>
+                <SearchButton />
+            </View>
+        )
     }
 
-    state={
+    state = {
         brands: null,
-        imageRatio: sHeight/3,
+        imageRatio: sHeight / 3,
         image: null
     }
     constructor(props) {
@@ -51,8 +52,8 @@ class Main extends Component {
         getBrandsList()
         getPopularCategories()
         getBannerImage().then(image => Image.getSize(image, (w, h) => {
-            this.setImageSize(w, h); 
-            this.setState({image})
+            this.setImageSize(w, h);
+            this.setState({ image })
         }))
         // getBannerImage().then(e => console.log('3', e))
 
@@ -68,41 +69,22 @@ class Main extends Component {
     }
 
     setImageSize(width, height) {
-        console.log(width, height)
-        console.log(sWidth/(width/height))
-        this.setState({imageRatio: sWidth/(width/height)})
+        this.setState({ imageRatio: sWidth / (width / height) })
     }
 
     getCategoriesCards() {
         // console.log(this.props.mainPage.categories)
 
-        return this.props.mainPage.categories.map(({categoryName, categoryImageURL, categoryID}) => {
+        return this.props.mainPage.categories.map(({ categoryName, categoryImageURL, categoryID }) => {
             // console.log(category)
-            if (categoryImageURL) return <CategoryWithImageItem key={categoryID} id={categoryID} text={categoryName} image={{uri: categoryImageURL}} />       
+            if (categoryImageURL) return <CategoryWithImageItem key={categoryID} id={categoryID} text={categoryName} image={{ uri: categoryImageURL }} />
         })
     }
 
-    // NEED TO DELETE
-    // NEED TO DELETE
-    // NEED TO DELETE
-    // NEED TO DELETE
-    // NEED TO DELETE
-    // NEED TO DELETE
-    // NEED TO DELETE
-    // NEED TO DELETE
-    // NEED TO DELETE
-    // NEED TO DELETE
-    // NEED TO DELETE
-    // NEED TO DELETE
-    // NEED TO DELETE
-    // NEED TO DELETE
-    // NEED TO DELETE
-    // NEED TO DELETE
-    // NEED TO DELETE 
-
+  
     async getTokenFromStorage() {
         let fcmToken = await AsyncStorage.getItem('fcmToken');
-        this.setState({fcmToken})
+        this.setState({ fcmToken })
     }
 
     send() {
@@ -112,13 +94,13 @@ class Main extends Component {
 
     render() {
         console.log(this.props)
-        if(!this.props.mainPage.categories || !this.props.mainPage.brands || !this.state.image){
+        if (!this.props.mainPage.categories || !this.props.mainPage.brands || !this.state.image) {
             return <Loading />
         }
-        
+
         const image = require('../../assets/icons-color/008-check2.png');
         return (
-            <View style={{flex: 1}} >
+            <View style={{ flex: 1 }} >
                 <ScrollView>
                     {/* NEED TO DELETE
                     NEED TO DELETE
@@ -166,7 +148,7 @@ class Main extends Component {
                     NEED TO DELETE
                     NEED TO DELETE
                     NEED TO DELETE */}
-                    <ScrollView horizontal style={{flex: 1}} showsHorizontalScrollIndicator={false}>
+                    <ScrollView horizontal style={{ flex: 1 }} showsHorizontalScrollIndicator={false}>
                         <View style={styles.topContainer}>
                             <Image source={image} style={styles.topImage} />
                             <Text style={styles.topText}>Kostenloser Hin- und Rückversand ab 40 EUR*</Text>
@@ -177,31 +159,31 @@ class Main extends Component {
                         </View>
                     </ScrollView>
                     {/* <TouchableOpacity onPress={() => this.props.setNetworkStatusOff()}> */}
-                    <TouchableOpacity onPress={() => this.props.navigation.navigate('Product', {name: 'Uno 4K SE Linux Receiver UHD 2160p', id: '58126'})}>
-                        <ImageLoader source={{uri: this.state.image}} style={{width: '100%', height: this.state.imageRatio, resizeMode: 'contain'}} />
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate('Product', { name: 'Uno 4K SE Linux Receiver UHD 2160p', id: '58126' })}>
+                        <ImageLoader source={{ uri: this.state.image }} style={{ width: '100%', height: this.state.imageRatio, resizeMode: 'contain' }} />
                     </TouchableOpacity>
 
                     <Text style={styles.helperText}>
                         Unsere aktuellen Wochenangebote
                     </Text>
-                    <View style={{flexDirection: 'row', marginLeft: 18, flexWrap: 'wrap'}}>
+                    <View style={{ flexDirection: 'row', marginLeft: 18, flexWrap: 'wrap' }}>
                         {this.getCategoriesCards()}
                     </View>
-                    <View style={{height: 100, marginBottom: 18}} >
-                        <FlatList 
+                    <View style={{ height: 100, marginBottom: 18 }} >
+                        <FlatList
                             horizontal
                             data={this.getBrands()}
-                            renderItem={({item}) => {
-                                return <BrandListItem brand={item.title} image={{uri: item.imgURL}} id={item.supplierID} /> 
+                            renderItem={({ item }) => {
+                                return <BrandListItem brand={item.title} image={{ uri: item.imgURL }} id={item.supplierID} />
                             }}
                             keyExtractor={item => item.title}
                             initialNumToRender={3}
                             windowSize={2}
                             showsHorizontalScrollIndicator={false}
-                        /> 
+                        />
                     </View>
-                    
-                    <View style={{paddingHorizontal: 18, alignItems: 'center', justifyContent: 'center', width: '100%'}} >
+
+                    <View style={{ paddingHorizontal: 18, alignItems: 'center', justifyContent: 'center', width: '100%' }} >
                         <TouchableOpacity style={styles.bottomButton} onPress={() => this.props.navigation.navigate('Subscribe')}>
                             <Text style={styles.bottomButtonText}>
                                 Newsletter anmelden
@@ -214,11 +196,15 @@ class Main extends Component {
     }
 }
 
+
+
 const mapStateToProps = (state) => {
     return {
         mainPage: state.mainPage
     }
 }
+
+
 
 export default connect(mapStateToProps)(Main);
 
@@ -247,7 +233,7 @@ const styles = {
         resizeMode: 'contain',
         // flex: 1,
         height: 132,
-        width: '100%'        
+        width: '100%'
     },
     helperText: {
         fontSize: 16,

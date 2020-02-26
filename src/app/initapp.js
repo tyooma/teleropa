@@ -8,25 +8,26 @@ import { getUserInfo } from '../gets/userPosts';
 import NavigationService from '../navigation-service'
 
 export async function initUserData(store) {
-    const userID = await AsyncStorage.getItem('userID');    
-    const userSelectedType = await AsyncStorage.getItem('userSelectedType');   
+    const userID = await AsyncStorage.getItem('userID');
+    const userSelectedType = await AsyncStorage.getItem('userSelectedType');
     const cart = await AsyncStorage.getItem('Cart')
     store.dispatch(setLoadDone())
-    try{
+    try {
         if (cart) {
-            store.dispatch(setCart(JSON.parse(cart)))
+            console.log("store.dispatch(setCart(JSON.parse(cart)))",
+                store.dispatch(setCart(JSON.parse(cart))))
         } else {
-            store.dispatch(setCart([]))
+            console.log("store.dispatch(setCart([]))", store.dispatch(setCart([])))
         }
     }
-    catch(e) {
+    catch (e) {
         console.log(e)
     }
-    if(!userSelectedType) {
+    if (!userSelectedType) {
         NavigationService.replace('Intro')
     } else store.dispatch(actions.setUserType(userSelectedType))
-    if( userID && userID !== 'notloggedin' ) {
-        console.log(userID)
+    if (userID && userID !== 'notloggedin') {
+        console.log("userID in initapp.js", userID)
         store.dispatch(actions.setLoggedUserId(userID))
         getUserInfo(userID).then(userInfo => {
             store.dispatch(setLoadDone())

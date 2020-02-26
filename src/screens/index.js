@@ -22,6 +22,7 @@ import Product from './product';
 import Search from './search';
 import Scanner from './scanner';
 import Cart from './cart';
+import CartIconWithBadge from './cart/CartIconWithBadge'
 import Orders from './orders';
 import ProductSubscribe from './product-subscribe';
 import Return from './return';
@@ -36,6 +37,7 @@ import Career from './career';
 import TermsConfidentiality from './terms-confidentiality';
 import TermsDeliveryPayment from './terms-delivery-payment';
 import TermsReturn from './terms-return';
+
 
 export {
     CategoriesList,
@@ -55,6 +57,7 @@ export {
     SubcategoriesList,
     Filter,
     SideMenuView,
+
     Search,
     Scanner,
     Cart,
@@ -75,5 +78,7 @@ export {
     Subscribe,
     Info,
     HotLine,
-    UserTypeSelection
+    UserTypeSelection,
+
+    CartIconWithBadge
 }

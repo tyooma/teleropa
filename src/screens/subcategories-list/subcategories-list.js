@@ -56,12 +56,11 @@ export default class SubcategoriesList extends Component {
   getAllProductsButton() {
       const id = this.state.currentCategory.id
       const cmsText = this.state.currentCategory.cmsText
-      if (this.state.categories.length > 1) return <CategoriesListItem name={'Все товары категории'} id={id} key={id} cmsText={cmsText} />
+      if (this.state.categories.length > 1) return <CategoriesListItem name={'Alle producten van de categorie'} id={id} key={id} cmsText={cmsText} />
   }
 
   render() {
-    if(!this.state.loaded) return <Loading />
-    console.log(this.state)
+    if(!this.state.loaded) return <Loading />    
     return(
       <View>
         <ScrollView style={{marginHorizontal: 18}} showsVerticalScrollIndicator={false}>
