@@ -82,7 +82,6 @@ class SideMenuView extends Component {
 }
 
 const MenuButton = ({ text, imgSrc, route, onPress }) => {
-  // console.log("--------------------------------------------", route)
   return (
     <TouchableOpacity
       onPress={() => {
@@ -98,6 +97,7 @@ const MenuButton = ({ text, imgSrc, route, onPress }) => {
 }
 
 const mapStateToProps = (state) => (
+  console.log(" state.app.loaded", state),
   {
     userID: state.userID,
     loaded: state.app.loaded,

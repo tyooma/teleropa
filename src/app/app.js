@@ -233,12 +233,6 @@ handlePress = () => {
   Linking.openURL('whatsapp://send?phone=491707046434')
 };
 
-// bottomTabRoute = ({route}) =>{
-//   return(
-//     NavigationService.navigate(route)
-//   )
-// }
-
 const AppBotomBarNavigator = createBottomTabNavigator(
   {
     Main: Main,
@@ -261,7 +255,6 @@ const AppBotomBarNavigator = createBottomTabNavigator(
         let IconComponent = Icons;
         let iconName;
         if (routeName === 'Main') {
-          // iconName = `home${focused ? '' : '-outline'}`;
           iconName = `ios-home`;
         } else if (routeName === 'cart') {
           iconName = `ios-cart`;
@@ -271,11 +264,8 @@ const AppBotomBarNavigator = createBottomTabNavigator(
         } else if (routeName === 'profile') {
           iconName = `ios-person`;
         }
-
-        // You can return any component that you like here!
         return <IconComponent name={iconName} size={25} color={tintColor} />;
       }
-
     }),
     tabBarOptions: {
       activeTintColor: 'red',
@@ -334,9 +324,10 @@ const AppStackNavigator = createStackNavigator(
     headerTitleStyle: {
       color: 'rgb(0, 255, 63)',
     },
-    // initialRouteName: 'Main',
+    //initialRouteName: 'Main',
     // initialRouteName: this.state.network ? 'Main' : <NoNetwork />,
     defaultNavigationOptions: ({ navigation }) => {
+<<<<<<< HEAD
       // const { routeName } = navigation.state.routes[navigation.state.index];
       // console.log("ROUTNAMEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE", routeName)
       // if (routeName == 'Main') {
@@ -372,6 +363,8 @@ const AppStackNavigator = createStackNavigator(
       //   }
       // }
       // console.log(this.state)
+=======
+>>>>>>> a87b5efed62b340d61146d986919352141185e8e
       return {
         
         headerLeft: (
@@ -384,7 +377,7 @@ const AppStackNavigator = createStackNavigator(
           <View style={{ flexDirection: 'row', marginRight: 9 }}>
             <SearchButton />
           </View>
-        ),
+        ),        
         headerBackImage: BackButton,
         headerBackTitle: null,
         headerStyle: {
@@ -424,7 +417,8 @@ const AppDrawerNavigator = createDrawerNavigator(
 const AppSwitchNaigator = createSwitchNavigator({
   // Login: Login,
   drawer: AppDrawerNavigator,
-  
+  Main: Main,
+
 })
 
 const AppContainer = createAppContainer(AppSwitchNaigator);

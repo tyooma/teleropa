@@ -13,9 +13,8 @@ export async function addToCart(id) {
     try {
         await AsyncStorage.getItem('Cart', (err, res) => {
             if (!res) {
-                // alert('empty')
                 AsyncStorage.setItem("Cart", JSON.stringify([]))
-                addToCart(id)
+                addToCart(id);
             }
             else {
                 const cart = JSON.parse(res)
@@ -29,15 +28,13 @@ export async function addToCart(id) {
                         return product
                     })
                     store.dispatch(setCart(newCart))
-                    console.log(newCart)
-                    AsyncStorage.setItem('Cart', JSON.stringify(newCart))
+                    AsyncStorage.setItem('Cart', JSON.stringify(newCart))                                                      
                 } else {
                     const newProduct = {
                         id, count: 1
                     }
                     cart.push(newProduct)
                     store.dispatch(setCart(cart))
-                    console.log(cart)
                     AsyncStorage.setItem('Cart', JSON.stringify(cart))
                 }
                 Toast.show('Artikel wurde in den Warenkorb gelegt', {
@@ -70,7 +67,7 @@ export async function minusFromCart(id) {
                     return product
                 })
                 store.dispatch(setCart(newCart))
-                console.log(newCart)
+
                 AsyncStorage.setItem('Cart', JSON.stringify(newCart))
             }
         })
@@ -86,7 +83,6 @@ export async function deleteFromCart(id) {
             const cart = JSON.parse(res)
             const newCart = cart.filter(product => product.id !== id)
             store.dispatch(setCart(newCart))
-            console.log(newCart)
             AsyncStorage.setItem('Cart', JSON.stringify(newCart))
         })
     }

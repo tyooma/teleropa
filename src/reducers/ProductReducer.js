@@ -22,28 +22,26 @@ const initialState = {
 }
 
 export default (state = initialState, action) => {
-    // console.log(action);
-    // console.log(action)
-    switch(action.type) {
-        case 'SET_CURRENT_PRODUCT_ID': 
-            return {...state, ...{ id: action.payload}}
-        case 'SET_CURRENT_PRODUCT_IMAGES': 
-            return {...state, ...{images: action.payload}}    
-        case 'SET_CURRENT_PRODUCT_INFO': 
-            return {...state, ...{productInfo: action.payload}}    
-        case 'SET_CURRENT_PRODUCT_DESCRIPTION': 
-            return {...state, ...{productDescription: action.payload}}    
-        case 'SET_CURRENT_PRODUCT_DETAILS': 
-            return {...state, ...{productDetails: action.payload}}    
-        case 'SET_CURRENT_PRODUCT_PACKAGE': 
-            return {...state, ...{productPackage: action.payload}}    
-        case 'SET_CURRENT_PRODUCT_VIDEO': 
-            return {...state, ...{productVideo: action.payload}}    
-        case 'SET_CURRENT_PRODUCT_REVIEWS': 
-            return {...state, ...{productReviews: action.payload}}    
-        case 'SET_CURRENT_PRODUCT_SIMILAR': 
-            return {...state, ...{productSimilar: action.payload}}    
-        default: 
+    switch (action.type) {
+        case 'SET_CURRENT_PRODUCT_ID':
+            return { ...state, ...{ id: action.payload } }
+        case 'SET_CURRENT_PRODUCT_IMAGES':
+            return { ...state, ...{ images: action.payload } }
+        case 'SET_CURRENT_PRODUCT_INFO':
+            return { ...state, ...{ productInfo: action.payload } }
+        case 'SET_CURRENT_PRODUCT_DESCRIPTION':
+            return { ...state, ...{ productDescription: action.payload } }
+        case 'SET_CURRENT_PRODUCT_DETAILS':
+            return { ...state, ...{ productDetails: action.payload } }
+        case 'SET_CURRENT_PRODUCT_PACKAGE':
+            return { ...state, ...{ productPackage: action.payload } }
+        case 'SET_CURRENT_PRODUCT_VIDEO':
+            return { ...state, ...{ productVideo: action.payload } }
+        case 'SET_CURRENT_PRODUCT_REVIEWS':
+            return { ...state, ...{ productReviews: action.payload } }
+        case 'SET_CURRENT_PRODUCT_SIMILAR':
+            return { ...state, ...{ productSimilar: action.payload } }
+        default:
             return state;
     }
 }

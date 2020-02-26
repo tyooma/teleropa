@@ -13,7 +13,7 @@ class Whatsapp extends React.Component {
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>                
                 <Button
                     title="WhatsApp help"
-                    onPress={() => Linking.openURL('whatsapp://send?phone=380993700153')}
+                    onPress={() => Linking.openURL('whatsapp://send?phone=491707046434')}
                 ></Button>
             </View>
            

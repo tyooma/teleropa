@@ -1,5 +1,5 @@
 export const setCart = (cart) => {
-    //ACTION CREATOR
+    console.log('cart setCart in cart-action', cart)
     return {
         type: 'SET_CART',
         payload: cart
