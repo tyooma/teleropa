@@ -327,44 +327,6 @@ const AppStackNavigator = createStackNavigator(
     //initialRouteName: 'Main',
     // initialRouteName: this.state.network ? 'Main' : <NoNetwork />,
     defaultNavigationOptions: ({ navigation }) => {
-<<<<<<< HEAD
-      // const { routeName } = navigation.state.routes[navigation.state.index];
-      // console.log("ROUTNAMEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE", routeName)
-      // if (routeName == 'Main') {
-      //   return {
-      //     headerLeft: (
-      //       <>
-      //         <MenuButton />
-      //         <Image style={{ width: 60, height: 30, resizeMode: 'contain' }} source={require('../assets/teleropa-logo.png')} key={'menuTeleropaLogo'} />
-      //       </>
-      //     ),
-      //     headerBackImage: BackButton,
-      //     headerBackTitle: null,
-      //     headerStyle: {
-      //       backgroundColor: '#d10019'
-      //     },
-      //     headerTintColor: '#fff',
-      //     headerTitleStyle: {
-      //       fontSize: 16,
-      //       marginLeft: 0,
-      //       left: 0
-      //     },
-      //     headerTitleContainerStyle: {
-      //       width: sWidth - 95,
-      //       marginLeft: 0,
-      //       justifyContent: 'flex-start',
-      //       left: 56,
-      //       paddingLeft: 0
-      //     },
-      //     headerLeftContainerStyle: {
-      //       flex: 1,
-      //       marginLeft: Platform.OS === 'ios' ? 0 : -10
-      //     }
-      //   }
-      // }
-      // console.log(this.state)
-=======
->>>>>>> a87b5efed62b340d61146d986919352141185e8e
       return {
         
         headerLeft: (
