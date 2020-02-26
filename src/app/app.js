@@ -263,14 +263,9 @@ const AppBotomBarNavigator = createBottomTabNavigator(
         if (routeName === 'Main') {
           // iconName = `home${focused ? '' : '-outline'}`;
           iconName = `ios-home`;
-
-          // Sometimes we want to add badges to some icons. 
-          // You can check the implementation below.
-          // IconComponent = IconWithBadge; 
         } else if (routeName === 'cart') {
           iconName = `ios-cart`;
           IconComponent = CartIconWithBadge;
-          //IconComponent = CartIconWithBadge; 
         } else if (routeName === 'Help') {
           iconName = `ios-help-circle-outline`;
         } else if (routeName === 'profile') {
@@ -376,7 +371,9 @@ const AppStackNavigator = createStackNavigator(
       //     }
       //   }
       // }
+      // console.log(this.state)
       return {
+        
         headerLeft: (
           <>
             <MenuButton />
