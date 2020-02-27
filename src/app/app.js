@@ -84,9 +84,6 @@ import { YellowBox } from 'react-native';
 
 import { MenuButton, SearchButton } from '../common/header-buttons';
 import {
-  addToCart,
-  minusFromCart,
-  deleteFromCart,
   clearCart
 } from '../functions/cart-funcs';
 
@@ -237,23 +234,26 @@ export default class App extends Component {
 }
 
 handlePress = () => {
-  Linking.openURL('whatsapp://send?phone=491707046434')
+  // try {
+  //   Linking.openURL('whatsapp://send?phone=491707046434')
+  // }
+  // catch{
+  //   Linking.openURL("market://details?id=com.whatsapp");
+  // }
+  Linking.canOpenURL('whatsapp://send?phone=491707046434')
+  .then((supported) => {
+    if (!supported) {
+      Linking.openURL("market://details?id=com.whatsapp");
+    } else {
+      return Linking.openURL('whatsapp://send?phone=491707046434');
+    }
+  })
+  .catch((err) => console.error('An error occurred', err));
 };
 
 const AppBotomBarNavigator = createBottomTabNavigator(
   {
-    Main: {
-      screen: Main,
-      navigationOptions: {
-        headerLeft: (
-          <>
-            <Image style={{ width: 60, height: 30, resizeMode: 'contain' }} source={require('../assets/teleropa-logo.png')} key={'menuTeleropaLogo'} />
-          </>
-        )
-
-      }
-    },
-
+    Main: Main,
     cart: Cart,
 
     Help: {
@@ -336,7 +336,7 @@ const AppStackNavigator = createStackNavigator(
     ProductsByCategory: ProductsByCategory,
     CategoryInfo: CategoryInfo,
     DeliveryService: DeliveryService,
-    
+
     // PaypalService: PaypalService
   },
   {
@@ -345,7 +345,7 @@ const AppStackNavigator = createStackNavigator(
     },
     //initialRouteName: 'Main',
     // initialRouteName: this.state.network ? 'Main' : <NoNetwork />,
-    defaultNavigationOptions: ({ navigation }) => {     
+    defaultNavigationOptions: ({ navigation }) => {
       try {
         const { routeName } = navigation.state.routes[navigation.state.index];
         // console.log(`-------------------------------------------------------------------${routeName}`);
@@ -432,7 +432,7 @@ const AppStackNavigator = createStackNavigator(
                 <SearchButton />
               </View>
             ),
-            
+
             title: 'Profil',
 
             headerBackImage: BackButton,
