@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StatusBar, Platform, Alert, Linking, Image } from 'react-native';
+import { View, StatusBar, Platform, Alert, Linking, Image, TouchableOpacity, Text } from 'react-native';
 
 import { ReduxNetworkProvider } from 'react-native-offline';
 
@@ -72,6 +72,8 @@ import CategoryInfo from '../screens/category-info';
 import NoNetwork from '../screens/no-network';
 import DeliveryService from '../screens/delivery-service';
 
+// import PaypalService from '../screens/paypal-service';
+
 import { initUserData } from './initapp';
 
 import BackButton from '../common/header-buttons/back-button';
@@ -82,7 +84,9 @@ import CartIconWithBadge from '../screens/cart/CartIconWithBadge';
 import { YellowBox } from 'react-native';
 
 import { MenuButton, SearchButton } from '../common/header-buttons';
-
+import {
+  clearCart
+} from '../functions/cart-funcs';
 
 YellowBox.ignoreWarnings(['Require cycle:']);
 console.disableYellowBox = true;
@@ -231,13 +235,26 @@ export default class App extends Component {
 }
 
 handlePress = () => {
-  Linking.openURL('whatsapp://send?phone=491707046434')
+  // try {
+  //   Linking.openURL('whatsapp://send?phone=491707046434')
+  // }
+  // catch{
+  //   Linking.openURL("market://details?id=com.whatsapp");
+  // }
+  Linking.canOpenURL('whatsapp://send?phone=491707046434')
+  .then((supported) => {
+    if (!supported) {
+      Linking.openURL("market://details?id=com.whatsapp");
+    } else {
+      return Linking.openURL('whatsapp://send?phone=491707046434');
+    }
+  })
+  .catch((err) => console.error('An error occurred', err));
 };
 
 const AppBotomBarNavigator = createBottomTabNavigator(
   {
     Main: Main,
-
     cart: Cart,
 
     Help: {
@@ -320,7 +337,9 @@ const AppStackNavigator = createStackNavigator(
     ProductsByBrand: ProductsByBrand,
     ProductsByCategory: ProductsByCategory,
     CategoryInfo: CategoryInfo,
-    DeliveryService: DeliveryService
+    DeliveryService: DeliveryService,
+
+    // PaypalService: PaypalService
   },
   {
     headerTitleStyle: {

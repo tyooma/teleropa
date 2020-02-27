@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Platform } from 'react-native';
+import { View, ScrollView, Platform, Text, TouchableOpacity, Modal, Linking } from 'react-native';
+import { WebView } from 'react-native-webview';
 
 
 import FooterButton from '../../common/footer-button';
 import PaymentOption from '../../common/payment-option';
+import WebviewPaypal from './webviewPaypal';
+
+// import deliveryAddress from '../orders';
 
 import base64 from 'react-native-base64'
 
@@ -18,9 +22,6 @@ export default class Payment extends Component {
     selected: '',
     data: this.props.navigation.getParam('data', null),
     loading: false,
-    accessToken: null,
-    approvalUrl: null,
-    paymentId: null
   }
 
   isSelected(value) {
@@ -30,19 +31,18 @@ export default class Payment extends Component {
     return false
   }
 
+
+
+
   handlePayClick() {
     switch (this.state.selected) {
       case 'PayPalPlus':
-        // this.payWithPayPal()        
         this.props.navigation.navigate("WebPayPal", {
           CartData: this.state.data,
         });
         break;
-      case 'Ratenkauf':
-        alert('Ratenkauf')
-        break;
       case 'AmazonPay':
-        alert('AmazonPay')
+        alert('Amazon Pay')
         break;
       case 'ApplePay':
         this.payWithApplePay()
@@ -102,28 +102,24 @@ export default class Payment extends Component {
   }
 
   render() {
+    console.log('```````', this.state.data)
     if (this.state.loading) return <Loading />
     console.log(this.state)
     return (
       <View style={{ flex: 1 }}>
+
+        {/* <WebviewPaypal></WebviewPaypal> */}
+
         <ScrollView style={{ marginHorizontal: 18 }}>
           <PaymentOption
             onPress={() => this.setState({ selected: 'PayPalPlus' })}
             selected={this.isSelected('PayPalPlus')}
             imageSource={require('../../assets/payments/PayPalPlus.png')}
-            text='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra mae'
-          />
-          <PaymentOption
-            onPress={() => this.setState({ selected: 'Ratenkauf' })}
-            selected={this.isSelected('Ratenkauf')}
-            imageSource={require('../../assets/payments/Ratenkauf.png')}
-            text='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra mae'
           />
           <PaymentOption
             onPress={() => this.setState({ selected: 'AmazonPay' })}
             selected={this.isSelected('AmazonPay')}
             imageSource={require('../../assets/payments/AmazonPay.png')}
-            text='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra mae'
           />
           {
             Platform.OS === 'ios' ?
@@ -131,11 +127,11 @@ export default class Payment extends Component {
                 onPress={() => this.setState({ selected: 'ApplePay' })}
                 selected={this.isSelected('ApplePay')}
                 imageSource={require('../../assets/payments/ApplePay.png')}
-                text='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra mae'
               />
               : null
           }
         </ScrollView>
+
         <FooterButton text='Weiter' onPress={() => this.handlePayClick()} />
       </View>
     )

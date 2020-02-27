@@ -16,13 +16,12 @@ export default class WebPayPal extends Component {
             approvalUrl: null,
             url: false,
             id: '',
-            paymentId: ''
+            paymentId: '',
+            cart: this.props.navigation.getParam('CartData')
         }
     }
 
     async componentDidMount() {
-        const cart = this.props.navigation.getParam('CartData', null);
-        console.log('``````', cart)
         const url = 'https://api.sandbox.paypal.com/v1/oauth2/token';
         const username = 'AcHzvoC8O-gZth7HdU-4UeDB065QSpwVftN4ZHXWC5anYkHIM8hSJylP3iTL4h6x6wMHZW3O0rBkd4g_';
         const password = 'EBN-azxVOelC-bJISKYDNC9hc9hXHLcyWg5lYaM6YdUnLPmEg19kgf954qW8-RezCyn1UBA7ZIxuZAhu';

@@ -12,6 +12,8 @@ import NavigationService from '../../navigation-service';
 
 import { sHeight } from '../../helpers/screenSize';
 
+import handlePress from '../../app/app'
+
 class SideMenuView extends Component {
 
   getStyles(user) {
@@ -30,6 +32,7 @@ class SideMenuView extends Component {
   setUserType(userType) {
     this.props.setUserType(userType)
   }
+
 
   render() {
     const isLoggedIn = this.props.userID !== 'notloggedin' && this.props.loaded
@@ -66,7 +69,16 @@ class SideMenuView extends Component {
                   <MenuButton text={loginButtonText} imgSrc={require('../../assets/icons-color/sign-in.png')} route='Login' />
                 </View>
                 {/* <TouchableOpacity style={styles.whatsUpButton} > */}
-                <TouchableOpacity style={styles.whatsUpButton} onPress={() => Linking.openURL('whatsapp://send?phone=491707046434')}>
+                <TouchableOpacity style={styles.whatsUpButton} onPress={() =>
+                  Linking.canOpenURL('whatsapp://send?phone=491707046434')
+                    .then((supported) => {
+                      if (!supported) {
+                        return Linking.openURL("market://details?id=com.whatsapp");
+                      } else {
+                        return Linking.openURL('whatsapp://send?phone=491707046434');
+                      }
+                    })
+                    .catch((err) => console.error('An error occurred', err))}>
                   <Image source={require('../../assets/icons-color/044-whatsapp-white.png')} style={styles.whatsUpImage} key={'whatsUpImage'} />
                   <Text style={styles.whatsUpButtonText}> Whatsapp Chat </Text>
                 </TouchableOpacity>
