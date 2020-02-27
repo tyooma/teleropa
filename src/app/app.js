@@ -40,6 +40,7 @@ import DeliveryAddressOrder from '../screens/delivery-address-order';
 import BecomePartner from '../screens/become-partner';
 import AskQuestion from '../screens/ask-question';
 import Payment from '../screens/payment';
+import WebPayPal from '../screens/payment/WebPayPal'
 import Login from '../screens/login';
 import Registration from '../screens/registration';
 import PersonalData from '../screens/personal-data';
@@ -291,6 +292,7 @@ const AppStackNavigator = createStackNavigator(
     BecomePartner: BecomePartner,
     AskQuestion: AskQuestion,
     Payment: Payment,
+    WebPayPal: WebPayPal,
     Login: Login,
     Registration: Registration,
     PersonalData: PersonalData,
@@ -338,7 +340,7 @@ const AppStackNavigator = createStackNavigator(
           <View style={{ flexDirection: 'row', marginRight: 9 }}>
             <SearchButton />
           </View>
-        ),        
+        ),
         headerBackImage: BackButton,
         headerBackTitle: null,
         headerStyle: {
