@@ -21,6 +21,7 @@ class CartIconWithBadge extends React.Component {
         try {
             AsyncStorage.getItem('Cart', (err, res) => {
                 let arr = JSON.parse(res);                
+                if(arr.length > 0)
                 arr.forEach(element => sum += element.count);                
                 this.setState({
                     cartItemCount: sum,
