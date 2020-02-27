@@ -23,8 +23,8 @@ import { MenuButton, SearchButton } from '../../common/header-buttons';
 class Main extends Component {
 
     static navigationOptions = {
-        // title: 'Startseite',
-        title: '',
+        
+        title: 'Startseite',
         headerLeft: (
             <>
                 <MenuButton />
@@ -46,6 +46,8 @@ class Main extends Component {
     constructor(props) {
         super(props)
     }
+
+    
 
     componentDidMount() {
         this.getTokenFromStorage()
@@ -93,7 +95,7 @@ class Main extends Component {
     }
 
     render() {
-        console.log(this.props)
+        console.log("this.props in main.js",this.props)
         if (!this.props.mainPage.categories || !this.props.mainPage.brands || !this.state.image) {
             return <Loading />
         }

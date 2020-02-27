@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StatusBar, Platform, Alert, Linking, Image } from 'react-native';
+import { View, StatusBar, Platform, Alert, Linking, Image, TouchableOpacity, Text } from 'react-native';
 
 import { ReduxNetworkProvider } from 'react-native-offline';
 
@@ -81,7 +81,12 @@ import CartIconWithBadge from '../screens/cart/CartIconWithBadge';
 import { YellowBox } from 'react-native';
 
 import { MenuButton, SearchButton } from '../common/header-buttons';
-
+import {
+  addToCart,
+  minusFromCart,
+  deleteFromCart,
+  clearCart
+} from '../functions/cart-funcs';
 
 YellowBox.ignoreWarnings(['Require cycle:']);
 console.disableYellowBox = true;
@@ -235,7 +240,17 @@ handlePress = () => {
 
 const AppBotomBarNavigator = createBottomTabNavigator(
   {
-    Main: Main,
+    Main: {
+      screen: Main,
+      navigationOptions: {
+        headerLeft: (
+          <>
+            <Image style={{ width: 60, height: 30, resizeMode: 'contain' }} source={require('../assets/teleropa-logo.png')} key={'menuTeleropaLogo'} />
+          </>
+        )
+
+      }
+    },
 
     cart: Cart,
 
@@ -326,41 +341,158 @@ const AppStackNavigator = createStackNavigator(
     },
     //initialRouteName: 'Main',
     // initialRouteName: this.state.network ? 'Main' : <NoNetwork />,
-    defaultNavigationOptions: ({ navigation }) => {
-      return {
-        
-        headerLeft: (
-          <>
-            <MenuButton />
-            <Image style={{ width: 60, height: 30, resizeMode: 'contain' }} source={require('../assets/teleropa-logo.png')} key={'menuTeleropaLogo'} />
-          </>
-        ),
-        headerRight: (
-          <View style={{ flexDirection: 'row', marginRight: 9 }}>
-            <SearchButton />
-          </View>
-        ),        
-        headerBackImage: BackButton,
-        headerBackTitle: null,
-        headerStyle: {
-          backgroundColor: '#d10019'
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-          fontSize: 16,
-          marginLeft: 0,
-          left: 0
-        },
-        headerTitleContainerStyle: {
-          width: sWidth - 95,
-          marginLeft: 0,
-          justifyContent: 'flex-start',
-          left: 56,
-          paddingLeft: 0
-        },
-        headerLeftContainerStyle: {
-          flex: 1,
-          marginLeft: Platform.OS === 'ios' ? 0 : -10
+    defaultNavigationOptions: ({ navigation }) => {     
+      try {
+        const { routeName } = navigation.state.routes[navigation.state.index];
+        // console.log(`-------------------------------------------------------------------${routeName}`);
+        if (routeName == "Main") {
+          return {
+            headerLeft: (
+              <>
+                <MenuButton />
+                <Image style={{ width: 60, height: 30, resizeMode: 'contain' }} source={require('../assets/teleropa-logo.png')} key={'menuTeleropaLogo'} />
+              </>
+            ),
+            headerRight: (
+              <View style={{ flexDirection: 'row', marginRight: 9 }}>
+                <SearchButton />
+              </View>
+            ),
+
+            headerBackImage: BackButton,
+            headerBackTitle: null,
+            headerStyle: {
+              backgroundColor: '#d10019'
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontSize: 16,
+              marginLeft: 0,
+              left: 0
+            },
+            headerTitleContainerStyle: {
+              width: sWidth - 95,
+              marginLeft: 0,
+              justifyContent: 'flex-start',
+              left: 56,
+              paddingLeft: 0
+            },
+            headerLeftContainerStyle: {
+              flex: 1,
+              marginLeft: Platform.OS === 'ios' ? 0 : -10
+            }
+          }
+        } else if (routeName == "cart") {
+          return {
+            title: 'Warenkorb',
+            headerLeft: (
+              <>
+                <MenuButton />
+                {/* <Image style={{ width: 60, height: 30, resizeMode: 'contain' }} source={require('../assets/teleropa-logo.png')} key={'menuTeleropaLogo'} /> */}
+              </>
+            ),
+            headerRight: (
+              <TouchableOpacity onPress={() => { clearCart(); NavigationService.back() }} style={{ height: '100%', justifyContent: 'center' }}>
+                <Text style={{ color: '#fff', fontSize: 16, marginRight: 18 }}>löschen</Text>
+              </TouchableOpacity>
+            ),
+            headerBackImage: BackButton,
+            headerBackTitle: null,
+            headerStyle: {
+              backgroundColor: '#d10019'
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontSize: 16,
+              marginLeft: 0,
+              left: 0
+            },
+            headerTitleContainerStyle: {
+              width: sWidth - 95,
+              marginLeft: 0,
+              justifyContent: 'flex-start',
+              left: 56,
+              paddingLeft: 0
+            },
+            headerLeftContainerStyle: {
+              flex: 1,
+              marginLeft: Platform.OS === 'ios' ? 0 : -10
+            }
+          }
+        } else if (routeName == "profile") {
+          return {
+            headerLeft: MenuButton,
+
+            headerRight: (
+              <View style={{ flexDirection: 'row', marginRight: 9 }}>
+                <SearchButton />
+              </View>
+            ),
+            
+            title: 'Profil',
+
+            headerBackImage: BackButton,
+            headerBackTitle: null,
+            headerStyle: {
+              backgroundColor: '#d10019'
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontSize: 16,
+              marginLeft: 0,
+              left: 0
+            },
+            headerTitleContainerStyle: {
+              width: sWidth - 95,
+              marginLeft: 0,
+              justifyContent: 'flex-start',
+              left: 56,
+              paddingLeft: 0
+            },
+            headerLeftContainerStyle: {
+              flex: 1,
+              marginLeft: Platform.OS === 'ios' ? 0 : -10
+            }
+          }
+        }//else if end
+      } //try end
+      catch{
+        return {
+
+          headerLeft: (
+            <>
+              <MenuButton />
+              {/* <Image style={{ width: 60, height: 30, resizeMode: 'contain' }} source={require('../../assets/teleropa-logo.png')} key={'menuTeleropaLogo'} /> */}
+            </>
+          ),
+          headerRight: (
+            <View style={{ flexDirection: 'row', marginRight: 9 }}>
+              <SearchButton />
+            </View>
+          ),
+
+          headerBackImage: BackButton,
+          headerBackTitle: null,
+          headerStyle: {
+            backgroundColor: '#d10019'
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontSize: 16,
+            marginLeft: 0,
+            left: 0
+          },
+          headerTitleContainerStyle: {
+            width: sWidth - 95,
+            marginLeft: 0,
+            justifyContent: 'flex-start',
+            left: 56,
+            paddingLeft: 0
+          },
+          headerLeftContainerStyle: {
+            flex: 1,
+            marginLeft: Platform.OS === 'ios' ? 0 : -10
+          }
         }
       }
     },
