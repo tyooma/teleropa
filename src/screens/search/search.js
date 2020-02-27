@@ -278,7 +278,7 @@ export default class Search extends Component {
                         columnWrapperStyle={{ flexWrap: 'wrap' }}
                         numColumns={4}
                         ListHeaderComponent={
-                            !this.state.products.length == 0 && !this.state.filteredIDs.length ?
+                            this.state.products.length !== 0 ?
                                 <FilterButton minPrice={minPrice} maxPrice={maxPrice} fromPrice={fromPrice} toPrice={toPrice} sortBy={sortBy} />
                                 : null
                         }

@@ -5,24 +5,6 @@ export const setProductID = (id) => {
         payload: id
     }
 }
-//         case 'SET_CURRENT_PRODUCT_ID': 
-//             return {...state, ...action.payload}
-//         case 'SET_CURRENT_PRODUCT_IMAGES': 
-//             return {...state, ...action.payload}    
-//         case 'SET_CURRENT_PRODUCT_INFO': 
-//             return {...state, ...action.payload}    
-//         case 'SET_CURRENT_PRODUCT_DESCRIPTION': 
-//             return {...state, ...action.payload}    
-//         case 'SET_CURRENT_PRODUCT_DETAILS': 
-//             return {...state, ...action.payload}    
-//         case 'SET_CURRENT_PRODUCT_PACKAGE': 
-//             return {...state, ...action.payload}    
-//         case 'SET_CURRENT_PRODUCT_VIDEO': 
-//             return {...state, ...action.payload}    
-//         case 'SET_CURRENT_PRODUCT_REVIEWS': 
-//             return {...state, ...action.payload}    
-//         case 'SET_CURRENT_PRODUCT_SIMILAR': 
-//             return {...state, ...action.payload}  
 
 export const setProductImages = (urls) => {
     return {
@@ -32,7 +14,7 @@ export const setProductImages = (urls) => {
 }
 
 export const setProductInfo = (info) => {
-    
+
     return {
         type: 'SET_CURRENT_PRODUCT_INFO',
         payload: info
@@ -40,7 +22,7 @@ export const setProductInfo = (info) => {
 }
 
 export const setProductDescription = (description) => {
-    
+
     return {
         type: 'SET_CURRENT_PRODUCT_DESCRIPTION',
         payload: description
@@ -48,7 +30,7 @@ export const setProductDescription = (description) => {
 }
 
 export const setProductDetails = (details) => {
-    
+
     return {
         type: 'SET_CURRENT_PRODUCT_DETAILS',
         payload: details
@@ -56,7 +38,7 @@ export const setProductDetails = (details) => {
 }
 
 export const setProductPackage = (packageInfo) => {
-    
+
     return {
         type: 'SET_CURRENT_PRODUCT_PACKAGE',
         payload: packageInfo
@@ -64,7 +46,7 @@ export const setProductPackage = (packageInfo) => {
 }
 
 export const setProductVideo = (video) => {
-    
+
     return {
         type: 'SET_CURRENT_PRODUCT_VIDEO',
         payload: video
@@ -72,7 +54,7 @@ export const setProductVideo = (video) => {
 }
 
 export const setProductReviews = (reviews) => {
-    
+
     return {
         type: 'SET_CURRENT_PRODUCT_REVIEWS',
         payload: reviews
@@ -80,7 +62,6 @@ export const setProductReviews = (reviews) => {
 }
 
 export const setProductSimilar = (similar) => {
-    
     return {
         type: 'SET_CURRENT_PRODUCT_SIMILAR',
         payload: similar

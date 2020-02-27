@@ -198,10 +198,6 @@ export default class Payment extends Component {
       })
     }
 
-  payWithAmazon() {
-
-  }
-
   payWithApplePay() {
     const productsPrice = parseFloat(this.state.data.discountProductsPrice);
     const deliveryPrice = parseFloat(this.state.data.deliveryData.deliveryPrice);

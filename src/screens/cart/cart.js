@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 
 import { Text, TouchableOpacity, View, Image, StyleSheet } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import {BoxShadow} from 'react-native-shadow'
+import { BoxShadow } from 'react-native-shadow'
 
 import Toast from 'react-native-root-toast'
 
 import ImageLoader from '../../helpers/image-loader';
 
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 
 import { sWidth } from '../../helpers/screenSize';
 
@@ -31,98 +31,101 @@ import {
     clearCart
 } from '../../functions/cart-funcs';
 
+import CartIconWithBadge from './CartIconWithBadge'
+
 getStock = (stock, order, pcs) => {
-    if(!order){
-        if(stock > 0) {
+    if (!order) {
+        if (stock > 0) {
             return (
                 <Text style={styles.cartItemInStock}>
                     Produkt ist verfügbar
                 </Text>
             )
         }
-        return(
+        return (
             <Text style={styles.cartItemNotInStock}>
                 nicht verfügbar
             </Text>
         )
     }
-    return(
+    return (
         <Text >
             {pcs} St.
         </Text>
     )
 }
+// this.props.navigation.navigate('Search', { searchText: data, show: true })
 
 getCounter = (order, pcs, id, onMinus, onAdd) => {
-    if(!order) {
-        return(
-            <><TouchableOpacity style={styles.minusPlusButton} onPress={() => onMinus(id)}>
+    if (!order) {
+        return (
+            <><TouchableOpacity style={styles.minusPlusButton} onPress={() => onMinus(id)} >
                 <Image source={require('../../assets/icons/036-minus.png')} style={styles.minusPlusButtonImage} key={'cartMinusItem'} />
             </TouchableOpacity>
-            <Text style={styles.countText}>
-                {pcs}
-            </Text>
-            <TouchableOpacity style={styles.minusPlusButton} onPress={() => onAdd(id)}>
-                <Image source={require('../../assets/icons-color/035-more2.png')} style={styles.minusPlusButtonImage} key={'cartPlusItem'} />
-            </TouchableOpacity></>
+                <Text style={styles.countText}>
+                    {pcs}
+                </Text>
+                <TouchableOpacity style={styles.minusPlusButton} onPress={() => onAdd(id)}>
+                    <Image source={require('../../assets/icons-color/035-more2.png')} style={styles.minusPlusButtonImage} key={'cartPlusItem'} />
+                </TouchableOpacity></>
         )
     }
 }
 
-export const CartItem = ({img, name, pcs, price, companyPrice, userType, stock, order, orderReturnReason, id, onAdd, onMinus, onDelete}) => {
-    return(
-    <TouchableOpacity style={styles.cartItemContainer} onPress={() => NavigationService.push('Product', {id, name})}>
-        <View style={{flexDirection: 'row'}}>
-            {img ?
-                <View>
-                    <ImageLoader style={styles.cartItemImage} source={{uri: img}} key={img} />
-                </View>
-                :
-                <View>
-                    <Image style={styles.cartItemImage} source={require('../../assets/message-icons/no-photo.png')} key={'no-image'} />
-                </View>
-            }
-            
-            <View style={{flex: 1}}>
-                <Text style={styles.cartItemName} numberOfLines={2}>
-                    {name}
-                </Text>
-                <View style={{marginTop: 4, marginBottom: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+export const CartItem = ({ img, name, pcs, price, companyPrice, userType, stock, order, orderReturnReason, id, onAdd, onMinus, onDelete }) => {
+    return (
+        <TouchableOpacity style={styles.cartItemContainer} onPress={() => NavigationService.push('Product', { id, name })}>
+            <View style={{ flexDirection: 'row' }}>
+                {img ?
                     <View>
-                        {getStock(stock, order, pcs)}
-                        <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 8}}>
-                            {getCounter(order,pcs, id, onMinus, onAdd)}
+                        <ImageLoader style={styles.cartItemImage} source={{ uri: img }} key={img} />
+                    </View>
+                    :
+                    <View>
+                        <Image style={styles.cartItemImage} source={require('../../assets/message-icons/no-photo.png')} key={'no-image'} />
+                    </View>
+                }
+
+                <View style={{ flex: 1 }}>
+                    <Text style={styles.cartItemName} numberOfLines={2}>
+                        {name}
+                    </Text>
+                    <View style={{ marginTop: 4, marginBottom: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <View>
+                            {getStock(stock, order, pcs)}
+                            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
+                                {getCounter(order, pcs, id, onMinus, onAdd)}
+                            </View>
+                        </View>
+                        <View style={{ marginRight: 10, alignItems: 'flex-end' }}>
+                            {userType && userType === 'H' ?
+                                <>
+                                    <Text style={styles.pricePerProduct}>{companyPrice} €\St</Text>
+                                    <Text style={styles.price}>{(companyPrice * pcs).toFixed(2)} €</Text>
+                                </>
+                                :
+                                <>
+                                    <Text style={styles.pricePerProduct}>{price} €\St</Text>
+                                    <Text style={styles.price}>{(price * pcs).toFixed(2)} €</Text>
+                                </>
+                            }
                         </View>
                     </View>
-                    <View style={{marginRight: 10, alignItems: 'flex-end'}}>
-                        {userType && userType==='H' ? 
-                            <>
-                                <Text style={styles.pricePerProduct}>{companyPrice} €\St</Text>
-                                <Text style={styles.price}>{(companyPrice*pcs).toFixed(2)} €</Text>
-                            </>
-                            :
-                            <>
-                                <Text style={styles.pricePerProduct}>{price} €\St</Text>
-                                <Text style={styles.price}>{(price*pcs).toFixed(2)} €</Text>
-                            </>
-                            }
-                    </View>
+                    {orderReturnReason ?
+                        <Text style={{ marginBottom: 5 }}>Grund für Rückgabe: {orderReturnReason}</Text>
+                        : null
+                    }
                 </View>
-                {orderReturnReason ? 
-                    <Text style={{marginBottom: 5}}>Grund für Rückgabe: {orderReturnReason}</Text>
-                : null
-                }
-            </View>
-            {
+                {
                     !order ?
                         <TouchableOpacity style={styles.deleteButton} onPress={() => onDelete(id)}>
                             <Image source={require('../../assets/icons/009-close.png')} style={styles.deleteButtonImage} key={'deleteFromCartButton'} />
                         </TouchableOpacity>
-                    : null
-            }
-            
-        </View>
-    </TouchableOpacity>
+                        : null
+                }
+
+            </View>
+        </TouchableOpacity>
     )
 }
 
@@ -138,67 +141,65 @@ class Cart extends Component {
         promocode: '',
         promocodeData: null,
         discountValue: 0,
-        loaded: false
+        loaded: false,
     }
 
     static navigationOptions = {
         title: 'Warenkorb',
         headerRight: (
-            <TouchableOpacity onPress={() => {clearCart(); NavigationService.back()}} style={{height: '100%', justifyContent: 'center'}}>
-                <Text style={{color: '#fff', fontSize: 16, marginRight: 18}}>löschen</Text>
+            <TouchableOpacity onPress={() => { clearCart(); NavigationService.back() }} style={{ height: '100%', justifyContent: 'center' }}>
+                <Text style={{ color: '#fff', fontSize: 16, marginRight: 18 }}>löschen</Text>
             </TouchableOpacity>
         )
     }
 
     init() {
-        console.log('INIT', this.props)
+        console.log('INIT in cart.js', this.props)
         const cart = this.props.cart
-        if(cart.length > 0 && !this.state.cartReceaved) {this.setState({cartReceaved: true})}
-        this.props.cart.map( ({id, count}) => {
-            getPreviewProductData(id).then(res => this.setState({products: [...this.state.products, {...res, id, count}]}))
+        if (cart.length > 0 && !this.state.cartReceaved) { this.setState({ cartReceaved: true }) }
+        this.props.cart.map(({ id, count }) => {
+            getPreviewProductData(id).then(res => this.setState({ products: [...this.state.products, { ...res, id, count }] }))
         })
     }
 
     addToCartAndState(id) {
         addToCart(id)
-        const productToAdd = this.state.products.find(product => product.id===id)
+        const productToAdd = this.state.products.find(product => product.id === id)
         productToAdd.count++
         const newProductsArray = this.state.products.map(product => {
-            if(product.id === id) return productToAdd
+            if (product.id === id) return productToAdd
             return product
         })
-        this.setState({products: newProductsArray})
+        this.setState({ products: newProductsArray })
     }
     minusFromCartAndState(id) {
         minusFromCart(id)
-        const productToMinus = this.state.products.find(product => product.id===id)
-        if(productToMinus.count === 1) {
+        const productToMinus = this.state.products.find(product => product.id === id)
+        if (productToMinus.count === 1) {
             this.deleteFromCartAndState(id)
         } else {
             productToMinus.count--
             const newProductsArray = this.state.products.map(product => {
-                if(product.id === id) return productToMinus
+                if (product.id === id) return productToMinus
                 return product
             })
-            this.setState({products: newProductsArray})
+            this.setState({ products: newProductsArray })
         }
     }
     deleteFromCartAndState(id) {
         deleteFromCart(id)
         console.log('delete trigger')
         const newProductsArray = this.state.products.filter(product => product.id !== id)
-        this.setState({products: newProductsArray})
+        this.setState({ products: newProductsArray })
     }
 
     getProductsCards() {
-        console.log("products sum " +  this.state.products.length)
-
-        return this.state.products.map(({id, previewImgURL, productName, price, companyPrice, stock, count}) => {
+        return this.state.products.map(({ id, previewImgURL, productName, price, companyPrice, stock, count }) => {
             return (
-                <CartItem 
+                <CartItem
                     key={id}
                     id={id}
-                    img={previewImgURL} 
+                    img={previewImgURL}
                     name={productName}
                     pcs={count}
                     price={price}
@@ -221,32 +222,22 @@ class Cart extends Component {
     }
 
     setPrices() {
-        // console.log(this.state.products)
-
-        // if(this.state.promocodeData) {
-        //     const {percental, minimumcharge, value, description} = this.state.promocodeData
-        //     if (minimumcharge > this.state.productsPrice) {
-        //         alert('Der Gutscheincode kann nicht eingelöst werden, weil Ihr Warenkorb-Wert nicht ausreichend ist.')
-        //         var discount = 0
-        //     }
-        // }
-
-        const productsPrice = this.props.userInfo.selectedUserType==='EK' ? 
-            this.state.products.reduce((sum,{price, count}) =>  {
-                return sum+price*count
+        const productsPrice = this.props.userInfo.selectedUserType === 'EK' ?
+            this.state.products.reduce((sum, { price, count }) => {
+                return sum + price * count
             }, 0)
             :
-            this.state.products.reduce((sum,{companyPrice, count}) =>  {
-                return sum+companyPrice*count
+            this.state.products.reduce((sum, { companyPrice, count }) => {
+                return sum + companyPrice * count
             }, 0)
-        const productsVAT = this.state.products.reduce((sum,{price, companyPrice, count}) =>  {
-            return sum+((price-companyPrice)*count)
+        const productsVAT = this.state.products.reduce((sum, { price, companyPrice, count }) => {
+            return sum + ((price - companyPrice) * count)
         }, 0)
 
 
         // const productsPrice = this.state.products.reduce((sum,{price, count}, asss) =>  {console.log('sds',asss); return sum+parseFloat(price)*count}, 0)
         const discountProductsPrice = this.getDiscount(productsPrice)
-        if(productsPrice.toFixed(2) !== this.state.originalProductsPrice || discountProductsPrice !== this.state.discountProductsPrice) {
+        if (productsPrice.toFixed(2) !== this.state.originalProductsPrice || discountProductsPrice !== this.state.discountProductsPrice) {
             this.setState({
                 originalProductsPrice: productsPrice.toFixed(2),
                 discountProductsPrice,
@@ -257,21 +248,18 @@ class Cart extends Component {
     }
 
     getDiscount(price) {
-        if(this.state.promocodeData) {
-            const {percental, minimumcharge, value} = this.state.promocodeData
+        if (this.state.promocodeData) {
+            const { percental, minimumcharge, value } = this.state.promocodeData
             if (minimumcharge > price) {
                 alert('Der Gutscheincode kann nicht eingelöst werden, weil Ihr Warenkorb-Wert nicht ausreichend ist.')
-                this.setState({promocode: '', promocodeData: null, promocodeValue: 0, discountValue: 0})
+                this.setState({ promocode: '', promocodeData: null, promocodeValue: 0, discountValue: 0 })
                 return price.toFixed(2)
             }
             if (percental) {
-                console.log(1)
-                return (price - price/100*value).toFixed(2)
+                return (price - price / 100 * value).toFixed(2)
             }
-            console.log(2)
             return (price - value).toFixed(2)
         }
-        console.log(3)
         return price.toFixed(2)
     }
 
@@ -281,9 +269,8 @@ class Cart extends Component {
             return
         }
         getPromocodeData(this.state.promocode).then(promocodeData => {
-            console.log(promocodeData)
-            if(promocodeData.status.code === 'success') {
-                this.setState({promocodeData})
+            if (promocodeData.status.code === 'success') {
+                this.setState({ promocodeData })
             }
             Toast.show(promocodeData.status.text, {
                 shadow: false,
@@ -293,7 +280,7 @@ class Cart extends Component {
     }
 
     getDiscountBlock() {
-        if(this.state.promocodeData && this.state.discountValue) {
+        if (this.state.promocodeData && this.state.discountValue) {
             return (
                 <View style={styles.line}>
                     <Text style={styles.summaryText}>{this.state.promocodeData.description}:</Text>
@@ -304,18 +291,19 @@ class Cart extends Component {
     }
 
     render() {
-        console.log(this.state)
+        console.log("this.state in cart.js", this.state)
+
         const shadowOpt = {
             width: sWidth,
             height: 50,
-            color:"#000",
-            border:6,
-            radius:1,
-            opacity:0.1,
-            x:0,
-            y:0
+            color: "#000",
+            border: 6,
+            radius: 1,
+            opacity: 0.1,
+            x: 0,
+            y: 0
         }
-        if(this.isEmpty()) {
+        if (this.isEmpty()) {
             return (
                 <View style={styles.emptyCartContainer}>
                     <Image style={styles.emptyCartImage} source={require('../../assets/message-icons/cart-empty.png')} />
@@ -323,19 +311,19 @@ class Cart extends Component {
                 </View>
             )
         }
-        if(!this.state.cartReceaved) {
+        if (!this.state.cartReceaved) {
             this.init()
         }
-        if(this.state.products.length !== this.props.cart.length) {
+        if (this.state.products.length !== this.props.cart.length) {
             return <Loading />
         }
         this.setPrices()
-        return(
-            <View style={{flex: 1}}>
+        return (
+            <View style={{ flex: 1 }}>
                 <ScrollView>
-                    <View style={{marginHorizontal: 18, marginTop: 22}}>
+                    <View style={{ marginHorizontal: 18, marginTop: 22 }}>
                         {this.getProductsCards()}
-                        <TouchableOpacity style={styles.promocodeButton} onPress={() => this.setState({promocodeModalVisible: !this.state.promocodeModalVisible})} >
+                        <TouchableOpacity style={styles.promocodeButton} onPress={() => this.setState({ promocodeModalVisible: !this.state.promocodeModalVisible })} >
                             <Text style={styles.promocodeButtonText}>
                                 Promo-Code eingeben
                             </Text>
@@ -361,28 +349,28 @@ class Cart extends Component {
 
                     </View>
                 </ScrollView>
-                    <BoxShadow setting={shadowOpt}>
-                        <View style={styles.footerSummaryContainer}>
-                            <View style={{flexDirection: 'row', justifyContent: 'space-between'}} >
-                                <Text style={styles.summaryText} >Gesamtbetrag:</Text>
-                                <Text style={styles.summaryText} >{this.state.discountProductsPrice} €</Text>
-                            </View>
+                <BoxShadow setting={shadowOpt}>
+                    <View style={styles.footerSummaryContainer}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
+                            <Text style={styles.summaryText} >Gesamtbetrag:</Text>
+                            <Text style={styles.summaryText} >{this.state.discountProductsPrice} €</Text>
                         </View>
-                     </BoxShadow>
-                
-                <FooterButton text='Zur Kasse' onPress={() => {this.props.navigation.navigate('DeliveryService', {productsPrice: this.state.discountProductsPrice, data: this.state})}} />
+                    </View>
+                </BoxShadow>
 
-                <ModalView 
+                <FooterButton text='Zur Kasse' onPress={() => { this.props.navigation.navigate('DeliveryService', { productsPrice: this.state.discountProductsPrice, data: this.state }) }} />
+
+                <ModalView
                     title='Promo-Code'
                     buttonText='Code einlösen'
                     onSubmit={() => {
-                        this.setState({promocodeModalVisible: !this.state.promocodeModalVisible})
+                        this.setState({ promocodeModalVisible: !this.state.promocodeModalVisible })
                         this.handlePromocodeSubmit()
-                        }}
+                    }}
                     visible={this.state.promocodeModalVisible}
-                    onRequestClose={() => {this.setState({promocodeModalVisible: !this.state.promocodeModalVisible})}}
+                    onRequestClose={() => { this.setState({ promocodeModalVisible: !this.state.promocodeModalVisible }) }}
                 >
-                    <Input placeholder='Promo-Code eingeben' value={this.state.promocode} onChangeText={promocode => this.setState({promocode})} />
+                    <Input placeholder='Promo-Code eingeben' value={this.state.promocode} onChangeText={promocode => this.setState({ promocode })} />
                 </ModalView>
 
             </View>
@@ -390,8 +378,7 @@ class Cart extends Component {
     }
 }
 
-const mapStateToProps = ({userInfo, cart}) => ({userInfo, cart})
-
+const mapStateToProps = ({ userInfo, cart }) => ({ userInfo, cart })
 export default connect(mapStateToProps)(Cart)
 
 const styles = StyleSheet.create({
