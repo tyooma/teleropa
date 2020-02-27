@@ -71,6 +71,8 @@ import CategoryInfo from '../screens/category-info';
 import NoNetwork from '../screens/no-network';
 import DeliveryService from '../screens/delivery-service';
 
+// import PaypalService from '../screens/paypal-service';
+
 import { initUserData } from './initapp';
 
 import BackButton from '../common/header-buttons/back-button';
@@ -270,7 +272,9 @@ const AppStackNavigator = createStackNavigator(
     ProductsByBrand: ProductsByBrand,
     ProductsByCategory: ProductsByCategory,
     CategoryInfo: CategoryInfo,
-    DeliveryService: DeliveryService
+    DeliveryService: DeliveryService,
+    
+    // PaypalService: PaypalService
   },
   {
     headerTitleStyle: {
