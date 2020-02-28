@@ -5,7 +5,6 @@ import { WebView } from 'react-native-webview';
 
 import FooterButton from '../../common/footer-button';
 import PaymentOption from '../../common/payment-option';
-import WebviewPaypal from './webviewPaypal';
 
 // import deliveryAddress from '../orders';
 
@@ -42,7 +41,9 @@ export default class Payment extends Component {
         });
         break;
       case 'AmazonPay':
-        alert('Amazon Pay')
+        this.props.navigation.navigate("AmazonLoginWebView", {
+          CartData: this.state.data,
+        });
         break;
       case 'ApplePay':
         this.payWithApplePay()
@@ -107,9 +108,6 @@ export default class Payment extends Component {
     console.log(this.state)
     return (
       <View style={{ flex: 1 }}>
-
-        {/* <WebviewPaypal></WebviewPaypal> */}
-
         <ScrollView style={{ marginHorizontal: 18 }}>
           <PaymentOption
             onPress={() => this.setState({ selected: 'PayPalPlus' })}

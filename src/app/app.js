@@ -41,6 +41,7 @@ import BecomePartner from '../screens/become-partner';
 import AskQuestion from '../screens/ask-question';
 import Payment from '../screens/payment';
 import WebPayPal from '../screens/payment/WebPayPal'
+import AmazonLoginWebView from '../screens/payment/AmazonLoginWebView'
 import Login from '../screens/login';
 import Registration from '../screens/registration';
 import PersonalData from '../screens/personal-data';
@@ -71,8 +72,6 @@ import ProductsByCategory from '../screens/products-by-category';
 import CategoryInfo from '../screens/category-info';
 import NoNetwork from '../screens/no-network';
 import DeliveryService from '../screens/delivery-service';
-
-// import PaypalService from '../screens/paypal-service';
 
 import { initUserData } from './initapp';
 
@@ -242,14 +241,14 @@ handlePress = () => {
   //   Linking.openURL("market://details?id=com.whatsapp");
   // }
   Linking.canOpenURL('whatsapp://send?phone=491707046434')
-  .then((supported) => {
-    if (!supported) {
-      Linking.openURL("market://details?id=com.whatsapp");
-    } else {
-      return Linking.openURL('whatsapp://send?phone=491707046434');
-    }
-  })
-  .catch((err) => console.error('An error occurred', err));
+    .then((supported) => {
+      if (!supported) {
+        Linking.openURL("market://details?id=com.whatsapp");
+      } else {
+        return Linking.openURL('whatsapp://send?phone=491707046434');
+      }
+    })
+    .catch((err) => console.error('An error occurred', err));
 };
 
 const AppBotomBarNavigator = createBottomTabNavigator(

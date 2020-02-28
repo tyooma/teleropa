@@ -197,7 +197,7 @@ class Cart extends Component {
         return this.state.products.map(({ id, previewImgURL, productName, price, companyPrice, stock, count }) => {
             return (
                 <CartItem
-                    key={id}
+                    // key={id}
                     id={id}
                     img={previewImgURL}
                     name={productName}
@@ -280,6 +280,8 @@ class Cart extends Component {
     }
 
     getDiscountBlock() {
+        console.log('this.state.promocodeData', this.state.promocodeData)
+        console.log('this.state.discountValue', this.state.discountValue)
         if (this.state.promocodeData && this.state.discountValue) {
             return (
                 <View style={styles.line}>
