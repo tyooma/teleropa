@@ -1,14 +1,10 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Platform, Text, TouchableOpacity, Modal, Linking } from 'react-native';
-import { WebView } from 'react-native-webview';
-
+import { View, ScrollView, Platform } from 'react-native';
 
 import FooterButton from '../../common/footer-button';
 import PaymentOption from '../../common/payment-option';
 
 // import deliveryAddress from '../orders';
-
-import base64 from 'react-native-base64'
 
 import Loading from '../loading'
 
@@ -102,8 +98,7 @@ export default class Payment extends Component {
       .catch(e => console.log('error', e))
   }
 
-  render() {
-    console.log('```````', this.state.data)
+  render() {    
     if (this.state.loading) return <Loading />
     console.log(this.state)
     return (

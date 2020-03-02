@@ -10,22 +10,22 @@ import MultiSlider from '@ptomasroos/react-native-multi-slider';
 
 export default class Filter extends Component {
 
-  static navigationOptions = ({navigation}) => {
-      const { params = {} } = navigation.state;
-      return({
-          title: 'Filter',
-          headerRight: (
-            <TouchableOpacity onPress={() => params.resetFilter()} style={{height: '100%', justifyContent: 'center'}}>
-              <Text style={{color: '#fff', fontSize: 16, marginRight: 18}}>Zurücksetzen</Text>
-            </TouchableOpacity>
-          )
-      })
+  static navigationOptions = ({ navigation }) => {
+    const { params = {} } = navigation.state;
+    return ({
+      title: 'Filter',
+      headerRight: (
+        <TouchableOpacity onPress={() => params.resetFilter()} style={{ height: '100%', justifyContent: 'center' }}>
+          <Text style={{ color: '#fff', fontSize: 16, marginRight: 18 }}>Zurücksetzen</Text>
+        </TouchableOpacity>
+      )
+    })
   }
 
   componentDidMount() {
-      this.props.navigation.setParams({
-          resetFilter: this.resetFilter
-      })
+    this.props.navigation.setParams({
+      resetFilter: this.resetFilter
+    })
   }
 
   state = {
@@ -42,7 +42,7 @@ export default class Filter extends Component {
 
 
   resetFilter = () => {
-    this.setState({from: this.props.navigation.getParam('minPrice', 0) , to: this.props.navigation.getParam('maxPrice', 1000), sortBy: 'popular'})
+    this.setState({ from: this.props.navigation.getParam('minPrice', 0), to: this.props.navigation.getParam('maxPrice', 1000), sortBy: 'popular' })
   }
 
   getButtonStyle(sortBy) {
@@ -60,25 +60,25 @@ export default class Filter extends Component {
   }
 
   render() {
-    console.log(this.state)
-    return(
-      <View style={{flex: 1, marginTop: 12}}>
+    console.log("this.state in filter.js", this.state)
+    return (
+      <View style={{ flex: 1, marginTop: 12 }}>
         <ScrollView scrollEnabled={this.state.scrollEnabled}>
           <Text style={styles.helperTextStyle}> Sortieren nach </Text>
           <View style={styles.sortBlockStyle}>
             <View style={styles.sortLine}>
-              <TouchableOpacity onPress={() => {this.setState({sortBy: 'popular'})}} style={this.getButtonStyle('popular')}>
+              <TouchableOpacity onPress={() => { this.setState({ sortBy: 'popular' }) }} style={this.getButtonStyle('popular')}>
                 <Text style={this.getTextStyle('popular')}> Beliebtheiten </Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => {this.setState({sortBy: 'alphabet'})}} style={this.getButtonStyle('alphabet')}>
+              <TouchableOpacity onPress={() => { this.setState({ sortBy: 'alphabet' }) }} style={this.getButtonStyle('alphabet')}>
                 <Text style={this.getTextStyle('alphabet')}> Artikelbezeichnung </Text>
               </TouchableOpacity>
             </View>
             <View style={styles.sortLine}>
-              <TouchableOpacity onPress={() => {this.setState({sortBy: 'price_down'})}} style={this.getButtonStyle('price_down')}>
+              <TouchableOpacity onPress={() => { this.setState({ sortBy: 'price_down' }) }} style={this.getButtonStyle('price_down')}>
                 <Text style={this.getTextStyle('price_down')}> Höchster Preis </Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => {this.setState({sortBy: 'price_up'})}} style={this.getButtonStyle('price_up')}>
+              <TouchableOpacity onPress={() => { this.setState({ sortBy: 'price_up' }) }} style={this.getButtonStyle('price_up')}>
                 <Text style={this.getTextStyle('price_up')}> Niedrigster Preis </Text>
               </TouchableOpacity>
             </View>
@@ -92,19 +92,22 @@ export default class Filter extends Component {
                 style={styles.inputStyle}
                 value={'' + this.state.from}
                 onChangeText={(from) => {
-                    const newFrom = + from.replace(/[^0-9]/g, '')
-                    if (newFrom > this.state.max) {
-                      this.setState({
-                        from: this.state.max
-                      })
-                    } else {
-                      this.setState({
-                        from: newFrom
-                      })
-                    }
-                    
-                  }} 
-                />
+                  const newFrom = + from.replace(/[^0-9]/g, '')
+                  console.log("newFrom in filter.js````", newFrom)
+                  console.log("this.state.max in filter.js````", this.state.max)
+                  if (newFrom > this.state.max) {
+                    this.setState({
+                      from: this.state.max
+                    })
+                  } else {
+                    this.setState({
+                      from: newFrom
+                    })
+                    console.log("this.state.from in filter.js````", this.state.from)
+                  }
+
+                }}
+              />
             </View>
             <View style={styles.inputContainer}>
               <Text style={styles.fromToTextStyle}>bis</Text>
@@ -113,21 +116,21 @@ export default class Filter extends Component {
                 style={styles.inputStyle}
                 value={'' + this.state.to}
                 onChangeText={(to) => {
-                    const newTo = + to.replace(/[^0-9]/g, '')
-                    if(newTo > this.state.max) {
-                      this.setState({
-                        to: this.state.max
-                      })
-                    } else {
-                      this.setState({
-                          to: newTo
-                      })
-                    }
+                  const newTo = + to.replace(/[^0-9]/g, '')
+                  if (newTo > this.state.max) {
+                    this.setState({
+                      to: this.state.max
+                    })
+                  } else {
+                    this.setState({
+                      to: newTo
+                    })
+                  }
                 }} />
             </View>
           </View>
-          <View style={{marginHorizontal: 32}}>
-           <MultiSlider 
+          <View style={{ marginHorizontal: 32 }}>
+            <MultiSlider
               customMarker={() => {
                 return (<View style={styles.sliderCircle}></View>)
               }}
@@ -138,7 +141,7 @@ export default class Filter extends Component {
                 ]
               }
               onValuesChange={(values) => {
-                this.setState({ from: values[0], to: values[1]})
+                this.setState({ from: values[0], to: values[1] })
               }}
               selectedStyle={{
                 backgroundColor: '#fcb6be',
@@ -151,13 +154,13 @@ export default class Filter extends Component {
               max={this.state.max}
               step={1}
               onValuesChangeStart={this.disableScroll}
-              onValuesChangeFinish={this.enableScroll}  
+              onValuesChangeFinish={this.enableScroll}
               snapped
               sliderLength={sWidth - 64}
-           />
+            />
           </View>
         </ScrollView>
-        <FooterButton onPress={() => {this.props.navigation.navigate('Search', {filterOptions: this.state})}} text='Filtern'/>
+        <FooterButton onPress={() => { this.props.navigation.navigate('Search', { filterOptions: this.state }) }} text='Filtern' />
       </View>
 
     )

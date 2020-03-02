@@ -118,6 +118,7 @@ export default class Search extends Component {
     componentDidMount() {
         this.props.navigation.addListener('didFocus', (route) => {
             const filterOptions = this.props.navigation.getParam('filterOptions', null)
+            console.log("filterOptions`````````", filterOptions)
             if (filterOptions) {
                 const { from, to, sortBy } = filterOptions
                 if (from !== this.state.fromPrice || to !== this.state.toPrice || sortBy !== this.state.sortBy) {
@@ -161,7 +162,14 @@ export default class Search extends Component {
     }
 
     getIDs(ids, fromPrice, toPrice, sortBy) {
-        if (fromPrice) {
+        if (fromPrice == 0 || toPrice == 0) {
+            ToastAndroid.showWithGravity(
+                "Prijs kan niet 0 zijn",
+                ToastAndroid.SHORT,
+                ToastAndroid.CENTER,
+            )
+        }
+        if (fromPrice && toPrice) {
             this.setState({ fromPrice, toPrice, sortBy })
             const filtered = this.state.originalIDs.filter(({ price }) => price >= fromPrice && price <= toPrice)
             switch (sortBy) {
@@ -195,8 +203,6 @@ export default class Search extends Component {
     }
 
     getData(from) {
-        console.log("FROM", from);
-        console.log("this.state.filteredIDs", this.state.filteredIDs);
         this.setState({ from })
         this.state.filteredIDs.filter(({ productID }, key) => {
             // console.log(id, key)

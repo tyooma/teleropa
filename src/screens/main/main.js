@@ -21,10 +21,8 @@ import Loading from '../loading';
 import { MenuButton, SearchButton } from '../../common/header-buttons';
 
 class Main extends Component {
-
     static navigationOptions = {
-        
-        title: 'Startseite',
+        title: '',
         headerLeft: (
             <>
                 <MenuButton />
@@ -47,7 +45,7 @@ class Main extends Component {
         super(props)
     }
 
-    
+
 
     componentDidMount() {
         this.getTokenFromStorage()
@@ -83,7 +81,7 @@ class Main extends Component {
         })
     }
 
-  
+
     async getTokenFromStorage() {
         let fcmToken = await AsyncStorage.getItem('fcmToken');
         this.setState({ fcmToken })
@@ -95,7 +93,7 @@ class Main extends Component {
     }
 
     render() {
-        console.log("this.props in main.js",this.props)
+        console.log("this.props in main.js", this.props)
         if (!this.props.mainPage.categories || !this.props.mainPage.brands || !this.state.image) {
             return <Loading />
         }

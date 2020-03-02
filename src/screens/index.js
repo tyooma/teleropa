@@ -16,6 +16,7 @@ import Registration from './registration';
 import PersonalData from './personal-data';
 import SubcategoriesList from './subcategories-list';
 import SideMenuView from './side-menu-view';
+import BottomMenuView from '../screens/bottom-menu-veiw';
 import ChangePersonalData from './change-personal-data';
 import Filter from './filter';
 import Product from './product';
@@ -57,6 +58,7 @@ export {
     SubcategoriesList,
     Filter,
     SideMenuView,
+    BottomMenuView,
 
     Search,
     Scanner,

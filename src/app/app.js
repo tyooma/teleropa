@@ -47,6 +47,7 @@ import Registration from '../screens/registration';
 import PersonalData from '../screens/personal-data';
 import SubcategoriesList from '../screens/subcategories-list';
 import SideMenuView from '../screens/side-menu-view';
+import BottomMenuView from '../screens/bottom-menu-veiw';
 import ChangePersonalData from '../screens/change-personal-data';
 import Filter from '../screens/filter';
 import Product from '../screens/product';
@@ -233,66 +234,61 @@ export default class App extends Component {
   }
 }
 
-handlePress = () => {
-  // try {
-  //   Linking.openURL('whatsapp://send?phone=491707046434')
-  // }
-  // catch{
-  //   Linking.openURL("market://details?id=com.whatsapp");
-  // }
-  Linking.canOpenURL('whatsapp://send?phone=491707046434')
-    .then((supported) => {
-      if (!supported) {
-        Linking.openURL("market://details?id=com.whatsapp");
-      } else {
-        return Linking.openURL('whatsapp://send?phone=491707046434');
-      }
-    })
-    .catch((err) => console.error('An error occurred', err));
-};
 
-const AppBotomBarNavigator = createBottomTabNavigator(
-  {
-    Main: Main,
-    cart: Cart,
+// handlePress = () => {
+//   Linking.canOpenURL('whatsapp://send?phone=491707046434')
+//     .then((supported) => {
+//       if (!supported) {
+//         Linking.openURL("market://details?id=com.whatsapp");
+//       } else {
+//         return Linking.openURL('whatsapp://send?phone=491707046434');
+//       }
+//     })
+//     .catch((err) => console.error('An error occurred', err));
+// };
 
-    Help: {
-      screen: () => null,
-      navigationOptions: {
-        tabBarOnPress: handlePress
-      }
-    },
+// const AppBotomBarNavigator = createBottomTabNavigator(
+//   {
+//     Main: Main,
+//     cart: BottomMenuView,
 
-    profile: Profile
-  },
-  {
-    defaultNavigationOptions: ({ navigation }) => ({
-      tabBarIcon: ({ focused, horizontal, tintColor }) => {
-        const { routeName } = navigation.state;
-        let IconComponent = Icons;
-        let iconName;
-        if (routeName === 'Main') {
-          iconName = `ios-home`;
-        } else if (routeName === 'cart') {
-          iconName = `ios-cart`;
-          IconComponent = CartIconWithBadge;
-        } else if (routeName === 'Help') {
-          iconName = `ios-help-circle-outline`;
-        } else if (routeName === 'profile') {
-          iconName = `ios-person`;
-        }
-        return <IconComponent name={iconName} size={25} color={tintColor} />;
-      }
-    }),
-    tabBarOptions: {
-      activeTintColor: 'red',
-      inactiveTintColor: 'gray',
-    }
-  })
+//     Help: {
+//       screen: () => null,
+//       navigationOptions: {
+//         tabBarOnPress: handlePress
+//       }
+//     },
+
+//     profile: Profile
+//   },
+//   {
+//     defaultNavigationOptions: ({ navigation }) => ({
+//       tabBarIcon: ({ focused, horizontal, tintColor }) => {
+//         const { routeName } = navigation.state;
+//         let IconComponent = Icons;
+//         let iconName;
+//         if (routeName === 'Main') {
+//           iconName = `ios-home`;
+//         } else if (routeName === 'cart') {
+//           iconName = `ios-cart`;
+//           IconComponent = CartIconWithBadge;
+//         } else if (routeName === 'Help') {
+//           iconName = `ios-help-circle-outline`;
+//         } else if (routeName === 'profile') {
+//           iconName = `ios-person`;
+//         }
+//         return <IconComponent name={iconName} size={25} color={tintColor} />;
+//       }
+//     }),
+//     tabBarOptions: {
+//       activeTintColor: 'red',
+//       inactiveTintColor: 'gray',
+//     }
+//   })
 
 const AppStackNavigator = createStackNavigator(
   {
-    Bottom: AppBotomBarNavigator,
+    BottomTabNavigation: BottomMenuView,
     Intro: UserTypeSelection,
     NoNetwork: NoNetwork,
     HotLine: HotLine,
@@ -309,6 +305,7 @@ const AppStackNavigator = createStackNavigator(
     AskQuestion: AskQuestion,
     Payment: Payment,
     WebPayPal: WebPayPal,
+    AmazonLoginWebView: AmazonLoginWebView,
     Login: Login,
     Registration: Registration,
     PersonalData: PersonalData,
@@ -337,21 +334,21 @@ const AppStackNavigator = createStackNavigator(
     ProductsByCategory: ProductsByCategory,
     CategoryInfo: CategoryInfo,
     DeliveryService: DeliveryService,
-
-    // PaypalService: PaypalService
   },
   {
     headerTitleStyle: {
       color: 'rgb(0, 255, 63)',
     },
-    //initialRouteName: 'Main',
+    // initialRouteName: 'Main',
     // initialRouteName: this.state.network ? 'Main' : <NoNetwork />,
     defaultNavigationOptions: ({ navigation }) => {
       return {
         headerLeft: (
           <>
             <MenuButton />
-            <Image style={{ width: 60, height: 30, resizeMode: 'contain' }} source={require('../assets/teleropa-logo.png')} key={'menuTeleropaLogo'} />
+            {navigation.state.routeName == 'BottomTabNavigation' ?
+              <Image style={{ width: 60, height: 30, resizeMode: 'contain' }} source={require('../assets/teleropa-logo.png')} key={'menuTeleropaLogo'} />
+              : null}
           </>
         ),
         headerRight: (
@@ -396,10 +393,7 @@ const AppDrawerNavigator = createDrawerNavigator(
 );
 
 const AppSwitchNaigator = createSwitchNavigator({
-  // Login: Login,
   drawer: AppDrawerNavigator,
-  Main: Main,
-
 })
 
 const AppContainer = createAppContainer(AppSwitchNaigator);

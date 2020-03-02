@@ -7,6 +7,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@amazon-pay/react": "^0.7.5",
     "@ptomasroos/react-native-multi-slider": "^1.0.0",
     "@react-native-community/async-storage": "^1.8.0",
     "@react-native-community/netinfo": "^2.0.3",
@@ -18,8 +19,10 @@
     "base-64": "^0.1.0",
     "body-parser": "^1.19.0",
     "paypal-rest-sdk": "^1.8.1",
+    "prop-types": "^15.7.2",
     "qs": "^6.9.1",
     "react": "16.6.3",
+    "react-dom": "^16.13.0",
     "react-native": "^0.59.4",
     "react-native-base64": "0.0.2",
     "react-native-device-info": "^1.1.0",
@@ -44,6 +47,7 @@
     "react-native-webview": "^5.12.1",
     "react-navigation": "^3.3.2",
     "react-redux": "^6.0.1",
+    "react-router-dom": "^5.1.2",
     "redux": "^4.0.1"
   },
   "devDependencies": {

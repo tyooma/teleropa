@@ -63,9 +63,9 @@ class Product extends Component {
 
   initProduct = async (id) => {
     getFullProductData(id)
-      .then(response => response.json())
+      .then(response => console.log('response response in product.js', response), response.json())
       .then(responseJson => {
-      
+        console.log('responseJson responseJson in product.js', responseJson)
         if (responseJson.status == '404') {
           Alert.alert(
             "Alarm",
