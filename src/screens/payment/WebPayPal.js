@@ -27,11 +27,7 @@ export class WebPayPal extends Component {
             country: this.props.userInfo.country,
             street: this.props.userInfo.street,
             city: this.props.userInfo.city,
-
         }
-
-        // const { name, surname, email, gender, title, text } = this.state
-        // addFeedback(gender, name, surname, email, title, text)
     }
     async componentDidMount() {
 

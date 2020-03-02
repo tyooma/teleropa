@@ -12,6 +12,8 @@ import NavigationService from '../../navigation-service';
 
 import { sHeight } from '../../helpers/screenSize';
 
+import handlePress from '../../app/app'
+
 class SideMenuView extends Component {
 
   getStyles(user) {
@@ -30,6 +32,7 @@ class SideMenuView extends Component {
   setUserType(userType) {
     this.props.setUserType(userType)
   }
+
 
   render() {
     const isLoggedIn = this.props.userID !== 'notloggedin' && this.props.loaded

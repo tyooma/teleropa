@@ -7,6 +7,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@amazon-pay/react": "^0.7.5",
     "@ptomasroos/react-native-multi-slider": "^1.0.0",
     "@react-native-community/async-storage": "^1.8.0",
     "@react-native-community/netinfo": "^2.0.3",
@@ -14,6 +15,8 @@
     "@react-navigation/drawer": "^5.0.3",
     "@react-navigation/stack": "^5.0.3",
     "react": "16.6.3",
+    "amazon-pay-react": "^0.9.0",
+    "react-dom": "^16.13.0",
     "react-native": "^0.59.4",
     "react-native-base64": "0.0.2",
     "react-native-device-info": "^1.1.0",
@@ -38,6 +41,7 @@
     "react-native-webview": "^5.12.1",
     "react-navigation": "^3.3.2",
     "react-redux": "^6.0.1",
+    "react-router-dom": "^5.1.2",
     "redux": "^4.0.1"
   },
   "devDependencies": {

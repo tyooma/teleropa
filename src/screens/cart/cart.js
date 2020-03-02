@@ -31,8 +31,6 @@ import {
     clearCart
 } from '../../functions/cart-funcs';
 
-import CartIconWithBadge from './CartIconWithBadge'
-
 getStock = (stock, order, pcs) => {
     if (!order) {
         if (stock > 0) {
@@ -165,9 +163,16 @@ class Cart extends Component {
         console.log('INIT in cart.js', this.props)
         const cart = this.props.cart
         if (cart.length > 0 && !this.state.cartReceaved) { this.setState({ cartReceaved: true }) }
-        this.props.cart.map(({ id, count }) => {
-            getPreviewProductData(id).then(res => this.setState({ products: [...this.state.products, { ...res, id, count }] }))
-        })
+        if (cart.cartItemCount != 0) {
+            cart.map(({ id, count }) => {
+                getPreviewProductData(id).then(res => this.setState({ products: [...this.state.products, { ...res, id, count }] }))
+            })
+        } else {
+            Toast.show('Sorry, start de applicatie opnieuw', {
+                shadow: false,
+                backgroundColor: '#505050'
+            })
+        }
     }
 
     addToCartAndState(id) {
@@ -205,7 +210,7 @@ class Cart extends Component {
         return this.state.products.map(({ id, previewImgURL, productName, price, companyPrice, stock, count }) => {
             return (
                 <CartItem
-                    key={id}
+                    // key={id}
                     id={id}
                     img={previewImgURL}
                     name={productName}
@@ -288,6 +293,8 @@ class Cart extends Component {
     }
 
     getDiscountBlock() {
+        console.log('this.state.promocodeData', this.state.promocodeData)
+        console.log('this.state.discountValue', this.state.discountValue)
         if (this.state.promocodeData && this.state.discountValue) {
             return (
                 <View style={styles.line}>

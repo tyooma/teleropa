@@ -24,6 +24,9 @@ export default class Payment extends Component {
     return false
   }
 
+
+
+
   handlePayClick() {
     switch (this.state.selected) {
       case 'PayPalPlus':
@@ -91,7 +94,6 @@ export default class Payment extends Component {
   }
 
   render() {
-    console.log('```````', this.state.data)
     if (this.state.loading) return <Loading />
     console.log(this.state)
     return (
