@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, Text, Linking } from "react-native";
+import React, { Component } from "react";
+import { View, Linking } from "react-native";
 
 export default class AmazonLoginWebView extends Component {
 
@@ -18,13 +18,3 @@ export default class AmazonLoginWebView extends Component {
     }
 }
 
-const styles = StyleSheet.create({
-    topContainer: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'row',
-        height: 58,
-        paddingLeft: 17,
-        paddingRight: 3
-    }
-})
