@@ -1,3 +1,4 @@
+console.log('this in productPosts.js', this)
 
 export function getProductInfo(id) {
     console.log('id in getProductInfo() в запросе поиска getProductInfo(id) productPosts.js', id)
@@ -35,7 +36,7 @@ export function getFullProductData(id) {
 }
 
 export function getPreviewProductData(id) {
-    console.log('ID ID ID ID getPreviewProductData(id) in productPost.js', id);
+    console.log('getPreviewProductData(id) in productPost.js', id);
     // return fetch('https://ptsv2.com/t/j6czr-1559833253/post', {
     return fetch('https://teleropa.de/WebiProgCommunicationApplicationArticle/getPreviewProductData', {
         method: 'POST',
@@ -178,7 +179,7 @@ export function getProductsBySupplier(supplierID) {
 }
 
 export function getProductsByCategory(categoryID) {
-    console.log('categoryID categoryID categoryID categoryID in productPosts.js', categoryID)
+    console.log('categoryID in productPosts.js', categoryID)
     return fetch(`https://teleropa.de/WebiProgCommunicationApplicationCategory/getProductsBy?id=${categoryID}&type=category`, {
         method: 'GET',
     })

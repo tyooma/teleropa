@@ -70,8 +70,7 @@ import ProductsByCategory from '../screens/products-by-category';
 import CategoryInfo from '../screens/category-info';
 import NoNetwork from '../screens/no-network';
 import DeliveryService from '../screens/delivery-service';
-
-// import PaypalService from '../screens/paypal-service';
+import WebPayPal from '../screens/payment/WebPayPal';
 
 import { initUserData } from './initapp';
 
@@ -237,7 +236,21 @@ export default class App extends Component {
 }
 
 handlePress = () => {
-  Linking.openURL('whatsapp://send?phone=491707046434')
+  // try {
+  //   Linking.openURL('whatsapp://send?phone=491707046434')
+  // }
+  // catch{
+  //   Linking.openURL("market://details?id=com.whatsapp");
+  // }
+  Linking.canOpenURL('whatsapp://send?phone=491707046434')
+  .then((supported) => {
+    if (!supported) {
+      Linking.openURL("market://details?id=com.whatsapp");
+    } else {
+      return Linking.openURL('whatsapp://send?phone=491707046434');
+    }
+  })
+  .catch((err) => console.error('An error occurred', err));
 };
 
 const AppBotomBarNavigator = createBottomTabNavigator(
@@ -246,9 +259,7 @@ const AppBotomBarNavigator = createBottomTabNavigator(
       screen: Main,
       navigationOptions: {
         headerLeft: (
-          <>
             <Image style={{ width: 60, height: 30, resizeMode: 'contain' }} source={require('../assets/teleropa-logo.png')} key={'menuTeleropaLogo'} />
-          </>
         )
 
       }
@@ -336,8 +347,7 @@ const AppStackNavigator = createStackNavigator(
     ProductsByCategory: ProductsByCategory,
     CategoryInfo: CategoryInfo,
     DeliveryService: DeliveryService,
-    
-    // PaypalService: PaypalService
+    WebPayPal: WebPayPal
   },
   {
     headerTitleStyle: {
