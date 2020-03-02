@@ -8,6 +8,8 @@ import CartIconWithBadge from '../cart/CartIconWithBadge';
 import Main from '../main';
 import Profile from '../profile';
 import Cart from '../cart';
+import Login from '../login';
+import mapStateToProps from '../side-menu-view/side-menu-view';
 
 handlePress = () => {
     Linking.canOpenURL('whatsapp://send?phone=491707046434')
@@ -47,7 +49,7 @@ export default createBottomTabNavigator(
         },
 
         profile: {
-            screen: Profile,
+            screen: Login
         },
     },
 

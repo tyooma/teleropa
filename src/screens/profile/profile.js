@@ -21,7 +21,6 @@ class Profile extends Component {
   }
 
   render(){
-    console.log(this.props)
     return(
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false} >
         <Text style={styles.points}>
@@ -39,7 +38,7 @@ class Profile extends Component {
 }
 
 const mapStateToProps = ({userInfo}) => (
-    userInfo
+  userInfo
 )
 
 export default connect(mapStateToProps)(Profile)

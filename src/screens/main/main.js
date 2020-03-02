@@ -22,7 +22,7 @@ import { MenuButton, SearchButton } from '../../common/header-buttons';
 
 class Main extends Component {
     static navigationOptions = {
-        title: '',
+        title: 'Startseite',
         headerLeft: (
             <>
                 <MenuButton />
