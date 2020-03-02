@@ -4,7 +4,9 @@ import { WebView } from 'react-native-webview';
 import base64 from 'react-native-base64'
 import Loading from '../loading'
 
-export default class WebPayPal extends Component {
+import { connect } from 'react-redux'
+
+export class WebPayPal extends Component {
 
     constructor(props) {
         super(props);
@@ -16,12 +18,45 @@ export default class WebPayPal extends Component {
             approvalUrl: null,
             url: false,
             id: '',
+            loading: false,
             paymentId: '',
-            cart: this.props.navigation.getParam('CartData')
+            cart: this.props.navigation.getParam('CartData'),
+            name: this.props.userInfo.name,
+            surname: this.props.userInfo.surname,
+            phone: this.props.userInfo.phone,
+            country: this.props.userInfo.country,
+            street: this.props.userInfo.street,
+            city: this.props.userInfo.city,
         }
     }
-
     async componentDidMount() {
+
+        console.log('this.props.userInfo', this.props.userInfo)
+        console.log('this.state', this.state)
+        const { navigation } = this.props;
+        // navigation.addListener('willFocus', () => {
+        //     getUserBillingAddress(this.props.userID).then(address => this.setState({ ...address, loaded: true, userType: address.company ? 'Firma' : 'Privatkunde' }))
+        // })
+        console.log('user', this)
+
+        console.log('this.state.cart', this.state.cart)
+        const productsPrice = parseFloat(this.state.cart.discountProductsPrice);
+        const deliveryPrice = parseFloat(this.state.cart.deliveryData.deliveryPrice);
+
+        // const tax = 
+        // const shipping = 
+        // const subtotal = 
+
+        console.log('this.props.navigation', this.props.navigation.state)
+        const total = productsPrice + deliveryPrice// + tax;
+
+        const productsQuantity = this.state.cart.products.reduce((sum, { count }) => {
+            return sum + count
+        }, 0)
+
+        const deliveryId = this.state.cart.deliveryData.services.find(item => item.id == this.state.cart.deliveryData.selected);
+        const deliveryService = deliveryId.name;
+
         const url = 'https://api.sandbox.paypal.com/v1/oauth2/token';
         const username = 'AcHzvoC8O-gZth7HdU-4UeDB065QSpwVftN4ZHXWC5anYkHIM8hSJylP3iTL4h6x6wMHZW3O0rBkd4g_';
         const password = 'EBN-azxVOelC-bJISKYDNC9hc9hXHLcyWg5lYaM6YdUnLPmEg19kgf954qW8-RezCyn1UBA7ZIxuZAhu';
@@ -69,59 +104,49 @@ export default class WebPayPal extends Component {
                                 "transactions": [
                                     {
                                         "amount": {
-                                            "total": "30.11",
-                                            "currency": "USD",
+                                            "total": total + 0.01,
+                                            "currency": 'EUR',
                                             "details": {
-                                                "subtotal": "30.00",
-                                                "tax": "0.07",
-                                                "shipping": "0.03",
+                                                "subtotal": productsPrice,
+                                                "tax": "0.00",
+                                                "shipping": deliveryPrice,
                                                 "handling_fee": "1.00",
                                                 "shipping_discount": "-1.00",
                                                 "insurance": "0.01"
                                             }
                                         },
-                                        "description": "The payment transaction description.",
-                                        "custom": "EBAY_EMS_90048630024435",
-                                        "invoice_number": "48787589672",
+
+                                        // "description": "The payment transaction description.",
+                                        // "custom": "PAYID-LZNJFKQ6PR2713655624654Y",
+                                        // "invoice_number": "48787589672",
                                         "payment_options": {
                                             "allowed_payment_method": "INSTANT_FUNDING_SOURCE"
                                         },
                                         "soft_descriptor": "ECHI5786786",
                                         "item_list": {
-                                            "items": [
-                                                {
-                                                    "name": "Jeens",
-                                                    "description": "Black Jeens.",
-                                                    "quantity": "5",
-                                                    "price": "3",
-                                                    "tax": "0.01",
-                                                    "sku": "1",
-                                                    "currency": "USD"
-                                                },
-                                                {
-                                                    "name": "handbag",
-                                                    "description": "Black handbag.",
-                                                    "quantity": "1",
-                                                    "price": "15",
-                                                    "tax": "0.02",
-                                                    "sku": "product34",
-                                                    "currency": "USD"
-                                                }
-                                            ],
+                                            // "items": [
+                                            //     {
+                                            //         "name": "Jeens",
+                                            //         "description": "Black Jeens.",
+                                            //         "quantity": "1",
+                                            //         "price": total,
+                                            //         "tax": "0.01",
+                                            //         "sku": "1",
+                                            //         "currency": 'EUR'
+                                            //     },
+                                            // ],
                                             "shipping_address": {
-                                                "recipient_name": "John Doe",
-                                                "line1": "4th Floor",
-                                                "line2": "Unit #34",
-                                                "city": "San Jose",
-                                                "country_code": "US",
-                                                "postal_code": "95131",
-                                                "phone": "011862212345678",
-                                                "state": "CA"
+                                                "recipient_name": this.state.name + ' ' + this.state.surname,
+                                                "line1": this.state.street,
+                                                "city": this.state.city,
+                                                "country_code": "DE",
+                                                "postal_code": this.state.post,
+                                                "phone": this.state.phone,
                                             }
                                         }
                                     }
                                 ],
-                                "note_to_payer": "Contact us for any questions on your order.",
+                                // "note_to_payer": "Contact us for any questions on your order.",
                                 "redirect_urls": {
                                     "return_url": "https://example.com/return",
                                     "cancel_url": "https://example.com/cancel"
@@ -236,3 +261,7 @@ export default class WebPayPal extends Component {
         )
     }
 }
+
+const mapStateToProps = ({ userInfo, userID }) => ({ userInfo, userID })
+
+export default connect(mapStateToProps)(WebPayPal)

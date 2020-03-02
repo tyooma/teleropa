@@ -1,20 +1,35 @@
-import React, { Component } from "react";
-import { View, Linking } from "react-native";
+import React, { Component } from 'react';
+import { View, Platform } from 'react-native'
+import { WebView } from 'react-native-webview';
+
+// import Constants from './Constants'
+// import NavigationBar from './scenesNavBar'
+// import LocalStorageSettingApi from './LocalStorageSettingsApi'
 
 export default class AmazonLoginWebView extends Component {
-
-
-    loadInBrowser = () => {
-        Linking.openURL('https://eu.account.amazon.com/ap/oa?        client_id=amzn1.application-oa2-client.a51ef97abbbe4844a97431b166b4535a        &redirect_uri=https://api-cdn.amazon.com/sdk/2018-02-08-63k6q26l/topic.html?uri=https%3A%2F%2Fcdpn.io%2Fboomboom%2Fv2%2Findex.html&proxy=amazon-proxy-https-api_cdn_amazon_com&topic=X9ll04e60EYox420&version=1        &response_type=token                &scope=profile%20payments%3Awidget%20payments%3Ashipping_address        &sandbox=true').catch(err => console.error("Couldn't load page", err));
+    constructor(props) {
+        super(props)
+        state = {
+            url: ''
+        }
+    }
+    onNavigationStateChange = (webViewState) => {
+        if (webViewState.url == "https://sellercentral.amazon.com/merchant-picker/status") {
+            LocalStorageSettingApi.setIsAmazonSellerLoggedIn(Constants.kTrue)
+            this.props.navigator.popToTop()
+        }
     };
 
     render() {
-        // console.log("this.props.navigation.getParam('CartData')", this.props.navigation.getParam('CartData'))
         return (
-            <View style={{ flex: 1 }}>
-                {this.loadInBrowser}
+            <View style={{ flex: 1, backgroundColor: 'white' }}>
+                <View style={{ height: Platform.OS == 'ios' ? 75 : 60 }}><NavigationBar navigator={this.props.navigator} route={this.props.route} /></View>
+                <WebView
+                    scalesPageToFit={true}
+                    source={{ uri: 'https://sellercentral.amazon.com/' }}
+                    onNavigationStateChange={this.onNavigationStateChange.bind(this)}
+                />
             </View>
         );
     }
 }
-

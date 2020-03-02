@@ -73,6 +73,7 @@ import ProductsByCategory from '../screens/products-by-category';
 import CategoryInfo from '../screens/category-info';
 import NoNetwork from '../screens/no-network';
 import DeliveryService from '../screens/delivery-service';
+import WebPayPal from '../screens/payment/WebPayPal';
 
 import { initUserData } from './initapp';
 
@@ -334,6 +335,7 @@ const AppStackNavigator = createStackNavigator(
     ProductsByCategory: ProductsByCategory,
     CategoryInfo: CategoryInfo,
     DeliveryService: DeliveryService,
+    WebPayPal: WebPayPal
   },
   {
     headerTitleStyle: {

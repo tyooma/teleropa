@@ -40,6 +40,14 @@ getStock = (stock, order, pcs) => {
                 </Text>
             )
         }
+        if (stock < count) {
+            return (
+                <Text style={styles.cartItemNotEnoughInStock}>
+                    Produkt ist nicht genug
+                </Text>
+            )
+        }
+
         return (
             <Text style={styles.cartItemNotInStock}>
                 nicht verfügbar
@@ -440,6 +448,10 @@ const styles = StyleSheet.create({
     cartItemInStock: {
         fontSize: 10,
         color: '#3f911b'
+    },
+    cartItemNotEnoughInStock: {
+        fontSize: 10,
+        color: '#ff0000'
     },
     cartItemNotInStock: {
         fontSize: 10,

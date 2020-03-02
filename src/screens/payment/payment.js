@@ -4,8 +4,6 @@ import { View, ScrollView, Platform } from 'react-native';
 import FooterButton from '../../common/footer-button';
 import PaymentOption from '../../common/payment-option';
 
-// import deliveryAddress from '../orders';
-
 import Loading from '../loading'
 
 export default class Payment extends Component {
@@ -51,13 +49,10 @@ export default class Payment extends Component {
     // this.props.navigation.navigate('OrderSuccess')
   }
 
-
-
   payWithApplePay() {
     const productsPrice = parseFloat(this.state.data.discountProductsPrice);
     const deliveryPrice = parseFloat(this.state.data.deliveryData.deliveryPrice);
     const total = productsPrice + deliveryPrice
-    console.log(productsPrice, deliveryPrice, total)
     const METHOD_DATA = [{
       supportedMethods: ['apple-pay'],
       data: {
@@ -98,7 +93,7 @@ export default class Payment extends Component {
       .catch(e => console.log('error', e))
   }
 
-  render() {    
+  render() {
     if (this.state.loading) return <Loading />
     console.log(this.state)
     return (
