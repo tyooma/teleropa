@@ -73,14 +73,10 @@ import ProductsByCategory from '../screens/products-by-category';
 import CategoryInfo from '../screens/category-info';
 import NoNetwork from '../screens/no-network';
 import DeliveryService from '../screens/delivery-service';
-import WebPayPal from '../screens/payment/WebPayPal';
-
 import { initUserData } from './initapp';
-
 import BackButton from '../common/header-buttons/back-button';
 
-import Icons from 'react-native-vector-icons/Ionicons';
-import CartIconWithBadge from '../screens/cart/CartIconWithBadge';
+import PaypalConfirm from '../screens/payment/paypalConfirm';
 
 import { YellowBox } from 'react-native';
 
@@ -305,7 +301,6 @@ const AppStackNavigator = createStackNavigator(
     BecomePartner: BecomePartner,
     AskQuestion: AskQuestion,
     Payment: Payment,
-    WebPayPal: WebPayPal,
     AmazonLoginWebView: AmazonLoginWebView,
     Login: Login,
     Registration: Registration,
@@ -335,7 +330,9 @@ const AppStackNavigator = createStackNavigator(
     ProductsByCategory: ProductsByCategory,
     CategoryInfo: CategoryInfo,
     DeliveryService: DeliveryService,
-    WebPayPal: WebPayPal
+    WebPayPal: WebPayPal,
+    
+    PaypalConfirm: PaypalConfirm
   },
   {
     headerTitleStyle: {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Platform } from 'react-native';
+import { View, ScrollView, Platform, ToastAndroid } from 'react-native';
 
 import FooterButton from '../../common/footer-button';
 import PaymentOption from '../../common/payment-option';
@@ -43,7 +43,8 @@ export default class Payment extends Component {
         this.payWithApplePay()
         break;
       default:
-        alert('SELECT PAYMENT METHOD')
+        ToastAndroid.show(`SELECT PAYMENT METHOD`, ToastAndroid.LONG)
+        // alert('SELECT PAYMENT METHOD')
         break;
     }
     // this.props.navigation.navigate('OrderSuccess')
@@ -120,7 +121,8 @@ export default class Payment extends Component {
           }
         </ScrollView>
 
-        <FooterButton text='Weiter' onPress={() => this.handlePayClick()} />
+        <FooterButton text='Weiter' onPress={() => this.handlePayClick()
+        } />
       </View>
     )
   }

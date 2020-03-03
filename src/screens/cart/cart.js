@@ -210,7 +210,7 @@ class Cart extends Component {
         return this.state.products.map(({ id, previewImgURL, productName, price, companyPrice, stock, count }) => {
             return (
                 <CartItem
-                    // key={id}
+                    key={id}
                     id={id}
                     img={previewImgURL}
                     name={productName}
