@@ -143,7 +143,7 @@ class Login extends Component {
             </View>
           </ScrollView>
 
-          <FooterButton text='Anmelden mit' onPress={() => this.logInHandler()} />
+          <FooterButton text='Anmelden mit' onPress={() => {this.logInHandler(), this.props.navigation.goBack()}} />
           {/* <FooterButton text='Anmelden mit' onPress={() => console.log(logIn('test@gmail.com', 'testtest'))}/> */}
           <ModalView
             title='Passwort zurücksetzen'

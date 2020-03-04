@@ -34,10 +34,10 @@ export class WebPayPal extends Component {
     }
     async componentDidMount() {
 
-        const clientId = 'AcIGgF0XrYF4her0z9zSlXCuUnqEDazkaM0DDU5emhhp70UggARzDbd5LW1yQhr8qEaV2Q7r-AmK3bHH';
         const userAPI = 'verkauf_api1.teleropa.de';
         const userPassword = 'W3GZUK35NCHVLFPX';
-        
+        const userSignature = 'ATPe0x.0AaCf8Jbe3rt2FqZjSzAIAIJ9zA8Pd5oyWSdMCF6lvdU3HtDm';
+
         const sandboxClientId = 'AcHzvoC8O-gZth7HdU-4UeDB065QSpwVftN4ZHXWC5anYkHIM8hSJylP3iTL4h6x6wMHZW3O0rBkd4g_';
         const sandboxSecret = 'EBN-azxVOelC-bJISKYDNC9hc9hXHLcyWg5lYaM6YdUnLPmEg19kgf954qW8-RezCyn1UBA7ZIxuZAhu';
         const paypalClientId = 'AcIGgF0XrYF4her0z9zSlXCuUnqEDazkaM0DDU5emhhp70UggARzDbd5LW1yQhr8qEaV2Q7r-AmK3bHH';
@@ -64,7 +64,7 @@ export class WebPayPal extends Component {
         const password = this.state.realAccount ? paypalSecret : sandboxSecret;
         // const username = 'AcHzvoC8O-gZth7HdU-4UeDB065QSpwVftN4ZHXWC5anYkHIM8hSJylP3iTL4h6x6wMHZW3O0rBkd4g_';
         // const password = 'EBN-azxVOelC-bJISKYDNC9hc9hXHLcyWg5lYaM6YdUnLPmEg19kgf954qW8-RezCyn1UBA7ZIxuZAhu';
-        console.log('url, username, password', {url, username, password})
+        console.log('url, username, password', { url, username, password })
         const token = base64.encode(`${username}:${password}`);
         try {
             fetch(url, {
@@ -81,7 +81,7 @@ export class WebPayPal extends Component {
                 body: "grant_type=client_credentials"
             })
                 .then(response => {
-                    
+
                     return response.json()
 
                 })
@@ -93,7 +93,55 @@ export class WebPayPal extends Component {
                 })
                 .then(access_token => {
                     console.log(' Create Paypal payment object');
+                    console.log(' this.state', this.state);
                     const url = this.state.realAccount ? 'https://api.paypal.com/v1/payments/payment' : 'https://api.sandbox.paypal.com/v1/payments/payment';
+                    // const num
+
+                    var paypalPaymentObj =
+                    {
+                        "intent": "sale",
+                        "payer": {
+                            "payment_method": "paypal"
+                        },
+                        "transactions": [
+                            {
+                                "amount": {
+                                    "total": total,
+                                    "currency": "EUR",
+                                    "details": {
+                                        "subtotal": productsPrice,
+                                        // "tax": "0.00",
+                                        "shipping": deliveryPrice,
+                                        // "handling_fee": "1.00",
+                                        // "shipping_discount": "-1.00",
+                                        // "insurance": "0.01"
+                                    }
+                                },
+                                // "description": "The payment transaction description.",
+                                "payment_options": {
+                                    "allowed_payment_method": "INSTANT_FUNDING_SOURCE"
+                                },
+                                // "soft_descriptor": "ECHI5786786",
+                                "item_list": {
+                                    "items": this.state.cart.products.map(product => {
+                                        return {
+                                            "name": product.productName,
+                                            "quantity": product.count,
+                                            "price": product.companyPrice,
+                                            "tax": "0.00",
+                                            "sku": product.stock,
+                                            "currency": 'EUR'
+                                        }
+                                    }),
+                                }
+                            }
+                        ],
+                        // "note_to_payer": "Contact us for any questions on your order.",
+                        "redirect_urls": {
+                            "return_url": "/checkout/review",
+                            "cancel_url": "https://example.com/cancel"
+                        }
+                    }
                     fetch(url, {
                         method: 'POST',
                         headers: {
@@ -102,62 +150,7 @@ export class WebPayPal extends Component {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify(
-                            {
-                                "intent": "sale",
-                                "payer": {
-                                    "payment_method": "paypal"
-                                },
-                                "transactions": [
-                                    {
-                                        "amount": {
-                                            "total": total,
-                                            "currency": 'EUR',
-                                            "details": {
-                                                "subtotal": productsPrice,
-                                                // "tax": "0.00",
-                                                "shipping": deliveryPrice,
-                                                // "handling_fee": "1.00",
-                                                // "shipping_discount": "-1.00",
-                                                // "insurance": "0.01"
-                                            }
-                                        },
-
-                                        // "description": "The payment transaction description.",
-                                        // "custom": "PAYID-LZNJFKQ6PR2713655624654Y",
-                                        // "invoice_number": "48787589672",
-                                        "payment_options": {
-                                            "allowed_payment_method": "INSTANT_FUNDING_SOURCE"
-                                        },
-                                        // "soft_descriptor": "ECHI5786786",
-                                        "item_list": {
-                                            // "items": [
-                                            //     {
-                                            //         "name": "Jeens",
-                                            //         "description": "Black Jeens.",
-                                            //         "quantity": "1",
-                                            //         "price": total,
-                                            //         "tax": "0.01",
-                                            //         "sku": "1",
-                                            //         "currency": 'EUR'
-                                            //     },
-                                            // ],
-                                            "shipping_address": {
-                                                "recipient_name": this.state.name + ' ' + this.state.surname,
-                                                "country_code": "DE",
-                                                "postal_code": this.state.post,
-                                                "city": this.state.city,
-                                                "line1": this.state.street,
-                                                "phone": this.state.phone,
-                                            }
-                                        }
-                                    }
-                                ],
-                                // "note_to_payer": "Contact us for any questions on your order.",
-                                "redirect_urls": {
-                                    "return_url": "/checkout/review",
-                                    "cancel_url": "https://example.com/cancel"
-                                }
-                            }
+                            paypalPaymentObj
                         )
                     })
                         .then(res => res.json())
@@ -186,7 +179,7 @@ export class WebPayPal extends Component {
 
 
     _onNavigationStateChange = (webViewState) => {
-        console.log('webViewState.url', webViewState.url)
+        console.log('webViewState', webViewState)
         if (webViewState.url.includes('https://example.com/')) {
             this.setState({
                 approvalUrl: null
@@ -197,15 +190,15 @@ export class WebPayPal extends Component {
             console.log('params', params)
             console.log('PPPPPP', p)
 
-            // if (p >= 0 && this.state.count) {
-            //     this.setState({ count: false });
-            //     const l = params.length;
-            //     const res = params.substring(p, l).replace('PayerID=', "");
+            if (p >= 0 && this.state.count) {
+                this.setState({ count: false });
+                const l = params.length;
+                const res = params.substring(p, l).replace('PayerID=', "");
 
-                // const paid = this.payment(res);
-                // console.log('paid',paid);
+                const paid = this.payment(res);
+                console.log('paid', paid);
 
-            // }
+            }
         }
     }
 
@@ -225,6 +218,8 @@ export class WebPayPal extends Component {
                 },
                 body: JSON.stringify({
                     "payer_id": payer
+                    // "custom": "PAYID-LZNJFKQ6PR2713655624654Y",
+                    // "invoice_number": "48787589672",
                 })
             })
                 .then(response => response.json())
@@ -238,12 +233,15 @@ export class WebPayPal extends Component {
                         this.props.navigation.navigate('Payment');
                     }
                 })
+
+                // .then()
+
                 .catch(err => {
                     console.log({ ...err })
                 })
         } catch (error) {
             alert(error);
-            this.props.navigation.navigate('Payment');
+            this.props.navigation.navigate('Login');
         }
     }
 

@@ -306,7 +306,8 @@ class Cart extends Component {
     }
 
     render() {
-        console.log("this.state in cart.js", this.state)
+        console.log("this in cart.js", this)
+        const isLoggedIn = this.props.userInfo.surname !== ''
 
         const shadowOpt = {
             width: sWidth,
@@ -373,7 +374,13 @@ class Cart extends Component {
                     </View>
                 </BoxShadow>
 
-                <FooterButton text='Zur Kasse' onPress={() => { this.props.navigation.navigate('DeliveryService', { productsPrice: this.state.discountProductsPrice, data: this.state }) }} />
+                <FooterButton text='Zur Kasse' onPress={() => {
+                    {
+                        isLoggedIn ?
+                            this.props.navigation.navigate('DeliveryService', { productsPrice: this.state.discountProductsPrice, data: this.state })
+                            : this.props.navigation.navigate('Login')
+                    }
+                }} />
 
                 <ModalView
                     title='Promo-Code'
