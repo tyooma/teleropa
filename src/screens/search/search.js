@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 import { View, Image, TextInput, TouchableOpacity, Text, SafeAreaView, Platform, ScrollView, StyleSheet, FlatList, ToastAndroid } from 'react-native';
 
+import Toast from 'react-native-root-toast';
+
 import FooterButton from '../../common/footer-button';
 
 import NavigationService from '../../navigation-service';
@@ -21,6 +23,7 @@ import Loading from '../loading'
 import FilterButton from '../../common/filter-button';
 
 import ProductListItem from '../../common/product-list-item'
+
 
 const CustomHeader = ({ value, onChangeText, onEndEditing }) => {
     return (
@@ -118,7 +121,6 @@ export default class Search extends Component {
     componentDidMount() {
         this.props.navigation.addListener('didFocus', (route) => {
             const filterOptions = this.props.navigation.getParam('filterOptions', null)
-            console.log("filterOptions`````````", filterOptions)
             if (filterOptions) {
                 const { from, to, sortBy } = filterOptions
                 if (from !== this.state.fromPrice || to !== this.state.toPrice || sortBy !== this.state.sortBy) {
@@ -144,14 +146,16 @@ export default class Search extends Component {
         this.props.navigation.setParams({ searchText })
         this.setState({ showResult: searchText.length >= 3 })
         if (searchText.length >= 3) {
-            // this.abortController.abort()
             this.setState({ loaded: false, products: [], from: 0, ids: [], })
             this.getProductsIDs(searchText)
         }
     }
 
     getProductsIDs(searchText) {
-        getSearchResult(searchText).then(res => this.getIDs(res.searchResult))
+        getSearchResult(searchText)
+            .then(res =>
+                this.getIDs(res.searchResult)
+            )
     }
 
     findMinMaxPrice() {
@@ -172,29 +176,27 @@ export default class Search extends Component {
         if (fromPrice && toPrice) {
             this.setState({ fromPrice, toPrice, sortBy })
             const filtered = this.state.originalIDs.filter(({ price }) => price >= fromPrice && price <= toPrice)
+            let sorted = [];
             switch (sortBy) {
                 case 'popular':
-                    filtered.sort((first, second) => (first.popularity > second.popularity) ? -1 : ((second.popularity > first.popularity) ? 1 : 0))
+                    sorted = filtered.sort((first, second) => (first.popularity > second.popularity) ? -1 : ((second.popularity > first.popularity) ? 1 : 0))
                     break
                 case 'alphabet':
-                    filtered.sort((first, second) => (first.name > second.name) ? 1 : ((second.name > first.name) ? -1 : 0))
+                    sorted = filtered.sort((first, second) => (first.name > second.name) ? 1 : ((second.name > first.name) ? -1 : 0))
                     break
                 case 'price_down':
-                    filtered.sort((first, second) => (first.price > second.price) ? -1 : ((second.price > first.price) ? 1 : 0))
+                    sorted = filtered.sort((first, second) => (first.price > second.price) ? -1 : ((second.price > first.price) ? 1 : 0))
                     break
                 case 'price_up':
-                    filtered.sort((first, second) => (first.price > second.price) ? 1 : ((second.price > first.price) ? -1 : 0))
+                    sorted = filtered.sort((first, second) => (first.price < second.price) ? -1 : ((second.price < first.price) ? 1 : 0))
                     break
                 default: break
             }
             new Promise((resolve) => {
-                this.setState({ filteredIDs: filtered, products: [], from: 0 })
+                this.setState({ filteredIDs: sorted, products: [], from: 0 })
                 setTimeout(() => resolve(), 100)
-            }).then(() => this.getData(0))
-            // this.setState({ids: filtered, products: [], from: 0})
-            console.log('SUKASUKASUKASUKASUKASUKASUKASUKASUKASUKASUKASUKASUKASUKASUKA', filtered)
-            // this.getData(0)
-
+            })
+                .then(() => this.getData(0, sortBy))
         } else {
             this.setState({ originalIDs: ids, filteredIDs: ids, loaded: true, })
             this.findMinMaxPrice()
@@ -203,23 +205,21 @@ export default class Search extends Component {
     }
 
     getData(from) {
-        this.setState({ from })
+        this.setState({ from })        
         this.state.filteredIDs.filter(({ productID }, key) => {
-            // console.log(id, key)
             if (key >= from && key < (from + 12)) {
                 getPreviewProductData(productID)
                     .then(res => {
-                        const isProductContainInList = this.state.originalIDs.find((product) => product.productID === productID)
-                        const isProductAlreadyShows = this.state.products.find((product) => product.id === productID)
+                        const isProductContainInList = this.state.filteredIDs.find((product) => product.productID === productID)
+                        const isProductAlreadyShows = this.state.products.find((product) => product.productID === productID)                        
                         if (isProductContainInList && !isProductAlreadyShows) {
-                            console.log('added', productID)
                             this.setState({ products: [...this.state.products, { ...res, id: productID }] })
                         }
                     })
                     .catch(e => console.log(productID, e))
             }
         })
-        if (this.state.products.length == 0 && this.state.filteredIDs.length == 0) {
+        if (!this.state.products && !this.state.filteredIDs) {
             this.showTaost()
         }
     }
@@ -248,20 +248,32 @@ export default class Search extends Component {
     }
 
     renderHelper() {
-        console.log('this.state in search.js', this.state);
         if (!this.state.showResult) {
             return this.getSearchStory()
         }
-
-        //if (!this.state.loaded || this.state.products.length < 1) return <Loading />
-        if (!this.state.loaded) return <Loading />
+        if (!this.state.loaded || this.state.products.length < 1) return <Loading />
         const { minPrice, maxPrice, fromPrice, toPrice, sortBy } = this.state
+        let sorted = [];
+        switch (sortBy) {
+            case 'popular':
+                sorted = this.state.products.sort((first, second) => (first.popularity > second.popularity) ? -1 : ((second.popularity > first.popularity) ? 1 : 0))
+                break
+            case 'alphabet':
+                sorted = this.state.products.sort((first, second) => (first.name > second.name) ? 1 : ((second.name > first.name) ? -1 : 0))
+                break
+            case 'price_down':
+                sorted = this.state.products.sort((first, second) => (first.price > second.price) ? -1 : ((second.price > first.price) ? 1 : 0))
+                break
+            case 'price_up':
+                sorted = this.state.products.sort((first, second) => (first.price < second.price) ? -1 : ((second.price < first.price) ? 1 : 0))
+                break
+            default: break
+        }
         return (
             <View style={{ flex: 1 }}>
-                {/* <FilterButton /> */}
                 <View style={styles.productsLine}>
                     <FlatList
-                        data={this.state.products}
+                        data={!sorted ? sorted : this.state.products}
                         renderItem={({ item }) => {
                             const { companyPrice, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, id } = item
                             return (
@@ -279,7 +291,6 @@ export default class Search extends Component {
                                     />
                                 </View>
                             )
-                            // }
                         }}
                         columnWrapperStyle={{ flexWrap: 'wrap' }}
                         numColumns={4}
