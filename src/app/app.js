@@ -376,12 +376,9 @@ const AppStackNavigator = createStackNavigator(
     headerTitleStyle: {
       color: 'rgb(0, 255, 63)',
     },
-<<<<<<< HEAD
     // initialRouteName: 'Main',    
-=======
     // initialRouteName: 'Main',
     // initialRouteName: this.state.network ? 'Main' : <NoNetwork />,
->>>>>>> 67cfc85b0ceb0ceab61c34fd3f1f5b853fbd28d7
     defaultNavigationOptions: ({ navigation }) => {
       try {
         const { routeName } = navigation.state.routes[navigation.state.index];
@@ -548,9 +545,12 @@ const AppDrawerNavigator = createDrawerNavigator(
   }
 );
 
-const AppSwitchNaigator = createSwitchNavigator({
-  drawer: AppDrawerNavigator,
-})
+const AppSwitchNaigator = createSwitchNavigator(
+
+  // drawer: AppDrawerNavigator,
+  { AppDrawerNavigator, AppStackNavigator },
+  { initialRouteName: "AppStackNavigator" }
+)
 
 const AppContainer = createAppContainer(AppSwitchNaigator);
 

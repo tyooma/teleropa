@@ -3,6 +3,7 @@ import { View, ToastAndroid } from 'react-native';
 import { WebView } from 'react-native-webview';
 import base64 from 'react-native-base64'
 import Loading from '../loading'
+import { addToCart, minusFromCart, deleteFromCart, clearCart } from '../../functions/cart-funcs'
 
 import { connect } from 'react-redux'
 
@@ -146,6 +147,7 @@ export class WebPayPal extends Component {
                                 approvalUrl: approvalUrl.href
                             })
                         })
+                        .then(clearCart())
                         .catch(err => {
                             console.log(err)
                         })

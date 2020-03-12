@@ -72,6 +72,7 @@ getCounter = (order, pcs, id, onMinus, onAdd) => {
 }
 
 export const CartItem = ({ img, name, pcs, price, companyPrice, userType, stock, order, orderReturnReason, id, onAdd, onMinus, onDelete }) => {
+    console.log('\\\/\\', order, orderReturnReason)
     return (
         <TouchableOpacity style={styles.cartItemContainer} onPress={() => NavigationService.push('Product', { id, name })}>
             <View style={{ flexDirection: 'row' }}>

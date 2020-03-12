@@ -31,6 +31,7 @@ export default class CategoriesList extends Component {
       return this.state.categories.map(({id, name, haveSubCategories, cmsText}) => {
             if (name.toUpperCase() === 'SALE') return <CategoriesListItem name={name} id={id} key={id} textStyle={{color: '#d10019'}} haveSubCategories={haveSubCategories} cmsText={cmsText} />
             if (name.toUpperCase() === 'BRANDS') return <CategoriesListItem route='Brands' name={name} id={id} key={id} haveSubCategories={haveSubCategories} />
+            // if (name.toUpperCase() !== 'BRANDS' && haveSubCategories === 'false') return null
             return <CategoriesListItem  name={name} id={id} key={id} haveSubCategories={haveSubCategories} cmsText={cmsText} />
           }
         )
@@ -41,7 +42,7 @@ export default class CategoriesList extends Component {
   }
 
   render(){
-    console.log(this.state)
+    console.log('categories-list', this.state)
     if (!this.state.loaded) return <Loading />
     return(
       <ScrollView style={{marginHorizontal: 18}} showsVerticalScrollIndicator={false}>
