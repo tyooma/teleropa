@@ -36,9 +36,7 @@ export default class ProductsByBrand extends Component {
     }
 
     getProductsIDs() {
-        const id = this.props.navigation.getParam('supplierID')
-        console.log("ID in getProductsIDs для передачи  getProductsBySupplier", id)
-        // getProductsByBrand(id).then(res => this.getIDs(res.products))
+        const id = this.props.navigation.getParam('supplierID')             
         getProductsBySupplier(id)
             .then(res => {
                 this.setState({

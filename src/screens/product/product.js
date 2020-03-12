@@ -62,10 +62,10 @@ class Product extends Component {
   }
 
   initProduct = async (id) => {
+    console.log("this.initProduct(ID)", id)
     getFullProductData(id)
-      .then(response => console.log('response response in product.js', response), response.json())
+      .then(response => response.json())
       .then(responseJson => {
-        console.log('responseJson responseJson in product.js', responseJson)
         if (responseJson.status == '404') {
           Alert.alert(
             "Alarm",
@@ -124,12 +124,12 @@ class Product extends Component {
     super(props)
     const ID = this.props.navigation.getParam('id')
     this.initProduct(ID)
-    // console.log(this.boundActionCreators)
-    // props.setProductDetails('nihuya nema')
   }
 
 
   shouldComponentUpdate(nextProps, { images, info, productDescription, id }) {
+    console.log('shouldComponentUpdate `````````nextProps', nextProps);
+    console.log('shouldComponentUpdate `````````id', id)
     if (id) {
       return true
     }
@@ -138,7 +138,6 @@ class Product extends Component {
 
 
   render() {
-
     console.log('this.state  RENDER in product.js', this.state)
     const tabOptions = {
       lazy: true,
@@ -172,6 +171,7 @@ class Product extends Component {
       },
     }
 
+    
     const ID = this.props.navigation.getParam('id')
     const name = this.props.navigation.getParam('name')
     const Tab = createMaterialTopTabNavigator({

@@ -20,8 +20,7 @@ import NavigationService from '../../navigation-service';
 import HTML from 'react-native-render-html';
 
 class ProductDescription extends Component {
-    componentDidMount() {
-      console.log(this.props)
+    componentDidMount() {      
       this.getSimilarToState(this.props.productSimilar)
     }
 
