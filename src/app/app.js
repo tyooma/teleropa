@@ -47,7 +47,7 @@ import Registration from '../screens/registration';
 import PersonalData from '../screens/personal-data';
 import SubcategoriesList from '../screens/subcategories-list';
 import SideMenuView from '../screens/side-menu-view';
-import BottomMenuView from '../screens/bottom-menu-veiw';
+import BottomMenuView from '../screens/bottom-menu-view';
 import ChangePersonalData from '../screens/change-personal-data';
 import Filter from '../screens/filter';
 import Product from '../screens/product';
@@ -331,7 +331,7 @@ const AppStackNavigator = createStackNavigator(
     CategoryInfo: CategoryInfo,
     DeliveryService: DeliveryService,
     WebPayPal: WebPayPal,
-    
+
     PaypalConfirm: PaypalConfirm
   },
   {
@@ -340,7 +340,7 @@ const AppStackNavigator = createStackNavigator(
     },
     // initialRouteName: 'Main',
     // initialRouteName: this.state.network ? 'Main' : <NoNetwork />,
-    defaultNavigationOptions: ({ navigation }) => {     
+    defaultNavigationOptions: ({ navigation }) => {
       try {
         const { routeName } = navigation.state.routes[navigation.state.index];
         // console.log(`-------------------------------------------------------------------${routeName}`);
@@ -427,7 +427,7 @@ const AppStackNavigator = createStackNavigator(
                 <SearchButton />
               </View>
             ),
-            
+
             title: 'Profil',
 
             headerBackImage: BackButton,
@@ -507,9 +507,12 @@ const AppDrawerNavigator = createDrawerNavigator(
   }
 );
 
-const AppSwitchNaigator = createSwitchNavigator({
-  drawer: AppDrawerNavigator,
-})
+const AppSwitchNaigator = createSwitchNavigator(
+
+  // drawer: AppDrawerNavigator,
+  { AppDrawerNavigator, AppStackNavigator },
+  { initialRouteName: "AppStackNavigator" }
+)
 
 const AppContainer = createAppContainer(AppSwitchNaigator);
 

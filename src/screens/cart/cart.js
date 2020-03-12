@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { Text, TouchableOpacity, View, Image, StyleSheet } from 'react-native';
+import { Text, TouchableOpacity, View, Image, StyleSheet, Alert } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { BoxShadow } from 'react-native-shadow'
 
@@ -40,13 +40,13 @@ getStock = (stock, order, pcs) => {
                 </Text>
             )
         }
-        if (stock < count) {
-            return (
-                <Text style={styles.cartItemNotEnoughInStock}>
-                    Produkt ist nicht genug
-                </Text>
-            )
-        }
+        // if (stock < pcs) {
+        //     return (
+        //         <Text style={styles.cartItemNotEnoughInStock}>
+        //             Produkt ist nicht genug
+        //         </Text>
+        //     )
+        // }
 
         return (
             <Text style={styles.cartItemNotInStock}>
@@ -79,6 +79,7 @@ getCounter = (order, pcs, id, onMinus, onAdd) => {
 }
 
 export const CartItem = ({ img, name, pcs, price, companyPrice, userType, stock, order, orderReturnReason, id, onAdd, onMinus, onDelete }) => {
+    console.log('\\\/\\', order, orderReturnReason)
     return (
         <TouchableOpacity style={styles.cartItemContainer} onPress={() => NavigationService.push('Product', { id, name })}>
             <View style={{ flexDirection: 'row' }}>
@@ -179,8 +180,14 @@ class Cart extends Component {
         addToCart(id)
         const productToAdd = this.state.products.find(product => product.id === id)
         productToAdd.count++
+        if (productToAdd.count >= productToAdd.stock)
+        {
+            Alert('No more amount of this product')
+        }
+            console.log('.', productToAdd)
         const newProductsArray = this.state.products.map(product => {
             if (product.id === id) return productToAdd
+            console.log('..', newProductsArray, product)
             return product
         })
         this.setState({ products: newProductsArray })
@@ -378,7 +385,7 @@ class Cart extends Component {
                     {
                         isLoggedIn ?
                             this.props.navigation.navigate('DeliveryService', { productsPrice: this.state.discountProductsPrice, data: this.state })
-                            : this.props.navigation.navigate('Login')
+                            : this.props.navigation.navigate('Login', {})
                     }
                 }} />
 

@@ -21,7 +21,7 @@ import HTML from 'react-native-render-html';
 
 class ProductDescription extends Component {
     componentDidMount() {
-      console.log(this.props)
+      console.log('thiss.props',this.props)
       this.getSimilarToState(this.props.productSimilar)
     }
 
@@ -120,7 +120,7 @@ class ProductDescription extends Component {
         if(!productsIDs) {
           return
         }
-        console.log(productsIDs.length)
+        console.log('productsIDs.length',productsIDs.length)
         if(productsIDs.length < 1) {
           return
         }
@@ -146,13 +146,13 @@ class ProductDescription extends Component {
     }
 
     getSimilarProductsCards() {
-        console.log(this.state.similar.length)
-        console.log(this.state)
+        console.log('this.state.similar.length',this.state.similar.length)
+        console.log('this.state',this.state)
         if(this.state.similar.length < 1) {
           return null
         }
         return this.state.similar.map(product => {
-          console.log(product)
+          console.log('product',product)
           const {productName, price, companyPrice, salePrice, previewImgURL, rate, stock, id, productSalePercent} = product
           // return (
           //   <Text style={styles.similarText}>
@@ -195,7 +195,7 @@ class ProductDescription extends Component {
         if(!this.props.productInfo.productName) {
             return <Loading />
         }
-        console.log(this.props)
+        console.log('this.props',this.props)
         return (
             <View style={{flex: 1}}>
             <ScrollView>

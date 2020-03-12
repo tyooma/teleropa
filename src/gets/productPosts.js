@@ -18,6 +18,7 @@ export function getProductInfo(id) {
 }
 
 export function getFullProductData(id) {
+    console.log('ID getFullProductData запрос ', id)
     return fetch('https://teleropa.de/WebiProgCommunicationApplicationArticle/getFullProductData', {
         method: 'POST',
         headers: {

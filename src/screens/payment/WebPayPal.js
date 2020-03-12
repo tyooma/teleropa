@@ -3,6 +3,7 @@ import { View, ToastAndroid } from 'react-native';
 import { WebView } from 'react-native-webview';
 import base64 from 'react-native-base64'
 import Loading from '../loading'
+import { addToCart, minusFromCart, deleteFromCart, clearCart } from '../../functions/cart-funcs'
 
 import { connect } from 'react-redux'
 
@@ -165,6 +166,7 @@ export class WebPayPal extends Component {
                             console.log('this.state.approvalUrl', this.state.approvalUrl),
                                 console.log('this.state.paymentId', this.state.paymentId)
                         })
+                        .then(clearCart())
                         .catch(err => {
                             console.log(err)
                         })
@@ -233,9 +235,6 @@ export class WebPayPal extends Component {
                         this.props.navigation.navigate('Payment');
                     }
                 })
-
-                // .then()
-
                 .catch(err => {
                     console.log({ ...err })
                 })
