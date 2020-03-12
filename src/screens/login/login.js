@@ -210,5 +210,11 @@ const styles = {
     height: 40,
     marginLeft: 12,
     resizeMode: 'contain'
+  },
+  points: {
+    marginVertical: 16,
+    color: '#d10019',
+    fontSize: 16,
+    fontWeight: 'bold',
   }
 }

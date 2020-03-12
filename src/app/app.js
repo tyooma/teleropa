@@ -6,6 +6,9 @@ import { ReduxNetworkProvider } from 'react-native-offline';
 import firebase from 'react-native-firebase';
 import AsyncStorage from '@react-native-community/async-storage';
 
+import RNRestart from 'react-native-restart';
+// return RNRestart.Restart();
+
 import {
   createStackNavigator,
   createDrawerNavigator,
@@ -104,6 +107,9 @@ export default class App extends Component {
     this.checkPermission();
     this.createNotificationListeners();
     initUserData(store);
+
+    // // КОД НА ПРОВЕРКУ ПЕРВОГО ЗАПУСКА
+    // firstLaunchCheck()
   }
 
 
@@ -117,6 +123,18 @@ export default class App extends Component {
     }
   }
 
+  // // КОД НА ПРОВЕРКУ ПЕРВОГО ЗАПУСКА
+  // async firstLaunchCheck() { // НУЖНО ДОБАВИТЬ ПЕРЕМЕННУЮ В СТЕЙТЕ(this.state = {firstLaunch: null};), ЗАТЕМ ЕЕ ЧЕКАТЬ 
+  //   AsyncStorage.getItem("alreadyLaunched").then(value => {
+  //     if (value == null) {
+  //       AsyncStorage.setItem('alreadyLaunched', true);
+  //       this.setState({ firstLaunch: true });
+  //     }
+  //     else {
+  //       this.setState({ firstLaunch: false });
+  //     }
+  //   })
+  // }
 
   async getToken() {
     let fcmToken = await AsyncStorage.getItem('fcmToken');
@@ -210,6 +228,12 @@ export default class App extends Component {
     })
 
 
+    // // КОД НА ПРОВЕРКУ ПЕРВОГО ЗАПУСКА
+    // if (this.state.firstLaunch === null) {
+    //   return null;
+    // } else if (this.state.firstLaunch == true) {
+    //   return RNRestart.Restart();
+    // }
 
     return (
       <Provider store={store}>
@@ -352,7 +376,12 @@ const AppStackNavigator = createStackNavigator(
     headerTitleStyle: {
       color: 'rgb(0, 255, 63)',
     },
+<<<<<<< HEAD
     // initialRouteName: 'Main',    
+=======
+    // initialRouteName: 'Main',
+    // initialRouteName: this.state.network ? 'Main' : <NoNetwork />,
+>>>>>>> 67cfc85b0ceb0ceab61c34fd3f1f5b853fbd28d7
     defaultNavigationOptions: ({ navigation }) => {
       try {
         const { routeName } = navigation.state.routes[navigation.state.index];
