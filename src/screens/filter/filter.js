@@ -59,8 +59,7 @@ export default class Filter extends Component {
     return styles.sortButtonText
   }
 
-  render() {
-    console.log("this.state in filter.js", this.state)
+  render() {    
     return (
       <View style={{ flex: 1, marginTop: 12 }}>
         <ScrollView scrollEnabled={this.state.scrollEnabled}>
@@ -93,8 +92,6 @@ export default class Filter extends Component {
                 value={'' + this.state.from}
                 onChangeText={(from) => {
                   const newFrom = + from.replace(/[^0-9]/g, '')
-                  console.log("newFrom in filter.js````", newFrom)
-                  console.log("this.state.max in filter.js````", this.state.max)
                   if (newFrom > this.state.max) {
                     this.setState({
                       from: this.state.max
@@ -103,7 +100,6 @@ export default class Filter extends Component {
                     this.setState({
                       from: newFrom
                     })
-                    console.log("this.state.from in filter.js````", this.state.from)
                   }
 
                 }}
