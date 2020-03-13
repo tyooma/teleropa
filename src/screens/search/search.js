@@ -205,13 +205,13 @@ export default class Search extends Component {
     }
 
     getData(from) {
-        this.setState({ from })        
+        this.setState({ from })
         this.state.filteredIDs.filter(({ productID }, key) => {
             if (key >= from && key < (from + 12)) {
                 getPreviewProductData(productID)
                     .then(res => {
                         const isProductContainInList = this.state.filteredIDs.find((product) => product.productID === productID)
-                        const isProductAlreadyShows = this.state.products.find((product) => product.productID === productID)                        
+                        const isProductAlreadyShows = this.state.products.find((product) => product.productID === productID)
                         if (isProductContainInList && !isProductAlreadyShows) {
                             this.setState({ products: [...this.state.products, { ...res, id: productID }] })
                         }

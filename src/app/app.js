@@ -14,7 +14,7 @@ import {
   createDrawerNavigator,
   createAppContainer,
   createSwitchNavigator,
-  createBottomTabNavigator
+  createBottomTabNavigator,
 } from 'react-navigation';
 import DeviceInfo from 'react-native-device-info';
 import Orientation from 'react-native-orientation';
@@ -50,7 +50,6 @@ import Registration from '../screens/registration';
 import PersonalData from '../screens/personal-data';
 import SubcategoriesList from '../screens/subcategories-list';
 import SideMenuView from '../screens/side-menu-view';
-import BottomMenuView from '../screens/bottom-menu-view';
 import ChangePersonalData from '../screens/change-personal-data';
 import Filter from '../screens/filter';
 import Product from '../screens/product';
@@ -87,6 +86,9 @@ import { MenuButton, SearchButton } from '../common/header-buttons';
 import {
   clearCart
 } from '../functions/cart-funcs';
+
+import Icons from 'react-native-vector-icons/Ionicons';
+import CartIconWithBadge from '../screens/cart/CartIconWithBadge';
 
 YellowBox.ignoreWarnings(['Require cycle:']);
 console.disableYellowBox = true;
@@ -256,60 +258,73 @@ export default class App extends Component {
 }
 
 
-// handlePress = () => {
-//   Linking.canOpenURL('whatsapp://send?phone=491707046434')
-//     .then((supported) => {
-//       if (!supported) {
-//         Linking.openURL("market://details?id=com.whatsapp");
-//       } else {
-//         return Linking.openURL('whatsapp://send?phone=491707046434');
-//       }
-//     })
-//     .catch((err) => console.error('An error occurred', err));
-// };
+handlePress = () => {
+  Linking.canOpenURL('whatsapp://send?phone=491707046434')
+    .then((supported) => {
+      if (!supported) {
+        Linking.openURL("market://details?id=com.whatsapp");
+      } else {
+        return Linking.openURL('whatsapp://send?phone=491707046434');
+      }
+    })
+    .catch((err) => console.error('An error occurred', err));
+};
 
-// const AppBotomBarNavigator = createBottomTabNavigator(
-//   {
-//     Main: Main,
-//     cart: BottomMenuView,
 
-//     Help: {
-//       screen: () => null,
-//       navigationOptions: {
-//         tabBarOnPress: handlePress
-//       }
-//     },
 
-//     profile: Profile
-//   },
-//   {
-//     defaultNavigationOptions: ({ navigation }) => ({
-//       tabBarIcon: ({ focused, horizontal, tintColor }) => {
-//         const { routeName } = navigation.state;
-//         let IconComponent = Icons;
-//         let iconName;
-//         if (routeName === 'Main') {
-//           iconName = `ios-home`;
-//         } else if (routeName === 'cart') {
-//           iconName = `ios-cart`;
-//           IconComponent = CartIconWithBadge;
-//         } else if (routeName === 'Help') {
-//           iconName = `ios-help-circle-outline`;
-//         } else if (routeName === 'profile') {
-//           iconName = `ios-person`;
-//         }
-//         return <IconComponent name={iconName} size={25} color={tintColor} />;
-//       }
-//     }),
-//     tabBarOptions: {
-//       activeTintColor: 'red',
-//       inactiveTintColor: 'gray',
-//     }
-//   })
+const AppBotomBarNavigator = createBottomTabNavigator(
+  {
+    Main: Main,
+    Cart: {
+      screen: Cart,
+      navigationOptions: {
+        tabBarOnPress: ({ navigation }) => {
+          //navigation.navigate('Cart', { cartReceaved: false });
+          NavigationService.navigate('Cart', { cartReceaved: false })
+        }
+      },
+    },
+    Help: {
+      screen: () => null,
+      navigationOptions: {
+        tabBarOnPress: handlePress
+      }
+    },
+    Profile: Profile
+  },
+  {
+    defaultNavigationOptions: ({ navigation }) => ({
+      tabBarIcon: ({ focused, horizontal, tintColor }) => {
+        const { routeName } = navigation.state;
+        let IconComponent = Icons;
+        let iconName;
+        if (routeName === 'Main') {
+          iconName = `ios-home`;
+        } else if (routeName === 'Cart') {
+          iconName = `ios-cart`;
+          IconComponent = CartIconWithBadge;
+        } else if (routeName === 'Help') {
+          iconName = `ios-help-circle-outline`;
+        } else if (routeName === 'Profile') {
+          iconName = `ios-person`;
+        }
+        return <IconComponent name={iconName} size={25} color={tintColor} />;
+      }
+    }),
+    tabBarOptions: {
+      activeTintColor: '#F8F8F8',
+      inactiveTintColor: '#586589',
+      style: {
+        backgroundColor: '#171F33'
+      },
+      tabStyle: {}
+    }
+  })
 
 const AppStackNavigator = createStackNavigator(
   {
-    BottomTabNavigation: BottomMenuView,
+    //BottomTabNavigation: AppBotomBarNavigator,
+    Main: AppBotomBarNavigator,
     Intro: UserTypeSelection,
     NoNetwork: NoNetwork,
     HotLine: HotLine,
@@ -341,7 +356,6 @@ const AppStackNavigator = createStackNavigator(
     Return: Return,
     Favourite: Favourite,
     ProductsList: ProductsList,
-    Main: Main,
     OrderSuccess: OrderSuccess,
     Contacts: Contacts,
     Brands: Brands,
@@ -362,12 +376,12 @@ const AppStackNavigator = createStackNavigator(
     headerTitleStyle: {
       color: 'rgb(0, 255, 63)',
     },
+    // initialRouteName: 'Main',    
     // initialRouteName: 'Main',
     // initialRouteName: this.state.network ? 'Main' : <NoNetwork />,
     defaultNavigationOptions: ({ navigation }) => {
       try {
         const { routeName } = navigation.state.routes[navigation.state.index];
-        // console.log(`-------------------------------------------------------------------${routeName}`);
         if (routeName == "Main") {
           return {
             headerLeft: (
@@ -405,7 +419,7 @@ const AppStackNavigator = createStackNavigator(
               marginLeft: Platform.OS === 'ios' ? 0 : -10
             }
           }
-        } else if (routeName == "cart") {
+        } else if (routeName == "Cart") {
           return {
             title: 'Warenkorb',
             headerLeft: (

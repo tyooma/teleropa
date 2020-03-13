@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 
-import { Text, TouchableOpacity, View, Image, StyleSheet, Alert } from 'react-native';
+import { Text, TouchableOpacity, View, Image, StyleSheet } from 'react-native';
+
 import { ScrollView } from 'react-native-gesture-handler';
+
 import { BoxShadow } from 'react-native-shadow'
 
 import Toast from 'react-native-root-toast'
@@ -22,7 +24,7 @@ import Input from '../../common/input';
 
 import ModalView from '../../common/modal-view';
 
-import { getPreviewProductData, getPromocodeData } from '../../gets/productPosts';
+import { getPreviewAsyncProductData, getPromocodeData } from '../../gets/productPosts';
 
 import {
     addToCart,
@@ -40,14 +42,6 @@ getStock = (stock, order, pcs) => {
                 </Text>
             )
         }
-        // if (stock < pcs) {
-        //     return (
-        //         <Text style={styles.cartItemNotEnoughInStock}>
-        //             Produkt ist nicht genug
-        //         </Text>
-        //     )
-        // }
-
         return (
             <Text style={styles.cartItemNotInStock}>
                 nicht verfügbar
@@ -60,12 +54,11 @@ getStock = (stock, order, pcs) => {
         </Text>
     )
 }
-// this.props.navigation.navigate('Search', { searchText: data, show: true })
 
 getCounter = (order, pcs, id, onMinus, onAdd) => {
     if (!order) {
         return (
-            <><TouchableOpacity style={styles.minusPlusButton} onPress={() => onMinus(id)} >
+            <><TouchableOpacity style={styles.minusPlusButton} onPress={() => onMinus(id)}>
                 <Image source={require('../../assets/icons/036-minus.png')} style={styles.minusPlusButtonImage} key={'cartMinusItem'} />
             </TouchableOpacity>
                 <Text style={styles.countText}>
@@ -148,7 +141,7 @@ class Cart extends Component {
         promocode: '',
         promocodeData: null,
         discountValue: 0,
-        loaded: false,
+        cartReceaved: false,
     }
 
     static navigationOptions = {
@@ -160,51 +153,68 @@ class Cart extends Component {
         )
     }
 
+    // shouldComponentUpdate(nextProps, { cartReceaved }) {
+    //     console.log('shouldComponentUpdate `````````nextProps', nextProps);
+    //     console.log('shouldComponentUpdate `````````cartReceaved', cartReceaved)
+    //     if (cartReceaved == true) {
+    //         this.setState({ cartReceaved: false })
+    //         return true
+    //     }
+    //     return false
+    // }
+
+    componentDidMount() {
+        if (!this.state.cartReceaved) {
+            this.init()
+        }
+    }
+
+    async componentWillReceiveProps(props) {
+        if (this.state.cartReceaved == true) {
+            await this.initAfterUpdate(props.cart)
+            // setTimeout(() => { this.initAfterUpdate(); }, 5);
+        }
+    }
+
+
     init() {
-        console.log('INIT in cart.js', this.props)
         const cart = this.props.cart
         if (cart.length > 0 && !this.state.cartReceaved) { this.setState({ cartReceaved: true }) }
-        if (cart.cartItemCount != 0) {
-            cart.map(({ id, count }) => {
-                getPreviewProductData(id).then(res => this.setState({ products: [...this.state.products, { ...res, id, count }] }))
-            })
-        } else {
-            Toast.show('Entschuldigung, Sie müssen die Anwendung neu starten', {
-                shadow: false,
-                backgroundColor: '#505050'
-            })
-        }
+        cart.map(({ id, count }) => {
+            getPreviewAsyncProductData(id).then(res => this.setState({ products: [...this.state.products, { ...res, id, count }] }))
+        })
+    }
+
+    async initAfterUpdate(cart) {
+        this.setState({ products: [] })
+        cart.map(({ id, count }) => {
+            getPreviewAsyncProductData(id).then(res => this.setState({ products: [...this.state.products, { ...res, id, count }] }))
+        })
     }
 
     addToCartAndState(id) {
         addToCart(id)
-        const productToAdd = this.state.products.find(product => product.id === id)
-        productToAdd.count++
-        if (productToAdd.count >= productToAdd.stock)
-        {
-            Alert('No more amount of this product')
-        }
-            console.log('.', productToAdd)
-        const newProductsArray = this.state.products.map(product => {
-            if (product.id === id) return productToAdd
-            console.log('..', newProductsArray, product)
-            return product
-        })
-        this.setState({ products: newProductsArray })
+        // const productToAdd = this.state.products.find(product => product.id === id)
+        // productToAdd.count++
+        // const newProductsArray = this.state.products.map(product => {
+        //     if (product.id === id) return productToAdd
+        //     return product
+        // })
+        // this.setState({ products: newProductsArray })
     }
     minusFromCartAndState(id) {
         minusFromCart(id)
-        const productToMinus = this.state.products.find(product => product.id === id)
-        if (productToMinus.count === 1) {
-            this.deleteFromCartAndState(id)
-        } else {
-            productToMinus.count--
-            const newProductsArray = this.state.products.map(product => {
-                if (product.id === id) return productToMinus
-                return product
-            })
-            this.setState({ products: newProductsArray })
-        }
+        // const productToMinus = this.state.products.find(product => product.id === id)
+        // if (productToMinus.count === 1) {
+        //     this.deleteFromCartAndState(id)
+        // } else {
+        //     productToMinus.count--
+        //     const newProductsArray = this.state.products.map(product => {
+        //         if (product.id === id) return productToMinus
+        //         return product
+        //     })
+        //     this.setState({ products: newProductsArray })
+        // }
     }
     deleteFromCartAndState(id) {
         deleteFromCart(id)
@@ -276,10 +286,13 @@ class Cart extends Component {
                 return price.toFixed(2)
             }
             if (percental) {
+                console.log(1)
                 return (price - price / 100 * value).toFixed(2)
             }
+            console.log(2)
             return (price - value).toFixed(2)
         }
+        console.log(3)
         return price.toFixed(2)
     }
 
@@ -289,6 +302,7 @@ class Cart extends Component {
             return
         }
         getPromocodeData(this.state.promocode).then(promocodeData => {
+            console.log(promocodeData)
             if (promocodeData.status.code === 'success') {
                 this.setState({ promocodeData })
             }
@@ -300,8 +314,6 @@ class Cart extends Component {
     }
 
     getDiscountBlock() {
-        console.log('this.state.promocodeData', this.state.promocodeData)
-        console.log('this.state.discountValue', this.state.discountValue)
         if (this.state.promocodeData && this.state.discountValue) {
             return (
                 <View style={styles.line}>
@@ -313,9 +325,6 @@ class Cart extends Component {
     }
 
     render() {
-        console.log("this in cart.js", this)
-        const isLoggedIn = this.props.userInfo.surname !== ''
-
         const shadowOpt = {
             width: sWidth,
             height: 50,
@@ -333,9 +342,6 @@ class Cart extends Component {
                     <Text style={styles.emptyCartText}>Ihr Warenkorb ist leer</Text>
                 </View>
             )
-        }
-        if (!this.state.cartReceaved) {
-            this.init()
         }
         if (this.state.products.length !== this.props.cart.length) {
             return <Loading />
@@ -381,13 +387,7 @@ class Cart extends Component {
                     </View>
                 </BoxShadow>
 
-                <FooterButton text='Zur Kasse' onPress={() => {
-                    {
-                        isLoggedIn ?
-                            this.props.navigation.navigate('DeliveryService', { productsPrice: this.state.discountProductsPrice, data: this.state })
-                            : this.props.navigation.navigate('Login', {})
-                    }
-                }} />
+                <FooterButton text='Zur Kasse' onPress={() => { this.props.navigation.navigate('DeliveryService', { productsPrice: this.state.discountProductsPrice, data: this.state }) }} />
 
                 <ModalView
                     title='Promo-Code'
@@ -408,6 +408,7 @@ class Cart extends Component {
 }
 
 const mapStateToProps = ({ userInfo, cart }) => ({ userInfo, cart })
+
 export default connect(mapStateToProps)(Cart)
 
 const styles = StyleSheet.create({
@@ -462,10 +463,6 @@ const styles = StyleSheet.create({
     cartItemInStock: {
         fontSize: 10,
         color: '#3f911b'
-    },
-    cartItemNotEnoughInStock: {
-        fontSize: 10,
-        color: '#ff0000'
     },
     cartItemNotInStock: {
         fontSize: 10,

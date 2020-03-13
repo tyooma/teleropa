@@ -18,15 +18,12 @@ class UserTypeSelection extends Component {
   }
 
   setUserTypeAndGo() {
-      // AsyncStorage.setItem('userSelectedType', this.state.selected)
-      console.log(this.state.selected)
+      // AsyncStorage.setItem('userSelectedType', this.state.selected)      
       this.props.setUserType(this.state.selected)
       this.props.navigation.replace('Main')
   }
 
-  render() {
-    
-    console.log(this.props)
+  render() {    
     return(
       <View style={styles.mainContainer}>
         <View style={styles.title}>

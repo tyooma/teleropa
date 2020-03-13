@@ -37,8 +37,6 @@ export function getFullProductData(id) {
 }
 
 export function getPreviewProductData(id) {
-    console.log('getPreviewProductData(id) in productPost.js', id);
-    // return fetch('https://ptsv2.com/t/j6czr-1559833253/post', {
     return fetch('https://teleropa.de/WebiProgCommunicationApplicationArticle/getPreviewProductData', {
         method: 'POST',
         headers: {
@@ -48,10 +46,24 @@ export function getPreviewProductData(id) {
         body: `productID=${id}`
     })
         .then(res => res.json())
-    // .then(dataRes => console.log(dataRes))
-    // .then(productInfo => {
-    //     console.log(productInfo)
-    // })
+}
+
+export async function getPreviewAsyncProductData(id) {
+    try {
+        const response = await fetch('https://teleropa.de/WebiProgCommunicationApplicationArticle/getPreviewProductData', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `productID=${id}`
+        })
+        const json = await response.json();
+        return json
+    }
+    catch (error) {
+        console.error(error);
+    }
 }
 
 export function getPreviewProductImage(id) {
