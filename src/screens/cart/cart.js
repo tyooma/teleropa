@@ -169,7 +169,7 @@ class Cart extends Component {
                 getPreviewProductData(id).then(res => this.setState({ products: [...this.state.products, { ...res, id, count }] }))
             })
         } else {
-            Toast.show('Sorry, start de applicatie opnieuw', {
+            Toast.show('Entschuldigung, Sie müssen die Anwendung neu starten', {
                 shadow: false,
                 backgroundColor: '#505050'
             })
