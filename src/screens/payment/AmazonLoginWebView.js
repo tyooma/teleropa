@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
-import { View, Platform } from 'react-native'
+
+import { View, Platform } from 'react-native';
+
+
 import { WebView } from 'react-native-webview';
+
+import Loading from '../loading';
+
 
 export default class AmazonLoginWebView extends Component {
 
@@ -35,37 +41,130 @@ export default class AmazonLoginWebView extends Component {
         const client_id = 'amzn1.application - oa2 - client.a51ef97abbbe4844a97431b166b4535a';
         const client_secret = 'fe8bb5f8314378849588cbae407d1c8a833f71417986cbfb32e0a7abdb954d22';
 
-        const productsPrice = parseFloat(this.state.cart.discountProductsPrice);
-        const deliveryPrice = parseFloat(this.state.cart.deliveryData.deliveryPrice);
-        const total = productsPrice + deliveryPrice;
-
-
-
-        // const productsQuantity = this.state.cart.products.reduce((sum, { count }) => {
-        //     return sum + count
-        // }, 0)
-
-        // const deliveryId = this.state.cart.deliveryData.services.find(item => item.id == this.state.cart.deliveryData.selected);
-        // const deliveryService = deliveryId.name;
-
-        // const token = base64.encode(`${username}:${password}`);
-        // try {
-        //     fetch('https://mws.amazonservices.com/OffAmazonPayments_Sandbox/2013-01-01', {
-        //         method: 'POST',
-        //         headers: {
-        //             'Content-Type': 'application/x-www-form-urlencoded'
-        //         },
-        //         params: ({
-
-        //         })
-
-        //     })
-        // } catch (error) {
-        //     alert(error);
-        // }
+        //this.showLoginButton();
     }
 
+    showLoginButton() {
+        var authRequest;
+        OffAmazonPayments.Button("AmazonPayButton", "A12MAN4EHAQW5I", {
+            type: "PwA",
+            color: "Gold",
+            size: "medium",
+
+            authorization: function () {
+                loginOptions = { scope: "profile payments:widget payments:shipping_address", popup: true };
+                authRequest = amazon.Login.authorize(loginOptions, function (t) {
+                    // console.log(t.access_token);
+                    // console.log(t.expires_in);
+                    // console.log(t.token_type);
+                    this.showAddressBookWidget();
+                });
+            }
+        });
+    }
+
+
+    showAddressBookWidget() {
+        // AddressBook
+        new OffAmazonPayments.Widgets.AddressBook({
+            sellerId: 'A12MAN4EHAQW5I',
+
+            onReady: function (orderReference) {
+                var orderReferenceId = orderReference.getAmazonOrderReferenceId();
+                var el;
+                if ((el = document.getElementById("orderReferenceId"))) {
+                    el.value = orderReferenceId;
+                }
+                // Wallet
+                showWalletWidget(orderReferenceId);
+            },
+            onAddressSelect: function (orderReference) {
+                // do stuff here like recalculate tax and/or shipping
+            },
+            design: {
+                designMode: 'responsive'
+            },
+            onError: function (error) {
+                // Error handling code 
+                // We also recommend that you implement an onError handler in your code. 
+                // @see https://payments.amazon.com/documentation/lpwa/201954960
+                console.log('OffAmazonPayments.Widgets.AddressBook', error.getErrorCode(), error.getErrorMessage());
+                switch (error.getErrorCode()) {
+                    case 'AddressNotModifiable':
+                        // You cannot modify the shipping address when the order reference is in the given state.
+                        break;
+                    case 'BuyerNotAssociated':
+                        // The buyer is not associated with the given order reference. 
+                        // The buyer must sign in before you render the widget.
+                        break;
+                    case 'BuyerSessionExpired':
+                        // The buyer's session with Amazon has expired. 
+                        // The buyer must sign in before you render the widget.
+                        break;
+                    case 'InvalidAccountStatus':
+                        // Your merchant account is not in an appropriate state to execute this request. 
+                        // For example, it has been suspended or you have not completed registration.
+                        break;
+                    case 'InvalidOrderReferenceId':
+                        // The specified order reference identifier is invalid.
+                        break;
+                    case 'InvalidParameterValue':
+                        // The value assigned to the specified parameter is not valid.
+                        break;
+                    case 'InvalidSellerId':
+                        // The merchant identifier that you have provided is invalid. Specify a valid SellerId.
+                        break;
+                    case 'MissingParameter':
+                        // The specified parameter is missing and must be provided.
+                        break;
+                    case 'PaymentMethodNotModifiable':
+                        // You cannot modify the payment method when the order reference is in the given state.
+                        break;
+                    case 'ReleaseEnvironmentMismatch':
+                        // You have attempted to render a widget in a release environment that does not match the release environment of the Order Reference object. 
+                        // The release environment of the widget and the Order Reference object must match.
+                        break;
+                    case 'StaleOrderReference':
+                        // The specified order reference was not confirmed in the allowed time and is now canceled. 
+                        // You cannot associate a payment method and an address with a canceled order reference.
+                        break;
+                    case 'UnknownError':
+                        // There was an unknown error in the service.
+                        break;
+                    default:
+                    // Oh My God, What's going on?
+                }
+            }
+        })
+    }
+
+    showWalletWidget(orderReferenceId) {
+        // Wallet
+        new OffAmazonPayments.Widgets.Wallet({
+            sellerId: 'A12MAN4EHAQW5I',
+            amazonOrderReferenceId: orderReferenceId,
+            onReady: function (orderReference) {
+                console.log(orderReference.getAmazonOrderReferenceId());
+            },
+            onPaymentSelect: function () {
+                console.log(arguments);
+            },
+            design: {
+                designMode: 'responsive'
+            },
+            onError: function (error) {
+                // Error handling code 
+                // We also recommend that you implement an onError handler in your code. 
+                // @see https://payments.amazon.com/documentation/lpwa/201954960
+                console.log('OffAmazonPayments.Widgets.Wallet', error.getErrorCode(), error.getErrorMessage());
+            }
+        })
+    }
+
+
+
     _onNavigationStateChange = (webViewState) => {
+        console.log("webViewState", webViewState)
         if (webViewState.url.includes('https://example.com/')) {
             this.setState({
                 approvalUrl: null
@@ -86,17 +185,8 @@ export default class AmazonLoginWebView extends Component {
     render() {
         return (
             <View style={{ flex: 1 }}>
-                {
-                    this.state.approvalUrl ? <WebView
-                        style={{ height: 400, width: 300 }}
-                        source={{ uri: this.state.approvalUrl }}
-                        onNavigationStateChange={this._onNavigationStateChange}
-                        javaScriptEnabled={true}
-                        domStorageEnabled={true}
-                        startInLoadingState={false}
-                        style={{ marginTop: 20 }}
-                    /> : <Loading />
-                }
+                <WebView source={{ uri: "https://pay.amazon.com/signup" }} />
+                {/* {this.showLoginButton()} */}
             </View>
         )
     }

@@ -150,12 +150,11 @@ export default class Search extends Component {
             this.getProductsIDs(searchText)
         }
     }
-
     getProductsIDs(searchText) {
         getSearchResult(searchText)
-            .then(res =>
+            .then(res => {
                 this.getIDs(res.searchResult)
-            )
+            })
     }
 
     findMinMaxPrice() {
@@ -163,6 +162,7 @@ export default class Search extends Component {
         const maxPrice = Math.max(...prices)
         const minPrice = Math.min(...prices)
         this.setState({ minPrice, maxPrice, fromPrice: minPrice, toPrice: maxPrice })
+        this.getData(0)
     }
 
     getIDs(ids, fromPrice, toPrice, sortBy) {
@@ -177,30 +177,37 @@ export default class Search extends Component {
             this.setState({ fromPrice, toPrice, sortBy })
             const filtered = this.state.originalIDs.filter(({ price }) => price >= fromPrice && price <= toPrice)
             let sorted = [];
-            switch (sortBy) {
-                case 'popular':
-                    sorted = filtered.sort((first, second) => (first.popularity > second.popularity) ? -1 : ((second.popularity > first.popularity) ? 1 : 0))
-                    break
-                case 'alphabet':
-                    sorted = filtered.sort((first, second) => (first.name > second.name) ? 1 : ((second.name > first.name) ? -1 : 0))
-                    break
-                case 'price_down':
-                    sorted = filtered.sort((first, second) => (first.price > second.price) ? -1 : ((second.price > first.price) ? 1 : 0))
-                    break
-                case 'price_up':
-                    sorted = filtered.sort((first, second) => (first.price < second.price) ? -1 : ((second.price < first.price) ? 1 : 0))
-                    break
-                default: break
+            if (sortBy.length != 0) {
+                switch (sortBy) {
+                    case 'popular':
+                        sorted = filtered.sort((first, second) => (first.popularity > second.popularity) ? -1 : ((second.popularity > first.popularity) ? 1 : 0))
+                        break
+                    case 'alphabet':
+                        sorted = filtered.sort((first, second) => (first.name > second.name) ? 1 : ((second.name > first.name) ? -1 : 0))
+                        break
+                    case 'price_down':
+                        sorted = filtered.sort((first, second) => (first.price > second.price) ? -1 : ((second.price > first.price) ? 1 : 0))
+                        break
+                    case 'price_up':
+                        sorted = filtered.sort((first, second) => (first.price < second.price) ? -1 : ((second.price < first.price) ? 1 : 0))
+                        break
+                    default: break
+                }
+            } else {
+                sorted = filtered
             }
             new Promise((resolve) => {
-                this.setState({ filteredIDs: sorted, products: [], from: 0 })
-                setTimeout(() => resolve(), 100)
+                // console.log("``````````````````````````````````sorted", sorted);
+                this.setState({ filteredIDs: sorted, products: [], from: 0 });
+                // console.log("```````skdmfksdmklfdmbkmfbf``````` this.state.filteredIDs", this.state.filteredIDs);
+                setTimeout(() => resolve(), 200)
             })
-                .then(() => this.getData(0, sortBy))
+                .then(() =>
+                    this.getData(0, sortBy))
         } else {
             this.setState({ originalIDs: ids, filteredIDs: ids, loaded: true, })
             this.findMinMaxPrice()
-            this.getData(0)
+
         }
     }
 
@@ -252,8 +259,10 @@ export default class Search extends Component {
             return this.getSearchStory()
         }
         if (!this.state.loaded || this.state.products.length < 1) return <Loading />
+
         const { minPrice, maxPrice, fromPrice, toPrice, sortBy } = this.state
         let sorted = [];
+
         switch (sortBy) {
             case 'popular':
                 sorted = this.state.products.sort((first, second) => (first.popularity > second.popularity) ? -1 : ((second.popularity > first.popularity) ? 1 : 0))
@@ -273,7 +282,7 @@ export default class Search extends Component {
             <View style={{ flex: 1 }}>
                 <View style={styles.productsLine}>
                     <FlatList
-                        data={!sorted ? sorted : this.state.products}
+                        data={!sorted.length ? this.state.products : sorted}
                         renderItem={({ item }) => {
                             const { companyPrice, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, id } = item
                             return (
