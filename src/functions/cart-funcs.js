@@ -46,7 +46,7 @@ export async function addToCart(id) {
         })
     }
     catch (e) {
-        console.wanr(e)
+        console.warn(e)
     }
 
 }

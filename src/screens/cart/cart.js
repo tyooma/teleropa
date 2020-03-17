@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { Text, TouchableOpacity, View, Image, StyleSheet } from 'react-native';
+import { Alert, Text, TouchableOpacity, TouchableHighlight, View, Image, Modal, StyleSheet } from 'react-native';
 
 import { ScrollView } from 'react-native-gesture-handler';
 
@@ -42,6 +42,7 @@ getStock = (stock, order, pcs) => {
                 </Text>
             )
         }
+
         return (
             <Text style={styles.cartItemNotInStock}>
                 nicht verfügbar
@@ -72,7 +73,7 @@ getCounter = (order, pcs, id, onMinus, onAdd) => {
 }
 
 export const CartItem = ({ img, name, pcs, price, companyPrice, userType, stock, order, orderReturnReason, id, onAdd, onMinus, onDelete }) => {
-    console.log('\\\/\\', order, orderReturnReason)
+    console.log('order, orderReturnReason', order, orderReturnReason)
     return (
         <TouchableOpacity style={styles.cartItemContainer} onPress={() => NavigationService.push('Product', { id, name })}>
             <View style={{ flexDirection: 'row' }}>
@@ -142,6 +143,11 @@ class Cart extends Component {
         promocodeData: null,
         discountValue: 0,
         cartReceaved: false,
+        modalVisible: false,
+    }
+
+    setModalVisible(visible) {
+        this.setState({ modalVisible: visible });
     }
 
     static navigationOptions = {
@@ -190,6 +196,67 @@ class Cart extends Component {
         cart.map(({ id, count }) => {
             getPreviewAsyncProductData(id).then(res => this.setState({ products: [...this.state.products, { ...res, id, count }] }))
         })
+    }
+
+    itemsAvailableCount() {
+        // console.log(stock,count)
+        const newProductsArray = this.state.products.map(product => {
+            if (product.stock < product.count) {
+                // const limitedStock = (productName, stock, count) => {
+                //     this.productName = productName;
+                //     this.stock = stock;
+                //     this.count = count;
+                // console.log('limitedStock',limitedStock.stock)
+                // }
+
+                // return (
+                //     <Modal
+                //         animationType="slide"
+                //         transparent={false}
+                //         visible={this.state.modalVisible}
+                //         onRequestClose={() => {
+                //             Alert.alert('Modal has been closed.');
+                //         }}>
+                //         <View style={{ marginTop: 22 }}>
+                //             <View>
+                //                 <Text>The quantity of this product exceeds the available:
+                //     {product.productName} (available {product.stock} pcs)</Text>
+
+                //                 <TouchableHighlight
+                //                     onPress={() => {
+                //                         this.setModalVisible(!this.state.modalVisible);
+                //                     }}>
+                //                     <Text>Hide Modal</Text>
+                //                 </TouchableHighlight>
+                //             </View>
+                //         </View>
+                //     </Modal>
+                // )
+                
+                // Alert.alert(
+                // `The quantity of ${product.productName} exceeds the available (${product.stock} pcs)`,
+                // `The quantity of this product exceeds the available:`,
+                // `${product.productName} (available ${product.stock} pcs)`,
+                // [
+                // {
+                //     text: 'Nein',
+                //     onPress: () => this.props.navigation.goBack(),
+
+                //     style: 'cancel',
+                // },
+                // {
+                //     text: 'Ja',
+                //     onPress: async () => {
+                //     }
+                // }
+                // ],
+                // { cancelable: false }
+                // )
+            }
+            //   console.log('newProductsArray',newProductsArray)  
+            console.table('product.stock', product.stock, product.count, product.productName)
+        })
+        return newProductsArray
     }
 
     addToCartAndState(id) {
@@ -387,7 +454,12 @@ class Cart extends Component {
                     </View>
                 </BoxShadow>
 
-                <FooterButton text='Zur Kasse' onPress={() => { this.props.navigation.navigate('DeliveryService', { productsPrice: this.state.discountProductsPrice, data: this.state }) }} />
+                <FooterButton text='Zur Kasse' onPress={() => {
+                    console.log(this.state.products);
+                    this.itemsAvailableCount();
+                    // this.setModalVisible(true)
+                    this.props.navigation.navigate('DeliveryService', { productsPrice: this.state.discountProductsPrice, data: this.state })
+                }} />
 
                 <ModalView
                     title='Promo-Code'
