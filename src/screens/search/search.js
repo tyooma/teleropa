@@ -112,8 +112,7 @@ export default class Search extends Component {
 
     componentWillReceiveProps() {
         const searchFromProps = this.props.navigation.getParam('searchText', '')
-
-        if (searchFromProps.length >= 3) {
+        if (searchFromProps.length >= 4) {
             this.setState({ showResult: true })
         }
     }
@@ -144,8 +143,8 @@ export default class Search extends Component {
     onSearchChange(searchText) {
         this.setState({ searchText })
         this.props.navigation.setParams({ searchText })
-        this.setState({ showResult: searchText.length >= 3 })
-        if (searchText.length >= 3) {
+        this.setState({ showResult: searchText.length >= 4 })
+        if (searchText.length >= 4) {
             this.setState({ loaded: false, products: [], from: 0, ids: [], })
             this.getProductsIDs(searchText)
         }
@@ -265,16 +264,16 @@ export default class Search extends Component {
 
         switch (sortBy) {
             case 'popular':
-                sorted = this.state.products.sort((first, second) => (first.popularity > second.popularity) ? -1 : ((second.popularity > first.popularity) ? 1 : 0))
+                sorted = this.state.products.sort((first, second) => (parseFloat(first.popularity) > parseFloat(second.popularity)) ? -1 : ((parseFloat(second.popularity) > parseFloat(first.popularity)) ? 1 : 0))
                 break
             case 'alphabet':
                 sorted = this.state.products.sort((first, second) => (first.name > second.name) ? 1 : ((second.name > first.name) ? -1 : 0))
                 break
             case 'price_down':
-                sorted = this.state.products.sort((first, second) => (first.price > second.price) ? -1 : ((second.price > first.price) ? 1 : 0))
+                sorted = this.state.products.sort((first, second) => (parseFloat(first.price) > parseFloat(second.price)) ? -1 : ((parseFloat(second.price) > parseFloat(first.price)) ? 1 : 0))
                 break
             case 'price_up':
-                sorted = this.state.products.sort((first, second) => (first.price < second.price) ? -1 : ((second.price < first.price) ? 1 : 0))
+                sorted = this.state.products.sort((first, second) => (parseFloat(first.price) < parseFloat(second.price)) ? -1 : ((parseFloat(second.price) < parseFloat(first.price)) ? 1 : 0))
                 break
             default: break
         }
