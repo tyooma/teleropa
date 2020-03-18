@@ -312,10 +312,12 @@ const AppBotomBarNavigator = createBottomTabNavigator(
       }
     }),
     tabBarOptions: {
-      activeTintColor: '#F8F8F8',
+      activeTintColor: '#d7171f',
+      // activeTintColor: '#F8F8F8',
       inactiveTintColor: '#586589',
       style: {
-        backgroundColor: '#171F33'
+        backgroundColor: '#ffffff'
+        // backgroundColor: '#171F33'
       },
       tabStyle: {}
     }

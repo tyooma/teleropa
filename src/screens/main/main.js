@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, View, ScrollView, Image, TouchableOpacity, FlatList } from 'react-native'
+import { Dimensions, Text, View, ScrollView, Image, TouchableOpacity, FlatList } from 'react-native'
 
 import { sWidth, sHeight } from '../../helpers/screenSize';
 
@@ -19,6 +19,9 @@ import { sendToken } from '../../posts/authPosts'
 import Loading from '../loading';
 
 import { MenuButton, SearchButton } from '../../common/header-buttons';
+
+
+import HTML from "react-native-render-html";
 
 class Main extends Component {
     static navigationOptions = {
@@ -98,6 +101,26 @@ class Main extends Component {
             return <Loading />
         }
 
+        const htmlContent = `<a href="/audiohifi/s-20-radio-internetradio-dab-ukw-usb-hybridradio" class="index-hello-link">
+            <img class="index-hello-image" src="/media/image/11/8f/1c/Banner_S20_teleropa.jpg">
+                <div class="index-hello-groups">
+                    <div class="index-hello-content">
+                        <div class="index-hello-headline"><b>20€ SPAREN</b><span>DIGITALRADIO ZUM MEGAPREIS</span></div>
+                        <div class="index-hello-desc">
+                            <p>TELESTAR S20</p>
+                            <p>DAB+ & RDS UKW Stereoradio</p>
+                            <ul> <li>Weckfunktion</li> <li>Digitaler Soundprozessor (DSP)</li> <li>Speicherplatz für 10 DAB+/UKW Sender</li> </ul>
+                        </div>
+                        <div class="index-hello-actions">
+                            <div class="index-hello-logo">
+                                <img src="/media/image/d6/fc/1e/Telestar-Logo-weiss.png">
+                            </div>
+                                <div class="index-hello-price"><span>NUR</span><b><i class="wbp-net-switch-banner--value">99,00</i> €</b></div>
+                            </div>
+                        </div>
+                    </div>
+                </a>`
+
         const image = require('../../assets/icons-color/008-check2.png');
         return (
             <View style={{ flex: 1 }} >
@@ -158,8 +181,11 @@ class Main extends Component {
                             <Text style={styles.topText}>Tagesaktuelle Preise</Text>
                         </View>
                     </ScrollView>
+
                     {/* <TouchableOpacity onPress={() => this.props.setNetworkStatusOff()}> */}
+                    {/* <HTML html={htmlContent} /> */}
                     <TouchableOpacity onPress={() => this.props.navigation.navigate('Product', { name: 'Uno 4K SE Linux Receiver UHD 2160p', id: '58126' })}>
+
                         <ImageLoader source={{ uri: this.state.image }} style={{ width: '100%', height: this.state.imageRatio, resizeMode: 'contain' }} />
                     </TouchableOpacity>
 

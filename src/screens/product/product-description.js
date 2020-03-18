@@ -217,13 +217,17 @@ class ProductDescription extends Component {
             {this.getStock(productInfo.stock)}
             <Text style={styles.id}>Artikelnummer: {this.props.id} </Text>
           </View>
-          {/* <View style={[styles.line, {marginTop: 12}]} >
+
+          {/* цена в описании продукта (не стики) */}
+          <View style={[styles.line, {marginTop: 12}]} >
 
                     {this.getPrices(productInfo.price, productInfo.salePrice, productInfo.companyPrice)}
                     {this.getCartButton(productInfo.stock, this.props.id)}
                     
-                </View> */}
+                </View>
           <View style={{ marginLeft: 18, marginTop: 10 }}>
+
+          
             <Rating rating={productInfo.rate} />
           </View>
           <View style={styles.descriptionBlock}>
@@ -248,8 +252,9 @@ class ProductDescription extends Component {
         </ScrollView>
         <View style={[styles.line]} >
 
-          {this.getPrices(productInfo.price, productInfo.salePrice, productInfo.companyPrice)}
-          {this.getCartButton(productInfo.stock, this.props.id)}
+          {/* цена в описании продукта (стики) */}
+          {/* {this.getPrices(productInfo.price, productInfo.salePrice, productInfo.companyPrice)}
+          {this.getCartButton(productInfo.stock, this.props.id)} */}
 
         </View>
       </View>

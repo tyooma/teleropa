@@ -232,7 +232,7 @@ class Cart extends Component {
                 //         </View>
                 //     </Modal>
                 // )
-                
+
                 // Alert.alert(
                 // `The quantity of ${product.productName} exceeds the available (${product.stock} pcs)`,
                 // `The quantity of this product exceeds the available:`,
@@ -456,7 +456,7 @@ class Cart extends Component {
 
                 <FooterButton text='Zur Kasse' onPress={() => {
                     console.log(this.state.products);
-                    this.itemsAvailableCount();
+                    // this.itemsAvailableCount();
                     // this.setModalVisible(true)
                     this.props.navigation.navigate('DeliveryService', { productsPrice: this.state.discountProductsPrice, data: this.state })
                 }} />
