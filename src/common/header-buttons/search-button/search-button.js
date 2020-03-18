@@ -3,11 +3,10 @@ import { TouchableOpacity, Image } from 'react-native';
 
 import NavigationService from '../../../navigation-service';
 
-const SearchButton = ({onPress}) => {
-
-  return(
+const SearchButton = ({ onPress }) => {  
+  return (
     <TouchableOpacity onPress={() => NavigationService.navigate('Search')} >
-      <Image style={styles.image} source={require('../../../assets/icons-color/006-search-white.png')} 
+      <Image style={styles.image} source={require('../../../assets/icons-color/006-search-white.png')}
         key={'headerSearch'}
       />
     </TouchableOpacity>

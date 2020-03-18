@@ -22,7 +22,9 @@ import Loading from '../loading'
 
 import FilterButton from '../../common/filter-button';
 
-import ProductListItem from '../../common/product-list-item'
+import ProductListItem from '../../common/product-list-item';
+
+import { connect } from 'react-redux'
 
 
 const CustomHeader = ({ value, onChangeText, onEndEditing }) => {
@@ -56,7 +58,8 @@ const SearchStoryItem = ({ text, onPress }) => {
     )
 }
 
-export default class Search extends Component {
+//export default 
+class Search extends Component {
 
     static navigationOptions = ({ navigation }) => {
         const { params = {} } = navigation.state;
@@ -143,8 +146,10 @@ export default class Search extends Component {
     onSearchChange(searchText) {
         this.setState({ searchText })
         this.props.navigation.setParams({ searchText })
-        this.setState({ showResult: searchText.length >= 4 })
-        if (searchText.length >= 4) {
+        // this.setState({ showResult: searchText.length >= 4 })
+        this.setState({ showResult: searchText.length >= 3 })
+        // if (searchText.length >= 4) {
+        if (searchText.length >= 3) {
             this.setState({ loaded: false, products: [], from: 0, ids: [], })
             this.getProductsIDs(searchText)
         }
@@ -157,11 +162,20 @@ export default class Search extends Component {
     }
 
     findMinMaxPrice() {
+        // if (this.props.userInfo.selectedUserType === 'EK') {
         const prices = this.state.originalIDs.map(({ price }) => price)
         const maxPrice = Math.max(...prices)
         const minPrice = Math.min(...prices)
         this.setState({ minPrice, maxPrice, fromPrice: minPrice, toPrice: maxPrice })
         this.getData(0)
+        // } else {
+
+        //     const companyPrice = this.state.originalIDs.map(({ companyPrice }) => companyPrice)
+        //     const maxPrice = Math.max(...companyPrice)
+        //     const minPrice = Math.min(...companyPrice)
+        //     this.setState({ minPrice, maxPrice, fromPrice: minPrice, toPrice: maxPrice })
+        //     this.getData(0)
+        // }
     }
 
     getIDs(ids, fromPrice, toPrice, sortBy) {
@@ -196,15 +210,13 @@ export default class Search extends Component {
                 sorted = filtered
             }
             new Promise((resolve) => {
-                // console.log("``````````````````````````````````sorted", sorted);
                 this.setState({ filteredIDs: sorted, products: [], from: 0 });
-                // console.log("```````skdmfksdmklfdmbkmfbf``````` this.state.filteredIDs", this.state.filteredIDs);
                 setTimeout(() => resolve(), 200)
             })
                 .then(() =>
                     this.getData(0, sortBy))
         } else {
-            this.setState({ originalIDs: ids, filteredIDs: ids, loaded: true, })
+            this.setState({ originalIDs: ids, filteredIDs: ids, loaded: true, })            
             this.findMinMaxPrice()
 
         }
@@ -226,7 +238,7 @@ export default class Search extends Component {
             }
         })
         if (!this.state.products && !this.state.filteredIDs) {
-            this.showTaost()
+            this.showToast();
         }
     }
 
@@ -245,7 +257,7 @@ export default class Search extends Component {
         return null
     }
 
-    showTaost() {
+    showToast() {
         ToastAndroid.showWithGravity(
             "Nicht verfügbar",
             ToastAndroid.SHORT,
@@ -259,24 +271,44 @@ export default class Search extends Component {
         }
         if (!this.state.loaded || this.state.products.length < 1) return <Loading />
 
+        console.log("this.state RENDER", this.state);
         const { minPrice, maxPrice, fromPrice, toPrice, sortBy } = this.state
         let sorted = [];
-
-        switch (sortBy) {
-            case 'popular':
-                sorted = this.state.products.sort((first, second) => (parseFloat(first.popularity) > parseFloat(second.popularity)) ? -1 : ((parseFloat(second.popularity) > parseFloat(first.popularity)) ? 1 : 0))
-                break
-            case 'alphabet':
-                sorted = this.state.products.sort((first, second) => (first.name > second.name) ? 1 : ((second.name > first.name) ? -1 : 0))
-                break
-            case 'price_down':
-                sorted = this.state.products.sort((first, second) => (parseFloat(first.price) > parseFloat(second.price)) ? -1 : ((parseFloat(second.price) > parseFloat(first.price)) ? 1 : 0))
-                break
-            case 'price_up':
-                sorted = this.state.products.sort((first, second) => (parseFloat(first.price) < parseFloat(second.price)) ? -1 : ((parseFloat(second.price) < parseFloat(first.price)) ? 1 : 0))
-                break
-            default: break
+        if (this.props.userInfo.selectedUserType == 'H') {
+            switch (sortBy) {
+                case 'popular':
+                    sorted = this.state.products.sort((first, second) => (parseFloat(first.popularity) > parseFloat(second.popularity)) ? -1 : ((parseFloat(second.popularity) > parseFloat(first.popularity)) ? 1 : 0))
+                    break
+                case 'alphabet':
+                    sorted = this.state.products.sort((first, second) => (first.name > second.name) ? 1 : ((second.name > first.name) ? -1 : 0))
+                    break
+                case 'price_down':
+                    sorted = this.state.products.sort((first, second) => (parseFloat(first.companyPrice) > parseFloat(second.companyPrice)) ? -1 : ((parseFloat(second.companyPrice) > parseFloat(first.companyPrice)) ? 1 : 0))
+                    break
+                case 'price_up':
+                    sorted = this.state.products.sort((first, second) => (parseFloat(first.companyPrice) < parseFloat(second.companyPrice)) ? -1 : ((parseFloat(second.pcompanyPricerice) < parseFloat(first.companyPrice)) ? 1 : 0))
+                    break
+                default: break
+            }
+        } else {
+            switch (sortBy) {
+                case 'popular':
+                    sorted = this.state.products.sort((first, second) => (parseFloat(first.popularity) > parseFloat(second.popularity)) ? -1 : ((parseFloat(second.popularity) > parseFloat(first.popularity)) ? 1 : 0))
+                    break
+                case 'alphabet':
+                    sorted = this.state.products.sort((first, second) => (first.name > second.name) ? 1 : ((second.name > first.name) ? -1 : 0))
+                    break
+                case 'price_down':
+                    sorted = this.state.products.sort((first, second) => (parseFloat(first.price) > parseFloat(second.price)) ? -1 : ((parseFloat(second.price) > parseFloat(first.price)) ? 1 : 0))
+                    break
+                case 'price_up':
+                    sorted = this.state.products.sort((first, second) => (parseFloat(first.price) < parseFloat(second.price)) ? -1 : ((parseFloat(second.price) < parseFloat(first.price)) ? 1 : 0))
+                    break
+                default: break
+            }
         }
+        console.log("SORTED RENDER", sorted);
+        console.log("PROPS RENDER", this.props);
         return (
             <View style={{ flex: 1 }}>
                 <View style={styles.productsLine}>
@@ -288,7 +320,8 @@ export default class Search extends Component {
                                 <View style={{ paddingBottom: 8 }}>
                                     <ProductListItem
                                         name={productName}
-                                        price={price}
+                                        //price={this.props.price}
+                                        price={this.props.userInfo.selectedUserType === 'EK' ? price : companyPrice}
                                         salePrice={salePrice}
                                         companyPrice={companyPrice}
                                         rate={rate}
@@ -321,6 +354,10 @@ export default class Search extends Component {
         return this.renderHelper()
     }
 }
+
+const mapStateToProps = ({ userInfo, cart }) => ({ userInfo, cart })
+
+export default connect(mapStateToProps)(Search)
 
 const styles = StyleSheet.create({
     headerStyle: {

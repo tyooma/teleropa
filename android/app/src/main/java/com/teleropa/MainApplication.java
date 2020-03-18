@@ -3,6 +3,7 @@ package com.teleropa;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.reactlibrary.RNLoginWithAmazonPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 // import com.reactnativepayments.ReactNativePaymentsPackage;
 import io.invertase.firebase.RNFirebasePackage;
@@ -39,6 +40,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNLoginWithAmazonPackage(),
             new VectorIconsPackage(),
             // new ReactNativePaymentsPackage(),
             new RNFirebasePackage(),

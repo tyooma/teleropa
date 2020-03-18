@@ -59,7 +59,8 @@ export default class Filter extends Component {
     return styles.sortButtonText
   }
 
-  render() {    
+  render() {
+    console.log("this.state in filter.js", this.state);
     return (
       <View style={{ flex: 1, marginTop: 12 }}>
         <ScrollView scrollEnabled={this.state.scrollEnabled}>

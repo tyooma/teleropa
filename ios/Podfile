@@ -13,6 +13,8 @@ target 'teleropa' do
 
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
+  pod 'RNLoginWithAmazon', :path => '../node_modules/react-native-login-with-amazon'
+
   target 'teleropaTests' do
     inherit! :search_paths
     # Pods for testing
