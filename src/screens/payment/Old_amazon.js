@@ -19,8 +19,6 @@ const url = "https://api.amazon.com/auth/o2/token";
 const codepairUrl = "https://api.amazon.com/auth/O2/create/codepair";
 
 const body = ('response_type=device_code&client_id=' + clientId + '&scope=profile')
-//const body = ('response_type=device_code&client_id=' + clientId + "&scope = 'profile postal_code payments:widget payments:shipping_address payments:billing_address'  ")
-
 export default class AmazonLoginWebView extends Component {
 
     constructor(props) {
@@ -33,7 +31,6 @@ export default class AmazonLoginWebView extends Component {
             user_code: '',
             device_code: '',
             verification_uri: '',
-            Widjet: '',
             clipboardContent: null,
             showAlert: true,
             approvalUrl: null,
@@ -55,7 +52,6 @@ export default class AmazonLoginWebView extends Component {
 
 
     async  componentWillMount() {
-
         fetch(codepairUrl, {
             method: 'POST',
             headers: {
@@ -71,11 +67,13 @@ export default class AmazonLoginWebView extends Component {
                 this.setState({
                     user_code: response.user_code,
                     device_code: response.device_code,
-                    verification_uri: response.verification_uri,
+                    verification_uri: response.verification_uri
                 })
                 console.log("response", this.state.user_code)
             })
     }
+
+
 
 
     _onNavigationStateChange = (webViewState) => {
@@ -170,94 +168,13 @@ export default class AmazonLoginWebView extends Component {
         }
     }
 
-
-
     render() {
-        let JS = '<script type="text/javascript"  .windowonAmazonLoginReady = function() { amazon.Login.setClientId("amzn1.application-oa2-client.45a7aff6cd074f079002eb9612697349")} ></script>';
-        let JS1 = '<script type="text/javascript" src="https://static-na.payments-amazon.com/OffAmazonPayments/us/js/Widgets.js?sellerId=A12MAN4EHAQW5I"></script>';
-        let JS2 = `
-        <html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <title>Test Payment Page</title><!-- This is the handler for the onAmazonLoginReady Callback -->
-
-  <script type="text/javascript">
-            window.onAmazonLoginReady = function() {
-                amazon.Login.setClientId("amzn1.application-oa2-client.45a7aff6cd074f079002eb9612697349");
-      };
-  </script>
-        <script type="text/javascript"
-            src='https://static-na.payments-amazon.com/OffAmazonPayments/us/js/Widgets.js?sellerId=A12MAN4EHAQW5I'>
-        </script>
-    </head>
-
-
-    <div id="addressBookWidgetDiv"></div>
-    <script>
-        new OffAmazonPayments.Widgets.AddressBook({
-            sellerId: 'A12MAN4EHAQW5I',
-    design: {
-            size: {
-            width:'400px',
-    height:'260px'
-  }
-},
-    onOrderReferenceCreate: function(orderReference) {
-            orderReference.getAmazonOrderReferenceId();
-  },
-    onAddressSelect: function(orderReference) {
-            // Optionally render the Wallet Widget 
-        },
-    onError: function(error) {
-            // Write your custom error handling
-        }
-        }).bind("addressBookWidgetDiv");
-</script>
-
-
-    <script type="text/javascript">
-        window.onAmazonLoginReady = function() {
-            amazon.Login.setClientId('amzn1.application-oa2-client.45a7aff6cd074f079002eb9612697349');
-  };
-  </script>
-    <script type="text/javascript"
-        src='https://static-na.payments-amazon.com/OffAmazonPayments/us/js/Widgets.js?sellerId=A12MAN4EHAQW5I'>
-    </script>
-</head>
-
-
-    <div id="AmazonPayButton"></div>
-    <script type="text/javascript">
-        var authRequest;
-  OffAmazonPayments.Button("AmazonPayButton", "A12MAN4EHAQW5I", {
-            type:  "PwA",    color: "Gold",    size:  "medium",    useAmazonAddressBook: true,    authorization: function() {      var loginOptions = {scope: 'profile payments:widget'};
-    authRequest = amazon.Login.authorize(loginOptions, "https://teleropa.de/checkout");
-  },
-    onError: function(error) {
-            // Write your custom error handling
-        }
-        });
-</script>
-
-</head >
-
-    <body>
-
-
-    </body>
-</html >
-        `
-
-
-
-        // let source = JS + JS1 + JS2        
-        console.log("source", JS + JS1 + JS2)
         return (
             <View style={{ flex: 1 }}>
                 <WebView
-                    //source={{ uri: "https://www.amazon.com/a/code?language=de_DE" }}
-                    source={{ html: JS2 }}
+                    source={{ uri: "https://www.amazon.com/a/code?language=de_DE" }}
                     scalesPageToFit={false}
-                    // onNavigationStateChange={this._onNavigationStateChange.bind(this)}                    
+                    onNavigationStateChange={this._onNavigationStateChange.bind(this)}
                     javaScriptEnabled={true}
                     domStorageEnabled={true}
                     injectedJavaScript={this.state.cookie}
