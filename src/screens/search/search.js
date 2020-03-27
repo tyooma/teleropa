@@ -162,20 +162,20 @@ class Search extends Component {
     }
 
     findMinMaxPrice() {
-        // if (this.props.userInfo.selectedUserType === 'EK') {
-        const prices = this.state.originalIDs.map(({ price }) => price)
-        const maxPrice = Math.max(...prices)
-        const minPrice = Math.min(...prices)
-        this.setState({ minPrice, maxPrice, fromPrice: minPrice, toPrice: maxPrice })
-        this.getData(0)
-        // } else {
+        if (this.props.userInfo.selectedUserType === 'EK') {
+            const prices = this.state.originalIDs.map(({ price }) => price)
+            const maxPrice = Math.max(...prices)
+            const minPrice = Math.min(...prices)
+            this.setState({ minPrice, maxPrice, fromPrice: minPrice, toPrice: maxPrice })
+            this.getData(0)
+        } else {
 
-        //     const companyPrice = this.state.originalIDs.map(({ companyPrice }) => companyPrice)
-        //     const maxPrice = Math.max(...companyPrice)
-        //     const minPrice = Math.min(...companyPrice)
-        //     this.setState({ minPrice, maxPrice, fromPrice: minPrice, toPrice: maxPrice })
-        //     this.getData(0)
-        // }
+            const companyPrice = this.state.originalIDs.map(({ companyPrice }) => companyPrice.toFixed(2))
+            const maxPrice = Math.max(...companyPrice)
+            const minPrice = Math.min(...companyPrice)
+            this.setState({ minPrice, maxPrice, fromPrice: minPrice, toPrice: maxPrice })
+            this.getData(0)
+        }
     }
 
     getIDs(ids, fromPrice, toPrice, sortBy) {
@@ -216,7 +216,7 @@ class Search extends Component {
                 .then(() =>
                     this.getData(0, sortBy))
         } else {
-            this.setState({ originalIDs: ids, filteredIDs: ids, loaded: true, })            
+            this.setState({ originalIDs: ids, filteredIDs: ids, loaded: true, })
             this.findMinMaxPrice()
 
         }
@@ -266,12 +266,12 @@ class Search extends Component {
     }
 
     renderHelper() {
+        console.log("this.state RENDER", this.props.userInfo.selectedUserType);
         if (!this.state.showResult) {
             return this.getSearchStory()
         }
         if (!this.state.loaded || this.state.products.length < 1) return <Loading />
 
-        console.log("this.state RENDER", this.state);
         const { minPrice, maxPrice, fromPrice, toPrice, sortBy } = this.state
         let sorted = [];
         if (this.props.userInfo.selectedUserType == 'H') {
@@ -284,6 +284,7 @@ class Search extends Component {
                     break
                 case 'price_down':
                     sorted = this.state.products.sort((first, second) => (parseFloat(first.companyPrice) > parseFloat(second.companyPrice)) ? -1 : ((parseFloat(second.companyPrice) > parseFloat(first.companyPrice)) ? 1 : 0))
+                    console.log("SORTED PRICE DOWN", sorted)
                     break
                 case 'price_up':
                     sorted = this.state.products.sort((first, second) => (parseFloat(first.companyPrice) < parseFloat(second.companyPrice)) ? -1 : ((parseFloat(second.pcompanyPricerice) < parseFloat(first.companyPrice)) ? 1 : 0))

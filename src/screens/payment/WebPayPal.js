@@ -75,11 +75,10 @@ export class WebPayPal extends Component {
                 body: "grant_type=client_credentials"
             })
                 .then(response => {
-
                     return response.json()
-
                 })
                 .then(response => {
+                    console.log("response PayPal", response)
                     this.setState({
                         access_token: response.access_token
                     })
