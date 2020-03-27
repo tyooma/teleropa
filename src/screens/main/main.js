@@ -76,7 +76,7 @@ class Main extends Component {
     }
 
     getCategoriesCards() {
-        // console.log(this.props.mainPage.categories)
+        // console.log(this.props.mainPage)
 
         return this.props.mainPage.categories.map(({ categoryName, categoryImageURL, categoryID }) => {
             // console.log(category)
@@ -102,7 +102,7 @@ class Main extends Component {
         }
 
         const htmlContent = `<a href="/audiohifi/s-20-radio-internetradio-dab-ukw-usb-hybridradio" class="index-hello-link">
-            <img class="index-hello-image" src="/media/image/11/8f/1c/Banner_S20_teleropa.jpg">
+            <img class="index-hello-image" src="https://teleropa.de/media/image/11/8f/1c/Banner_S20_teleropa.jpg">
                 <div class="index-hello-groups">
                     <div class="index-hello-content">
                         <div class="index-hello-headline"><b>20€ SPAREN</b><span>DIGITALRADIO ZUM MEGAPREIS</span></div>

@@ -162,20 +162,19 @@ class Search extends Component {
     }
 
     findMinMaxPrice() {
-        // if (this.props.userInfo.selectedUserType === 'EK') {
+        if (this.props.userInfo.selectedUserType === 'EK') {
         const prices = this.state.originalIDs.map(({ price }) => price)
         const maxPrice = Math.max(...prices)
         const minPrice = Math.min(...prices)
         this.setState({ minPrice, maxPrice, fromPrice: minPrice, toPrice: maxPrice })
         this.getData(0)
-        // } else {
-
-        //     const companyPrice = this.state.originalIDs.map(({ companyPrice }) => companyPrice)
-        //     const maxPrice = Math.max(...companyPrice)
-        //     const minPrice = Math.min(...companyPrice)
-        //     this.setState({ minPrice, maxPrice, fromPrice: minPrice, toPrice: maxPrice })
-        //     this.getData(0)
-        // }
+        } else {
+            const companyPrice = this.state.originalIDs.map(({ companyPrice }) => companyPrice.toFixed(2));
+            const maxPrice = Math.max(...companyPrice)
+            const minPrice = Math.min(...companyPrice)
+            this.setState({ minPrice, maxPrice, fromPrice: minPrice, toPrice: maxPrice })
+            this.getData(0)
+        }
     }
 
     getIDs(ids, fromPrice, toPrice, sortBy) {
