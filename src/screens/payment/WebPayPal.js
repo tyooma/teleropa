@@ -30,7 +30,7 @@ export class WebPayPal extends Component {
             city: this.props.userInfo.city,
             post: this.props.userInfo.post,
 
-            realAccount: false
+            realAccount: true
         }
     }
     async componentDidMount() {

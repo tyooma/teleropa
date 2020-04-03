@@ -20,9 +20,9 @@ import NavigationService from '../../navigation-service';
 import HTML from 'react-native-render-html';
 
 class ProductDescription extends Component {
-    componentDidMount() {      
-      this.getSimilarToState(this.props.productSimilar)
-    }
+  componentDidMount() {
+    this.getSimilarToState(this.props.productSimilar)
+  }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.productSimilar != nextProps.productSimilar) {
@@ -63,7 +63,7 @@ class ProductDescription extends Component {
     return <Text style={styles.inStock}>Produkt ist verfügbar</Text>
   }
 
-  getPrices(price, salePrice, companyPrice) {
+  getPrices(price, companyPrice, salePrice) {
     const showingPrice = this.props.userInfo.selectedUserType === 'EK' ? price : companyPrice
     if (salePrice && salePrice != 0) {
       console.log('saleprice:', salePrice)
@@ -213,21 +213,18 @@ class ProductDescription extends Component {
             </TouchableOpacity> : null}
             {this.getSalePercent(productInfo.productSalePercent ? productInfo.productSalePercent.int : null)}
           </View>
-          <View style={styles.line}>
+
+          {/* цена в описании продукта (не стики) */}
+          {/* <View style={styles.line}>
             {this.getStock(productInfo.stock)}
             <Text style={styles.id}>Artikelnummer: {this.props.id} </Text>
           </View>
+          <View style={[styles.line, { marginTop: 12 }]} >
+            {this.getPrices(productInfo.price, productInfo.salePrice, productInfo.companyPrice)}
+            {this.getCartButton(productInfo.stock, this.props.id)}
+          </View> */}
 
-          {/* цена в описании продукта (не стики) */}
-          <View style={[styles.line, {marginTop: 12}]} >
-
-                    {this.getPrices(productInfo.price, productInfo.salePrice, productInfo.companyPrice)}
-                    {this.getCartButton(productInfo.stock, this.props.id)}
-                    
-                </View>
           <View style={{ marginLeft: 18, marginTop: 10 }}>
-
-          
             <Rating rating={productInfo.rate} />
           </View>
           <View style={styles.descriptionBlock}>
@@ -250,13 +247,19 @@ class ProductDescription extends Component {
             {this.getSimilarProductsCards()}
           </View>
         </ScrollView>
-        <View style={[styles.line]} >
 
-          {/* цена в описании продукта (стики) */}
-          {/* {this.getPrices(productInfo.price, productInfo.salePrice, productInfo.companyPrice)}
-          {this.getCartButton(productInfo.stock, this.props.id)} */}
+        {/* цена в описании продукта (стики) */}
+        <View style={[styles.line, { marginTop: 10 }]} >
 
+          {this.getStock(productInfo.stock)}
+          <Text style={styles.id}>Artikelnummer: {this.props.id} </Text>
         </View>
+
+        <View style={[styles.line]} >
+          {this.getPrices(productInfo.price, productInfo.salePrice, productInfo.companyPrice)}
+          {this.getCartButton(productInfo.stock, this.props.id)}
+        </View>
+
       </View>
     )
   }

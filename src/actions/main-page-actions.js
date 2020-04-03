@@ -13,3 +13,19 @@ export const setCategories = (categories) => {
         payload: categories
     }
 }
+
+export const setNewest = (newest) => {
+    //ACTION CREATOR
+    return {
+        type: 'SET_NEWEST',
+        payload: newest
+    }
+}
+
+export const setOffers = (offers) => {
+    //ACTION CREATOR
+    return {
+        type: 'SET_OFFERS',
+        payload: offers
+    }
+}

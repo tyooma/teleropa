@@ -3,7 +3,8 @@ import * as actions from '../actions/main-page-actions';
 
 
 export function getBannerImage() {
-    return fetch('https://teleropa.de/WebiProgCommunicationApplicationFrontend/getBannerImage', {
+        // return fetch('https://teleropa.de/WebiProgCommunicationApplicationFrontend/getHomeBanner', {
+            return fetch('https://teleropa.de/WebiProgCommunicationApplicationFrontend/getBannerImage', {
         method: 'POST',
         headers: {
         Accept: 'application/json',
@@ -14,7 +15,33 @@ export function getBannerImage() {
         .then(dataRes => {
             return dataRes.indexTopBanner
         })
-        // .catch(as => console.log(as))
+        .catch(as => console.log(as))
+}
+
+export function getNewestList() {
+    fetch('https://teleropa.de/WebiProgCommunicationApplicationCategory/getNewestList', {
+        method: 'POST',
+        headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        }
+    })
+        .then(res => res.json())
+        .then(dataRes => store.dispatch(actions.setNewest(dataRes)))
+        .catch(as => console.log(as))
+}
+
+export function getOffersList() {
+    fetch('https://teleropa.de/WebiProgCommunicationApplicationCategory/getOffersList', {
+        method: 'POST',
+        headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        }
+    })
+        .then(res => res.json())
+        .then(dataRes => store.dispatch(actions.setOffers(dataRes)))
+        .catch(as => console.log(as))
 }
 
 export function getBrandsList() {
@@ -29,6 +56,7 @@ export function getBrandsList() {
         .then(dataRes => store.dispatch(actions.setBrands(dataRes)))
         .catch(as => console.log(as))
 }
+
 
 export function getCategoriesIDs() {
     fetch('https://teleropa.de/WebiProgCommunicationApplicationCategory/getCategoriesIDs', {

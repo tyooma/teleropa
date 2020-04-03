@@ -1,30 +1,18 @@
 import React, { Component } from 'react';
-
-import {
-  View,
-  Alert,
-} from 'react-native';
-
+import { View, Alert } from 'react-native';
+import { connect } from 'react-redux'
 import { createMaterialTopTabNavigator, createAppContainer } from 'react-navigation'
 
-
 import { SearchButton } from '../../common/header-buttons'
-
-import { connect } from 'react-redux'
-
-// import * as actions from '../../actions/product-actions'
-
-// import init from './init-product'
-
 import ProductReviews from './product-reviews'
 import ProductDescription from './product-description'
 import ProductSpecs from './product-specs'
 import ProductPackage from './product-package'
 import ProductVideo from './product-video'
+import { getFullProductData } from '../../gets/productPosts';
 
-import {
-  getFullProductData
-} from '../../gets/productPosts';
+// import * as actions from '../../actions/product-actions'
+// import init from './init-product'
 
 class Product extends Component {
 

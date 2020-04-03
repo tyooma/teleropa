@@ -225,8 +225,8 @@ export default class App extends Component {
       if (store.getState().app.loaded) {
         SplashScreen.hide();
       }
-    })
-
+    }
+    )
 
     // // КОД НА ПРОВЕРКУ ПЕРВОГО ЗАПУСКА
     // if (this.state.firstLaunch === null) {

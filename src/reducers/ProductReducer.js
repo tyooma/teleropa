@@ -11,7 +11,8 @@ const initialState = {
         price: 0,
         companyPrice: 0,
         rate: 0,
-        siteURL: ''
+        siteURL: '',
+        pseudoprice: 0
     },
     productDescription: '',
     productDetails: '',
