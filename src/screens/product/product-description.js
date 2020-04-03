@@ -63,7 +63,7 @@ class ProductDescription extends Component {
     return <Text style={styles.inStock}>Produkt ist verfügbar</Text>
   }
 
-  getPrices(price, salePrice, companyPrice) {
+  getPrices(price, companyPrice, salePrice) {
     const showingPrice = this.props.userInfo.selectedUserType === 'EK' ? price : companyPrice
     if (salePrice && salePrice != 0) {
       console.log('saleprice:', salePrice)

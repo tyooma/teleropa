@@ -146,6 +146,8 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-screens')
+    implementation project(':react-native-reanimated')
     implementation project(':react-native-login-with-amazon')
     implementation project(':react-native-vector-icons')
     // implementation project(':react-native-payments')

@@ -1,13 +1,8 @@
 import React, { Component } from 'react';
-
 import { View, StyleSheet, Clipboard, Alert } from 'react-native';
-
 import { WebView } from 'react-native-webview';
-
 import base64 from 'react-native-base64';
-
 import Loading from '../loading';
-
 
 const merchant_id = 'A12MAN4EHAQW5I';
 const access_key = 'AKIAJFNFAMVRHUHZ73MQ';
@@ -20,7 +15,6 @@ const codepairUrl = "https://api.amazon.com/auth/O2/create/codepair";
 
 const body = ('response_type=device_code&client_id=' + clientId + '&scope=profile')
 export default class AmazonLoginWebView extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -50,7 +44,6 @@ export default class AmazonLoginWebView extends Component {
         }
     }
 
-
     async  componentWillMount() {
         fetch(codepairUrl, {
             method: 'POST',
@@ -72,9 +65,6 @@ export default class AmazonLoginWebView extends Component {
                 console.log("response", this.state.user_code)
             })
     }
-
-
-
 
     _onNavigationStateChange = (webViewState) => {
         console.log("webViewState", webViewState);

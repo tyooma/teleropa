@@ -15,6 +15,10 @@ target 'teleropa' do
 
   pod 'RNLoginWithAmazon', :path => '../node_modules/react-native-login-with-amazon'
 
+  pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
+
+  pod 'RNScreens', :path => '../node_modules/react-native-screens'
+
   target 'teleropaTests' do
     inherit! :search_paths
     # Pods for testing

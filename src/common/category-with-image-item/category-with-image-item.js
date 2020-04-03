@@ -34,12 +34,14 @@ const styles = {
         shadowOffset: { width: 0.1, height: 0.1 },
         shadowOpacity: 0.5,
         shadowRadius: 2,
-        marginRight: 18
+        marginRight: 18,
+        marginBottom: 4
     },
     image: {
         width: width,
-        height: 106,
-        resizeMode: 'cover'
+        height: 110,
+        resizeMode: 'contain'
+        // resizeMode: 'cover'
     },
     text: {
         fontSize: 16,
