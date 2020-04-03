@@ -24,16 +24,33 @@ import FilterButton from '../../common/filter-button';
 
 import ProductListItem from '../../common/product-list-item';
 
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 
+import { SearchBar } from "react-native-elements";
+
+import { sWidth } from '../../helpers/screenSize';
 
 const CustomHeader = ({ value, onChangeText, onEndEditing }) => {
     return (
-        <SafeAreaView style={{ backgroundColor: '#d10019' }}>
+        <SafeAreaView style={{ backgroundColor: '#d1D0019' }}>
             <View style={styles.headerStyle}>
                 <TouchableOpacity style={styles.backStyle} onPress={() => NavigationService.back()}>
                     <BackButton />
                 </TouchableOpacity>
+                {/* <SearchBar
+                    autoFocus
+                    lightTheme
+                    value={value}
+                    placeholderTextColor='rgba(255, 255, 255, 0.7)'
+                    containerStyle={{ width: sWidth - 90, backgroundColor: '#d10019' }}
+                    leftIconContainerStyle={{ width: 0, backgroundColor: '#d10019' }}
+                    rightIconContainerStyle={{ width: 0, backgroundColor: '#d10019' }}
+                    inputStyle={styles.searchInputStyle}
+                    placeholder='Bitte geben Sie den Artikelnamen ein'
+                    //onChangeText={value => onChangeText(value)}
+                    onChangeText={value => updateSearch(value)}
+                // onEndEditing={() => onEndEditing()}
+                /> */}
                 <TextInput
                     autoFocus
                     value={value}
@@ -49,6 +66,18 @@ const CustomHeader = ({ value, onChangeText, onEndEditing }) => {
     )
 }
 
+
+const updateSearch = value => {
+    var searchString = value.toLowerCase().trim();
+    console.log("asdsadsadsads searchString", searchString)
+    let a = [];
+    if (searchString.length >= 4) {
+        console.log("asdsadsadsads")
+    }
+    //onChangeText={value => onChangeText(value)}
+};
+
+
 const SearchStoryItem = ({ text, onPress }) => {
     return (
         <TouchableOpacity style={styles.searchStoryItem} onPress={() => onPress()}>
@@ -58,11 +87,12 @@ const SearchStoryItem = ({ text, onPress }) => {
     )
 }
 
-//export default 
+
 class Search extends Component {
 
     static navigationOptions = ({ navigation }) => {
         const { params = {} } = navigation.state;
+        console.log("Params", params)
         return ({
             header: (
                 <CustomHeader
@@ -90,7 +120,6 @@ class Search extends Component {
         loaded: false,
         searchText: '',
         searchStory: [],
-        isSearching: false,
     }
 
     handleSearchSubmit() {
@@ -138,7 +167,7 @@ class Search extends Component {
             onChangeSearch: value => this.onSearchChange(value),
             onSubmit: () => this.handleSearchSubmit()
         })
-        if (this.state.searchText.length >= 3) {
+        if (this.state.searchText.length >= 4) {
             this.setState({ showResult: true })
         }
     }
@@ -146,10 +175,10 @@ class Search extends Component {
     onSearchChange(searchText) {
         this.setState({ searchText })
         this.props.navigation.setParams({ searchText })
-        // this.setState({ showResult: searchText.length >= 4 })
-        this.setState({ showResult: searchText.length >= 3 })
-        // if (searchText.length >= 4) {
-        if (searchText.length >= 3) {
+        this.setState({ showResult: searchText.length >= 4 })
+        // this.setState({ showResult: searchText.length >= 3 })
+        if (searchText.length >= 4) {
+            // if (searchText.length >= 3) {
             this.setState({ loaded: false, products: [], from: 0, ids: [], })
             this.getProductsIDs(searchText)
         }
@@ -157,7 +186,10 @@ class Search extends Component {
     getProductsIDs(searchText) {
         getSearchResult(searchText)
             .then(res => {
-                this.getIDs(res.searchResult)
+                console.log("res``````", res);
+                console.log("res.searchResult.length``````", res.searchResult.length);
+                if (res.searchResult.length > 0) this.getIDs(res.searchResult)
+                else this.showToastNoSearch()
             })
     }
 
@@ -257,6 +289,17 @@ class Search extends Component {
         return null
     }
 
+    showToastNoSearch() {
+        ToastAndroid.showWithGravity(
+            "Nichts gefunden",
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+        )
+        this.setState({ loaded: true })
+        console.log("this.state.loaded", this.state.loaded)
+    }
+
+
     showToast() {
         ToastAndroid.showWithGravity(
             "Nicht verfügbar",
@@ -266,7 +309,7 @@ class Search extends Component {
     }
 
     renderHelper() {
-        console.log("this.state RENDER", this.props.userInfo.selectedUserType);
+        console.log("!this.state.loaded", !this.state.loaded)
         if (!this.state.showResult) {
             return this.getSearchStory()
         }
@@ -284,7 +327,6 @@ class Search extends Component {
                     break
                 case 'price_down':
                     sorted = this.state.products.sort((first, second) => (parseFloat(first.companyPrice) > parseFloat(second.companyPrice)) ? -1 : ((parseFloat(second.companyPrice) > parseFloat(first.companyPrice)) ? 1 : 0))
-                    console.log("SORTED PRICE DOWN", sorted)
                     break
                 case 'price_up':
                     sorted = this.state.products.sort((first, second) => (parseFloat(first.companyPrice) < parseFloat(second.companyPrice)) ? -1 : ((parseFloat(second.pcompanyPricerice) < parseFloat(first.companyPrice)) ? 1 : 0))
@@ -308,8 +350,6 @@ class Search extends Component {
                 default: break
             }
         }
-        console.log("SORTED RENDER", sorted);
-        console.log("PROPS RENDER", this.props);
         return (
             <View style={{ flex: 1 }}>
                 <View style={styles.productsLine}>
@@ -374,7 +414,8 @@ const styles = StyleSheet.create({
     searchInputStyle: {
         flex: 1,
         color: '#fff',
-        fontSize: 16
+        fontSize: 16,
+        backgroundColor: '#d10019'
     },
     searchStory: {
         paddingHorizontal: 18

@@ -131,9 +131,7 @@ class Return extends Component {
     render() {
         if(!this.state.loaded) {
             return <Loading />
-        }
-        console.log(this.state)
-        console.log(this.props)
+        }      
         return (
             <View style={{flex: 1}}>
                 <ScrollView style={{paddingHorizontal: 18}}>
