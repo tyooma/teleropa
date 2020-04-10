@@ -1,41 +1,24 @@
 import React from 'react';
-import { Text, TouchableOpacity, Image, View } from 'react-native';
-
-import ImageLoader from '../../helpers/image-loader';
-
-import { sWidth } from '../../helpers/screenSize';
-// import { getPrice } from '../product-list-item'
-import NavigationService from '../../navigation-service';
-import { getPreviewAsyncProductData } from '../../gets/productPosts';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
 import { connect } from 'react-redux'
+import ImageLoader from '../../helpers/image-loader';
+import { sWidth } from '../../helpers/screenSize';
+import { getPreviewAsyncProductData } from '../../gets/productPosts';
+import NavigationService from '../../navigation-service';
 
-// getPrice = (price, companyPrice) => {
-//     const showingPrice = props.userInfo.selectedUserType === 'EK' ? price : companyPrice
-//     return (
-//         <>
-//             <Text style={styles.prevPrice}>
-//                 <Text style={{ fontSize: 10 }}></Text>
-//             </Text>
+const OffersListItem = ({ id, text, image, price, companyPrice, salePrice, userInfo }) => {
 
-//             <Text style={styles.price}>
-//                 {showingPrice}<Text style={{ fontSize: 16 }}>€</Text>
-//             </Text>
-//         </>
-//     )
-// }
-const OffersListItem = ({ id, text, image, price, companyPrice, salePrice }) => {
-    let re = /(?=\B(?:\d{3})+(?!\d))/g;
-    
-    let salepricenumber = parseFloat(salePrice);
-    let formattedsaleprice = salepricenumber.toFixed(2).toString().replace('.', ',');
-    
-    let pricefixed = price.toFixed(2)
+    const showingprice = userInfo.selectedUserType === 'EK' ? price : companyPrice;
+    let pricefixed = parseFloat(showingprice).toFixed(2)
     let formattedprice = pricefixed.toString().replace('.', ',');
-    
+
+    let salepricefixed = parseFloat(salePrice).toFixed(2)
+    let formattedsaleprice = salepricefixed.toString().replace('.', ',');
+
     return (
-        <TouchableOpacity style={styles.container} onPress={() => NavigationService.push('Product', { id: id, name: text, images: image, price: price, companyPrice: companyPrice, salePrice: formattedsaleprice })}>
+        <TouchableOpacity style={styles.container} onPress={() => NavigationService.push('Product', { id: id, name: text, images: image, price: price, companyPrice: companyPrice, salePrice: salePrice })}>
             <View style={{ flex: 2, flexDirection: 'row', alignItems: 'flex-start' }}>
-                <View style={{ overflow: 'hidden', borderTopLeftRadius: 5, borderTopRightRadius: 5, flex: 5, alignContent: 'flex-start', alignContent: 'flex-start' }}>
+                <View style={{ overflow: 'hidden', borderTopLeftRadius: 5, borderTopRightRadius: 5, flex: 5 }}>
                     <ImageLoader source={image} style={styles.image} key={image} />
                 </View>
 
@@ -46,14 +29,20 @@ const OffersListItem = ({ id, text, image, price, companyPrice, salePrice }) => 
                         >{text}</Text>
                     </View>
                     <View style={{ paddingBottom: 10 }}>
-                        <Text style={styles.pseudoPrice}>uvp <Text style={[styles.pseudoPrice, { textDecorationLine: 'line-through' }]}>{formattedsaleprice} €</Text></Text>
-                        <Text style={styles.salePrice}>{formattedprice} €</Text>
+                        <Text style={styles.saleprice}>uvp <Text style={[styles.saleprice, { textDecorationLine: 'line-through' }]}>{formattedsaleprice} €</Text></Text>
+                        <Text style={styles.price}>{formattedprice} €</Text>
                     </View>
                 </View>
             </View>
         </TouchableOpacity>
     )
 };
+
+const mapStateToProps = ({ userID, userInfo }) => (
+    { userID, userInfo }
+)
+
+export default connect(mapStateToProps)(OffersListItem)
 
 const width = sWidth < 600 ? (sWidth - 54) : (sWidth - 72) / 3
 const styles = {
@@ -71,11 +60,8 @@ const styles = {
         marginRight: 2,
         marginLeft: 18,
         marginTop: 8,
-        fontFamily: 'Poppins-ExtraBoldItalic',
-        // marginBottom: 2,
     },
     image: {
-
         width: width / 2,
         height: 140,
         resizeMode: 'contain',
@@ -84,51 +70,34 @@ const styles = {
         marginTop: 12,
         height: 75,
         // lineHeight: 18,
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: '400',
         fontFamily: 'Poppins-Medium',
         color: '#040404',
         paddingHorizontal: 8,
     },
-    salePrice: {
+    price: {
         padding: 0,
         fontSize: 20,
-        fontWeight: '800',
-        fontStyle: 'italic',
+        // fontWeight: '800',
+        fontFamily: 'Poppins-ExtraBoldItalic',
+        // fontStyle: 'italic',
         textShadowColor: 'gray',
-        textShadowOffset: { width: 1, height: 1, width: -1, height: -1, width: 1, height: 1 },
-        // textShadowOffset: {width: -2, height: -2},
-        // textShadowOffset: {width: 2, height: -2},
-        // textShadowOffset: {width: -2, height: 2},
+        textShadowOffset: { width: 1, height: 1 },
         textShadowRadius: 15,
         color: '#000',
-        // color: '#d10019',
         textAlign: 'center',
-        // justifyContent: 'center'
-        lineHeight: 20,
+        lineHeight: 23,
         paddingHorizontal: 8,
     },
-    pseudoPrice: {
+    saleprice: {
         fontSize: 13,
         fontStyle: 'italic',
+        fontFamily: 'Poppins-Medium',
         textShadowColor: 'gray',
-        textShadowOffset: { width: 1, height: 1, width: -1, height: -1, width: 1, height: 1 },
-        // textShadowOffset: {width: -2, height: -2},
-        // textShadowOffset: {width: 2, height: -2},
-        // textShadowOffset: {width: -2, height: 2},
+        textShadowOffset: { width: 1, height: 1 },
         textShadowRadius: 15,
         color: '#000',
-        // color: '#d10019',
         textAlign: 'center',
-        // justifyContent: 'center'
-        // paddingHorizontal: 8,
     }
 }
-
-// const mapStateToProps = ({ userID, userInfo }) => (
-//     { userID, userInfo }
-// )
-
-// export default connect(mapStateToProps)(ProductDescription)(NewestListItem)
-// export default connect(mapStateToProps)(NewestListItem)
-export default OffersListItem;

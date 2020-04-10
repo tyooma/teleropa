@@ -3,7 +3,8 @@ const initialState = {
     brands: null,
     categories: null,
     newest: null,
-    offers: null
+    offers: null,
+    topbanner: null,
 }
 
 export default (state = initialState, action) => { 
@@ -17,6 +18,8 @@ export default (state = initialState, action) => {
             return {...state, ...{newest: action.payload}}
         case 'SET_OFFERS': 
             return {...state, ...{offers: action.payload}}
+        case 'SET_TOPBANNER': 
+            return {...state, ...{topbanner: action.payload}}
         default: 
             return state;
     }

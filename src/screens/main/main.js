@@ -7,23 +7,25 @@ import firebase from 'react-native-firebase';
 import AsyncStorage from '@react-native-community/async-storage';
 
 import { connect } from 'react-redux';
-import { getBannerImage, getBrandsList, getNewestList, getOffersList, getPopularCategories } from '../../gets/mainPagePosts';
+import {
+    getBannerImage,
+    // getBrandsList, 
+    getNewestList,
+    getOffersList,
+    getPopularCategories
+} from '../../gets/mainPagePosts';
 
 import ImageLoader from '../../helpers/image-loader';
 
 import CategoryWithImageItem from '../../common/category-with-image-item';
 import NewestListItem from '../../common/newest-list';
 import OffersListItem from '../../common/offers-list';
-import BrandListItem from '../../common/brand-list-item';
+// import BrandListItem from '../../common/brand-list-item';
+import BannerImage from '../../common/banner-image';
 
 import { sendToken } from '../../posts/authPosts'
-
 import Loading from '../loading';
-
 import { MenuButton, SearchButton } from '../../common/header-buttons';
-
-
-import HTML from "react-native-render-html";
 
 class Main extends Component {
     static navigationOptions = {
@@ -58,11 +60,11 @@ class Main extends Component {
         getNewestList()
         getOffersList()
         getPopularCategories()
-        getBannerImage().then(image => Image.getSize(image, (w, h) => {
-            this.setImageSize(w, h);
-            this.setState({ image })
-        }))
-        // getBannerImage().then(e => console.log('3', e))
+        getBannerImage()
+            .then(image => Image.getSize(image, (w, h) => {
+                this.setImageSize(w, h);
+                this.setState({ image });
+            }))
     }
 
     setImageSize(width, height) {
@@ -70,50 +72,59 @@ class Main extends Component {
     }
 
     getBanner() {
-        console.log('getBannerImage', getBannerImage)
-
-        // return this.props.mainPage.banner.products.filter(({  }) => {
-        //     // console.log(category)
-        //     if (previewImgURL) return <NewestListItem key={productID} id={productID} text={productName} image={{ uri: previewImgURL }} price={price} companyPrice={companyPrice} />
-        // })
-    }
-
-    getBrands() {
-        const brands = this.props.mainPage.brands.filter((val, index) => {
-            if (val.imgURL && val.supplierID) {
-                return val
-            }
-        })
-        return brands
-    }
-
-    getNewest() {
-        return this.props.mainPage.newest.products.filter(({ productID, productName, previewImgURL, price, companyPrice }) => {
-            if (previewImgURL) return <NewestListItem key={productID} id={productID} text={productName} image={{ uri: previewImgURL }} price={price} companyPrice={companyPrice} />
-        })
-    }
-
-    getOffers() {
-        // const offers = this.props.mainPage.offers.products.filter((val, index) => {
-        //     if (val.productID && val.productName && val.previewImgURL && val.price && val.companyPrice && val.pseudoprice) {
-        //     return val
-        //     }
-        // })
-        // return offers
-
-        return this.props.mainPage.offers.products.filter(({ productID, productName, previewImgURL, price, companyPrice, pseudoprice }) => {
-            // console.log(category)
-            if (previewImgURL) return <OffersListItem key={productID} id={productID} text={productName} image={{ uri: previewImgURL }} price={price} companyPrice={companyPrice} salePrice={pseudoprice} />
-        })
+        // console.log('topbanner', this.props.mainPage.topbanner);
+        if (this.props.mainPage.topbanner.url)
+            return <BannerImage
+                key={this.props.mainPage.topbanner.url}
+                title={this.props.mainPage.topbanner.title}
+                subtitle={this.props.mainPage.topbanner.subtitle}
+                text_1={this.props.mainPage.topbanner.text_1}
+                text_2={this.props.mainPage.topbanner.text_2}
+                list_text_1={this.props.mainPage.topbanner.list_text_1}
+                list_text_2={this.props.mainPage.topbanner.list_text_2}
+                list_text_3={this.props.mainPage.topbanner.list_text_3}
+                logo={this.props.mainPage.topbanner.logo}
+                url={this.props.mainPage.topbanner.url}
+                price={this.props.mainPage.topbanner.price}
+                companyPrice={this.props.mainPage.topbanner.companyPrice}
+                background_color={this.props.mainPage.topbanner.background_color}
+                text_color={this.props.mainPage.topbanner.text_color}
+                product_image={this.props.mainPage.topbanner.product_image}
+                background_image={this.props.mainPage.topbanner.background_image}
+                position={this.props.mainPage.topbanner.position}
+            />
     }
 
     getCategoriesCards() {
-        console.log('this.props.mainPage', this.props.mainPage)
         return this.props.mainPage.categories.map(({ categoryName, categoryImageURL, categoryID }) => {
-            console.log('getCategoriesCards', this)
+            // console.log('getCategoriesCards', this)
             if (categoryImageURL) return <CategoryWithImageItem key={categoryID} id={categoryID} text={categoryName} image={{ uri: categoryImageURL }} />
         })
     }
+
+    getNewest() {
+        // console.log('this.props.newest', this.props.mainPage)
+        // if (this.props.mainPage.newest)
+            return this.props.mainPage.newest.products.filter(({ productID, productName, previewImgURL, price, companyPrice }) => {
+                if (previewImgURL) return <NewestListItem key={productID} id={productID} text={productName} image={{ uri: previewImgURL }} price={price} companyPrice={companyPrice} />
+            })
+    }
+
+    getOffers() {
+        // if (this.props.mainPage.offers)
+            return this.props.mainPage.offers.products.filter(({ productID, productName, previewImgURL, price, companyPrice, pseudoprice }) => {
+                return <OffersListItem key={productID} id={productID} text={productName} image={{ uri: previewImgURL }} price={price} companyPrice={companyPrice} salePrice={pseudoprice} />
+            })
+    }
+
+    // getBrands() {
+    //     const brands = this.props.mainPage.brands.filter((val, index) => {
+    //         if (val.imgURL && val.supplierID) {
+    //             return val
+    //         }
+    //     })
+    //     return brands
+    // }
 
 
     async getTokenFromStorage() {
@@ -127,36 +138,16 @@ class Main extends Component {
     }
 
     render() {
-        console.log("this.props in main.js", this.props)
-        if (!this.props.mainPage.categories ||
+        // console.log("this.props in main.js", this.props)
+        if (
+            !this.props.mainPage.categories ||
             // !this.props.mainPage.brands || 
-            !this.state.image ||
-            !this.props.mainPage.newest.products ||
-            !this.props.mainPage.offers.products
+            !this.props.mainPage.topbanner ||
+            !this.props.mainPage.newest ||
+            !this.props.mainPage.offers
         ) {
             return <Loading />
         }
-
-        // const htmlContent = 
-        // `<a href="/audiohifi/s-20-radio-internetradio-dab-ukw-usb-hybridradio" class="index-hello-link">
-        //     <img class="index-hello-image" src="https://teleropa.de/media/image/11/8f/1c/Banner_S20_teleropa.jpg">
-        //         <div class="index-hello-groups">
-        //             <div class="index-hello-content">
-        //                 <div class="index-hello-headline"><b>20€ SPAREN</b><span>DIGITALRADIO ZUM MEGAPREIS</span></div>
-        //                 <div class="index-hello-desc">
-        //                     <p>TELESTAR S20</p>
-        //                     <p>DAB+ & RDS UKW Stereoradio</p>
-        //                     <ul> <li>Weckfunktion</li> <li>Digitaler Soundprozessor (DSP)</li> <li>Speicherplatz für 10 DAB+/UKW Sender</li> </ul>
-        //                 </div>
-        //                 <div class="index-hello-actions">
-        //                     <div class="index-hello-logo">
-        //                         <img src="/media/image/d6/fc/1e/Telestar-Logo-weiss.png">
-        //                     </div>
-        //                         <div class="index-hello-price"><span>NUR</span><b><i class="wbp-net-switch-banner--value">99,00</i> €</b></div>
-        //                     </div>
-        //                 </div>
-        //             </div>
-        //         </a>`
 
         const image = require('../../assets/icons-color/008-check2.png');
         return (
@@ -199,13 +190,7 @@ class Main extends Component {
 
                     {/* <TouchableOpacity onPress={() => this.props.setNetworkStatusOff()}> */}
 
-                    {/* <HTML html={htmlContent} /> */}
-
-                    <TouchableOpacity 
-                    onPress={() => this.props.navigation.navigate('Product', { name: 'Uno 4K SE Linux Receiver UHD 2160p', id: '58126' })}>
-                        {this.getBanner()}
-                        <ImageLoader source={{ uri: this.state.image }} style={{ width: '100%', height: this.state.imageRatio, resizeMode: 'contain' }} />
-                    </TouchableOpacity>
+                    {this.getBanner()}
 
                     <Text style={styles.helperText}>
                         Unsere aktuellen Wochenangebote
@@ -320,7 +305,8 @@ const styles = {
         marginTop: 20,
         marginBottom: 0,
         color: '#030303',
-        marginLeft: 18
+        marginLeft: 18,
+        fontFamily: 'Poppins-Light'
     },
     bottomButton: {
         alignItems: 'center',
