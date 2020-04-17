@@ -151,7 +151,7 @@ class ProductDescription extends Component {
       return null
     }
     return this.state.similar.map(product => {
-      console.log(product)
+      // console.log(product)
       const { productName, price, companyPrice, salePrice, previewImgURL, rate, stock, id, productSalePercent } = product
       // return (
       //   <Text style={styles.similarText}>

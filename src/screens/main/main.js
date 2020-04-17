@@ -1,3 +1,4 @@
+'use strict'
 import React, { Component } from 'react'
 import { Dimensions, Text, View, ScrollView, Image, TouchableOpacity, FlatList } from 'react-native'
 
@@ -61,10 +62,10 @@ class Main extends Component {
         getOffersList()
         getPopularCategories()
         getBannerImage()
-            .then(image => Image.getSize(image, (w, h) => {
-                this.setImageSize(w, h);
-                this.setState({ image });
-            }))
+            // .then(image => Image.getSize(image, (w, h) => {
+            //     this.setImageSize(w, h);
+            //     this.setState({ image });
+            // }))
     }
 
     setImageSize(width, height) {
@@ -83,6 +84,7 @@ class Main extends Component {
                 list_text_1={this.props.mainPage.topbanner.list_text_1}
                 list_text_2={this.props.mainPage.topbanner.list_text_2}
                 list_text_3={this.props.mainPage.topbanner.list_text_3}
+                list_text_4={this.props.mainPage.topbanner.list_text_4}
                 logo={this.props.mainPage.topbanner.logo}
                 url={this.props.mainPage.topbanner.url}
                 price={this.props.mainPage.topbanner.price}
@@ -233,7 +235,6 @@ class Main extends Component {
                         />
                     </View>
 
-
                     {/* <View style={{ height: 100 }} >
                         <FlatList
                             horizontal
@@ -278,13 +279,13 @@ const styles = {
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'row',
-        height: 58,
+        height: 42,
         paddingLeft: 17,
         paddingRight: 3
     },
     topImage: {
         width: 17,
-        height: 17,
+        // height: 17,
         resizeMode: 'contain'
     },
     topText: {
@@ -297,7 +298,7 @@ const styles = {
         // backgroundColor: '#D1001A',
         resizeMode: 'contain',
         // flex: 1,
-        height: 132,
+        height: 170,
         width: '100%'
     },
     helperText: {

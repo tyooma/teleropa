@@ -353,7 +353,9 @@ class Cart extends Component {
                 return price.toFixed(2)
             }
             if (percental) {
-                console.log(1)
+                console.log('1',1)
+                console.log('percental',percental)
+                console.log('(price - price / 100 * value).toFixed(2)',(price - price / 100 * value).toFixed(2))
                 return (price - price / 100 * value).toFixed(2)
             }
             console.log(2)

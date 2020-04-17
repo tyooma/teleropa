@@ -27,6 +27,8 @@ export function getFullProductData(id) {
         },
         body: `productID=${id}`
     })
+    // .then(res => res.json())
+
     // .then(res =>
     //     console.log('getFullProductData res.json()', res.json()),
     // )
