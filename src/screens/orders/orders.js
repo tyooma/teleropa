@@ -74,7 +74,7 @@ class CurrentOrders extends Component {
     if (!this.state.loaded) {
       return <Loading />
     }
-    if(this.state.orders.length < 1) {
+    if(!this.state.orders || this.state.orders.length < 1) {
       return <NoOrders />
     }
     return(
@@ -131,7 +131,7 @@ class DoneOrders extends Component {
     if (!this.state.loaded) {
       return <Loading />
     }
-    if(this.state.orders.length < 1) {
+    if(!this.state.orders || this.state.orders.length < 1) {
       return <NoOrders />
     }
     return (
@@ -188,7 +188,7 @@ class DeniedOrders extends Component {
     if (!this.state.loaded) {
       return <Loading />
     }
-    if(this.state.orders.length < 1) {
+    if(!this.state.orders || this.state.orders.length < 1) {
       return <NoOrders />
     }
     return (
@@ -244,7 +244,7 @@ class ReturnOrders extends Component {
     if (!this.state.loaded) {
       return <Loading />
     }
-    if(this.state.orders.length < 1) {
+    if(!this.state.orders || this.state.orders.length < 1) {
       return <NoOrders />
     }
     return (

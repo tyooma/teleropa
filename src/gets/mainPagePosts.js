@@ -12,14 +12,13 @@ export function getBannerImage() {
         }
     })
         .then(res => res.json())
-        .then(console.log('1'))
         .then(dataRes => {
             // console.log('json', dataRes);
 
             // return dataRes
             // return dataRes.indexTopBanner
             store.dispatch(actions.setTopBanner(dataRes))
-                .catch(as => console.log('1',as))
+                .catch(as => console.log(as))
         })
 }
 
@@ -31,7 +30,6 @@ export function getNewestList() {
             'Content-Type': 'application/x-www-form-urlencoded',
         }
     })
-        .then(console.log('2'))
         .then(res => res.json())
         .then(dataRes => store.dispatch(actions.setNewest(dataRes)))
         .catch(as => console.log(as))
@@ -45,7 +43,6 @@ export function getOffersList() {
             'Content-Type': 'application/x-www-form-urlencoded',
         }
     })
-        .then(console.log('3'))
         .then(res => res.json())
         .then(dataRes => store.dispatch(actions.setOffers(dataRes)))
         .catch(as => console.log(as))
@@ -59,10 +56,9 @@ export function getBrandsList() {
             'Content-Type': 'application/x-www-form-urlencoded',
         }
     })
-        .then(console.log('4'))
         .then(res => res.json())
         .then(dataRes => store.dispatch(actions.setBrands(dataRes)))
-        .catch(as => console.log('4',as))
+        .catch(as => console.log(as))
 }
 
 export function getCategoriesIDs() {
@@ -73,10 +69,9 @@ export function getCategoriesIDs() {
             'Content-Type': 'application/x-www-form-urlencoded',
         }
     })
-        .then(console.log('5'))
         .then(res => res.json())
         .then(dataRes => console.log(dataRes))
-        .catch(as => console.log('5',as))
+        .catch(as => console.log(as))
 }
 
 export function getPopularCategories() {
@@ -87,10 +82,9 @@ export function getPopularCategories() {
             'Content-Type': 'application/x-www-form-urlencoded',
         }
     })
-        .then(console.log('6'))
         .then(res => res.json())
         .then(dataRes => store.dispatch(actions.setCategories(dataRes.categories)))
-        .catch(as => console.log('6',as))
+        .catch(as => console.log(as))
 }
 
 
@@ -102,7 +96,6 @@ export function getCountries() {
             'Content-Type': 'application/x-www-form-urlencoded',
         }
     })
-        .then(console.log('7'))
         .then(res => res.json())
     // .then(dataRes => dataRes)
 }

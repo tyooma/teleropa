@@ -273,7 +273,7 @@ handlePress = () => {
 
 
 
-const AppBotomBarNavigator = createBottomTabNavigator(
+const AppBottomBarNavigator = createBottomTabNavigator(
   {
     Main: Main,
     Cart: {
@@ -326,8 +326,7 @@ const AppBotomBarNavigator = createBottomTabNavigator(
 
 const AppStackNavigator = createStackNavigator(
   {
-    //BottomTabNavigation: AppBotomBarNavigator,
-    Main: AppBotomBarNavigator,
+    Main: AppBottomBarNavigator,
     Intro: UserTypeSelection,
     NoNetwork: NoNetwork,
     HotLine: HotLine,

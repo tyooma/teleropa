@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux'
 import { View, ToastAndroid } from 'react-native';
 import { WebView } from 'react-native-webview';
 import base64 from 'react-native-base64'
+
 import Loading from '../loading'
 import { addToCart, minusFromCart, deleteFromCart, clearCart } from '../../functions/cart-funcs'
-
-import { connect } from 'react-redux'
 
 export class WebPayPal extends Component {
 
@@ -57,10 +57,9 @@ export class WebPayPal extends Component {
         const url = this.state.realAccount ? 'https://api.paypal.com/v1/oauth2/token' : 'https://api.sandbox.paypal.com/v1/oauth2/token';
         const username = this.state.realAccount ? paypalClientId : sandboxClientId;
         const password = this.state.realAccount ? paypalSecret : sandboxSecret;
-        // const username = 'AcHzvoC8O-gZth7HdU-4UeDB065QSpwVftN4ZHXWC5anYkHIM8hSJylP3iTL4h6x6wMHZW3O0rBkd4g_';
-        // const password = 'EBN-azxVOelC-bJISKYDNC9hc9hXHLcyWg5lYaM6YdUnLPmEg19kgf954qW8-RezCyn1UBA7ZIxuZAhu';        
         const token = base64.encode(`${username}:${password}`);
         try {
+            
             fetch(url, {
                 method: 'POST',
                 'Authorization': {
@@ -74,6 +73,7 @@ export class WebPayPal extends Component {
                 },
                 body: "grant_type=client_credentials"
             })
+
                 .then(response => {
                     return response.json()
                 })
@@ -126,6 +126,7 @@ export class WebPayPal extends Component {
                             "cancel_url": "https://example.com/cancel"
                         }
                     }
+                    
                     fetch(url, {
                         method: 'POST',
                         headers: {
@@ -146,7 +147,7 @@ export class WebPayPal extends Component {
                                 approvalUrl: approvalUrl.href
                             })
                         })
-                        .then(clearCart())
+                        // .then(clearCart())
                         .catch(err => {
                             console.log(err)
                         })
