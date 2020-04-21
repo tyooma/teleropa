@@ -144,6 +144,8 @@ class Cart extends Component {
         discountValue: 0,
         cartReceaved: false,
         modalVisible: false,
+
+        routeName: 'DeliveryService'
     }
 
     setModalVisible(visible) {
@@ -254,7 +256,7 @@ class Cart extends Component {
                 // )
             }
             //   console.log('newProductsArray',newProductsArray)  
-            console.table('product.stock', product.stock, product.count, product.productName)
+            // console.table('product.stock', product.stock, product.count, product.productName)
         })
         return newProductsArray
     }
@@ -353,9 +355,9 @@ class Cart extends Component {
                 return price.toFixed(2)
             }
             if (percental) {
-                console.log('1',1)
-                console.log('percental',percental)
-                console.log('(price - price / 100 * value).toFixed(2)',(price - price / 100 * value).toFixed(2))
+                console.log('1', 1)
+                console.log('percental', percental)
+                console.log('(price - price / 100 * value).toFixed(2)', (price - price / 100 * value).toFixed(2))
                 return (price - price / 100 * value).toFixed(2)
             }
             console.log(2)
@@ -457,10 +459,17 @@ class Cart extends Component {
                 </BoxShadow>
 
                 <FooterButton text='Zur Kasse' onPress={() => {
-                    console.log(this.state.products);
-                    // this.itemsAvailableCount();
-                    // this.setModalVisible(true)
-                    this.props.navigation.navigate('DeliveryService', { productsPrice: this.state.discountProductsPrice, data: this.state })
+                    console.log('this.props.userID',this);
+                    
+                    if (!this.props.userID || this.props.userID === "notloggedin") {
+                        this.props.navigation.navigate('Login', {routeName: this.state.routeName})
+                    }
+                    else {
+                        console.log(this.state.products);
+                        // this.itemsAvailableCount();
+                        // this.setModalVisible(true)
+                        this.props.navigation.navigate('DeliveryService', { productsPrice: this.state.discountProductsPrice, data: this.state })
+                    }
                 }} />
 
                 <ModalView
@@ -481,7 +490,7 @@ class Cart extends Component {
     }
 }
 
-const mapStateToProps = ({ userInfo, cart }) => ({ userInfo, cart })
+const mapStateToProps = ({ userInfo, userID, cart }) => ({ userInfo, userID, cart })
 
 export default connect(mapStateToProps)(Cart)
 

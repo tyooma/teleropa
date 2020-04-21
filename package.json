@@ -17,6 +17,7 @@
     "react-htmltext": "^0.40.2",
     "react-native": "^0.59.4",
     "react-native-base64": "0.0.2",
+    "react-native-cli": "^2.0.1",
     "react-native-device-info": "^1.1.0",
     "react-native-elements": "^1.2.7",
     "react-native-firebase": "^5.4.2",

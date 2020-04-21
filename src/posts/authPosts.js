@@ -22,7 +22,8 @@ export function logIn(email, pass) {
                 throw Error
             } else{
                 store.dispatch(actions.setLoggedUserId(logdata.userID))
-                NavigationService.navigate('Main')
+                NavigationService.goBack()
+                // NavigationService.navigate('DeliveryService')
                 return logdata.userID
             }
         })

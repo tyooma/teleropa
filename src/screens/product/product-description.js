@@ -231,7 +231,7 @@ class ProductDescription extends Component {
             <Text style={styles.descriptionHelper}>
               Beschreibung
                     </Text>
-
+                    {console.log('mm',this.props.productDescription)}
             <HTML staticContentMaxWidth={50} html={this.props.productDescription ? this.props.productDescription : 'Produktbeschreibung ist nicht vorhanden'} containerStyle={[styles.description, { maxHeight: this.state.descMore ? 10000 : 100 }]} tagsStyles={HTMLStyles} />
 
             <View style={styles.descLine}></View>
