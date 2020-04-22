@@ -1,22 +1,25 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
+
 import { Text, TouchableOpacity, Image, View } from 'react-native';
 
 import ImageLoader from '../../helpers/image-loader';
 
 import { sWidth } from '../../helpers/screenSize';
-// import { getPrice } from '../product-list-item'
+
 import NavigationService from '../../navigation-service';
+
 import { getPreviewAsyncProductData } from '../../gets/productPosts';
-import { connect } from 'react-redux'
-// import { getPrices } from '../../screens/product/product-description'
-// import { getUserBillingAddress, getUserShippingAddress, getUserInfo } from '../../gets/userPosts'
 
-const NewestListItem = ({ id, text, image, price, companyPrice }) => {
-    // const showingPrice = this.props.userInfo.selectedUserType === 'EK' ? price : companyPrice
-    const showingPrice = price
+import { connect } from 'react-redux';
 
-    let pricefixed = showingPrice.toFixed(2)
+
+
+const NewestListItem = ({ id, text, image, price, companyPrice, userInfo }) => {
+    const showingPrice = userInfo.selectedUserType === 'EK' ? price : companyPrice;
+
+    let pricefixed = parseFloat(showingPrice).toFixed(2)
     let formattedprice = pricefixed.toString().replace('.', ',');
+
 
     return (
         <TouchableOpacity style={styles.container} onPress={() => NavigationService.push('Product', { id: id, name: text, images: image, price: formattedprice, companyPrice: companyPrice })}>
@@ -28,7 +31,6 @@ const NewestListItem = ({ id, text, image, price, companyPrice }) => {
                 <View style={{ flex: 6, flexDirection: 'column' }}>
                     <View>
                         <Text style={styles.name} numberOfLines={3}
-                        //  ellipsizeMode='middle'
                         >{text}</Text>
                     </View>
                     <View>
@@ -105,10 +107,5 @@ const styles = {
     }
 }
 
-const mapStateToProps = ({ userID, userInfo }) => (
-    { userID, userInfo }
-)
-
-// export default connect(mapStateToProps)(ProductDescription)(NewestListItem)
+const mapStateToProps = ({ userID, userInfo }) => ({ userID, userInfo })
 export default connect(mapStateToProps)(NewestListItem)
-// export default NewestListItem;

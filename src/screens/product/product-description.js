@@ -12,10 +12,15 @@ import { addToFavourite } from '../../posts/favouritesPosts'
 import { getPreviewProductData } from '../../gets/productPosts';
 
 import Rating from '../../common/rating';
+
 import { sHeight } from '../../helpers/screenSize';
+
 import ProductListItem from '../../common/product-list-item';
+
 import Slider from '../../common/slider';
+
 import NavigationService from '../../navigation-service';
+
 
 import HTML from 'react-native-render-html';
 
@@ -150,8 +155,7 @@ class ProductDescription extends Component {
     if (this.state.similar.length < 1) {
       return null
     }
-    return this.state.similar.map(product => {
-      console.log(product)
+    return this.state.similar.map(product => {      
       const { productName, price, companyPrice, salePrice, previewImgURL, rate, stock, id, productSalePercent } = product
       // return (
       //   <Text style={styles.similarText}>

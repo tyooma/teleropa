@@ -30,14 +30,17 @@ import { SearchBar } from "react-native-elements";
 
 import { sWidth } from '../../helpers/screenSize';
 
-const CustomHeader = ({ value, onChangeText, onEndEditing }) => {
+//import SearchHeader from './SearchHeader';
+
+const CustomHeader = ({ value, updateSearch, syka, onEndEditing }) => {
+    console.log("SYKA SYKA SYKA PIZDEC", CustomHeader)
     return (
         <SafeAreaView style={{ backgroundColor: '#d1D0019' }}>
             <View style={styles.headerStyle}>
                 <TouchableOpacity style={styles.backStyle} onPress={() => NavigationService.back()}>
                     <BackButton />
                 </TouchableOpacity>
-                {/* <SearchBar
+                <SearchBar
                     autoFocus
                     lightTheme
                     value={value}
@@ -45,19 +48,11 @@ const CustomHeader = ({ value, onChangeText, onEndEditing }) => {
                     containerStyle={{ width: sWidth - 90, backgroundColor: '#d10019' }}
                     leftIconContainerStyle={{ width: 0, backgroundColor: '#d10019' }}
                     rightIconContainerStyle={{ width: 0, backgroundColor: '#d10019' }}
+                    containerStyle={{ width: sWidth - 90 }}
                     inputStyle={styles.searchInputStyle}
                     placeholder='Bitte geben Sie den Artikelnamen ein'
                     //onChangeText={value => onChangeText(value)}
-                    onChangeText={value => updateSearch(value)}
-                // onEndEditing={() => onEndEditing()}
-                /> */}
-                <TextInput
-                    autoFocus
-                    value={value}
-                    placeholderTextColor='rgba(255, 255, 255, 0.7)'
-                    style={styles.searchInputStyle}
-                    placeholder='Bitte geben Sie den Artikelnamen ein'
-                    onChangeText={value => onChangeText(value)}
+                    onChangeText={text => updateSearch(text)}
                     onEndEditing={() => onEndEditing()}
                 />
                 <ScannerButton />
@@ -66,17 +61,10 @@ const CustomHeader = ({ value, onChangeText, onEndEditing }) => {
     )
 }
 
-
-const updateSearch = value => {
-    var searchString = value.toLowerCase().trim();
-    console.log("asdsadsadsads searchString", searchString)
-    let a = [];
-    if (searchString.length >= 4) {
-        console.log("asdsadsadsads")
-    }
-    //onChangeText={value => onChangeText(value)}
-};
-
+const updateSearch1 = value => {
+    console.log("value````````````````", value);
+    return value
+}
 
 const SearchStoryItem = ({ text, onPress }) => {
     return (
@@ -89,15 +77,17 @@ const SearchStoryItem = ({ text, onPress }) => {
 
 
 class Search extends Component {
-
     static navigationOptions = ({ navigation }) => {
         const { params = {} } = navigation.state;
-        console.log("Params", params)
+        console.log(" navigation.navigate~~~~~", navigation)
+        // console.log(" navigation.getParam++++++++", navigation.getParam('searchText', ''));
+        console.log("params.searchText`````", params.searchText)
         return ({
             header: (
                 <CustomHeader
                     value={params.searchText}
-                    onChangeText={value => params.onChangeSearch(value)}
+                    updateSearch={value => params.onChangeSearch(value)}
+                    syka={navigation.getParam('SearchText', '')}
                     onEndEditing={() => {
                         if (params.searchText)
                             params.onSubmit()
@@ -162,6 +152,7 @@ class Search extends Component {
         AsyncStorage.getItem('searchStory').then(searchStory => {
             this.setState({ searchStory: JSON.parse(searchStory) })
         })
+
         this.props.navigation.setParams({
             searchText: this.state.searchText,
             onChangeSearch: value => this.onSearchChange(value),
@@ -173,12 +164,11 @@ class Search extends Component {
     }
 
     onSearchChange(searchText) {
+        console.log(" onSearchChange ++++  searchText", searchText)
         this.setState({ searchText })
         this.props.navigation.setParams({ searchText })
         this.setState({ showResult: searchText.length >= 4 })
-        // this.setState({ showResult: searchText.length >= 3 })
         if (searchText.length >= 4) {
-            // if (searchText.length >= 3) {
             this.setState({ loaded: false, products: [], from: 0, ids: [], })
             this.getProductsIDs(searchText)
         }
@@ -186,8 +176,6 @@ class Search extends Component {
     getProductsIDs(searchText) {
         getSearchResult(searchText)
             .then(res => {
-                console.log("res``````", res);
-                console.log("res.searchResult.length``````", res.searchResult.length);
                 if (res.searchResult.length > 0) this.getIDs(res.searchResult)
                 else this.showToastNoSearch()
             })
@@ -195,11 +183,11 @@ class Search extends Component {
 
     findMinMaxPrice() {
         if (this.props.userInfo.selectedUserType === 'EK') {
-        const prices = this.state.originalIDs.map(({ price }) => price)
-        const maxPrice = Math.max(...prices)
-        const minPrice = Math.min(...prices)
-        this.setState({ minPrice, maxPrice, fromPrice: minPrice, toPrice: maxPrice })
-        this.getData(0)
+            const prices = this.state.originalIDs.map(({ price }) => price)
+            const maxPrice = Math.max(...prices)
+            const minPrice = Math.min(...prices)
+            this.setState({ minPrice, maxPrice, fromPrice: minPrice, toPrice: maxPrice })
+            this.getData(0)
         } else {
             const companyPrice = this.state.originalIDs.map(({ companyPrice }) => companyPrice.toFixed(2));
             const maxPrice = Math.max(...companyPrice)
@@ -294,8 +282,7 @@ class Search extends Component {
             ToastAndroid.SHORT,
             ToastAndroid.CENTER,
         )
-        this.setState({ loaded: true })
-        console.log("this.state.loaded", this.state.loaded)
+        this.setState({ loaded: false })
     }
 
 
@@ -308,7 +295,6 @@ class Search extends Component {
     }
 
     renderHelper() {
-        console.log("!this.state.loaded", !this.state.loaded)
         if (!this.state.showResult) {
             return this.getSearchStory()
         }
@@ -414,7 +400,7 @@ const styles = StyleSheet.create({
         flex: 1,
         color: '#fff',
         fontSize: 16,
-        backgroundColor: '#d10019'
+        // backgroundColor: '#d10019'
     },
     searchStory: {
         paddingHorizontal: 18
