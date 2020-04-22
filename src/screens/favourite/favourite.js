@@ -85,7 +85,9 @@ class Favourite extends Component {
         if(!this.state.loaded) {
             return <Loading />
         }
-        if(this.state.productIDs.length < 1) {
+        
+        if(!this.state.productIDs || this.state.productIDs.length < 1) {
+        // if(this.state.productIDs && this.state.productIDs.length < 1) {
             return (
                 <View style={styles.noFavouritesContainer}>
                     <Image source={require('../../assets/message-icons/no-favourite.png')} style={styles.noFavouritesImage} />

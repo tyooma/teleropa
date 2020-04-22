@@ -155,7 +155,12 @@ class ProductDescription extends Component {
     if (this.state.similar.length < 1) {
       return null
     }
+<<<<<<< HEAD
     return this.state.similar.map(product => {      
+=======
+    return this.state.similar.map(product => {
+      // console.log(product)
+>>>>>>> 442a4c6107d0bf84bf54fbbd3f73a94783ec0852
       const { productName, price, companyPrice, salePrice, previewImgURL, rate, stock, id, productSalePercent } = product
       // return (
       //   <Text style={styles.similarText}>
@@ -235,7 +240,7 @@ class ProductDescription extends Component {
             <Text style={styles.descriptionHelper}>
               Beschreibung
                     </Text>
-
+                    {console.log('mm',this.props.productDescription)}
             <HTML staticContentMaxWidth={50} html={this.props.productDescription ? this.props.productDescription : 'Produktbeschreibung ist nicht vorhanden'} containerStyle={[styles.description, { maxHeight: this.state.descMore ? 10000 : 100 }]} tagsStyles={HTMLStyles} />
 
             <View style={styles.descLine}></View>

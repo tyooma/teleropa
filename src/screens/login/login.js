@@ -54,7 +54,7 @@ class Login extends Component {
   }
 
   getUserID = async () => {
-    console.log(this.props)
+    console.log('this.props.login',this.props)
     try {
       const userID = await AsyncStorage.getItem('userID')
       if (userID && userID !== 'notloggedin') {
@@ -102,14 +102,16 @@ class Login extends Component {
     }
 
   }
-  
+
 
   render() {
     // console.log(`------------------------------------------------------------------------${this.props.userID}`)
+    (this.props.routeName)?console.log('zz',this.props.routeName):console.log('fgg', this);
+
     if (this.state.loading && !this.props.userID) {
       return <Loading />
     }
-    
+
     if (this.props.userID === "notloggedin") {
       return (
         <View style={{ flex: 1 }}>
@@ -135,7 +137,6 @@ class Login extends Component {
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => this.props.navigation.navigate('Registration')}>
-                {/* <TouchableOpacity onPress={() => this.props.navigation.navigate('Registration')}> */}
                 <Text style={styles.forgetPass}>
                   Anmeldung
                 </Text>
@@ -143,7 +144,7 @@ class Login extends Component {
             </View>
           </ScrollView>
 
-          <FooterButton text='Anmelden mit' onPress={() => {this.logInHandler()}} />
+          <FooterButton text='Anmelden mit' onPress={() => { this.logInHandler() }} />
           {/* <FooterButton text='Anmelden mit' onPress={() => console.log(logIn('test@gmail.com', 'testtest'))}/> */}
           <ModalView
             title='Passwort zurücksetzen'
@@ -160,7 +161,8 @@ class Login extends Component {
 
     else {
       return (
-        <ScrollView style={styles.container} showsVerticalScrollIndicator={false} >
+        <ScrollView style={{ marginHorizontal: 18 }} showsVerticalScrollIndicator={false} >
+          {/* <ScrollView style={styles.container} showsVerticalScrollIndicator={false} > */}
           <Text style={styles.points}>
             Ihre Punkte: {this.props.points}
           </Text>

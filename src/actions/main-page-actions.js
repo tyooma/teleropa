@@ -29,3 +29,11 @@ export const setOffers = (offers) => {
         payload: offers
     }
 }
+
+export const setTopBanner = (topbanner) => {
+    //ACTION CREATOR
+    return {
+        type: 'SET_TOPBANNER',
+        payload: topbanner
+    }
+}
