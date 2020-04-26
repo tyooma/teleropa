@@ -195,7 +195,7 @@ class Main extends Component {
                     {this.getBanner()}
 
                     <Text style={styles.helperText}>
-                    Unsere Kategorien
+                        Unsere aktuellen Wochenangebote
                     </Text>
                     <View style={{ flexDirection: 'row', marginLeft: 18, flexWrap: 'wrap' }}>
                         {this.getCategoriesCards()}
