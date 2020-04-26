@@ -56,7 +56,7 @@ export default class SubcategoriesList extends Component {
   getAllProductsButton() {
       const id = this.state.currentCategory.id
       const cmsText = this.state.currentCategory.cmsText
-      if (this.state.categories.length > 1) return <CategoriesListItem name={'Alle producten van de categorie'} id={id} key={id} cmsText={cmsText} />
+      if (this.state.categories.length > 1) return <CategoriesListItem name={'Alle Produkte anzeigen'} id={id} key={id} cmsText={cmsText} />
   }
 
   render() {
