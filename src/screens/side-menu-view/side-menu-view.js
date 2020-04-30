@@ -60,7 +60,7 @@ class SideMenuView extends Component {
               <View style={{ height: sHeight - 175, justifyContent: 'space-between' }}>
                 <View style={{ flex: 1 }}>
                   <MenuButton text='Startseite' imgSrc={require('../../assets/icons/011-house.png')} route='Main' />
-                  <MenuButton text='Kategorien' imgSrc={require('../../assets/icons/012-menu-1.png')} route='CategoriesList' />
+                  <MenuButton text='Kategorien' imgSrc={require('../../assets/icons/012-menu-1.png')} route='CategoriesList' userType={this.props} />   
                   {isLoggedIn ? <MenuButton text='Profil' imgSrc={require('../../assets/icons/013-user.png')} route={'Profile'} /> : null}
                   {isLoggedIn ? <MenuButton text='Merkliste' imgSrc={require('../../assets/icons/004-heart.png')} route={'Favourite'} /> : null}
                   <MenuButton text='Warenkorb' imgSrc={require('../../assets/icons/002-shopping-cart.png')} route='Cart' />
@@ -93,12 +93,13 @@ class SideMenuView extends Component {
 
 }
 
-const MenuButton = ({ text, imgSrc, route, onPress }) => {
+const MenuButton = ({ text, imgSrc, route, onPress, userType }) => {
+  //NavigationService.navigate('ProductSubscribe', { productID: this.props.id })
   return (
     <TouchableOpacity
       onPress={() => {
         NavigationService.closeDrawer()
-        NavigationService.navigate(route)
+        NavigationService.navigate(route, { userInfoType: userType })
       }}
       style={styles.buttonContainerStyle}
     >
@@ -109,7 +110,6 @@ const MenuButton = ({ text, imgSrc, route, onPress }) => {
 }
 
 const mapStateToProps = (state) => (
-  console.log(" state.app.loaded", state),
   {
     userID: state.userID,
     loaded: state.app.loaded,

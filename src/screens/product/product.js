@@ -50,9 +50,9 @@ class Product extends Component {
   }
 
   initProduct = async (id) => {
-    console.log("this.initProduct(ID)", id)
     getFullProductData(id)
-      .then(response =>  response.json())
+      //Воть тут какаето хрень происходит
+      .then(response => response.json())
       .then(responseJson => {
         if (responseJson.status == '404') {
           Alert.alert(
@@ -68,8 +68,7 @@ class Product extends Component {
             ],
             { cancelable: false }
           );
-        }
-
+        }        
         this.setState({
           id: id,
           images: responseJson.imgURLs,
@@ -91,21 +90,6 @@ class Product extends Component {
           productSimilar: responseJson.similarProductIDs
         });
       });
-    // .then(({  
-    // })
-    // const getImages = getFullSizeProductImages(id).then(images => { this.setState({images: images.imgURLs}); console.log('images')})
-    // const getInfo = getProductInfo(id).then(info => { this.setState({info}); console.log('info') })
-    // const getProducts = getSimilarProducts(id).then(similar => { this.setState({productSimilar: similar.productIDs}); console.log('similar')})
-    // const getDesc = getProductDescription(id).then(description => { this.setState({productDescription: description.text}); console.log('desc')})
-    // const getPackage = getProductPackage(id).then(packageInfo => { this.setState({productPackage: packageInfo.data}); console.log('packageInfo')})
-    // const getDetails = getProductDetails(id).then(details => { this.setState({productDetails: details.data}); console.log('details')})
-    // const getReviews = getProductReviews(id).then(reviews => { this.setState({productReviews: reviews.reviewsItems}); console.log('reviews')})
-    // const getVideo = getProductVideo(id).then(video => { this.setState({productVideo: video.data}); console.log('video')})
-
-    // Promise.all([getImages, getInfo, getDesc, getProducts, getPackage, getDetails, getReviews, getVideo]).then(() => {
-    //         this.setState({id})
-    //     })    
-    // )
   }
 
   constructor(props) {
@@ -116,8 +100,6 @@ class Product extends Component {
 
 
   shouldComponentUpdate(nextProps, { images, info, productDescription, id }) {
-    console.log('shouldComponentUpdate `````````nextProps', nextProps);
-    console.log('shouldComponentUpdate `````````id', id)
     if (id) {
       return true
     }
@@ -159,7 +141,7 @@ class Product extends Component {
       },
     }
 
-    
+
     const ID = this.props.navigation.getParam('id')
     const name = this.props.navigation.getParam('name')
     const Tab = createMaterialTopTabNavigator({

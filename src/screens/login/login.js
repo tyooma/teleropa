@@ -53,8 +53,7 @@ class Login extends Component {
     this.getUserID()
   }
 
-  getUserID = async () => {
-    console.log('this.props.login',this.props)
+  getUserID = async () => {    
     try {
       const userID = await AsyncStorage.getItem('userID')
       if (userID && userID !== 'notloggedin') {

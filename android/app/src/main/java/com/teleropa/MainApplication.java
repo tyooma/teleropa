@@ -3,13 +3,6 @@ package com.teleropa;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-<<<<<<< HEAD
-=======
-import com.BV.LinearGradient.LinearGradientPackage;
-//import com.swmansion.rnscreens.RNScreensPackage;
-//import com.swmansion.reanimated.ReanimatedPackage;
-import com.reactlibrary.RNLoginWithAmazonPackage;
->>>>>>> 442a4c6107d0bf84bf54fbbd3f73a94783ec0852
 import com.oblador.vectoricons.VectorIconsPackage;
 // import com.reactnativepayments.ReactNativePaymentsPackage;
 import io.invertase.firebase.RNFirebasePackage;
@@ -46,13 +39,6 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-<<<<<<< HEAD
-=======
-            new LinearGradientPackage(),
-//            new RNScreensPackage(),
-//            new ReanimatedPackage(),
-            new RNLoginWithAmazonPackage(),
->>>>>>> 442a4c6107d0bf84bf54fbbd3f73a94783ec0852
             new VectorIconsPackage(),
             // new ReactNativePaymentsPackage(),
             new RNFirebasePackage(),

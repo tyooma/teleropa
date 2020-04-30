@@ -179,8 +179,7 @@ export default class App extends Component {
     /*
     * If your app is in background, you can listen for when a notification is clicked / tapped / opened as follows:
     * */
-    this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
-      console.log('notificationOpenedListener', notificationOpen.notification)
+    this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {      
       const { title, body } = notificationOpen.notification;
       this.showAlert(title, body);
     });
@@ -189,8 +188,7 @@ export default class App extends Component {
     * If your app is closed, you can check if it was opened by a notification being clicked / tapped / opened as follows:
     * */
     const notificationOpen = await firebase.notifications().getInitialNotification();
-    if (notificationOpen) {
-      console.log('notificationOpen', notificationOpen.notification)
+    if (notificationOpen) {      
       const { title, data } = notificationOpen.notification;
       this.showAlert(title, data.text);
     }
@@ -549,7 +547,7 @@ const AppDrawerNavigator = createDrawerNavigator(
 
 const AppSwitchNaigator = createSwitchNavigator(
 
-  // drawer: AppDrawerNavigator,
+  { drawer: AppDrawerNavigator },
   { AppDrawerNavigator, AppStackNavigator },
   { initialRouteName: "AppStackNavigator" }
 )

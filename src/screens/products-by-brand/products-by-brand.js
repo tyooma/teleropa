@@ -36,7 +36,7 @@ export default class ProductsByBrand extends Component {
     }
 
     getProductsIDs() {
-        const id = this.props.navigation.getParam('supplierID')             
+        const id = this.props.navigation.getParam('supplierID')
         getProductsBySupplier(id)
             .then(res => {
                 this.setState({
@@ -77,6 +77,8 @@ export default class ProductsByBrand extends Component {
 
     render() {
         console.log('this.state в products-by-brand.js', this.state)
+        let userInfo = this.props.navigation.getParam('userInfo', null)
+        console.log("userInfo в products-by-brand.js", userInfo)
         if (!this.state.loaded) {
             return <Loading />
         }
@@ -99,10 +101,19 @@ export default class ProductsByBrand extends Component {
                         return (
                             <View style={{ paddingBottom: 8 }}>
                                 <ProductListItem
+
+                                    // price={this.props.userInfo.selectedUserType === 'EK' ? price.toFixed(2) : companyPrice.toFixed(2)}
+                                    // salePrice={'UVP ' + salePrice.toFixed(2)}
+                                    // companyPrice={companyPrice.toFixed(2)}
+
                                     name={productName}
                                     price={price}
-                                    companyPrice={companyPrice}
-                                    salePrice={salePrice}
+                                    companyPrice={companyPrice.toFixed(2)}
+                                    // salePrice={'UVP ' + salePrice.toFixed(2)}
+                                    salePrice={salePrice != 0 ? 'UVP ' + salePrice.toFixed(2) : ''}
+                                    //companyPrice={companyPrice}
+                                    // salePrice={salePrice}
+
                                     rate={rate}
                                     stock={stock}
                                     id={productID}
@@ -115,7 +126,7 @@ export default class ProductsByBrand extends Component {
                     }}
                     columnWrapperStyle={{ flexWrap: 'wrap' }}
                     numColumns={4}
-                    // ListFooterComponent={this.state.IDs.length > this.state.data.length && (this.state.from+12 === this.state.data.length) ? <FooterButton text='More products' onPress={() => {this.getData(this.state.from+12)}} /> : null}
+                    // ListFooterComponent={this.state.IDs.length > this.state.data.length && (this.state.from+12 === this.state.data.length) ? <FooterButton text='Weitere Produkte' onPress={() => {this.getData(this.state.from+12)}} /> : null}
                     initialNumToRender={12}
                     windowSize={4}
                     keyExtractor={item => item.siteURL}

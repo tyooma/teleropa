@@ -146,12 +146,6 @@ android {
 }
 
 dependencies {
-<<<<<<< HEAD
-=======
-    implementation project(':react-native-linear-gradient')
-//    implementation project(':react-native-screens')
-//        implementation project(':react-native-reanimated')
->>>>>>> 442a4c6107d0bf84bf54fbbd3f73a94783ec0852
     implementation project(':react-native-login-with-amazon')
     implementation project(':react-native-vector-icons')
     // implementation project(':react-native-payments')

@@ -27,6 +27,7 @@ import BannerImage from '../../common/banner-image';
 import { sendToken } from '../../posts/authPosts'
 import Loading from '../loading';
 import { MenuButton, SearchButton } from '../../common/header-buttons';
+import { getUserInfo } from '../../gets/userPosts';
 
 class Main extends Component {
     static navigationOptions = {
@@ -62,10 +63,10 @@ class Main extends Component {
         getOffersList()
         getPopularCategories()
         getBannerImage()
-            // .then(image => Image.getSize(image, (w, h) => {
-            //     this.setImageSize(w, h);
-            //     this.setState({ image });
-            // }))
+        // .then(image => Image.getSize(image, (w, h) => {
+        //     this.setImageSize(w, h);
+        //     this.setState({ image });
+        // }))
     }
 
     setImageSize(width, height) {
@@ -99,24 +100,23 @@ class Main extends Component {
 
     getCategoriesCards() {
         return this.props.mainPage.categories.map(({ categoryName, categoryImageURL, categoryID }) => {
-            // console.log('getCategoriesCards', this)
-            if (categoryImageURL) return <CategoryWithImageItem key={categoryID} id={categoryID} text={categoryName} image={{ uri: categoryImageURL }} />
+            if (categoryImageURL) return <CategoryWithImageItem key={categoryID} id={categoryID} text={categoryName} image={{ uri: categoryImageURL }} userInfo={this.props.userInfo} />
         })
     }
 
     getNewest() {
         // console.log('this.props.newest', this.props.mainPage)
         // if (this.props.mainPage.newest)
-            return this.props.mainPage.newest.products.filter(({ productID, productName, previewImgURL, price, companyPrice }) => {
-                if (previewImgURL) return <NewestListItem key={productID} id={productID} text={productName} image={{ uri: previewImgURL }} price={price} companyPrice={companyPrice} />
-            })
+        return this.props.mainPage.newest.products.filter(({ productID, productName, previewImgURL, price, companyPrice }) => {
+            if (previewImgURL) return <NewestListItem key={productID} id={productID} text={productName} image={{ uri: previewImgURL }} price={price} companyPrice={companyPrice} />
+        })
     }
 
     getOffers() {
         // if (this.props.mainPage.offers)
-            return this.props.mainPage.offers.products.filter(({ productID, productName, previewImgURL, price, companyPrice, pseudoprice }) => {
-                return <OffersListItem key={productID} id={productID} text={productName} image={{ uri: previewImgURL }} price={price} companyPrice={companyPrice} salePrice={pseudoprice} />
-            })
+        return this.props.mainPage.offers.products.filter(({ productID, productName, previewImgURL, price, companyPrice, pseudoprice }) => {
+            return <OffersListItem key={productID} id={productID} text={productName} image={{ uri: previewImgURL }} price={price} companyPrice={companyPrice} salePrice={pseudoprice} />
+        })
     }
 
     // getBrands() {
@@ -140,7 +140,6 @@ class Main extends Component {
     }
 
     render() {
-        // console.log("this.props in main.js", this.props)
         if (
             !this.props.mainPage.categories ||
             // !this.props.mainPage.brands || 
@@ -155,30 +154,6 @@ class Main extends Component {
         return (
             <View style={{ flex: 1 }} >
                 <ScrollView>
-                    {/* NEED TO DELETE
-                    NEED TO DELETE
-                    NEED TO DELETE
-                    NEED TO DELETE
-                    NEED TO DELETE
-                    NEED TO DELETE
-                    NEED TO DELETE */}
-
-                    {/* <Text style={{marginBottom: 8, paddingHorizontal: 18, width: '100%'}} > Токен:</Text>
-                    <Text style={{marginBottom: 18, paddingHorizontal: 18, width: '100%'}} >{this.state.fcmToken}</Text>
-                    <View style={{paddingHorizontal: 18, alignItems: 'center', jusifyContent: 'center', width: '100%'}} >
-                        <TouchableOpacity style={styles.bottomButton} onPress={() => this.send()}>
-                            <Text style={styles.bottomButtonText}>
-                                Отправить токен на teleropa
-                            </Text>
-                        </TouchableOpacity>
-                    </View> */}
-
-                    {/* NEED TO DELETE
-                    NEED TO DELETE
-                    NEED TO DELETE
-                    NEED TO DELETE
-                    NEED TO DELETE
-                    NEED TO DELETE */}
                     <ScrollView horizontal style={{ flex: 1 }} showsHorizontalScrollIndicator={false}>
                         <View style={styles.topContainer}>
                             <Image source={image} style={styles.topImage} />
@@ -189,8 +164,6 @@ class Main extends Component {
                             <Text style={styles.topText}>Tagesaktuelle Preise</Text>
                         </View>
                     </ScrollView>
-
-                    {/* <TouchableOpacity onPress={() => this.props.setNetworkStatusOff()}> */}
 
                     {this.getBanner()}
 
@@ -240,7 +213,7 @@ class Main extends Component {
                             horizontal
                             data={this.getBrands()}
                             renderItem={({ item }) => {
-                                return <BrandListItem brand={item.title} image={{ uri: item.imgURL }} id={item.supplierID} />
+                                return <BrandListItem brand={item.title} image={{ uri: item.imgURL }} id={item.supplierID} userInfo={this.props.userInfo} />
                             }}
                             keyExtractor={item => item.title}
                             initialNumToRender={3}
@@ -266,7 +239,8 @@ class Main extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        mainPage: state.mainPage
+        mainPage: state.mainPage,
+        userInfo: state.userInfo
     }
 }
 

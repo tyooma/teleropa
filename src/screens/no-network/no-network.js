@@ -7,9 +7,7 @@ import { checkInternetConnection, offlineActionTypes } from 'react-native-offlin
 
 async function internetChecker() {
     const isConnected = await checkInternetConnection('https://www.teleropa.de/');
-    console.log(offlineActionTypes, isConnected)
-    // // Dispatching can be done inside a connected component, a thunk (where dispatch is injected), saga, or any sort of middleware
-    // // In this example we are using a thunk
+    console.log(offlineActionTypes, isConnected)    
     store.dispatch({
         type: offlineActionTypes.CONNECTION_CHANGE,
         payload: isConnected,

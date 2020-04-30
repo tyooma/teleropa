@@ -32,15 +32,15 @@ import { sWidth } from '../../helpers/screenSize';
 
 //import SearchHeader from './SearchHeader';
 
-const CustomHeader = ({ value, updateSearch, syka, onEndEditing }) => {
-    console.log("SYKA SYKA SYKA PIZDEC", CustomHeader)
+// const CustomHeader = ({ value, updateSearch, syka, onEndEditing }) => {
+const CustomHeader = ({ value, onChangeText, onEndEditing }) => {
     return (
         <SafeAreaView style={{ backgroundColor: '#d1D0019' }}>
             <View style={styles.headerStyle}>
                 <TouchableOpacity style={styles.backStyle} onPress={() => NavigationService.back()}>
                     <BackButton />
                 </TouchableOpacity>
-                <SearchBar
+                {/* <SearchBar
                     autoFocus
                     lightTheme
                     value={value}
@@ -54,6 +54,15 @@ const CustomHeader = ({ value, updateSearch, syka, onEndEditing }) => {
                     //onChangeText={value => onChangeText(value)}
                     onChangeText={text => updateSearch(text)}
                     onEndEditing={() => onEndEditing()}
+                /> */}
+                <TextInput
+                    autoFocus
+                    value={value}
+                    placeholderTextColor='rgba(255, 255, 255, 0.7)'
+                    style={styles.searchInputStyle}
+                    placeholder='Bitte geben Sie den Artikelnamen ein'
+                    onChangeText={value => onChangeText(value)}
+                    onEndEditing={() => onEndEditing()}
                 />
                 <ScannerButton />
             </View>
@@ -62,7 +71,6 @@ const CustomHeader = ({ value, updateSearch, syka, onEndEditing }) => {
 }
 
 const updateSearch1 = value => {
-    console.log("value````````````````", value);
     return value
 }
 
@@ -79,15 +87,14 @@ const SearchStoryItem = ({ text, onPress }) => {
 class Search extends Component {
     static navigationOptions = ({ navigation }) => {
         const { params = {} } = navigation.state;
-        console.log(" navigation.navigate~~~~~", navigation)
-        // console.log(" navigation.getParam++++++++", navigation.getParam('searchText', ''));
-        console.log("params.searchText`````", params.searchText)
+        // console.log(" navigation.getParam++++++++", navigation.getParam('searchText', ''));        
         return ({
             header: (
                 <CustomHeader
                     value={params.searchText}
-                    updateSearch={value => params.onChangeSearch(value)}
-                    syka={navigation.getParam('SearchText', '')}
+                    // updateSearch={value => params.onChangeSearch(value)}
+                    onChangeText={value => params.onChangeSearch(value)}
+                    // syka={navigation.getParam('SearchText', '')}
                     onEndEditing={() => {
                         if (params.searchText)
                             params.onSubmit()
@@ -164,7 +171,6 @@ class Search extends Component {
     }
 
     onSearchChange(searchText) {
-        console.log(" onSearchChange ++++  searchText", searchText)
         this.setState({ searchText })
         this.props.navigation.setParams({ searchText })
         this.setState({ showResult: searchText.length >= 4 })
@@ -174,9 +180,18 @@ class Search extends Component {
         }
     }
     getProductsIDs(searchText) {
+        var result = [];
         getSearchResult(searchText)
             .then(res => {
-                if (res.searchResult.length > 0) this.getIDs(res.searchResult)
+                if (res.searchResult.length > 0) {
+                    let searchString = searchText.toLowerCase().trim();
+                    let ResponseServer = res.searchResult;
+                    ResponseServer.filter((a) => {
+                        if (a.name.toLowerCase().indexOf(searchString) != -1) result.push(a);
+                    })
+                    //this.getIDs(res.searchResult)
+                    this.getIDs(result)
+                }
                 else this.showToastNoSearch()
             })
     }
@@ -347,9 +362,10 @@ class Search extends Component {
                                     <ProductListItem
                                         name={productName}
                                         //price={this.props.price}
-                                        price={this.props.userInfo.selectedUserType === 'EK' ? price : companyPrice}
-                                        salePrice={salePrice}
-                                        companyPrice={companyPrice}
+                                        price={this.props.userInfo.selectedUserType === 'EK' ? price.toFixed(2) : companyPrice.toFixed(2)}
+                                        // salePrice={'UVP ' + salePrice.toFixed(2)}
+                                        salePrice={salePrice != 0 ? 'UVP ' + salePrice.toFixed(2): ''}
+                                        companyPrice={companyPrice.toFixed(2)}
                                         rate={rate}
                                         stock={stock}
                                         id={id}
@@ -366,7 +382,7 @@ class Search extends Component {
                                 <FilterButton minPrice={minPrice} maxPrice={maxPrice} fromPrice={fromPrice} toPrice={toPrice} sortBy={sortBy} />
                                 : null
                         }
-                        ListFooterComponent={this.state.filteredIDs.length > this.state.products.length && (this.state.from + 12 === this.state.products.length) ? <FooterButton text='More products' onPress={() => { this.getData(this.state.from + 12) }} /> : null}
+                        ListFooterComponent={this.state.filteredIDs.length > this.state.products.length && (this.state.from + 12 === this.state.products.length) ? <FooterButton text='Weitere Produkte' onPress={() => { this.getData(this.state.from + 12) }} /> : null}
                         initialNumToRender={3}
                         windowSize={2}
                         keyExtractor={item => item.id}

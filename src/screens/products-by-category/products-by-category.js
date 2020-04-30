@@ -2,19 +2,24 @@ import React, { Component } from 'react'
 import { View, FlatList, Text, Image } from 'react-native'
 
 import { SearchButton } from '../../common/header-buttons';
+
 import CategoryInfoButton from '../../common/header-buttons/category-info-button'
 
 // import { getProductsByCategory } from '../../gets/productsListPost';
 import FilterButton from '../../common/filter-button';
+
 import FooterButton from '../../common/footer-button';
 
 import ProductListItem from '../../common/product-list-item';
 
 import { getPreviewProductData, getProductsByCategory } from '../../gets/productPosts';
 
-import Loading from '../loading'
+import Loading from '../loading';
 
-export default class ProductsByCategory extends Component {
+import { connect } from 'react-redux'
+
+//export default class ProductsByCategory extends Component {
+class ProductsByCategory extends Component {
 
     static navigationOptions = ({ navigation }) => {
         const cmsText = navigation.getParam('cmsText', null)
@@ -75,7 +80,6 @@ export default class ProductsByCategory extends Component {
     }
 
     render() {
-
         console.log("this.state RENDER() in products-by-category.js", this.state)
         if (!this.state.loaded) {
             return <Loading />
@@ -88,28 +92,21 @@ export default class ProductsByCategory extends Component {
                 </View>
             )
         }
-        // console.log(this.state.IDs)
-        // console.log(this.getproduct)
         return (
             <View>
                 <FlatList
-                    // contentContainerStyle={{paddingLeft: 18}}
-                    // data={this.state.data}
+                    // contentContainerStyle={{paddingLeft: 18}}                    
                     data={this.state.data.filter(item => item.stock > 0)}
                     renderItem={({ item }) => {
                         const { companyPrice, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, productID } = item
-                        // getProductInfo(item)
-                        // getProductInfo(item).then(e => console.log(e))
-                        // console.log(item)
-                        // console.log(item, <SelfLoadingProductListItem id={item} />)
-                        // if (<SelfLoadingProductListItem id={item} />) {                                                
                         return (
                             <View style={{ paddingBottom: 8 }}>
                                 <ProductListItem
                                     name={productName}
-                                    price={price}
-                                    companyPrice={companyPrice}
-                                    salePrice={salePrice}
+                                    //price={price}
+                                    price={this.props.userInfo.selectedUserType === 'EK' ? price.toFixed(2) : companyPrice.toFixed(2)}
+                                    salePrice={salePrice != 0 ? 'UVP ' + salePrice.toFixed(2): ''}
+                                    companyPrice={companyPrice.toFixed(2)}
                                     rate={rate}
                                     stock={stock}
                                     id={productID}
@@ -122,7 +119,7 @@ export default class ProductsByCategory extends Component {
                     }}
                     columnWrapperStyle={{ flexWrap: 'wrap' }}
                     numColumns={4}
-                    ListFooterComponent={this.state.IDs.length > this.state.data.length && (this.state.from + 12 === this.state.data.length) ? <FooterButton text='More products' onPress={() => { this.getData(this.state.from + 12) }} /> : null}
+                    ListFooterComponent={this.state.IDs.length > this.state.data.length && (this.state.from + 12 === this.state.data.length) ? <FooterButton text='Weitere Produkte' onPress={() => { this.getData(this.state.from + 12) }} /> : null}
                     // ListFooterComponent={<TouchableOpacity onPress={() => {this.getData(this.state.from+12)}} ><Text>END</Text></TouchableOpacity>}
                     initialNumToRender={12}
                     windowSize={4}
@@ -133,6 +130,10 @@ export default class ProductsByCategory extends Component {
     }
 }
 
+
+const mapStateToProps = ({ userID, userInfo }) => ({ userID, userInfo })
+
+export default connect(mapStateToProps)(ProductsByCategory)
 
 const styles = {
     popularText: {

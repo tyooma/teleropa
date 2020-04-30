@@ -68,22 +68,22 @@ class ProductDescription extends Component {
     return <Text style={styles.inStock}>Produkt ist verfügbar</Text>
   }
 
-  getPrices(price, companyPrice, salePrice) {
-    const showingPrice = this.props.userInfo.selectedUserType === 'EK' ? price : companyPrice
-    if (salePrice && salePrice != 0) {
-      console.log('saleprice:', salePrice)
+  getPrices(price, salePrice, companyPrice) {
+    // if (salePrice && salePrice != 0) {
+    if (salePrice != 0) {
       return (
         <View>
-          <Text style={styles.previousPrice}>{salePrice} €</Text>
-          <Text style={styles.salePrice}>{showingPrice} €</Text>
+          <Text style={styles.previousPrice}>{'UVP ' + salePrice.toFixed(2)} €</Text>
+          <Text style={styles.salePrice}>{this.props.userInfo.selectedUserType === 'EK' ? price.toFixed(2) : companyPrice.toFixed(2)} €</Text>
+        </View>
+      )
+    } else {
+      return (
+        <View>
+          <Text style={styles.price}>{this.props.userInfo.selectedUserType === 'EK' ? price.toFixed(2) : companyPrice.toFixed(2)} €</Text>
         </View>
       )
     }
-    return (
-      <View>
-        <Text style={styles.price}>{showingPrice} €</Text>
-      </View>
-    )
   }
 
   getSalePercent(percent) {
@@ -124,7 +124,6 @@ class ProductDescription extends Component {
     if (!productsIDs) {
       return
     }
-    console.log(productsIDs.length)
     if (productsIDs.length < 1) {
       return
     }
@@ -142,39 +141,36 @@ class ProductDescription extends Component {
     }
     return (
       <View>
-        <Text style={styles.similarText}>
-          Ähnliche Produkte
-                  </Text>
+        <Text style={styles.similarText}>          Ähnliche Produkte                  </Text>
       </View>
     )
   }
 
   getSimilarProductsCards() {
-    console.log(this.state.similar.length)
-    console.log(this.state)
     if (this.state.similar.length < 1) {
       return null
     }
     return this.state.similar.map(product => {
-      // console.log(product)
->>>>>>> 442a4c6107d0bf84bf54fbbd3f73a94783ec0852
-      const { productName, price, companyPrice, salePrice, previewImgURL, rate, stock, id, productSalePercent } = product
+      const { companyPrice, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, productID } = product
       // return (
       //   <Text style={styles.similarText}>
       //       Ähnliche Produkte
       //   </Text>
-      // )
+      // )      
       return (
         <ProductListItem
           name={productName}
-          price={price}
-          companyPrice={companyPrice}
-          salePrice={salePrice}
+          price={this.props.userInfo.selectedUserType === 'EK' ? price.toFixed(2) : companyPrice.toFixed(2)}
+          // salePrice={'UVP ' + salePrice.toFixed(2)}
+          salePrice={salePrice != 0 ? 'UVP ' + salePrice.toFixed(2) : ''}
+          companyPrice={companyPrice.toFixed(2)}
           rate={rate}
           stock={stock}
-          id={id}
+
+          id={productID}
           imageURL={previewImgURL}
-          key={id}
+
+          key={productID}
           favourite
           salePercent={productSalePercent ? productSalePercent.int : null}
         />
@@ -196,11 +192,11 @@ class ProductDescription extends Component {
   }
 
   render() {
+    console.log("this.state in product-description.js", this.state)
     const productInfo = this.props.productInfo
     if (!this.props.productInfo.productName) {
       return <Loading />
     }
-    console.log(this.props)
     return (
       <View style={{ flex: 1 }}>
         <ScrollView>
@@ -237,7 +233,6 @@ class ProductDescription extends Component {
             <Text style={styles.descriptionHelper}>
               Beschreibung
                     </Text>
-                    {console.log('mm',this.props.productDescription)}
             <HTML staticContentMaxWidth={50} html={this.props.productDescription ? this.props.productDescription : 'Produktbeschreibung ist nicht vorhanden'} containerStyle={[styles.description, { maxHeight: this.state.descMore ? 10000 : 100 }]} tagsStyles={HTMLStyles} />
 
             <View style={styles.descLine}></View>

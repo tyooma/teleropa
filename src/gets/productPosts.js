@@ -1,7 +1,4 @@
-console.log('this in productPosts.js', this)
-
 export function getProductInfo(id) {
-    console.log('id in getProductInfo() в запросе поиска getProductInfo(id) productPosts.js', id)
     return fetch('https://teleropa.de/WebiProgCommunicationApplicationArticle/getInfo', {
         method: 'POST',
         headers: {
@@ -18,7 +15,6 @@ export function getProductInfo(id) {
 }
 
 export function getFullProductData(id) {
-    console.log('ID getFullProductData запрос ', id)
     return fetch('https://teleropa.de/WebiProgCommunicationApplicationArticle/getFullProductData', {
         method: 'POST',
         headers: {
@@ -38,7 +34,7 @@ export function getFullProductData(id) {
     // })
 }
 
-export function getPreviewProductData(id) {
+export function getPreviewProductData(id) {    
     return fetch('https://teleropa.de/WebiProgCommunicationApplicationArticle/getPreviewProductData', {
         method: 'POST',
         headers: {

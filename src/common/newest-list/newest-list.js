@@ -1,24 +1,16 @@
-import React, { Component } from 'react';
-
-import { Text, TouchableOpacity, Image, View } from 'react-native';
-
+import React from 'react';
+import { connect } from 'react-redux'
+import { Image, Text, TouchableOpacity, View } from 'react-native';
 import ImageLoader from '../../helpers/image-loader';
 import { sWidth } from '../../helpers/screenSize';
-
+import { getPreviewAsyncProductData } from '../../gets/productPosts';
 import NavigationService from '../../navigation-service';
 
-import { getPreviewAsyncProductData } from '../../gets/productPosts';
-
-import { connect } from 'react-redux';
-
-
-
 const NewestListItem = ({ id, text, image, price, companyPrice, userInfo }) => {
-    const showingPrice = userInfo.selectedUserType === 'EK' ? price : companyPrice;
-
-    let pricefixed = parseFloat(showingPrice).toFixed(2)
+// const NewestListItem = ({ id, text, image, price, companyPrice, userInfo }) => {
+    const showingprice = userInfo.selectedUserType === 'EK' ? price : companyPrice;
+    let pricefixed = parseFloat(showingprice).toFixed(2)
     let formattedprice = pricefixed.toString().replace('.', ',');
-
 
     return (
         <TouchableOpacity style={styles.container} onPress={() => NavigationService.push('Product', { id: id, name: text, images: image, price: price, companyPrice: companyPrice })
@@ -31,6 +23,7 @@ const NewestListItem = ({ id, text, image, price, companyPrice, userInfo }) => {
                 <View style={{ flex: 6, flexDirection: 'column' }}>
                     <View>
                         <Text style={styles.name} numberOfLines={3}
+                        //  ellipsizeMode='middle'
                         >{text}</Text>
                     </View>
                     <View>
@@ -97,6 +90,3 @@ const styles = {
         paddingHorizontal: 8,
     }
 }
-
-const mapStateToProps = ({ userID, userInfo }) => ({ userID, userInfo })
-export default connect(mapStateToProps)(NewestListItem)

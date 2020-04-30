@@ -49,8 +49,7 @@ function ProductListItem({ imageURL, name, price, salePrice, favourite, id, stoc
         }
     }
 
-    getPrice = () => {
-        console.log()
+    getPrice = () => {        
         const showingPrice = props.userInfo.selectedUserType === 'EK' ? price : companyPrice
         if (salePrice != '0' && salePrice) {
             return (
@@ -126,14 +125,10 @@ function ProductListItem({ imageURL, name, price, salePrice, favourite, id, stoc
 
     return (
         <TouchableOpacity style={styles.productContainer} onPress={() => NavigationService.push('Product', { id: id, name: name })} >
-            <View style={{ flex: 1 }}>
-                {/* <ImageLoader source={{uri: imageURL}} style={styles.productImage} imageStyle={styles.productImage} key={imageURL}> */}
+            <View style={{ flex: 1 }}>             
                 {this.getImage()}
             </View>
-
             {getFavButton()}
-
-
             <Text style={styles.name} numberOfLines={2} >{name}</Text>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 13, flexWrap: 'wrap' }}>
                 {getStock()}

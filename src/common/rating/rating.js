@@ -1,57 +1,56 @@
 import React from 'react';
 
-
-
 import { View, Image, Text } from 'react-native';
 
-EmptyStar = () => {
-    return(
-        <Image key={'emptyStar'} style={styles.star} source={require('../../assets/icons-color/015-star2.png')}/>
+const EmptyStar = () => {
+    return (
+        <Image key={'emptyStar'} style={styles.star} source={require('../../assets/icons-color/015-star2.png')} />
     )
 }
 
-HalfStar = () => {
-    return(
-        <Image key={'halfStar'} style={styles.star} source={require('../../assets/icons-color/016-star-3.png')}/>
+const HalfStar = () => {
+    return (
+        <Image key={'halfStar'} style={styles.star} source={require('../../assets/icons-color/016-star-3.png')} />
     )
 }
 
-Star = () => {
-    return(
-        <Image key={'fullStar'} style={styles.star} source={require('../../assets/icons-color/016-star-2.png')}/>
+const Star = () => {
+    return (
+        <Image key={'fullStar'} style={styles.star} source={require('../../assets/icons-color/016-star-2.png')} />
     )
 }
 
 
-
-export default function Rating({rating}) {
-
+// export default connect(mapStateToProps)(ProductListItem)
+export default function Rating({ rating }) {
+    console.log("RATING PLUS PLUS RATING", rating)
     Stars = () => {
         let rate = rating;
-        return [1,2,3,4,5].map((key) => {
-            if(rate <=0) {
-                return <EmptyStar key={key}/>
+        return [1, 2, 3, 4, 5].map((key) => {
+            // if (rate <= 0) {
+            if (rate != null) {
+                return <EmptyStar key={key} />
             }
-            rate-=2;
+            rate -= 2;
             if (rate >= 0) {
-                return <Star key={key}/>
+                return <Star key={key} />
             }
             if (rate === -1) {
-                return <HalfStar key={key}/>
+                return <HalfStar key={key} />
             }
         })
     }
 
-    if (!rating) {
-        return(
-            <Text style={styles.noRating}>
-                Noch nicht bewertet
-            </Text>
-        )
-    }
+    // if (!rating) {
+    //     return (
+    //         <Text style={styles.noRating}>
+    //             Noch nicht bewertet
+    //         </Text>
+    //     )
+    // }
 
     return (
-        <View style={{flexDirection: 'row', height: 15}}>
+        <View style={{ flexDirection: 'row', height: 15 }}>
             <Stars />
         </View>
     )

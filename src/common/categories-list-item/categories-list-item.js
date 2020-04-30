@@ -3,26 +3,25 @@ import { View, Image, Text, TouchableOpacity } from 'react-native';
 
 import NavigationService from '../../navigation-service';
 
-const CategoriesListItem = ({name, textStyle, route, id, haveSubCategories, cmsText}) => {
-
+const CategoriesListItem = ({ name, textStyle, route, id, haveSubCategories, cmsText, userInfo }) => {
   const navigate = () => {
-    if(route) {
-        NavigationService.navigate(route)
+    if (route) {
+      NavigationService.navigate(route, { userInfoType: userInfo })
     }
     else {
-        if(haveSubCategories) {
-            NavigationService.push('SubcategoriesList', {id, name, cmsText})
-        } else {
-            NavigationService.navigate('ProductsByCategory', {categoryID: id, categoryName: name, cmsText})
-        }
+      if (haveSubCategories) {        
+        NavigationService.push('SubcategoriesList', { id, name, cmsText, userInfo })
+      } else {
+        NavigationService.navigate('ProductsByCategory', { categoryID: id, categoryName: name, cmsText, userInfo })
+      }
     }
 
   }
 
-  return(
+  return (
     <TouchableOpacity style={styles.containerStyle} onPress={() => navigate()} >
-      <View style={{flexDirection: 'row', alignItems: 'center'}}>
-        <Text style={textStyle ? {...styles.categoryText, ...textStyle} : styles.categoryText}>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <Text style={textStyle ? { ...styles.categoryText, ...textStyle } : styles.categoryText}>
           {name}
         </Text>
       </View>

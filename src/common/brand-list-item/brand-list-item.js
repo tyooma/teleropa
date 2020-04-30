@@ -7,17 +7,17 @@ import { sWidth } from '../../helpers/screenSize';
 
 import NavigationService from '../../navigation-service';
 
-const componentName = ({image, id, brand}) => {
+const componentName = ({ image, id, brand, userInfo }) => {
     // console.log(image)
     return (
-        <TouchableOpacity style={styles.container} onPress={() => NavigationService.navigate('ProductsByBrand', {brand: brand, supplierID: id})}>
+        <TouchableOpacity style={styles.container} onPress={() => NavigationService.navigate('ProductsByBrand', { brand: brand, supplierID: id, userInfo: userInfo })}>
             <ImageLoader style={styles.image} source={image} key={image} />
         </TouchableOpacity>
     )
-    
+
 };
 
-const width = sWidth > 600 ? (sWidth - 72)/3 : (sWidth - 54)/2
+const width = sWidth > 600 ? (sWidth - 72) / 3 : (sWidth - 54) / 2
 
 const styles = {
     container: {

@@ -3,16 +3,16 @@ import { Image, TouchableOpacity, Platform } from 'react-native';
 import NavigationService from '../../../navigation-service';
 
 const MenuButton = () => {
-    return (
-      <TouchableOpacity onPress={() => NavigationService.openDrawer()}>
-        <Image
-          source={require('../../../assets/icons-color/007-menu-white.png')}
-          style={styles.backButtonStyle}
-          key={'headerMenu'}
-        />
-     </TouchableOpacity>
+  return (
+    <TouchableOpacity onPress={() => NavigationService.openDrawer()}>
+      <Image
+        source={require('../../../assets/icons-color/007-menu-white.png')}
+        style={styles.backButtonStyle}
+        key={'headerMenu'}
+      />
+    </TouchableOpacity>
 
-    );
+  );
 }
 
 const styles = {
