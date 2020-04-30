@@ -1,16 +1,9 @@
-<<<<<<< HEAD
 import React, { Component } from 'react';
 
 import { Text, TouchableOpacity, Image, View } from 'react-native';
 
-=======
-import React from 'react';
-import { connect } from 'react-redux'
-import { Image, Text, TouchableOpacity, View } from 'react-native';
->>>>>>> 442a4c6107d0bf84bf54fbbd3f73a94783ec0852
 import ImageLoader from '../../helpers/image-loader';
 import { sWidth } from '../../helpers/screenSize';
-<<<<<<< HEAD
 
 import NavigationService from '../../navigation-service';
 
@@ -24,15 +17,6 @@ const NewestListItem = ({ id, text, image, price, companyPrice, userInfo }) => {
     const showingPrice = userInfo.selectedUserType === 'EK' ? price : companyPrice;
 
     let pricefixed = parseFloat(showingPrice).toFixed(2)
-=======
-import { getPreviewAsyncProductData } from '../../gets/productPosts';
-import NavigationService from '../../navigation-service';
-
-const NewestListItem = ({ id, text, image, price, companyPrice, userInfo }) => {
-// const NewestListItem = ({ id, text, image, price, companyPrice, userInfo }) => {
-    const showingprice = userInfo.selectedUserType === 'EK' ? price : companyPrice;
-    let pricefixed = parseFloat(showingprice).toFixed(2)
->>>>>>> 442a4c6107d0bf84bf54fbbd3f73a94783ec0852
     let formattedprice = pricefixed.toString().replace('.', ',');
 
 
@@ -112,11 +96,7 @@ const styles = {
         lineHeight: 23,
         paddingHorizontal: 8,
     }
-<<<<<<< HEAD
 }
 
 const mapStateToProps = ({ userID, userInfo }) => ({ userID, userInfo })
 export default connect(mapStateToProps)(NewestListItem)
-=======
-}
->>>>>>> 442a4c6107d0bf84bf54fbbd3f73a94783ec0852

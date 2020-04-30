@@ -155,9 +155,6 @@ class ProductDescription extends Component {
     if (this.state.similar.length < 1) {
       return null
     }
-<<<<<<< HEAD
-    return this.state.similar.map(product => {      
-=======
     return this.state.similar.map(product => {
       // console.log(product)
 >>>>>>> 442a4c6107d0bf84bf54fbbd3f73a94783ec0852
