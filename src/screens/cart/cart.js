@@ -145,7 +145,7 @@ class Cart extends Component {
         cartReceaved: false,
         modalVisible: false,
 
-        routeName: 'DeliveryService'
+        routeName: 'Cart'
     }
 
     setModalVisible(visible) {
@@ -462,7 +462,7 @@ class Cart extends Component {
                     console.log('this.props.userID',this);
                     
                     if (!this.props.userID || this.props.userID === "notloggedin") {
-                        this.props.navigation.navigate('Login', {routeName: this.state.routeName})
+                        NavigationService.navigate('Login', {routeName: this.state.routeName})
                     }
                     else {
                         console.log(this.state.products);

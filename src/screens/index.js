@@ -38,9 +38,11 @@ import Career from './career';
 import TermsConfidentiality from './terms-confidentiality';
 import TermsDeliveryPayment from './terms-delivery-payment';
 import TermsReturn from './terms-return';
+// import Login from './login';
 
 
 export {
+    // Login,
     CategoriesList,
     Feedback,
     ChangePaymentAddress,

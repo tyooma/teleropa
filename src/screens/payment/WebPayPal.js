@@ -30,7 +30,7 @@ export class WebPayPal extends Component {
             city: this.props.userInfo.city,
             post: this.props.userInfo.post,
 
-            realAccount: false
+            realAccount: true
         }
     }
     async componentDidMount() {
@@ -182,6 +182,7 @@ export class WebPayPal extends Component {
                         .then(responseJson => {
                             const { id, links } = responseJson
                             console.log("Create a payment", responseJson)
+                            // console.log("links", links)
                             const approvalUrl = links.find(data => data.rel == "approval_url")
                             this.setState({
                                 paymentId: id,

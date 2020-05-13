@@ -10,6 +10,9 @@ import ButtonItem from '../../common/button-item';
 
 class Profile extends Component {
 
+  state = {
+    routeName: 'Profile'
+  }
   static navigationOptions = {
     headerLeft: MenuButton,
     headerRight: (
@@ -31,7 +34,7 @@ class Profile extends Component {
         <ButtonItem text='Widerrufsrecht  ' onPress={() => this.props.navigation.navigate('Orders', {selected: 'Retouren'})} />
         <ButtonItem text='Paket verfolgen' onPress={() => {}} />
         <ButtonItem text='Wunschzettel' onPress={() => {this.props.navigation.navigate('Favourite')}} />
-        <ButtonItem text='Abmelden' onPress={() => {this.props.navigation.navigate('Login')}} />
+        <ButtonItem text='Abmelden' onPress={() => {this.props.navigation.navigate('Login', {routeName: this.state.routeName})}} />
       </ScrollView>
     )
   }

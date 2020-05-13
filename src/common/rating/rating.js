@@ -41,13 +41,14 @@ export default function Rating({ rating }) {
         })
     }
 
-    // if (!rating) {
-    //     return (
-    //         <Text style={styles.noRating}>
-    //             Noch nicht bewertet
-    //         </Text>
-    //     )
-    // }
+    // рейтинг
+    if (!rating) {
+        return (
+            <Text style={styles.noRating}>
+                Noch nicht bewertet
+            </Text>
+        )
+    }
 
     return (
         <View style={{ flexDirection: 'row', height: 15 }}>

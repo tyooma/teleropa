@@ -17,6 +17,11 @@ import ModalView from '../../common/modal-view';
 
 import ButtonItem from '../../common/button-item';
 
+// import NavigationService from '../../navigation-service'
+// import { createStackNavigator, NavigationActions, withNavigationFocus } from "react-navigation";
+
+// const { routeName } = this.props.navigation.state.params;
+
 class Login extends Component {
 
   state = {
@@ -26,7 +31,9 @@ class Login extends Component {
     password: '',
     emailForReset: '',
     loading: false,
-    userID: null
+    userID: null,
+
+    routeName: this.props.navigation.getParam('routeName', null)
   }
 
   handlerPassRecoveryVisible() {
@@ -39,11 +46,13 @@ class Login extends Component {
 
   logInHandler() {
     const emailChecker = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-    const { email, password } = this.state;
+    const { email, password, routeName } = this.state;
     if (emailChecker.test(email) && password.length >= 3) {
       this.setState({ loading: true })
       this.props.setLoggedUserId(null)
-      logIn(email, password)
+      logIn(email, password, routeName)
+      console.log('this.state', this.state);
+      
     } else {
       Alert.alert('Fehler', 'E-Mail oder Passwort sind ungültig')
     }
@@ -53,7 +62,7 @@ class Login extends Component {
     this.getUserID()
   }
 
-  getUserID = async () => {    
+  getUserID = async () => {
     try {
       const userID = await AsyncStorage.getItem('userID')
       if (userID && userID !== 'notloggedin') {
@@ -104,8 +113,6 @@ class Login extends Component {
 
 
   render() {
-    // console.log(`------------------------------------------------------------------------${this.props.userID}`)
-    (this.props.routeName)?console.log('zz',this.props.routeName):console.log('fgg', this);
 
     if (this.state.loading && !this.props.userID) {
       return <Loading />
