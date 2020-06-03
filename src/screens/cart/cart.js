@@ -73,7 +73,6 @@ getCounter = (order, pcs, id, onMinus, onAdd) => {
 }
 
 export const CartItem = ({ img, name, pcs, price, companyPrice, userType, stock, order, orderReturnReason, id, onAdd, onMinus, onDelete }) => {
-    console.log('order, orderReturnReason', order, orderReturnReason)
     return (
         <TouchableOpacity style={styles.cartItemContainer} onPress={() => NavigationService.push('Product', { id, name })}>
             <View style={{ flexDirection: 'row' }}>
@@ -287,7 +286,6 @@ class Cart extends Component {
     }
     deleteFromCartAndState(id) {
         deleteFromCart(id)
-        console.log('delete trigger')
         const newProductsArray = this.state.products.filter(product => product.id !== id)
         this.setState({ products: newProductsArray })
     }
@@ -355,15 +353,10 @@ class Cart extends Component {
                 return price.toFixed(2)
             }
             if (percental) {
-                console.log('1', 1)
-                console.log('percental', percental)
-                console.log('(price - price / 100 * value).toFixed(2)', (price - price / 100 * value).toFixed(2))
                 return (price - price / 100 * value).toFixed(2)
             }
-            console.log(2)
             return (price - value).toFixed(2)
         }
-        console.log(3)
         return price.toFixed(2)
     }
 
@@ -373,7 +366,6 @@ class Cart extends Component {
             return
         }
         getPromocodeData(this.state.promocode).then(promocodeData => {
-            console.log(promocodeData)
             if (promocodeData.status.code === 'success') {
                 this.setState({ promocodeData })
             }
@@ -414,6 +406,9 @@ class Cart extends Component {
                 </View>
             )
         }
+
+        console.log("this.state.products~~~~~~~", this.state.products);
+        console.log("this.props.cart~~~~~~~", this.props.cart)
         if (this.state.products.length !== this.props.cart.length) {
             return <Loading />
         }
@@ -459,15 +454,11 @@ class Cart extends Component {
                 </BoxShadow>
 
                 <FooterButton text='Zur Kasse' onPress={() => {
-                    console.log('this.props.userID',this);
-                    
                     if (!this.props.userID || this.props.userID === "notloggedin") {
-                        NavigationService.navigate('Login', {routeName: this.state.routeName})
+                        NavigationService.navigate('Login', { routeName: this.state.routeName })
                     }
                     else {
-                        console.log(this.state.products);
-                        // this.itemsAvailableCount();
-                        // this.setModalVisible(true)
+
                         this.props.navigation.navigate('DeliveryService', { productsPrice: this.state.discountProductsPrice, data: this.state })
                     }
                 }} />

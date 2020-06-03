@@ -145,7 +145,7 @@ android {
     }
 }
 
-dependencies {
+dependencies {    
     implementation project(':react-native-login-with-amazon')
     implementation project(':react-native-vector-icons')
     // implementation project(':react-native-payments')
