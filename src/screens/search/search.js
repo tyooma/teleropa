@@ -243,7 +243,7 @@ class Search extends Component {
             } else {
                 sorted = filtered
             }
-            new Promise((resolve) => {
+            new Promise((resolve) => {                
                 this.setState({ filteredIDs: sorted, products: [], from: 0 });
                 setTimeout(() => resolve(), 200)
             })
@@ -364,7 +364,7 @@ class Search extends Component {
                                         //price={this.props.price}
                                         price={this.props.userInfo.selectedUserType === 'EK' ? price.toFixed(2) : companyPrice.toFixed(2)}
                                         // salePrice={'UVP ' + salePrice.toFixed(2)}
-                                        salePrice={salePrice != 0 ? 'UVP ' + salePrice.toFixed(2): ''}
+                                        salePrice={salePrice != 0 ? 'UVP ' + salePrice.toFixed(2) : ''}
                                         companyPrice={companyPrice.toFixed(2)}
                                         rate={rate}
                                         stock={stock}

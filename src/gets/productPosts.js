@@ -34,7 +34,7 @@ export function getFullProductData(id) {
     // })
 }
 
-export function getPreviewProductData(id) {    
+export function getPreviewProductData(id) {
     return fetch('https://teleropa.de/WebiProgCommunicationApplicationArticle/getPreviewProductData', {
         method: 'POST',
         headers: {

@@ -144,7 +144,8 @@ class Cart extends Component {
         cartReceaved: false,
         modalVisible: false,
 
-        routeName: 'Cart'
+        routeName: 'Cart',
+        SelectData: this.props.navigation.getParam('SelectData', null),
     }
 
     setModalVisible(visible) {
@@ -388,6 +389,9 @@ class Cart extends Component {
     }
 
     render() {
+        console.log("this.state.SelectData in CART   ", this.state.SelectData);
+        console.log("this.state in CART   ", this.state);
+        console.log("this.this.props.navigation in CART   ", this.props);
         const shadowOpt = {
             width: sWidth,
             height: 50,
@@ -407,8 +411,7 @@ class Cart extends Component {
             )
         }
 
-        console.log("this.state.products~~~~~~~", this.state.products);
-        console.log("this.props.cart~~~~~~~", this.props.cart)
+
         if (this.state.products.length !== this.props.cart.length) {
             return <Loading />
         }
@@ -425,10 +428,10 @@ class Cart extends Component {
                         </TouchableOpacity>
 
 
-                        <View style={styles.line}>
+                        {/* <View style={styles.line}>
                             <Text style={styles.summaryText}>Cachback:</Text>
                             <Text style={styles.summaryText}>XX</Text>
-                        </View>
+                        </View> */}
 
                         {this.getDiscountBlock()}
 
@@ -458,8 +461,8 @@ class Cart extends Component {
                         NavigationService.navigate('Login', { routeName: this.state.routeName })
                     }
                     else {
-
-                        this.props.navigation.navigate('DeliveryService', { productsPrice: this.state.discountProductsPrice, data: this.state })
+                        //this.props.navigation.navigate('DeliveryService', { productsPrice: this.state.discountProductsPrice, data: this.state })
+                        NavigationService.navigate('DeliveryService', { productsPrice: this.state.discountProductsPrice })
                     }
                 }} />
 

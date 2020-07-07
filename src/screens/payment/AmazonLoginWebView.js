@@ -62,13 +62,11 @@ export default class AmazonLoginWebView extends Component {
                 return response.json()
             })
             .then(response => {
-                console.log("response", response)
                 this.setState({
                     user_code: response.user_code,
                     device_code: response.device_code,
                     verification_uri: response.verification_uri,
                 })
-                console.log("response", this.state.user_code)
             })
     }
 
@@ -179,98 +177,98 @@ export default class AmazonLoginWebView extends Component {
     // }
 
     render() {
-//         let JS = '<script type="text/javascript"  .windowonAmazonLoginReady = function() { amazon.Login.setClientId("amzn1.application-oa2-client.45a7aff6cd074f079002eb9612697349")} ></script>';
-//         let JS1 = '<script type="text/javascript" src="https://static-na.payments-amazon.com/OffAmazonPayments/us/js/Widgets.js?sellerId=A12MAN4EHAQW5I"></script>';
-//         let JS2 = `
-//         <html xmlns="http://www.w3.org/1999/xhtml">
-//     <head>
-//         <title>Test Payment Page</title><!-- This is the handler for the onAmazonLoginReady Callback -->
+        //         let JS = '<script type="text/javascript"  .windowonAmazonLoginReady = function() { amazon.Login.setClientId("amzn1.application-oa2-client.45a7aff6cd074f079002eb9612697349")} ></script>';
+        //         let JS1 = '<script type="text/javascript" src="https://static-na.payments-amazon.com/OffAmazonPayments/us/js/Widgets.js?sellerId=A12MAN4EHAQW5I"></script>';
+        //         let JS2 = `
+        //         <html xmlns="http://www.w3.org/1999/xhtml">
+        //     <head>
+        //         <title>Test Payment Page</title><!-- This is the handler for the onAmazonLoginReady Callback -->
 
-//   <script type="text/javascript">
-//             window.onAmazonLoginReady = function() {
-//                 amazon.Login.setClientId("amzn1.application-oa2-client.45a7aff6cd074f079002eb9612697349");
-//       };
-//   </script>
-//         <script type="text/javascript"
-//             src='https://static-na.payments-amazon.com/OffAmazonPayments/us/js/Widgets.js?sellerId=A12MAN4EHAQW5I'>
-//         </script>
-//     </head>
-
-
-//     <div id="addressBookWidgetDiv"></div>
-//     <script>
-//         new OffAmazonPayments.Widgets.AddressBook({
-//             sellerId: 'A12MAN4EHAQW5I',
-//     design: {
-//             size: {
-//             width:'400px',
-//     height:'260px'
-//   }
-// },
-//     onOrderReferenceCreate: function(orderReference) {
-//             orderReference.getAmazonOrderReferenceId();
-//   },
-//     onAddressSelect: function(orderReference) {
-//             // Optionally render the Wallet Widget 
-//         },
-//     onError: function(error) {
-//             // Write your custom error handling
-//         }
-//         }).bind("addressBookWidgetDiv");
-// </script>
+        //   <script type="text/javascript">
+        //             window.onAmazonLoginReady = function() {
+        //                 amazon.Login.setClientId("amzn1.application-oa2-client.45a7aff6cd074f079002eb9612697349");
+        //       };
+        //   </script>
+        //         <script type="text/javascript"
+        //             src='https://static-na.payments-amazon.com/OffAmazonPayments/us/js/Widgets.js?sellerId=A12MAN4EHAQW5I'>
+        //         </script>
+        //     </head>
 
 
-//     <script type="text/javascript">
-//         window.onAmazonLoginReady = function() {
-//             amazon.Login.setClientId('amzn1.application-oa2-client.45a7aff6cd074f079002eb9612697349');
-//   };
-//   </script>
-//     <script type="text/javascript"
-//         src='https://static-na.payments-amazon.com/OffAmazonPayments/us/js/Widgets.js?sellerId=A12MAN4EHAQW5I'>
-//     </script>
-// </head>
+        //     <div id="addressBookWidgetDiv"></div>
+        //     <script>
+        //         new OffAmazonPayments.Widgets.AddressBook({
+        //             sellerId: 'A12MAN4EHAQW5I',
+        //     design: {
+        //             size: {
+        //             width:'400px',
+        //     height:'260px'
+        //   }
+        // },
+        //     onOrderReferenceCreate: function(orderReference) {
+        //             orderReference.getAmazonOrderReferenceId();
+        //   },
+        //     onAddressSelect: function(orderReference) {
+        //             // Optionally render the Wallet Widget 
+        //         },
+        //     onError: function(error) {
+        //             // Write your custom error handling
+        //         }
+        //         }).bind("addressBookWidgetDiv");
+        // </script>
 
 
-//     <div id="AmazonPayButton"></div>
-//     <script type="text/javascript">
-//         var authRequest;
-//   OffAmazonPayments.Button("AmazonPayButton", "A12MAN4EHAQW5I", {
-//             type:  "PwA",    color: "Gold",    size:  "medium",    useAmazonAddressBook: true,    authorization: function() {      var loginOptions = {scope: 'profile payments:widget'};
-//     authRequest = amazon.Login.authorize(loginOptions, "https://teleropa.de/checkout");
-//   },
-//     onError: function(error) {
-//             // Write your custom error handling
-//         }
-//         });
-// </script>
-
-// </head >
-
-//     <body>
+        //     <script type="text/javascript">
+        //         window.onAmazonLoginReady = function() {
+        //             amazon.Login.setClientId('amzn1.application-oa2-client.45a7aff6cd074f079002eb9612697349');
+        //   };
+        //   </script>
+        //     <script type="text/javascript"
+        //         src='https://static-na.payments-amazon.com/OffAmazonPayments/us/js/Widgets.js?sellerId=A12MAN4EHAQW5I'>
+        //     </script>
+        // </head>
 
 
-//     </body>
-// </html >
-//         `
+        //     <div id="AmazonPayButton"></div>
+        //     <script type="text/javascript">
+        //         var authRequest;
+        //   OffAmazonPayments.Button("AmazonPayButton", "A12MAN4EHAQW5I", {
+        //             type:  "PwA",    color: "Gold",    size:  "medium",    useAmazonAddressBook: true,    authorization: function() {      var loginOptions = {scope: 'profile payments:widget'};
+        //     authRequest = amazon.Login.authorize(loginOptions, "https://teleropa.de/checkout");
+        //   },
+        //     onError: function(error) {
+        //             // Write your custom error handling
+        //         }
+        //         });
+        // </script>
 
-        
+        // </head >
 
-//         const HTMLcontext = `
-//             <img class="index-hello-image" src="https://teleropa.de/media/image/11/8f/1c/Banner_S20_teleropa.jpg">
-//                 <div class="index-hello-groups">
-//                     <div class="index-hello-content">
-//                         <div class="index-hello-headline"><b>20€ SPAREN</b><span>DIGITALRADIO ZUM MEGAPREIS</span></div>
-//                         <div class="index-hello-actions">
-//                             <div class="index-hello-logo">
-//                                 <img src="/media/image/d6/fc/1e/Telestar-Logo-weiss.png">
-//                             </div>
-//                                 <div class="index-hello-price"><span>NUR</span><b><i class="wbp-net-switch-banner--value">99,00</i> €</b></div>
-//                             </div>
-//                         </div>
-//                     </div>
-//             <div id="AmazonPayButton"></div>
-// `
-            
+        //     <body>
+
+
+        //     </body>
+        // </html >
+        //         `
+
+
+
+        //         const HTMLcontext = `
+        //             <img class="index-hello-image" src="https://teleropa.de/media/image/11/8f/1c/Banner_S20_teleropa.jpg">
+        //                 <div class="index-hello-groups">
+        //                     <div class="index-hello-content">
+        //                         <div class="index-hello-headline"><b>20€ SPAREN</b><span>DIGITALRADIO ZUM MEGAPREIS</span></div>
+        //                         <div class="index-hello-actions">
+        //                             <div class="index-hello-logo">
+        //                                 <img src="/media/image/d6/fc/1e/Telestar-Logo-weiss.png">
+        //                             </div>
+        //                                 <div class="index-hello-price"><span>NUR</span><b><i class="wbp-net-switch-banner--value">99,00</i> €</b></div>
+        //                             </div>
+        //                         </div>
+        //                     </div>
+        //             <div id="AmazonPayButton"></div>
+        // `
+
 
         // let source = JS + JS1 + JS2        
         // console.log("source", JS + JS1 + JS2)
@@ -278,7 +276,7 @@ export default class AmazonLoginWebView extends Component {
 
 
 
-        const html =`
+        const html = `
   
   
   <script type='text/javascript'>
@@ -453,7 +451,7 @@ export default class AmazonLoginWebView extends Component {
                 {/* <HTML html={html} /> */}
                 {/* <AmazonWeb /> */}
                 <WebView
-                    style={{width: sWidth, height: 300}}
+                    style={{ width: sWidth, height: 300 }}
                     source={{ uri: "https://www.amazon.com/a/code?language=de_DE" }}
                     // source={{ html: html }}
                     scalesPageToFit={false}

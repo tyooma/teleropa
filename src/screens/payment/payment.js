@@ -44,7 +44,6 @@ export default class Payment extends Component {
         break;
       default:
         ToastAndroid.show(`SELECT PAYMENT METHOD`, ToastAndroid.LONG)
-        // alert('SELECT PAYMENT METHOD')
         break;
     }
     // this.props.navigation.navigate('OrderSuccess')
@@ -88,15 +87,14 @@ export default class Payment extends Component {
       }
     };
     const paymentRequest = new PaymentRequest(METHOD_DATA, DETAILS);
-    console.log(paymentRequest);
     paymentRequest.show()
       .then(e => console.log('sucess', e))
       .catch(e => console.log('error', e))
   }
 
   render() {
+    console.log("this.state.data in payment.js", this.state.data)
     if (this.state.loading) return <Loading />
-    console.log(this.state)
     return (
       <View style={{ flex: 1 }}>
         <ScrollView style={{ marginHorizontal: 18 }}>

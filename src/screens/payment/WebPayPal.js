@@ -12,6 +12,7 @@ import Loading from '../loading';
 
 import { addToCart, minusFromCart, deleteFromCart, clearCart } from '../../functions/cart-funcs';
 
+
 export class WebPayPal extends Component {
 
     constructor(props) {
@@ -34,9 +35,13 @@ export class WebPayPal extends Component {
             post: this.props.userInfo.post,
         }
     }
-    async componentDidMount() {
-        // const username Sandbox = 'Aa30wKqF5Jq5epDJ7wPnGLYBBnhtp4i8t91Qb0PNW7o82k-cQYoFp9t_4ujkCU84D27ke16unohfm3XX';
-        // const password Sandbox= 'EPBftFl3oHshi5rBEYudrbsCho_aqm1-ynQYkJbW3T0z3APbEt4g76lI01EZs_zLnYexSWScCIU7Ex6K';
+
+
+
+    // async componentDidMount() {
+    async componentWillMount() {
+        //const username = 'Aa30wKqF5Jq5epDJ7wPnGLYBBnhtp4i8t91Qb0PNW7o82k-cQYoFp9t_4ujkCU84D27ke16unohfm3XX'; //Sandbox
+        //const password = 'EPBftFl3oHshi5rBEYudrbsCho_aqm1-ynQYkJbW3T0z3APbEt4g76lI01EZs_zLnYexSWScCIU7Ex6K';//Sandbox
 
         const username = 'AcIGgF0XrYF4her0z9zSlXCuUnqEDazkaM0DDU5emhhp70UggARzDbd5LW1yQhr8qEaV2Q7r-AmK3bHH';
         const password = 'EHN2OcacoZFk8823hZ_oWXHoI_T-SmtDcs2XklW07F0Lwd57Tjjs9C63hdz_5woXimmEenYveCY2zMtF';
@@ -44,10 +49,8 @@ export class WebPayPal extends Component {
         const deliveryPrice = parseFloat(this.state.cart.deliveryData.deliveryPrice);
         const total = (productsPrice + deliveryPrice).toFixed(2);
         const token = base64.encode(`${username}:${password}`);
+        console.log("TOKEN", token)
         try {
-
-
-
             // fetch('https://api.sandbox.paypal.com/v1/oauth2/token', {
             fetch('https://api.paypal.com/v1/oauth2/token', {
                 method: 'POST',
@@ -72,12 +75,11 @@ export class WebPayPal extends Component {
                     return response.access_token
                 })
                 .then(access_token => {
-
                     var PAYMENT =
                     {
                         "intent": "sale",
                         "payer": {
-                            "payment_method": "paypal"
+                            "payment_method": "paypal",
                         },
                         "transactions": [{
                             "amount": {
@@ -88,37 +90,44 @@ export class WebPayPal extends Component {
                                     "shipping": deliveryPrice,
                                 }
                             },
+
                             "description": "The payment transaction description.",
-                            // "custom": "EBAY_EMS_90048630024435",
-                            // "invoice_number": "48787589672",
-                            "payment_options": {
-                                "allowed_payment_method": "INSTANT_FUNDING_SOURCE"
-                            },
-                            // "soft_descriptor": "ECHI5786786",
                             "item_list": {
-                                "items": this.state.cart.products.map(product => {
+                                "items": this.state.cart.products.map((product) => {
                                     return {
-                                        "name": product.productName,
-                                        "quantity": product.count,
-                                        "price": product.companyPrice,
-                                        "currency": 'EUR'
+                                        'name': product.productName,
+                                        'quantity': product.count,
+                                        'price': this.props.userInfo.selectedUserType === 'EK' ? product.price : product.companyPrice,
+                                        'currency': 'EUR'
                                     }
                                 }),
-                                // "shipping_address": {
-                                //     "recipient_name": `${this.state.name} ${this.state.surname}`,
-                                //     "line1": `${this.state.street}`,
-                                //     "city": `${this.state.city}`,
-                                //     "country_code": `${this.state.country}`,
-                                //     "postal_code": `${this.state.post}`,
-                                //     "phone": `${this.state.phone}`,
-                                // }
+                                "shipping_address": {
+                                    "recipient_name": this.state.name + ' ' + this.state.surname,
+                                    //"recipient_name": 'name',
+                                    "line1": this.state.street,
+                                    //"line1": 'line1',
+                                    "city": this.state.city,
+                                    //"city": 'city',                                    
+                                    "country_code": 'DE',
+                                    "postal_code": this.state.post,
+                                    //"postal_code": '12356',
+                                    "phone": this.state.phone,
+                                    //"phone": '+380937955781',
+                                }
+
                             }
                         }],
                         "redirect_urls": {
-                            "return_url": "https://teleropa.de/return",
-                            "cancel_url": "https://teleropa.de/cancel"
+                            // "return_url": "https://teleropa.de/return",
+                            // "cancel_url": "https://teleropa.de/cancel"
+
+                            "return_url": "https://example.com/",
+                            "cancel_url": "https://example.com/"
+                            // "return_url": this.setState({ approvalUrl: null }),
+                            // "cancel_url": this.setState({ approvalUrl: null })
                         }
                     }
+                    console.log("PETY", PAYMENT.transactions)
                     // Create a payment
                     // fetch('https://api.sandbox.paypal.com/v1/payments/payment', {
                     fetch('https://api.paypal.com/v1/payments/payment', {
@@ -142,7 +151,14 @@ export class WebPayPal extends Component {
                             })
                         })
                         .catch(err => {
-                            console.log(err)
+                            // console.log(err)
+                            Alert.alert(
+                                "Bitte geben Sie eine gültige Lieferadresse ein", '',
+                                [
+                                    { text: 'OK', onPress: () => this.props.navigation.navigate('Cart') },
+                                ],
+                                { cancelable: false },
+                            );
                         })
                 })
                 .catch(err => {
@@ -155,7 +171,7 @@ export class WebPayPal extends Component {
 
 
     _onNavigationStateChange = (webViewState) => {
-        if (webViewState.url.includes('https://teleropa.de')) {
+        if (webViewState.url.includes('https://example.com/')) {
             this.setState({
                 approvalUrl: null
             })
@@ -187,8 +203,21 @@ export class WebPayPal extends Component {
                     "payer_id": payer
                 })
             })
-                .then(response => response.json())
+                .then(response => {
+                    console.log("response.json();", response.json())
+                    response.json();
+                    new Promise((resolve) => {
+                        ToastAndroid.show(`Ihre Zahlung wird nicht bestätigt`, ToastAndroid.LONG);
+                        this.props.navigation.navigate('Payment');
+                        setTimeout(() => resolve(), 200)
+                    })
+                })
                 .then(responseJson => {
+                    console.log("responseJson11111111111", responseJson)
+                    if (responseJson == undefined) {
+                        ToastAndroid.show(`Ihre Zahlung wird nicht bestätigt`, ToastAndroid.LONG);
+                        this.props.navigation.navigate('Payment');
+                    }
                     if (responseJson.name == 'INSTRUMENT_DECLINED') {
                         ToastAndroid.show(`Ihre Zahlung wird nicht bestätigt`, ToastAndroid.LONG);
                         this.props.navigation.navigate('Payment');
@@ -215,20 +244,25 @@ export class WebPayPal extends Component {
 
 
     render() {
+        console.log("this.state in PAYPAL   ", this.state);
+        console.log("this.props in PAYPAL   ", this.props);
         return (
             <View style={{ flex: 1 }}>
                 {
-                    // this.state.approvalUrl ?
-                    <WebView
-                        style={{ height: 400, width: 300 }}
-                        source={{ uri: this.state.approvalUrl }}
-                        onNavigationStateChange={this._onNavigationStateChange}
-                        javaScriptEnabled={true}
-                        domStorageEnabled={true}
-                        startInLoadingState={false}
-                        style={{ marginTop: 20 }}
-                    />
-                    // : <Loading />
+                    this.state.approvalUrl ?
+                        <WebView
+                            style={{ height: 400, width: 300 }}
+                            source={{ uri: this.state.approvalUrl }}
+                            onNavigationStateChange={this._onNavigationStateChange}
+                            javaScriptEnabled={true}
+                            domStorageEnabled={true}
+                            startInLoadingState={false}
+                            injectedJavaScript={this.state.cookie}
+                            BackAndroid={true}
+                            BackHandler={true}
+                            style={{ marginTop: 20 }}
+                        />
+                        : <Loading />
                 }
             </View>
         )

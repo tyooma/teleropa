@@ -19,7 +19,7 @@ export default class DeliveryService extends Component {
         deliveryPrice: 0,
         selected: null,
         services: [],
-        loaded: false
+        loaded: false,        
     }
 
     isSelected(id) {
@@ -30,7 +30,6 @@ export default class DeliveryService extends Component {
         const productsPrice = this.props.navigation.getParam('productsPrice', 0)
         this.setState({ productsPrice })
         getDeliverySuppliers().then(services => {
-            console.log(services)
             this.setState({ services, loaded: true })
         })
     }
@@ -53,9 +52,9 @@ export default class DeliveryService extends Component {
 
     getDeliveryPrice() {
         const deliveryOption = this.state.services.find((service) => service.id === this.state.selected)
-        deliveryOption.costs.sort((first, second) => (first.from > second.from) ? 1 : ((second.from > first.from) ? -1 : 0))
+        const Q = deliveryOption.costs.sort((first, second) => (first.from > second.from) ? 1 : ((second.from > first.from) ? -1 : 0))
         const price = deliveryOption.costs.reverse().find(({ from }) => from < this.state.productsPrice)
-        console.log(price, deliveryOption)
+        console.log("price", price);
         if (price) this.setState({ deliveryPrice: price.value })
         else this.setState({ deliveryPrice: deliveryOption.shippingFree })
     }
@@ -63,6 +62,7 @@ export default class DeliveryService extends Component {
     handle
 
     render() {
+        console.log(" this.state in DeliveryService.js", this.state);
         const shadowOpt = {
             width: sWidth,
             height: 50,
@@ -89,12 +89,12 @@ export default class DeliveryService extends Component {
                 </BoxShadow>
                 <FooterButton text='Weiter'
                     onPress={() =>
-                        this.state.selected
-                            ?
-                            this.props.navigation.navigate('Payment', { data: { ...this.props.navigation.getParam('data', null), deliveryData: this.state } })
+                        this.state.selected ?
+                            //this.props.navigation.navigate('Payment', { data: { ...this.props.navigation.getParam('data', null), deliveryData: this.state } })
+                            this.props.navigation.navigate('Cart', { SelectData: this.state })
                             :
                             ToastAndroid.show(`Versandart wählen`, ToastAndroid.LONG)
-            } />
+                    } />
             </View>
         )
     }
