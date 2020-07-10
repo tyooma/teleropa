@@ -36,7 +36,7 @@ const BannerImage = ({ title, subtitle, text_1, text_2, list_text_1, list_text_2
                 source={{ uri: 'https://teleropa.de/' + product_image }}
                 style={{ flex: 1, resizeMode: "cover", justifyContent: "center", width: sWidth, height: bannerHeight }}
             />
-            <View style={{ marginVertical: 5, marginHorizontal: 5, height: bannerHeight-10, width: 210, backgroundColor: '#d10019', alignSelf: infoblockPosition }}>
+            <View style={{ marginVertical: 5, marginHorizontal: 5, height: bannerHeight-10, width: sWidth/1.9, backgroundColor: '#d10019', alignSelf: infoblockPosition }}>
 
                 <View style={{ flexDirection: 'column', paddingVertical: 7, marginHorizontal: 5 }}>
                     <Text style={{ fontSize: 20, color: text_color, fontFamily: 'Poppins-Bold', lineHeight: 22, textAlignVertical: 'bottom' }}>{title} </Text>

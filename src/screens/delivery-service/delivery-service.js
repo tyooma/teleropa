@@ -62,7 +62,7 @@ export default class DeliveryService extends Component {
 
     getDeliveryPrice() {
         const deliveryOption = this.state.services.find((service) => service.id === this.state.selected)
-        deliveryOption.costs.sort((first, second) => (first.from > second.from) ? 1 : ((second.from > first.from) ? -1 : 0))
+        const Q = deliveryOption.costs.sort((first, second) => (first.from > second.from) ? 1 : ((second.from > first.from) ? -1 : 0))
         const price = deliveryOption.costs.reverse().find(({ from }) => from < this.state.productsPrice)
         if (price) this.setState({ deliveryPrice: price.value })
         else this.setState({ deliveryPrice: deliveryOption.shippingFree })

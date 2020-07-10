@@ -65,6 +65,7 @@ export function getReturnData(id) {
 }
 
 export function getDeliverySuppliers() {
+    //Сколько стоит доставка
     return fetch('https://teleropa.de/WebiProgCommunicationApplicationUser/getDeliverySuppliers', {
         method: 'POST',
         headers: {

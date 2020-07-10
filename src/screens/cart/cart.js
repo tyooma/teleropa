@@ -443,6 +443,8 @@ class Cart extends Component {
                 </View>
             )
         }
+
+
         if (this.state.products.length !== this.props.cart.length) {
             return <Loading />
         }

@@ -12,6 +12,7 @@
     "@react-native-community/netinfo": "^2.0.3",
     "@react-navigation/bottom-tabs": "^5.0.3",
     "@react-navigation/drawer": "^5.0.3",
+    "iso-countries-lookup": "^1.0.14",
     "react": "16.6.3",
     "react-dom": "^16.13.0",
     "react-htmltext": "^0.40.2",
