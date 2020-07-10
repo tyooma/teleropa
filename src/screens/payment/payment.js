@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
+
 import { View, ScrollView, Platform, ToastAndroid } from 'react-native';
 
+
 import FooterButton from '../../common/footer-button';
+
 import PaymentOption from '../../common/payment-option';
 
 import Loading from '../loading'
@@ -95,6 +98,8 @@ export default class Payment extends Component {
   }
 
   render() {
+    console.log("this.state in payment.js", this.state);
+    console.log("this.props in payment.js", this.props);
     if (this.state.loading) return <Loading />
     console.log(this.state)
     return (

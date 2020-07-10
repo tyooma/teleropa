@@ -73,7 +73,6 @@ getCounter = (order, pcs, id, onMinus, onAdd) => {
 }
 
 export const CartItem = ({ img, name, pcs, price, companyPrice, userType, stock, order, orderReturnReason, id, onAdd, onMinus, onDelete }) => {
-    console.log('order, orderReturnReason', order, orderReturnReason)
     return (
         <TouchableOpacity style={styles.cartItemContainer} onPress={() => NavigationService.push('Product', { id, name })}>
             <View style={{ flexDirection: 'row' }}>
@@ -130,35 +129,45 @@ export const CartItem = ({ img, name, pcs, price, companyPrice, userType, stock,
     )
 }
 
+
+
+
+
 class Cart extends Component {
-
-    state = {
-        promocodeModalVisible: false,
-        products: [],
-        originalProductsPrice: 0,
-        discountProductsPrice: 0,
-        orderVAT: 0,
-        fullPrice: 0,
-        promocode: '',
-        promocodeData: null,
-        discountValue: 0,
-        cartReceaved: false,
-        modalVisible: false,
-
-        routeName: 'DeliveryService'
-    }
+    constructor(props) {
+        super(props);
+        this.state = {
+            promocodeModalVisible: false,
+            products: [],
+            originalProductsPrice: 0,
+            discountProductsPrice: 0,
+            orderVAT: 0,
+            fullPrice: 0,
+            promocode: '',
+            promocodeData: null,
+            discountValue: 0,
+            cartReceaved: false,
+            modalVisible: false,
+            deliveryData: null,
+            routeName: 'Cart'
+        }
+    } 2
 
     setModalVisible(visible) {
         this.setState({ modalVisible: visible });
     }
 
-    static navigationOptions = {
-        title: 'Warenkorb',
-        headerRight: (
-            <TouchableOpacity onPress={() => { clearCart(); NavigationService.back() }} style={{ height: '100%', justifyContent: 'center' }}>
-                <Text style={{ color: '#fff', fontSize: 16, marginRight: 18 }}>löschen</Text>
-            </TouchableOpacity>
-        )
+    static navigationOptions = ({ navigation }) => {
+        return {
+            //Bestellübersicht
+            //title: 'Warenkorb',
+            title: navigation.getParam('Title', 'Warenkorb'),
+            headerRight: (
+                < TouchableOpacity onPress={() => { clearCart(); NavigationService.back() }} style={{ height: '100%', justifyContent: 'center' }}>
+                    <Text style={{ color: '#fff', fontSize: 16, marginRight: 18 }}>löschen</Text>
+                </TouchableOpacity >
+            )
+        }
     }
 
     // shouldComponentUpdate(nextProps, { cartReceaved }) {
@@ -177,6 +186,13 @@ class Cart extends Component {
         }
     }
 
+
+    // componentDidUpdate(prevProps) {
+    //     if (this.props.id !== prevProps.id) {
+    //         this.setDefaultTranslation(this.props.context)
+    //     }
+    // }
+
     async componentWillReceiveProps(props) {
         if (this.state.cartReceaved == true) {
             await this.initAfterUpdate(props.cart)
@@ -189,19 +205,22 @@ class Cart extends Component {
         const cart = this.props.cart
         if (cart.length > 0 && !this.state.cartReceaved) { this.setState({ cartReceaved: true }) }
         cart.map(({ id, count }) => {
-            getPreviewAsyncProductData(id).then(res => this.setState({ products: [...this.state.products, { ...res, id, count }] }))
+            getPreviewAsyncProductData(id)
+                .then(res => this.setState({ products: [...this.state.products, { ...res, id, count }] }))
         })
     }
 
-    async initAfterUpdate(cart) {
+    initAfterUpdate(cart) {
         this.setState({ products: [] })
+        //setTimeout(() => { this.setState({ deliveryData: this.props.navigation.getParam('deliveryData', null) }) }, 1000)
         cart.map(({ id, count }) => {
-            getPreviewAsyncProductData(id).then(res => this.setState({ products: [...this.state.products, { ...res, id, count }] }))
+            getPreviewAsyncProductData(id)
+                .then(res => this.setState({ deliveryData: this.props.navigation.getParam('deliveryData', null), products: [...this.state.products, { ...res, id, count }] }))
+                .then(this.state.deliveryData != null ? this.changeTitleText() : null)
         })
     }
 
     itemsAvailableCount() {
-        // console.log(stock,count)
         const newProductsArray = this.state.products.map(product => {
             if (product.stock < product.count) {
                 // const limitedStock = (productName, stock, count) => {
@@ -261,6 +280,7 @@ class Cart extends Component {
         return newProductsArray
     }
 
+
     addToCartAndState(id) {
         addToCart(id)
         // const productToAdd = this.state.products.find(product => product.id === id)
@@ -287,7 +307,6 @@ class Cart extends Component {
     }
     deleteFromCartAndState(id) {
         deleteFromCart(id)
-        console.log('delete trigger')
         const newProductsArray = this.state.products.filter(product => product.id !== id)
         this.setState({ products: newProductsArray })
     }
@@ -329,10 +348,13 @@ class Cart extends Component {
             this.state.products.reduce((sum, { companyPrice, count }) => {
                 return sum + companyPrice * count
             }, 0)
+
+
         const productsVAT = this.state.products.reduce((sum, { price, companyPrice, count }) => {
+            console.log("price", price);
+            console.log("companyPrice", companyPrice);
             return sum + ((price - companyPrice) * count)
         }, 0)
-
 
         // const productsPrice = this.state.products.reduce((sum,{price, count}, asss) =>  {console.log('sds',asss); return sum+parseFloat(price)*count}, 0)
         const discountProductsPrice = this.getDiscount(productsPrice)
@@ -355,15 +377,11 @@ class Cart extends Component {
                 return price.toFixed(2)
             }
             if (percental) {
-                console.log('1', 1)
-                console.log('percental', percental)
-                console.log('(price - price / 100 * value).toFixed(2)', (price - price / 100 * value).toFixed(2))
+                (price - price / 100 * value).toFixed(2);
                 return (price - price / 100 * value).toFixed(2)
             }
-            console.log(2)
             return (price - value).toFixed(2)
         }
-        console.log(3)
         return price.toFixed(2)
     }
 
@@ -373,7 +391,6 @@ class Cart extends Component {
             return
         }
         getPromocodeData(this.state.promocode).then(promocodeData => {
-            console.log(promocodeData)
             if (promocodeData.status.code === 'success') {
                 this.setState({ promocodeData })
             }
@@ -395,7 +412,19 @@ class Cart extends Component {
         }
     }
 
+
+
+    changeTitleText = () => {
+        var that = this;
+        that.props.navigation.setParams({
+            Title: 'New Activity Title'
+        });
+
+    }
+
     render() {
+        console.log("this. STATE cart js", this.state);
+
         const shadowOpt = {
             width: sWidth,
             height: 50,
@@ -418,6 +447,7 @@ class Cart extends Component {
             return <Loading />
         }
         this.setPrices()
+
         return (
             <View style={{ flex: 1 }}>
                 <ScrollView>
@@ -429,47 +459,87 @@ class Cart extends Component {
                             </Text>
                         </TouchableOpacity>
 
+                        {/*
+                                Ненужно с файла Comments_01.06.docx
 
-                        <View style={styles.line}>
-                            <Text style={styles.summaryText}>Cachback:</Text>
-                            <Text style={styles.summaryText}>XX</Text>
+                        <View style={styles.line}>                                
+                             <Text style={styles.summaryText}>Cachback:</Text>                              
+                            <Text style={styles.summaryText}>XX</Text>                        
                         </View>
+                        */}
 
                         {this.getDiscountBlock()}
 
                         <View style={styles.line}>
                             <Text style={styles.summaryText}>Summe:</Text>
+                            <Text style={styles.summaryText}>{(parseFloat(this.state.discountProductsPrice) + parseFloat(this.state.orderVAT)).toFixed(2)} €</Text>
+
+                        </View>
+
+                        {this.state.deliveryData != null ?
+                            <View style={styles.line}>
+                                <Text style={styles.summaryText}>Versandkosten:</Text>
+                                <Text style={styles.summaryText}>{this.state.deliveryData.deliveryPrice.toFixed(2)} €</Text>
+                            </View> : null}
+
+                        {this.state.deliveryData != null ?
+                            <View style={styles.line}>
+                                <Text style={styles.summaryTextBold}>Gesamtsumme:</Text>
+                                <Text style={styles.summaryTextBold}>{(parseFloat(this.state.discountProductsPrice) + parseFloat(this.state.orderVAT) + parseFloat(this.state.deliveryData.deliveryPrice))} €</Text>
+                            </View> : null}
+
+                        <View style={styles.line}>
+                            <Text style={styles.summaryText}>Gesamtsumme ohne MwSt.:</Text>
                             <Text style={styles.summaryText}>{this.state.discountProductsPrice} €</Text>
                         </View>
 
                         <View style={styles.line}>
-                            <Text style={styles.summaryText}>MwSt:</Text>
+                            <Text style={styles.summaryText}>zzgl. MwSt.:</Text>
                             <Text style={styles.summaryText}>{this.state.orderVAT} €</Text>
                         </View>
 
+                        {this.state.deliveryData != null ?
+                            <View style={styles.line}>
+                                <Text style={styles.summaryTextPoint}>Punkte für die Bestellung:</Text>
+                                <View style={styles.linePoint}>
+                                    <Text style={styles.summaryTextPointGreen}>{'+ ' + Math.floor(parseFloat(this.state.discountProductsPrice) + parseFloat(this.state.orderVAT))}</Text>
+                                    <Text style={styles.radiusCircle}>P</Text>
+                                </View>
+                            </View> : null}
+
+                        {this.state.deliveryData != null ?
+                            <View style={styles.line}>
+                                <Text style={styles.summaryTextPoint}>Punkte eingelöst:</Text>
+                                <View style={styles.linePoint}>
+                                    <Text style={styles.summaryTextPointRed}>{'- ' + 0}</Text>
+                                    <Text style={styles.radiusCircle}>P</Text>
+                                </View>
+                            </View> : null}
+
+
                     </View>
                 </ScrollView>
-                <BoxShadow setting={shadowOpt}>
-                    <View style={styles.footerSummaryContainer}>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
-                            <Text style={styles.summaryText} >Gesamtbetrag:</Text>
-                            <Text style={styles.summaryText} >{this.state.discountProductsPrice} €</Text>
-                        </View>
-                    </View>
-                </BoxShadow>
 
-                <FooterButton text='Zur Kasse' onPress={() => {
-                    console.log('this.props.userID',this);
-                    
-                    if (!this.props.userID || this.props.userID === "notloggedin") {
-                        this.props.navigation.navigate('Login', {routeName: this.state.routeName})
-                    }
-                    else {
-                        console.log(this.state.products);
-                        // this.itemsAvailableCount();
-                        // this.setModalVisible(true)
-                        this.props.navigation.navigate('DeliveryService', { productsPrice: this.state.discountProductsPrice, data: this.state })
-                    }
+                {this.state.deliveryData == null ?
+                    <BoxShadow setting={shadowOpt}>
+                        <View style={styles.footerSummaryContainer}>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
+                                <Text style={styles.summaryTextBold} >Gesamtbetrag:</Text>
+
+                                <Text style={styles.summaryTextBold} >{parseFloat(this.state.discountProductsPrice) + parseFloat(this.state.orderVAT)} €</Text>
+                            </View>
+                        </View>
+                    </BoxShadow>
+                    : console.log("NULL")
+                }
+
+                <FooterButton text={this.state.deliveryData != null ? 'Zahlungspflichtig bestellen' : 'Zur Kasse'} onPress={() => {
+                    if (!this.props.userID || this.props.userID === "notloggedin") NavigationService.navigate('Login', { routeName: this.state })
+                    //   NavigationService.navigate('Login', { routeName: this.state.routeName })                                            
+                    if (this.state.deliveryData != null) NavigationService.navigate('Payment', { data: this.state })
+                    else NavigationService.navigate('DeliveryService', { data: this.state })
+                    // this.itemsAvailableCount();
+                    // this.setModalVisible(true)                                           
                 }} />
 
                 <ModalView
@@ -485,7 +555,7 @@ class Cart extends Component {
                     <Input placeholder='Promo-Code eingeben' value={this.state.promocode} onChangeText={promocode => this.setState({ promocode })} />
                 </ModalView>
 
-            </View>
+            </View >
         )
     }
 }
@@ -515,9 +585,47 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginBottom: 19
     },
+    linePoint: {
+        flexDirection: 'row',
+    },
+    summaryTextBold: {
+        color: '#040404',
+        fontSize: 16,
+        alignItems: 'center',
+        justifyContent: 'center',
+        textAlign: 'center',
+        fontWeight: 'bold'
+    },
     summaryText: {
         color: '#040404',
+        fontSize: 16,
+        alignItems: 'center',
+        justifyContent: 'center',
+        textAlign: 'center',
+    },
+    summaryTextPoint: {
+        color: '#8a0010',
         fontSize: 16
+    },
+    summaryTextPointRed: {
+        color: '#e74c3c',
+        fontSize: 16
+    },
+    summaryTextPointGreen: {
+        color: '#2ecc71',
+        fontSize: 16,
+    },
+    radiusCircle: {
+        left: 5,
+        width: 100 / 4,
+        height: 100 / 4,
+        borderRadius: 150 / 2,
+        backgroundColor: '#d10019',
+        color: '#040404',
+        fontSize: 16,
+        alignItems: 'center',
+        justifyContent: 'center',
+        textAlign: 'center',
     },
     cartItemContainer: {
         backgroundColor: '#fff',

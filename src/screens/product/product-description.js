@@ -68,9 +68,13 @@ class ProductDescription extends Component {
     return <Text style={styles.inStock}>Produkt ist verfügbar</Text>
   }
 
-  getPrices(price, salePrice, companyPrice) {
-    // if (salePrice && salePrice != 0) {
+  getPrices(price, salePrice, companyPrice, productInfo) {    
     if (salePrice != 0) {
+      const products = [productInfo]
+      const productsVAT = products.reduce((sum, { price, companyPrice }) => {
+        return sum + ((price - companyPrice) * 1)
+      }, 0)
+      
       return (
         <View>
           <Text style={styles.previousPrice}>{'UVP ' + salePrice.toFixed(2)} €</Text>
@@ -150,6 +154,7 @@ class ProductDescription extends Component {
     if (this.state.similar.length < 1) {
       return null
     }
+
     return this.state.similar.map(product => {
       const { companyPrice, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, productID } = product
       // return (
@@ -161,6 +166,7 @@ class ProductDescription extends Component {
         <ProductListItem
           name={productName}
           price={this.props.userInfo.selectedUserType === 'EK' ? price.toFixed(2) : companyPrice.toFixed(2)}
+
           // salePrice={'UVP ' + salePrice.toFixed(2)}
           salePrice={salePrice != 0 ? 'UVP ' + salePrice.toFixed(2) : ''}
           companyPrice={companyPrice.toFixed(2)}
@@ -257,7 +263,7 @@ class ProductDescription extends Component {
         </View>
 
         <View style={[styles.line]} >
-          {this.getPrices(productInfo.price, productInfo.salePrice, productInfo.companyPrice)}
+          {this.getPrices(productInfo.price, productInfo.salePrice, productInfo.companyPrice, productInfo, productInfo.stock)}
           {this.getCartButton(productInfo.stock, this.props.id)}
         </View>
 

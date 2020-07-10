@@ -179,7 +179,7 @@ export default class App extends Component {
     /*
     * If your app is in background, you can listen for when a notification is clicked / tapped / opened as follows:
     * */
-    this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {      
+    this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
       const { title, body } = notificationOpen.notification;
       this.showAlert(title, body);
     });
@@ -188,7 +188,7 @@ export default class App extends Component {
     * If your app is closed, you can check if it was opened by a notification being clicked / tapped / opened as follows:
     * */
     const notificationOpen = await firebase.notifications().getInitialNotification();
-    if (notificationOpen) {      
+    if (notificationOpen) {
       const { title, data } = notificationOpen.notification;
       this.showAlert(title, data.text);
     }
@@ -217,7 +217,6 @@ export default class App extends Component {
   render() {
     const subscribe = store.subscribe(() => {
       const localStore = store.getState()
-      console.log('REDUX-STORE', localStore)
       if (this.state.isConnected !== localStore.network.isConnected) {
         this.setState({ isConnected: !this.state.isConnected })
       }
@@ -277,8 +276,7 @@ const AppBottomBarNavigator = createBottomTabNavigator(
     Cart: {
       screen: Cart,
       navigationOptions: {
-        tabBarOnPress: ({ navigation }) => {
-          //navigation.navigate('Cart', { cartReceaved: false });
+        tabBarOnPress: ({ navigation }) => {          
           NavigationService.navigate('Cart', { cartReceaved: false })
         }
       },

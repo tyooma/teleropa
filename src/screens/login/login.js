@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+
 import AsyncStorage from '@react-native-community/async-storage';
+
 import { View, Text, Image, TouchableOpacity, ScrollView, Alert } from 'react-native';
 
 import RNRestart from 'react-native-restart';
@@ -11,8 +13,11 @@ import * as actions from '../../actions/login-actions';
 import { logIn, resetPassword } from '../../posts/authPosts';
 
 import Loading from '../../screens/loading';
+
 import FooterButton from '../../common/footer-button';
+
 import Input from '../../common/input';
+
 import ModalView from '../../common/modal-view';
 
 import ButtonItem from '../../common/button-item';
@@ -53,7 +58,7 @@ class Login extends Component {
     this.getUserID()
   }
 
-  getUserID = async () => {    
+  getUserID = async () => {
     try {
       const userID = await AsyncStorage.getItem('userID')
       if (userID && userID !== 'notloggedin') {
@@ -78,12 +83,10 @@ class Login extends Component {
           ],
           { cancelable: false })
       }
-      // console.log(userID);
       this.setState({ userID })
     } catch (e) {
       // read error
     }
-    console.log('Done')
   }
 
   handlePassReset() {
@@ -104,8 +107,10 @@ class Login extends Component {
 
 
   render() {
-    // console.log(`------------------------------------------------------------------------${this.props.userID}`)
-    (this.props.routeName)?console.log('zz',this.props.routeName):console.log('fgg', this);
+
+    const routeName = this.props.navigation.getParam('routeName', null);
+    console.log("THïs routeName in login.js", routeName)
+    //routeName ? console.log('zz', routeName) : console.log('fgg', this);
 
     if (this.state.loading && !this.props.userID) {
       return <Loading />
@@ -143,8 +148,7 @@ class Login extends Component {
             </View>
           </ScrollView>
 
-          <FooterButton text='Anmelden mit' onPress={() => { this.logInHandler() }} />
-          {/* <FooterButton text='Anmelden mit' onPress={() => console.log(logIn('test@gmail.com', 'testtest'))}/> */}
+          <FooterButton text='Anmelden' onPress={() => { this.logInHandler() }} />
           <ModalView
             title='Passwort zurücksetzen'
             buttonText='Senden'
