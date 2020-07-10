@@ -462,7 +462,7 @@ class Cart extends Component {
                         </TouchableOpacity>
 
                         {/*
-                                Ненужно с файла Comments_01.06.docx
+                                Ненужно с файла Comments_01.06.docx залит в тимзам
 
                         <View style={styles.line}>                                
                              <Text style={styles.summaryText}>Cachback:</Text>                              
