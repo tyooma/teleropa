@@ -48,6 +48,7 @@ export function getPreviewProductData(id) {
         body: `productID=${id}`
     })
         .then(res => res.json())
+
 }
 
 export async function getPreviewAsyncProductData(id) {

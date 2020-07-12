@@ -52,12 +52,14 @@ class Login extends Component {
   logInHandler() {
     const emailChecker = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
     const { email, password, routeName } = this.state;
+
     if (emailChecker.test(email) && password.length >= 3) {
       this.setState({ loading: true })
       this.props.setLoggedUserId(null)
       logIn(email, password, routeName)
-      console.log('this.state', this.state);
-      
+      if (routeName != null) {
+        this.props.navigation.navigate(`${routeName}`);
+      }
     } else {
       Alert.alert('Fehler', 'E-Mail oder Passwort sind ungültig')
     }
@@ -116,14 +118,6 @@ class Login extends Component {
 
 
   render() {
-<<<<<<< HEAD
-
-    const routeName = this.props.navigation.getParam('routeName', null);
-    console.log("THïs routeName in login.js", routeName)
-    //routeName ? console.log('zz', routeName) : console.log('fgg', this);
-=======
->>>>>>> bbd40886bc5d9a34a01ab284f7f8e322b01257f5
-
     if (this.state.loading && !this.props.userID) {
       return <Loading />
     }
@@ -159,6 +153,9 @@ class Login extends Component {
               </TouchableOpacity>
             </View>
           </ScrollView>
+
+
+
 
           <FooterButton text='Anmelden' onPress={() => { this.logInHandler() }} />
           <ModalView

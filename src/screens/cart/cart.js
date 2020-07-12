@@ -134,40 +134,37 @@ export const CartItem = ({ img, name, pcs, price, companyPrice, userType, stock,
 
 
 class Cart extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            promocodeModalVisible: false,
-            products: [],
-            originalProductsPrice: 0,
-            discountProductsPrice: 0,
-            orderVAT: 0,
-            fullPrice: 0,
-            promocode: '',
-            promocodeData: null,
-            discountValue: 0,
-            cartReceaved: false,
-            modalVisible: false,
-            deliveryData: null,
-            routeName: 'Cart'
-        }
-    } 2
+    // constructor(props) {
+    //     super(props);
+    // this.
+    state = {
+        promocodeModalVisible: false,
+        products: [],
+        originalProductsPrice: 0,
+        discountProductsPrice: 0,
+        orderVAT: 0,
+        fullPrice: 0,
+        promocode: '',
+        promocodeData: null,
+        discountValue: 0,
+        cartReceaved: false,
+        modalVisible: false,
+        userType: this.props.userInfo.selectedUserType,
+        //routeName: 'Cart'
+        // }
+    }
 
     setModalVisible(visible) {
         this.setState({ modalVisible: visible });
     }
 
-    static navigationOptions = ({ navigation }) => {
-        return {
-            //Bestellübersicht
-            //title: 'Warenkorb',
-            title: navigation.getParam('Title', 'Warenkorb'),
-            headerRight: (
-                < TouchableOpacity onPress={() => { clearCart(); NavigationService.back() }} style={{ height: '100%', justifyContent: 'center' }}>
-                    <Text style={{ color: '#fff', fontSize: 16, marginRight: 18 }}>löschen</Text>
-                </TouchableOpacity >
-            )
-        }
+    static navigationOptions = {
+        title: 'Warenkorb',
+        headerRight: (
+            < TouchableOpacity onPress={() => { clearCart(); NavigationService.back() }} style={{ height: '100%', justifyContent: 'center' }}>
+                <Text style={{ color: '#fff', fontSize: 16, marginRight: 18 }}>löschen</Text>
+            </TouchableOpacity >
+        )
     }
 
     // shouldComponentUpdate(nextProps, { cartReceaved }) {
@@ -212,11 +209,9 @@ class Cart extends Component {
 
     initAfterUpdate(cart) {
         this.setState({ products: [] })
-        //setTimeout(() => { this.setState({ deliveryData: this.props.navigation.getParam('deliveryData', null) }) }, 1000)
         cart.map(({ id, count }) => {
-            getPreviewAsyncProductData(id)
-                .then(res => this.setState({ deliveryData: this.props.navigation.getParam('deliveryData', null), products: [...this.state.products, { ...res, id, count }] }))
-                .then(this.state.deliveryData != null ? this.changeTitleText() : null)
+            getPreviewAsyncProductData(id)                
+                .then(res => this.setState({ products: [...this.state.products, { ...res, id, count }] }))
         })
     }
 
@@ -322,7 +317,7 @@ class Cart extends Component {
                     pcs={count}
                     price={price}
                     companyPrice={companyPrice}
-                    userType={this.props.userInfo.selectedUserType}
+                    userType={this.userType}
                     stock={stock}
                     onAdd={id => this.addToCartAndState(id)}
                     onMinus={id => this.minusFromCartAndState(id)}
@@ -340,7 +335,7 @@ class Cart extends Component {
     }
 
     setPrices() {
-        const productsPrice = this.props.userInfo.selectedUserType === 'EK' ?
+        const productsPrice = this.state.userType === 'EK' ?
             this.state.products.reduce((sum, { price, count }) => {
                 return sum + price * count
             }, 0)
@@ -350,10 +345,8 @@ class Cart extends Component {
             }, 0)
 
 
-        const productsVAT = this.state.products.reduce((sum, { price, companyPrice, count }) => {
-            console.log("price", price);
-            console.log("companyPrice", companyPrice);
-            return sum + ((price - companyPrice) * count)
+        const productsVAT = this.state.products.reduce((sum, { price, companyPrice, count }) => {            
+            return sum + ((price - companyPrice) * count);
         }, 0)
 
         // const productsPrice = this.state.products.reduce((sum,{price, count}, asss) =>  {console.log('sds',asss); return sum+parseFloat(price)*count}, 0)
@@ -462,8 +455,7 @@ class Cart extends Component {
                         </TouchableOpacity>
 
                         {/*
-                                Ненужно с файла Comments_01.06.docx залит в тимзам
-
+                                Ненужно с файла Comments_01.06.docx
                         <View style={styles.line}>                                
                              <Text style={styles.summaryText}>Cachback:</Text>                              
                             <Text style={styles.summaryText}>XX</Text>                        
@@ -478,17 +470,7 @@ class Cart extends Component {
 
                         </View>
 
-                        {this.state.deliveryData != null ?
-                            <View style={styles.line}>
-                                <Text style={styles.summaryText}>Versandkosten:</Text>
-                                <Text style={styles.summaryText}>{this.state.deliveryData.deliveryPrice.toFixed(2)} €</Text>
-                            </View> : null}
 
-                        {this.state.deliveryData != null ?
-                            <View style={styles.line}>
-                                <Text style={styles.summaryTextBold}>Gesamtsumme:</Text>
-                                <Text style={styles.summaryTextBold}>{(parseFloat(this.state.discountProductsPrice) + parseFloat(this.state.orderVAT) + parseFloat(this.state.deliveryData.deliveryPrice))} €</Text>
-                            </View> : null}
 
                         <View style={styles.line}>
                             <Text style={styles.summaryText}>Gesamtsumme ohne MwSt.:</Text>
@@ -499,46 +481,24 @@ class Cart extends Component {
                             <Text style={styles.summaryText}>zzgl. MwSt.:</Text>
                             <Text style={styles.summaryText}>{this.state.orderVAT} €</Text>
                         </View>
-
-                        {this.state.deliveryData != null ?
-                            <View style={styles.line}>
-                                <Text style={styles.summaryTextPoint}>Punkte für die Bestellung:</Text>
-                                <View style={styles.linePoint}>
-                                    <Text style={styles.summaryTextPointGreen}>{'+ ' + Math.floor(parseFloat(this.state.discountProductsPrice) + parseFloat(this.state.orderVAT))}</Text>
-                                    <Text style={styles.radiusCircle}>P</Text>
-                                </View>
-                            </View> : null}
-
-                        {this.state.deliveryData != null ?
-                            <View style={styles.line}>
-                                <Text style={styles.summaryTextPoint}>Punkte eingelöst:</Text>
-                                <View style={styles.linePoint}>
-                                    <Text style={styles.summaryTextPointRed}>{'- ' + 0}</Text>
-                                    <Text style={styles.radiusCircle}>P</Text>
-                                </View>
-                            </View> : null}
-
-
                     </View>
                 </ScrollView>
 
-                {this.state.deliveryData == null ?
-                    <BoxShadow setting={shadowOpt}>
-                        <View style={styles.footerSummaryContainer}>
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
-                                <Text style={styles.summaryTextBold} >Gesamtbetrag:</Text>
+                <BoxShadow setting={shadowOpt}>
+                    <View style={styles.footerSummaryContainer}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
+                            <Text style={styles.summaryTextBold} >Gesamtbetrag:</Text>
 
-                                <Text style={styles.summaryTextBold} >{parseFloat(this.state.discountProductsPrice) + parseFloat(this.state.orderVAT)} €</Text>
-                            </View>
+                            <Text style={styles.summaryTextBold} >{(parseFloat(this.state.discountProductsPrice) + parseFloat(this.state.orderVAT))} €</Text>
                         </View>
-                    </BoxShadow>
-                    : console.log("NULL")
-                }
+                    </View>
+                </BoxShadow>
 
-                <FooterButton text={this.state.deliveryData != null ? 'Zahlungspflichtig bestellen' : 'Zur Kasse'} onPress={() => {
-                    if (!this.props.userID || this.props.userID === "notloggedin") NavigationService.navigate('Login', { routeName: this.state })
-                    //   NavigationService.navigate('Login', { routeName: this.state.routeName })                                            
-                    if (this.state.deliveryData != null) NavigationService.navigate('Payment', { data: this.state })
+
+
+                <FooterButton text={'Zur Kasse'} onPress={() => {
+                    if (!this.props.userID || this.props.userID === "notloggedin") NavigationService.navigate('Login', { routeName: 'Cart' })
+                    //   NavigationService.navigate('Login', { routeName: this.state.routeName })                                                        
                     else NavigationService.navigate('DeliveryService', { data: this.state })
                     // this.itemsAvailableCount();
                     // this.setModalVisible(true)                                           

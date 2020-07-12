@@ -69,7 +69,7 @@ export default class DeliveryService extends Component {
     }
 
     render() {
-        console.log('11111', this.state)
+        console.log('this.state DElivery-service.js', this.state)
         const shadowOpt = {
             width: sWidth,
             height: 50,
@@ -99,7 +99,7 @@ export default class DeliveryService extends Component {
                         this.state.selected
                             ?
                             // this.props.navigation.navigate('Payment', { data: { ...this.props.navigation.getParam('data', null), deliveryData: this.state } })     
-                            NavigationService.navigate('Cart', { deliveryData: this.state })
+                            NavigationService.navigate('CartPreview', { data: { ...this.props.navigation.getParam('data', null) }, deliveryData: { ...this.state } })
                             :
                             Toast.show('Versandart wählen', {
                                 shadow: false,

@@ -39,6 +39,7 @@ import Brands from '../screens/brands';
 import Career from '../screens/career';
 import Cart from '../screens/cart';
 import CartIconWithBadge from '../screens/cart/CartIconWithBadge';
+import CartPreview from '../screens/cart/CartPreview';
 import CategoriesList from '../screens/categories-list';
 import CategoryInfo from '../screens/category-info';
 import ChangePaymentAddress from '../screens/change-payment-address';
@@ -276,7 +277,7 @@ const AppBottomBarNavigator = createBottomTabNavigator(
     Cart: {
       screen: Cart,
       navigationOptions: {
-        tabBarOnPress: ({ navigation }) => {          
+        tabBarOnPress: ({ navigation }) => {
           NavigationService.navigate('Cart', { cartReceaved: false })
         }
       },
@@ -366,6 +367,7 @@ const AppStackNavigator = createStackNavigator(
     ProductsByCategory: ProductsByCategory,
     CategoryInfo: CategoryInfo,
     DeliveryService: DeliveryService,
+    CartPreview: CartPreview,
     WebPayPal: WebPayPal,
 
     PaypalConfirm: PaypalConfirm
