@@ -42,6 +42,18 @@ export default class Payment extends Component {
           CartData: this.state.data,
         });
         break;
+      case 'Vorkasse':
+        console.log("Выбранно Vorkasse и тут нужен Рест Апи запрос + окно фидбека")
+        // this.props.navigation.navigate("WebPayPal", {
+        //   CartData: this.state.data,
+        // });
+        break;
+      case 'Nachnahme':
+        console.log("Выбранно Nachnahme и тут нужен Рест Апи запрос + окно фидбека")
+        // this.props.navigation.navigate("WebPayPal", {
+        //   CartData: this.state.data,
+        // });
+        break;
       case 'ApplePay':
         this.payWithApplePay()
         break;
@@ -107,10 +119,20 @@ export default class Payment extends Component {
             selected={this.isSelected('PayPalPlus')}
             imageSource={require('../../assets/payments/PayPalPlus.png')}
           />
-          <PaymentOption
+          {/* <PaymentOption
             onPress={() => this.setState({ selected: 'AmazonPay' })}
             selected={this.isSelected('AmazonPay')}
             imageSource={require('../../assets/payments/AmazonPay.png')}
+          /> */}
+          <PaymentOption
+            onPress={() => this.setState({ selected: 'Vorkasse' })}
+            selected={this.isSelected('Vorkasse')}
+            imageSource={require('../../assets/payments/Vorkasse.png')}
+          />
+          <PaymentOption
+            onPress={() => this.setState({ selected: 'Nachnahme' })}
+            selected={this.isSelected('Nachnahme')}
+            imageSource={require('../../assets/payments/Nachnahme.png')}
           />
           {
             Platform.OS === 'ios' ?
