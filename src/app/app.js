@@ -9,6 +9,8 @@ import AsyncStorage from '@react-native-community/async-storage';
 import RNRestart from 'react-native-restart';
 // return RNRestart.Restart();
 
+// ELarin commit !!!
+
 import {
   createStackNavigator,
   createDrawerNavigator,
