@@ -7,8 +7,7 @@ function setTopLevelNavigator(navigatorRef) {
 }
 
 function navigate(routeName, params) {
-  console.log('routeName!!!!!!!!!!!!!!!!!!!!!!!!', routeName);
-  console.log('params!!!!!!!!!!!!!!!!!!!!1', params)
+  console.log('<NavigationService>: routeName =',routeName,'| params =',params);
   _navigator.dispatch(
     NavigationActions.navigate({
       routeName,

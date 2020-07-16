@@ -9,8 +9,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 import RNRestart from 'react-native-restart';
 // return RNRestart.Restart();
 
-// ELarin commit !!!
-
 import {
   createStackNavigator,
   createDrawerNavigator,
@@ -93,6 +91,10 @@ import {
 } from '../functions/cart-funcs';
 
 import Icons from 'react-native-vector-icons/Ionicons';
+
+//----------------------------------------------------------------[ELarin]
+import Agreement from '../screens/agreements/agreement';
+//------------------------------------------------------------------------
 
 YellowBox.ignoreWarnings(['Require cycle:']);
 console.disableYellowBox = true;
@@ -326,6 +328,7 @@ const AppBottomBarNavigator = createBottomTabNavigator(
 const AppStackNavigator = createStackNavigator(
   {
     Main: AppBottomBarNavigator,
+    Agreement: Agreement,
     Intro: UserTypeSelection,
     NoNetwork: NoNetwork,
     HotLine: HotLine,

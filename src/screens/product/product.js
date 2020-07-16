@@ -14,6 +14,8 @@ import { getFullProductData } from '../../gets/productPosts';
 // import * as actions from '../../actions/product-actions'
 // import init from './init-product'
 
+import FooterNavBar from '../../common/footer-navigation-bar/footer-navigation-bar';
+
 class Product extends Component {
 
   static navigationOptions = ({ navigation }) => {
@@ -198,10 +200,15 @@ class Product extends Component {
 
     const Aaa = createAppContainer(Tab);
     // return Tab;
-    return <Aaa />;
+    return (
+      <>
+        <Aaa />
+        <FooterNavBar />
+      </>
+    );
   }
-
 }
+
 // console.log(123);
 // const Container = createAppContainer(Tab);
 export default connect()(Product);

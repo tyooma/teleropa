@@ -21,8 +21,9 @@ import Slider from '../../common/slider';
 
 import NavigationService from '../../navigation-service';
 
-
 import HTML from 'react-native-render-html';
+
+import FooterAgreement from '../../common/footer-agreement/footer-agreement';
 
 class ProductDescription extends Component {
   componentDidMount() {
@@ -109,17 +110,13 @@ class ProductDescription extends Component {
     if (this.state.descMore) {
       return (
         <TouchableOpacity style={styles.showMoreButton} onPress={() => this.handleMoreLessButton()} >
-          <Text style={styles.showMoreButtonText}>
-            Schließen
-                  </Text>
+          <Text style={styles.showMoreButtonText}>Schließen</Text>
         </TouchableOpacity>
       )
     }
     return (
       <TouchableOpacity style={styles.showMoreButton} onPress={() => this.handleMoreLessButton()} >
-        <Text style={styles.showMoreButtonText}>
-          Mehr Details
-              </Text>
+        <Text style={styles.showMoreButtonText}>Mehr Details</Text>
       </TouchableOpacity>
     )
   }
@@ -244,10 +241,11 @@ class ProductDescription extends Component {
             <View style={styles.descLine}></View>
             {this.getDescButton()}
           </View>
+
+          <FooterAgreement />
+
           <TouchableOpacity style={styles.subscribeButton} onPress={() => NavigationService.navigate('ProductSubscribe', { productID: this.props.id })}>
-            <Text style={styles.subscribeButtonText}>
-              Newsletter anmelden
-                    </Text>
+            <Text style={styles.subscribeButtonText}>Newsletter anmelden</Text>
           </TouchableOpacity>
           {this.getSimilarText()}
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: 20 }}>
