@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 
-import { View, ScrollView, Platform, ToastAndroid } from 'react-native';
+import { View, Text, ScrollView, Platform, TouchableOpacity, } from 'react-native';
 
+import Toast from 'react-native-root-toast';
+
+import ModalView from '../../common/modal-view';
 
 import FooterButton from '../../common/footer-button';
 
 import PaymentOption from '../../common/payment-option';
 
-import Loading from '../loading'
+import Loading from '../loading';
 
 export default class Payment extends Component {
   static navigationOptions = {
@@ -16,6 +19,7 @@ export default class Payment extends Component {
 
   state = {
     selected: '',
+    ModalPaymentVisible: false,
     data: this.props.navigation.getParam('data', null),
     loading: false,
   }
@@ -43,22 +47,20 @@ export default class Payment extends Component {
         });
         break;
       case 'Vorkasse':
-        console.log("Выбранно Vorkasse и тут нужен Рест Апи запрос + окно фидбека")
-        // this.props.navigation.navigate("WebPayPal", {
-        //   CartData: this.state.data,
-        // });
+        this.setState({ ModalPaymentVisible: !this.state.ModalPaymentVisible })
+
         break;
-      case 'Nachnahme':
-        console.log("Выбранно Nachnahme и тут нужен Рест Апи запрос + окно фидбека")
-        // this.props.navigation.navigate("WebPayPal", {
-        //   CartData: this.state.data,
-        // });
+      case 'Rechnung':
+        this.setState({ ModalPaymentVisible: !this.state.ModalPaymentVisible })
         break;
       case 'ApplePay':
         this.payWithApplePay()
         break;
       default:
-        ToastAndroid.show(`SELECT PAYMENT METHOD`, ToastAndroid.LONG)
+        Toast.show(`SELECT PAYMENT METHOD`, {
+          shadow: false,
+          backgroundColor: '#505050'
+        })
         break;
     }
     // this.props.navigation.navigate('OrderSuccess')
@@ -107,9 +109,14 @@ export default class Payment extends Component {
       .catch(e => console.log('error', e))
   }
 
+  CloseModal() {
+    this.setState({ ModalPaymentVisible: !this.state.ModalPaymentVisible });
+    if (!this.state.ModalPaymentVisible) this.props.navigation.navigate("Main")
+  }
+
+
   render() {
-    console.log("this.state in payment.js", this.state);
-    console.log("this.props in payment.js", this.props);
+    console.log("This state.payments.js~~~~", this.state)
     if (this.state.loading) return <Loading />
     return (
       <View style={{ flex: 1 }}>
@@ -119,20 +126,22 @@ export default class Payment extends Component {
             selected={this.isSelected('PayPalPlus')}
             imageSource={require('../../assets/payments/PayPalPlus.png')}
           />
-          {/* <PaymentOption
+          <PaymentOption
             onPress={() => this.setState({ selected: 'AmazonPay' })}
             selected={this.isSelected('AmazonPay')}
             imageSource={require('../../assets/payments/AmazonPay.png')}
-          /> */}
+          />
           <PaymentOption
             onPress={() => this.setState({ selected: 'Vorkasse' })}
             selected={this.isSelected('Vorkasse')}
+            text={'Vorkasse'}
             imageSource={require('../../assets/payments/Vorkasse.png')}
           />
           <PaymentOption
-            onPress={() => this.setState({ selected: 'Nachnahme' })}
-            selected={this.isSelected('Nachnahme')}
-            imageSource={require('../../assets/payments/Nachnahme.png')}
+            onPress={() => this.setState({ selected: 'Rechnung' })}
+            selected={this.isSelected('Rechnung')}
+            text={'Kauf auf Rechnung'}
+            imageSource={require('../../assets/payments/Rechnung.png')}
           />
           {
             Platform.OS === 'ios' ?
@@ -145,9 +154,33 @@ export default class Payment extends Component {
           }
         </ScrollView>
 
+        <ModalView
+          title='Vielen Dank für Ihre Bestellung!'
+          buttonText='Zurück zum Shop'
+          visible={this.state.ModalPaymentVisible}
+          onSubmit={() => this.setState({ ModalPaymentVisible: !this.state.ModalPaymentVisible })}
+          onRequestClose={() => this.CloseModal()}
+        // this.props.navigation.navigate("Main")s
+        >
+
+          <View style={{ alignItems: 'center', justifyContent: 'center' }} >
+            {/* <Text style={{ color: 'black', marginTop: 10, fontSize: 16, }}>Vielen Dank für Ihre Bestellung!</Text> */}
+            <Text style={{ marginTop: 15, fontSize: 16, fontWeight: 'bold', color: 'black' }}>Fragen zu Ihrer Bestellung?</Text>
+            <View style={{ flexDirection: 'row', marginTop: 5 }}>
+              <Text style={{ fontSize: 16, fontWeight: 'bold', color: 'black' }}>+49 (0) 6592 98487 0</Text>
+              <Text style={{ fontSize: 12, padding: 4 }}>Täglich von 8:00 bis 16:00 Uhr</Text>
+            </View>
+            <Text style={{ textAlign: 'auto', marginTop: 15, fontSize: 16, }}>Wir haben Ihnen eine Bestellbestätigung per E-Mail geschickt.</Text>
+            <Text style={{ textAlign: 'auto', fontSize: 16, marginTop: 10 }}>Wir empfehlen die unten aufgeführte Bestellbestätigung auszudrucken.</Text>
+          </View>
+
+        </ModalView>
+
+
+
         <FooterButton text='Weiter' onPress={() => this.handlePayClick()
         } />
-      </View>
+      </View >
     )
   }
 }

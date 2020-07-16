@@ -48,6 +48,33 @@ export function getOffersList() {
         .catch(as => console.log(as))
 }
 
+export function getServices() {
+    fetch('https://teleropa.de/WebiProgCommunicationApplicationFrontend/getServices', {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
+        }
+    })
+        .then(res => res.json())
+        .then(dataRes => store.dispatch(actions.setServices(dataRes)))
+        .catch(as => console.log(as))
+}
+
+// export function getBonusProducts() {
+//     fetch('https://teleropa.de/WebiProgCommunicationApplicationArticle/getBonusProducts ', {
+//         method: 'POST',
+//         headers: {
+//             Accept: 'application/json',
+//             'Content-Type': 'application/x-www-form-urlencoded',
+//         }
+//     })
+//         .then(res => res.json())
+//         .then(dataRes => store.dispatch(actions.setBonusProducts(dataRes)))
+//         .catch(as => console.log(as))
+// }
+
+
 export function getBrandsList() {
     fetch('https://teleropa.de/WebiProgCommunicationApplicationCategory/getBrandsList', {
         method: 'POST',
@@ -97,5 +124,4 @@ export function getCountries() {
         }
     })
         .then(res => res.json())
-    // .then(dataRes => dataRes)
 }

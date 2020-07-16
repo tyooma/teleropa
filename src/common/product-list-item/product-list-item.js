@@ -16,7 +16,8 @@ import NavigationService from '../../navigation-service';
 
 import { sWidth } from '../../helpers/screenSize';
 
-function ProductListItem({ imageURL, name, price, salePrice, favourite, id, stock, rate, salePercent, userID, deleteAction, companyPrice, ...props }) {
+function ProductListItem({ imageURL, name, price, salePrice, favourite, id, productID, stock, rate, salePercent, userID, userInfo, deleteAction, bonuspoint, companyPrice, ...props }) {
+
     getStock = () => {
         if (stock > 0) {
             return (
@@ -49,17 +50,23 @@ function ProductListItem({ imageURL, name, price, salePrice, favourite, id, stoc
         }
     }
 
-    getPrice = () => {        
-        const showingPrice = props.userInfo.selectedUserType === 'EK' ? price : companyPrice
+    getPrice = () => {
+        sorted = this.state.data.sort((first, second) => (first.item > second.item) ? -1 : ((second.item > first.item) ? 1 : 0))
+        console.log("sorted~~~~~~~~~~~~~~~~~~~~~~~~~", sorted)
+        const showingPrice = userInfo.selectedUserType === 'EK' ? price : companyPrice;
+        const showBonusPoint = parseFloat(bonuspoint) - parseFloat(userInfo.points);
         if (salePrice != '0' && salePrice) {
             return (
                 <>
                     <Text style={styles.prevPrice}>
                         {salePrice}<Text style={{ fontSize: 10 }}>€</Text>
                     </Text>
-                    <Text style={styles.salePrice}>
-                        {showingPrice}<Text style={{ fontSize: 16 }}>€</Text>
-                    </Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 9, marginBottom: 14, marginHorizontal: 10 }}>
+                        <Text style={styles.salePrice}>
+                            {showingPrice}<Text style={{ fontSize: 16 }}>€</Text>
+                        </Text>
+                        <Text style={styles.salePrice}>{showBonusPoint} </Text>
+                    </View>
                 </>
             )
         }
@@ -125,7 +132,7 @@ function ProductListItem({ imageURL, name, price, salePrice, favourite, id, stoc
 
     return (
         <TouchableOpacity style={styles.productContainer} onPress={() => NavigationService.push('Product', { id: id, name: name })} >
-            <View style={{ flex: 1 }}>             
+            <View style={{ flex: 1 }}>
                 {this.getImage()}
             </View>
             {getFavButton()}

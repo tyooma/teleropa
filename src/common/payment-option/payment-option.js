@@ -2,16 +2,17 @@ import React from 'react';
 
 import { View, Image, TouchableWithoutFeedback, Text } from 'react-native';
 
-const PaymentOption = ({imageSource, text, selected, onPress}) => {
-  return(
+const PaymentOption = ({ imageSource, text, selected, onPress }) => {
+  return (
     <TouchableWithoutFeedback onPress={() => onPress()}>
       <View style={styles.container} >
-          <View style={selected ? styles.selectedDotStyle : styles.dotStyle}>
-          </View>
-          <View style={styles.contentStyle}>
-            <Image style={styles.imageStyle} source={imageSource} key={imageSource} />
-            <Text style={styles.textStyle}> {text} </Text>
-          </View>
+        <View style={selected ? styles.selectedDotStyle : styles.dotStyle}>
+        </View>
+        <View style={styles.contentStyle}>
+          <Image style={styles.imageStyle} source={imageSource} key={imageSource} />
+        </View>
+
+        <Text style={styles.textStyle}> {text} </Text>
       </View>
     </TouchableWithoutFeedback>
   )
@@ -46,10 +47,10 @@ const styles = {
     width: 90,
     height: 26,
     resizeMode: 'contain',
-    marginBottom: 10
+    marginBottom: 10,
   },
   textStyle: {
-    fontSize: 10,
+    fontSize: 16,
     lineHeight: 16,
     color: '#a0a0a0'
   }

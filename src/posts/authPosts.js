@@ -15,21 +15,18 @@ export function logIn(email, pass, route) {
     })
         .then(res => res.json())
         .then(logdata => {
-            console.log(logdata)
             if (logdata.system.sErrorMessages) {
                 store.dispatch(actions.setLoggedUserId('notloggedin'))
                 alert(logdata.system.sErrorMessages)
                 throw Error
             } else {
                 store.dispatch(actions.setLoggedUserId(logdata.userID))
-                console.log('2+', route);
                 route === 'Cart' ? NavigationService.navigate('Cart') : NavigationService.navigate('Main')
                 // NavigationService.navigate('DeliveryService')
                 return logdata.userID
             }
         })
         .then(id => {
-            console.log(id)
             fetch('https://teleropa.de/WebiProgCommunicationApplicationUser/getInfo', {
                 method: 'POST',
                 headers: {
@@ -40,7 +37,6 @@ export function logIn(email, pass, route) {
             })
                 .then(res => res.json())
                 .then(userData => {
-                    console.log(userData)
                     store.dispatch(actions.setLoggedUserInfo(userData))
                 })
         })
@@ -88,8 +84,6 @@ export function register(body, email, password) {
     })
         .then(res => res.json())
         .then(({ status }) => {
-            console.log(status)
-            console.log(body)
             Toast.show(status.text, {
                 shadow: false,
                 backgroundColor: '#505050'
@@ -111,7 +105,6 @@ export function resetPassword(email) {
     })
         .then(res => res.json())
         .then(({ status }) => {
-            console.log(status)
             Toast.show(status.text, {
                 shadow: false,
                 backgroundColor: '#505050'
@@ -130,7 +123,6 @@ export function sendToken(token) {
     })
         .then(res => res.json())
         .then((res) => {
-            console.log(res);
             Toast.show('Токен отправлен', {
                 shadow: false,
                 backgroundColor: '#505050'

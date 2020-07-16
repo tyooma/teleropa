@@ -57,11 +57,6 @@ class ProductsByCategory extends Component {
             });
     }
 
-    getIDs(IDs) {
-        this.setState({ IDs, loaded: true })
-        this.getData(0)
-    }
-
     // getData(from) {
     //     this.setState({from})
     //     const currentID = this.state.currentID 
@@ -98,13 +93,11 @@ class ProductsByCategory extends Component {
                     // contentContainerStyle={{paddingLeft: 18}}                    
                     data={this.state.data.filter(item => item.stock > 0)}
                     renderItem={({ item }) => {
-                        console.log("ITEM~~~~~~~~~~~", item)
                         const { companyPrice, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, productID } = item
                         return (
                             <View style={{ paddingBottom: 8 }}>
                                 <ProductListItem
                                     name={productName}
-                                    //price={price}
                                     price={this.props.userInfo.selectedUserType === 'EK' ? price.toFixed(2) : companyPrice.toFixed(2)}
                                     salePrice={salePrice != 0 ? 'UVP ' + salePrice.toFixed(2) : ''}
                                     companyPrice={companyPrice.toFixed(2)}

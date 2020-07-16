@@ -1,33 +1,48 @@
 'use strict'
-import React, { Component } from 'react'
-import { Dimensions, Text, View, ScrollView, Image, TouchableOpacity, FlatList } from 'react-native'
+import React, { Component } from 'react';
+
+import { Dimensions, Text, View, ScrollView, Image, TouchableOpacity, FlatList } from 'react-native';
 
 import { sWidth, sHeight } from '../../helpers/screenSize';
 
 import firebase from 'react-native-firebase';
+
 import AsyncStorage from '@react-native-community/async-storage';
 
 import { connect } from 'react-redux';
+
 import {
     getBannerImage,
     // getBrandsList, 
     getNewestList,
     getOffersList,
-    getPopularCategories
+    getPopularCategories,
+    getServices,
+    // getBonusProducts,
 } from '../../gets/mainPagePosts';
 
 import ImageLoader from '../../helpers/image-loader';
 
 import CategoryWithImageItem from '../../common/category-with-image-item';
+
 import NewestListItem from '../../common/newest-list';
+
 import OffersListItem from '../../common/offers-list';
+
 // import BrandListItem from '../../common/brand-list-item';
+
+import TeleropaService from '../../common/services-list'
+
 import BannerImage from '../../common/banner-image';
 
 import { sendToken } from '../../posts/authPosts'
+
 import Loading from '../loading';
+
 import { MenuButton, SearchButton } from '../../common/header-buttons';
+
 import { getUserInfo } from '../../gets/userPosts';
+
 
 class Main extends Component {
     static navigationOptions = {
@@ -63,6 +78,8 @@ class Main extends Component {
         getOffersList()
         getPopularCategories()
         getBannerImage()
+        getServices()
+        // getBonusProducts()
         // .then(image => Image.getSize(image, (w, h) => {
         //     this.setImageSize(w, h);
         //     this.setState({ image });
@@ -105,22 +122,26 @@ class Main extends Component {
     }
 
     getNewest() {
-        // console.log('this.props.newest', this.props.mainPage)
-        // if (this.props.mainPage.newest)
         return this.props.mainPage.newest.products.filter(({ productID, productName, previewImgURL, price, companyPrice }) => {
             if (previewImgURL) return <NewestListItem key={productID} id={productID} text={productName} image={{ uri: previewImgURL }} price={price} companyPrice={companyPrice} />
         })
     }
 
     getOffers() {
-        // if (this.props.mainPage.offers)
         return this.props.mainPage.offers.products.filter(({ productID, productName, previewImgURL, price, companyPrice, pseudoprice }) => {
             return <OffersListItem key={productID} id={productID} text={productName} image={{ uri: previewImgURL }} price={price} companyPrice={companyPrice} salePrice={pseudoprice} />
         })
     }
 
+    getServices() {
+        return this.props.mainPage.services.filter(({ img_url, text, title, }) => {
+            return <TeleropaService text={text} image={{ uri: img_url }} title={title} />
+        })
+    }
+
+
     // getBrands() {
-    //     const brands = this.props.mainPage.brands.filter((val, index) => {
+    //     const brands = this.props.mainPage.brands.filter((val, indыex) => {
     //         if (val.imgURL && val.supplierID) {
     //             return val
     //         }
@@ -135,7 +156,6 @@ class Main extends Component {
     }
 
     send() {
-        console.log('Triggered')
         sendToken(this.state.fcmToken)
     }
 
@@ -144,6 +164,7 @@ class Main extends Component {
             !this.props.mainPage.categories ||
             // !this.props.mainPage.brands || 
             !this.props.mainPage.topbanner ||
+            !this.props.mainPage.services ||
             !this.props.mainPage.newest ||
             !this.props.mainPage.offers
         ) {
@@ -168,7 +189,7 @@ class Main extends Component {
                     {this.getBanner()}
 
                     <Text style={styles.helperText}>
-                    Unsere Kategorien
+                        Unsere Kategorien
                     </Text>
                     <View style={{ flexDirection: 'row', marginLeft: 18, flexWrap: 'wrap' }}>
                         {this.getCategoriesCards()}
@@ -202,6 +223,24 @@ class Main extends Component {
                                 return <NewestListItem key={item.productID} id={item.productID} text={item.productName} image={{ uri: item.previewImgURL }} price={item.price} companyPrice={item.companyPrice} />
                             }}
                             keyExtractor={item => item.productName}
+                            initialNumToRender={3}
+                            windowSize={2}
+                            showsHorizontalScrollIndicator={false}
+                        />
+                    </View>
+
+
+                    <Text style={styles.helperText}>
+                        Teleropa Service
+                    </Text>
+                    <View style={{ flexDirection: 'row', height: 170, flexWrap: 'wrap' }} >
+                        <FlatList
+                            horizontal
+                            data={this.getServices()}
+                            renderItem={({ item }) => {
+                                return <TeleropaService text={item.text} image={{ uri: item.img_url }} title={item.title} />
+                            }}
+                            keyExtractor={item => item.text}
                             initialNumToRender={3}
                             windowSize={2}
                             showsHorizontalScrollIndicator={false}

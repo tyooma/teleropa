@@ -8,15 +8,10 @@ export function getProductInfo(id) {
         body: `productID=${id}`
     })
         .then(res => res.json())
-    // .then(dataRes => console.log(dataRes))
-    // .then(productInfo => {
-    //     console.log(productInfo)
-    // })
 }
 
 export function getFullProductData(id) {
     console.log("ID getFullProductData in productPosts.js", id)
-    console.log(" эТА поебота 4505")
     return fetch('https://teleropa.de/WebiProgCommunicationApplicationArticle/getFullProductData', {
         method: 'POST',
         headers: {
@@ -25,20 +20,9 @@ export function getFullProductData(id) {
         },
         body: `productID=${id}`
     })
-    // .then(res => res.json())
-
-    // .then(res =>
-    //     console.log('getFullProductData res.json()', res.json()),
-    // )
-    // .then(dataRes => console.log(dataRes))
-    // .then(productInfo => {
-    //     console.log(productInfo)
-    // })
 }
 
 export function getPreviewProductData(id) {
-    console.log("ID getPreviewProductData in productPosts.js", id)
-    console.log(" эТА поебота 4505")
     return fetch('https://teleropa.de/WebiProgCommunicationApplicationArticle/getPreviewProductData', {
         method: 'POST',
         headers: {
@@ -50,6 +34,7 @@ export function getPreviewProductData(id) {
         .then(res => res.json())
 
 }
+
 
 export async function getPreviewAsyncProductData(id) {
     try {
@@ -68,6 +53,24 @@ export async function getPreviewAsyncProductData(id) {
         console.error(error);
     }
 }
+
+export async function getBonusProducts() {
+    try {
+        const response = await fetch('https://teleropa.de/WebiProgCommunicationApplicationArticle/getBonusProducts ', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded',
+            }
+        })
+        const json = await response.json();
+        return json
+    }
+    catch (error) {
+        console.error(error);
+    }
+}
+
 
 export function getPreviewProductImage(id) {
     return fetch('https://teleropa.de/WebiProgCommunicationApplicationArticle/getPreviewImage', {
@@ -146,6 +149,7 @@ export function getProductDetails(id) {
         .then(res => res.json())
     // .then(dataRes => console.log(dataRes))
 }
+
 
 export function getProductPackage(id) {
     return fetch('https://teleropa.de/WebiProgCommunicationApplicationArticle/getPackage', {

@@ -76,9 +76,7 @@ export default class ProductsByBrand extends Component {
     }
 
     render() {
-        console.log('this.state в products-by-brand.js', this.state)
         let userInfo = this.props.navigation.getParam('userInfo', null)
-        console.log("userInfo в products-by-brand.js", userInfo)
         if (!this.state.loaded) {
             return <Loading />
         }

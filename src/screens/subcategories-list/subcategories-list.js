@@ -7,7 +7,9 @@ import { sWidth } from '../../helpers/screenSize';
 import CategoriesListItem from '../../common/categories-list-item'
 
 import SearchButton from '../../common/header-buttons/search-button';
+
 import CategoryInfoButton from '../../common/header-buttons/category-info-button';
+
 import Loading from '../loading'
 
 import { getCategoriesIDs } from '../../gets/categoryPosts'

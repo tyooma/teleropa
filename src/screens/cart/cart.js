@@ -72,7 +72,7 @@ getCounter = (order, pcs, id, onMinus, onAdd) => {
     }
 }
 
-export const CartItem = ({ img, name, pcs, price, companyPrice, userType, stock, order, orderReturnReason, id, onAdd, onMinus, onDelete }) => {
+export const CartItem = ({ img, name, pcs, price, companyPrice, selectedUserType, stock, order, orderReturnReason, id, onAdd, onMinus, onDelete }) => {
     return (
         <TouchableOpacity style={styles.cartItemContainer} onPress={() => NavigationService.push('Product', { id, name })}>
             <View style={{ flexDirection: 'row' }}>
@@ -98,7 +98,7 @@ export const CartItem = ({ img, name, pcs, price, companyPrice, userType, stock,
                             </View>
                         </View>
                         <View style={{ marginRight: 10, alignItems: 'flex-end' }}>
-                            {userType && userType === 'H' ?
+                            {selectedUserType === 'H' ?
                                 <>
                                     <Text style={styles.pricePerProduct}>{companyPrice} €\St</Text>
                                     <Text style={styles.price}>{(companyPrice * pcs).toFixed(2)} €</Text>
@@ -149,7 +149,6 @@ class Cart extends Component {
         discountValue: 0,
         cartReceaved: false,
         modalVisible: false,
-        userType: this.props.userInfo.selectedUserType,
         //routeName: 'Cart'
         // }
     }
@@ -210,7 +209,7 @@ class Cart extends Component {
     initAfterUpdate(cart) {
         this.setState({ products: [] })
         cart.map(({ id, count }) => {
-            getPreviewAsyncProductData(id)                
+            getPreviewAsyncProductData(id)
                 .then(res => this.setState({ products: [...this.state.products, { ...res, id, count }] }))
         })
     }
@@ -317,7 +316,7 @@ class Cart extends Component {
                     pcs={count}
                     price={price}
                     companyPrice={companyPrice}
-                    userType={this.userType}
+                    selectedUserType={this.props.userInfo.selectedUserType}
                     stock={stock}
                     onAdd={id => this.addToCartAndState(id)}
                     onMinus={id => this.minusFromCartAndState(id)}
@@ -335,7 +334,7 @@ class Cart extends Component {
     }
 
     setPrices() {
-        const productsPrice = this.state.userType === 'EK' ?
+        const productsPrice = this.props.userInfo.selectedUserType === 'EK' ?
             this.state.products.reduce((sum, { price, count }) => {
                 return sum + price * count
             }, 0)
@@ -345,11 +344,13 @@ class Cart extends Component {
             }, 0)
 
 
-        const productsVAT = this.state.products.reduce((sum, { price, companyPrice, count }) => {            
-            return sum + ((price - companyPrice) * count);
+
+        const productsVAT = this.state.products.reduce((sum, { price, companyPrice, tax, count }) => {
+            if (this.props.userInfo.selectedUserType === 'EK') return (sum + price / (1 + (tax / 100)) * count)
+            else return (sum + companyPrice / (1 + (tax / 100)) * count)
         }, 0)
 
-        // const productsPrice = this.state.products.reduce((sum,{price, count}, asss) =>  {console.log('sds',asss); return sum+parseFloat(price)*count}, 0)
+
         const discountProductsPrice = this.getDiscount(productsPrice)
         if (productsPrice.toFixed(2) !== this.state.originalProductsPrice || discountProductsPrice !== this.state.discountProductsPrice) {
             this.setState({
@@ -416,8 +417,6 @@ class Cart extends Component {
     }
 
     render() {
-        console.log("this. STATE cart js", this.state);
-
         const shadowOpt = {
             width: sWidth,
             height: 50,
@@ -466,7 +465,7 @@ class Cart extends Component {
 
                         <View style={styles.line}>
                             <Text style={styles.summaryText}>Summe:</Text>
-                            <Text style={styles.summaryText}>{(parseFloat(this.state.discountProductsPrice) + parseFloat(this.state.orderVAT)).toFixed(2)} €</Text>
+                            <Text style={styles.summaryText}>{parseFloat(this.state.discountProductsPrice).toFixed(2)} €</Text>
 
                         </View>
 
@@ -474,12 +473,12 @@ class Cart extends Component {
 
                         <View style={styles.line}>
                             <Text style={styles.summaryText}>Gesamtsumme ohne MwSt.:</Text>
-                            <Text style={styles.summaryText}>{this.state.discountProductsPrice} €</Text>
+                            <Text style={styles.summaryText}>{this.state.orderVAT} €</Text>
                         </View>
 
                         <View style={styles.line}>
                             <Text style={styles.summaryText}>zzgl. MwSt.:</Text>
-                            <Text style={styles.summaryText}>{this.state.orderVAT} €</Text>
+                            <Text style={styles.summaryText}> {parseFloat(this.state.discountProductsPrice - this.state.orderVAT).toFixed(2)} €</Text>
                         </View>
                     </View>
                 </ScrollView>
@@ -488,8 +487,7 @@ class Cart extends Component {
                     <View style={styles.footerSummaryContainer}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
                             <Text style={styles.summaryTextBold} >Gesamtbetrag:</Text>
-
-                            <Text style={styles.summaryTextBold} >{(parseFloat(this.state.discountProductsPrice) + parseFloat(this.state.orderVAT))} €</Text>
+                            <Text style={styles.summaryTextBold} >{parseFloat(this.state.discountProductsPrice).toFixed(2)} €</Text>
                         </View>
                     </View>
                 </BoxShadow>
@@ -523,7 +521,6 @@ class Cart extends Component {
 }
 
 const mapStateToProps = ({ userInfo, userID, cart }) => ({ userInfo, userID, cart })
-
 export default connect(mapStateToProps)(Cart)
 
 const styles = StyleSheet.create({

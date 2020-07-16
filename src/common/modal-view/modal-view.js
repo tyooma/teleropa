@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import { Modal, Text, TouchableOpacity, TouchableWithoutFeedback,  View, ScrollView } from 'react-native';
+import { Modal, Text, TouchableOpacity, TouchableWithoutFeedback, View, ScrollView } from 'react-native';
 
-import {sHeight} from '../../helpers/screenSize'
+import { sHeight } from '../../helpers/screenSize'
 
 import ModalButton from '../modal-button';
 
 class ModalView extends Component {
 
   render() {
-    const {title, buttonText, children, onSubmit, visible, onRequestClose} = this.props;
+    const { title, buttonText, children, onSubmit, visible, onRequestClose } = this.props;
 
     return (
       <View>
@@ -18,8 +18,8 @@ class ModalView extends Component {
           visible={visible}
           onRequestClose={() => onRequestClose()}>
           <TouchableOpacity
-            onPress={() => 
-                onRequestClose()
+            onPress={() =>
+              onRequestClose()
             }
             style={styles.backgroundStyle}
           >
@@ -34,7 +34,7 @@ class ModalView extends Component {
                     onSubmit();
                     onRequestClose();
                   }}
-                  text={buttonText}/>
+                  text={buttonText} />
               </View>
             </TouchableWithoutFeedback>
           </TouchableOpacity>
@@ -48,7 +48,7 @@ class ModalView extends Component {
 const styles = {
   backgroundStyle: {
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    width:'100%',
+    width: '100%',
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center'
@@ -56,13 +56,14 @@ const styles = {
   modalStyle: {
     zIndex: 50,
     width: '90%',
-    maxHeight: sHeight-100,
+    maxHeight: sHeight - 100,
     backgroundColor: '#fff',
     alignSelf: 'center',
     borderRadius: 5,
   },
   modalTitleStyle: {
     color: '#d10019',
+    alignSelf: 'center',
     fontSize: 16,
     lineHeight: 24,
     marginTop: 10

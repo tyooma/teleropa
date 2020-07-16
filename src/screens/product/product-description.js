@@ -68,13 +68,13 @@ class ProductDescription extends Component {
     return <Text style={styles.inStock}>Produkt ist verfügbar</Text>
   }
 
-  getPrices(price, salePrice, companyPrice, productInfo) {    
+  getPrices(price, salePrice, companyPrice, productInfo) {
     if (salePrice != 0) {
       const products = [productInfo]
       const productsVAT = products.reduce((sum, { price, companyPrice }) => {
         return sum + ((price - companyPrice) * 1)
       }, 0)
-      
+
       return (
         <View>
           <Text style={styles.previousPrice}>{'UVP ' + salePrice.toFixed(2)} €</Text>
@@ -156,12 +156,13 @@ class ProductDescription extends Component {
     }
 
     return this.state.similar.map(product => {
-      const { companyPrice, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, productID } = product
+      const { companyPrice, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, id, productID } = product
       // return (
       //   <Text style={styles.similarText}>
       //       Ähnliche Produkte
       //   </Text>
       // )      
+      console.log("this.state.similar~~~~", this.state.similar);
       return (
         <ProductListItem
           name={productName}
@@ -172,10 +173,8 @@ class ProductDescription extends Component {
           companyPrice={companyPrice.toFixed(2)}
           rate={rate}
           stock={stock}
-
-          id={productID}
+          id={id}
           imageURL={previewImgURL}
-
           key={productID}
           favourite
           salePercent={productSalePercent ? productSalePercent.int : null}

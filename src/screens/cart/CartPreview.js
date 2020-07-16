@@ -52,26 +52,10 @@ getCounterInPreview = (order, pcs) => {
             </Text>
 
         )
-        // return (
-        //     <><TouchableOpacity style={styles.minusPlusButton} onPress={() => onMinus(id)}>
-        //         <Image source={require('../../assets/icons/036-minus.png')} style={styles.minusPlusButtonImage} key={'cartMinusItem'} />
-        //     </TouchableOpacity>
-        //         <Text style={styles.countText}>
-        //             {pcs}
-        //         </Text>
-        //         <TouchableOpacity style={styles.minusPlusButton} onPress={() => onAdd(id)}>
-        //             <Image source={require('../../assets/icons-color/035-more2.png')} style={styles.minusPlusButtonImage} key={'cartPlusItem'} />
-        //         </TouchableOpacity></>
-        // )
     }
 }
 
 export const CartItemInPreview = ({ img, name, pcs, price, companyPrice, stock, order, orderReturnReason, id, userType, orderVAT, deliveryPrice }) => {
-    console.log("pcs", pcs);
-    console.log("deliveryPrice", deliveryPrice);
-    console.log("orderVAT", orderVAT);
-    console.log("companyPrice", companyPrice);
-    console.log("price", price);
     return (
         <TouchableOpacity style={styles.cartItemContainer} onPress={() => NavigationService.push('Product', { id, name })}>
             <View style={{ flexDirection: 'row' }}>
@@ -131,47 +115,6 @@ export default class CartPreview extends Component {
     static navigationOptions = { title: 'Bestellübersicht' }
 
 
-    // componentDidMount() {
-    //     if (!this.state.cartReceaved) {
-    //         this.init()
-    //     }
-    // }
-
-
-    // componentDidUpdate(prevProps) {
-    //     if (this.props.id !== prevProps.id) {
-    //         this.setDefaultTranslation(this.props.context)
-    //     }
-    // }
-
-    // async componentWillReceiveProps(props) {
-    //     if (this.state.cartReceaved == true) {
-    //         await this.initAfterUpdate(props.cart)
-    //         // setTimeout(() => { this.initAfterUpdate(); }, 5);
-    //     }
-    // }
-
-
-    // init() {
-    //     const cart = this.props.cart
-    //     if (cart.length > 0 && !this.state.cartReceaved) { this.setState({ cartReceaved: true }) }
-    //     cart.map(({ id, count }) => {
-    //         getPreviewAsyncProductData(id)
-    //             .then(res => this.setState({ products: [...this.state.products, { ...res, id, count }] }))
-    //     })
-    // }
-
-    // initAfterUpdate(cart) {
-    //     this.setState({ products: [] })
-    //     cart.map(({ id, count }) => {
-    //         getPreviewAsyncProductData(id)
-    //             .then(res => this.setState({ deliveryData: this.props.navigation.getParam('deliveryData', null), products: [...this.state.products, { ...res, id, count }] }))
-    //             .then(this.state.deliveryData != null ? this.changeTitleText() : null)
-    //     })
-    // }
-
-
-
     getProductsCards() {
         return this.state.cartInfo.products.map(({ id, previewImgURL, productName, price, companyPrice, stock, count }) => {
             return (
@@ -205,16 +148,15 @@ export default class CartPreview extends Component {
             x: 0,
             y: 0
         }
-
         return (
             <View style={{ flex: 1 }}>
                 <ScrollView>
                     <View style={{ marginHorizontal: 18, marginTop: 22 }}>
                         {this.getProductsCards()}
-
                         <View style={styles.line}>
                             <Text style={styles.summaryText}>Summe:</Text>
-                            <Text style={styles.summaryText}>{(parseFloat(this.state.cartInfo.discountProductsPrice) + parseFloat(this.state.cartInfo.orderVAT)).toFixed(2)} €</Text>
+                            <Text style={styles.summaryText}>{parseFloat(this.state.cartInfo.discountProductsPrice).toFixed(2)} €</Text>
+                            {/* <Text style={styles.summaryText}>{(parseFloat(this.state.cartInfo.discountProductsPrice) + parseFloat(this.state.cartInfo.orderVAT)).toFixed(2)} €</Text> */}
 
                         </View>
 
@@ -227,24 +169,24 @@ export default class CartPreview extends Component {
 
                         <View style={styles.line}>
                             <Text style={styles.summaryTextBold}>Gesamtsumme:</Text>
-                            <Text style={styles.summaryTextBold}>{(parseFloat(this.state.cartInfo.discountProductsPrice) + parseFloat(this.state.cartInfo.orderVAT) + parseFloat(this.state.deliveryData.deliveryPrice))} €</Text>
+                            <Text style={styles.summaryTextBold}>{(parseFloat(this.state.cartInfo.discountProductsPrice) + parseFloat(this.state.deliveryData.deliveryPrice)).toFixed(2)} €</Text>
                         </View>
 
                         <View style={styles.line}>
                             <Text style={styles.summaryText}>Gesamtsumme ohne MwSt.:</Text>
-                            <Text style={styles.summaryText}>{this.state.cartInfo.discountProductsPrice} €</Text>
+                            <Text style={styles.summaryText}>{this.state.cartInfo.orderVAT} €</Text>
                         </View>
 
                         <View style={styles.line}>
                             <Text style={styles.summaryText}>zzgl. MwSt.:</Text>
-                            <Text style={styles.summaryText}>{this.state.cartInfo.orderVAT} €</Text>
+                            <Text style={styles.summaryText}> {parseFloat(this.state.cartInfo.discountProductsPrice - this.state.cartInfo.orderVAT).toFixed(2)} €</Text>
                         </View>
 
 
                         <View style={styles.line}>
                             <Text style={styles.summaryTextPoint}>Punkte für die Bestellung:</Text>
                             <View style={styles.linePoint}>
-                                <Text style={styles.summaryTextPointGreen}>{'+ ' + Math.floor(parseFloat(this.state.cartInfo.discountProductsPrice) + parseFloat(this.state.cartInfo.orderVAT))}</Text>
+                                <Text style={styles.summaryTextPointGreen}>{'+ ' + Math.floor(parseFloat(this.state.cartInfo.discountProductsPrice))}</Text>
                                 <Text style={styles.radiusCircle}>P</Text>
                             </View>
                         </View>
@@ -266,8 +208,7 @@ export default class CartPreview extends Component {
                     <View style={styles.footerSummaryContainer}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
                             <Text style={styles.summaryTextBold} >Gesamtbetrag:</Text>
-
-                            <Text style={styles.summaryTextBold} >{(parseFloat(this.state.cartInfo.discountProductsPrice) + parseFloat(this.state.cartInfo.orderVAT) + parseFloat(this.state.deliveryData.deliveryPrice))} €</Text>
+                            <Text style={styles.summaryTextBold}>{(parseFloat(this.state.cartInfo.discountProductsPrice) + parseFloat(this.state.deliveryData.deliveryPrice)).toFixed(2)} €</Text>
                         </View>
                     </View>
                 </BoxShadow>

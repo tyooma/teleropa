@@ -68,7 +68,7 @@ class Product extends Component {
             ],
             { cancelable: false }
           );
-        }        
+        }
         this.setState({
           id: id,
           images: responseJson.imgURLs,

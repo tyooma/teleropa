@@ -61,9 +61,9 @@ import NoNetwork from '../screens/no-network';
 import Orders from '../screens/orders';
 import OrderSuccess from '../screens/order-success';
 import Payment from '../screens/payment';
-import PaypalConfirm from '../screens/payment/paypalConfirm';
 import PersonalData from '../screens/personal-data';
 import Product from '../screens/product';
+import ProductsByPoint from '../screens/products-by-point';
 import ProductsByBrand from '../screens/products-by-brand';
 import ProductsByCategory from '../screens/products-by-category';
 import ProductsList from '../screens/products-list';
@@ -369,8 +369,7 @@ const AppStackNavigator = createStackNavigator(
     DeliveryService: DeliveryService,
     CartPreview: CartPreview,
     WebPayPal: WebPayPal,
-
-    PaypalConfirm: PaypalConfirm
+    ProductsByPoint: ProductsByPoint,
   },
   {
     headerTitleStyle: {

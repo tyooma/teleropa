@@ -1,10 +1,15 @@
 import React from 'react';
+
 import { Image, Text, TouchableOpacity, View } from 'react-native';
-import { connect } from 'react-redux'
+
+import { connect } from 'react-redux';
+
 import ImageLoader from '../../helpers/image-loader';
+
 import { sWidth } from '../../helpers/screenSize';
-import { getPreviewAsyncProductData } from '../../gets/productPosts';
+
 import NavigationService from '../../navigation-service';
+
 
 const OffersListItem = ({ id, text, image, price, companyPrice, salePrice, userInfo }) => {
 
@@ -24,9 +29,7 @@ const OffersListItem = ({ id, text, image, price, companyPrice, salePrice, userI
 
                 <View style={{ flex: 6, flexDirection: 'column' }}>
                     <View>
-                        <Text style={styles.name} numberOfLines={3}
-                        //  ellipsizeMode='middle'
-                        >{text}</Text>
+                        <Text style={styles.name} numberOfLines={3} >{text}</Text>
                     </View>
                     <View style={{ paddingBottom: 10 }}>
                         <Text style={styles.saleprice}>uvp <Text style={[styles.saleprice, { textDecorationLine: 'line-through' }]}>{formattedsaleprice} €</Text></Text>
@@ -38,9 +41,7 @@ const OffersListItem = ({ id, text, image, price, companyPrice, salePrice, userI
     )
 };
 
-const mapStateToProps = ({ userID, userInfo }) => (
-    { userID, userInfo }
-)
+const mapStateToProps = ({ userID, userInfo }) => ({ userID, userInfo })
 
 export default connect(mapStateToProps)(OffersListItem)
 
