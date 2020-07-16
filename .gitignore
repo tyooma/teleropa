@@ -56,5 +56,5 @@ buck-out/
 *.jsbundle
 debug.log
 
-# Yevhen Build Scripts
+# Yevhen Build Scripts *
 *.bat
