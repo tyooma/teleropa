@@ -98,6 +98,7 @@ class ProductsByCategory extends Component {
                             <View style={{ paddingBottom: 8 }}>
                                 <ProductListItem
                                     name={productName}
+                                    //price={price}
                                     price={this.props.userInfo.selectedUserType === 'EK' ? price.toFixed(2) : companyPrice.toFixed(2)}
                                     salePrice={salePrice != 0 ? 'UVP ' + salePrice.toFixed(2) : ''}
                                     companyPrice={companyPrice.toFixed(2)}
