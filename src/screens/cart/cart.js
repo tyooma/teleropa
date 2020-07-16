@@ -283,6 +283,7 @@ class Cart extends Component {
         //     if (product.id === id) return productToAdd
         //     return product
         // })
+        
         // this.setState({ products: newProductsArray })
     }
     minusFromCartAndState(id) {

@@ -81,8 +81,7 @@ export function getPreviewProductImage(id) {
         },
         body: `productID=${id}`
     })
-        .then(res => res.json())
-    // .then(dataRes => console.log(dataRes))
+        .then(res => res.json()) 
 }
 
 export function getFullSizeProductImages(id) {
