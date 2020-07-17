@@ -129,10 +129,6 @@ export const CartItem = ({ img, name, pcs, price, companyPrice, selectedUserType
     )
 }
 
-
-
-
-
 class Cart extends Component {
     // constructor(props) {
     //     super(props);
@@ -149,7 +145,7 @@ class Cart extends Component {
         discountValue: 0,
         cartReceaved: false,
         modalVisible: false,
-        //routeName: 'Cart'
+        routeName: 'Cart'
         // }
     }
 
