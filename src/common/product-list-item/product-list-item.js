@@ -51,8 +51,8 @@ function ProductListItem({ imageURL, name, price, salePrice, favourite, id, prod
     }
 
     getPrice = () => {
-        sorted = this.state.data.sort((first, second) => (first.item > second.item) ? -1 : ((second.item > first.item) ? 1 : 0))
-        console.log("sorted~~~~~~~~~~~~~~~~~~~~~~~~~", sorted)
+        // sorted = this.state.data.sort((first, second) => (first.item > second.item) ? -1 : ((second.item > first.item) ? 1 : 0))
+        // console.log("sorted~~~~~~~~~~~~~~~~~~~~~~~~~", sorted)
         const showingPrice = userInfo.selectedUserType === 'EK' ? price : companyPrice;
         const showBonusPoint = parseFloat(bonuspoint) - parseFloat(userInfo.points);
         if (salePrice != '0' && salePrice) {

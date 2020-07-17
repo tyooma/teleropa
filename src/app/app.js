@@ -30,7 +30,6 @@ import reducers from '../reducers';
 import NavigationService from '../navigation-service';
 import { sWidth } from '../helpers/screenSize';
 
-
 import AmazonLoginWebView from '../screens/payment/AmazonLoginWebView'
 import AskQuestion from '../screens/ask-question';
 import BackButton from '../common/header-buttons/back-button';
@@ -95,6 +94,8 @@ import Icons from 'react-native-vector-icons/Ionicons';
 //----------------------------------------------------------------[ELarin]
 import Agreement from '../screens/agreements/agreement';
 //------------------------------------------------------------------------
+import TestBox from '../Testing/TestBox'; // For Testing
+//------------------------------------------------------------------------
 
 YellowBox.ignoreWarnings(['Require cycle:']);
 console.disableYellowBox = true;
@@ -117,8 +118,6 @@ export default class App extends Component {
     // // КОД НА ПРОВЕРКУ ПЕРВОГО ЗАПУСКА
     // firstLaunchCheck()
   }
-
-
 
   async checkPermission() {
     const enabled = await firebase.messaging().hasPermission();
@@ -153,7 +152,6 @@ export default class App extends Component {
       }
     }
   }
-
 
   async requestPermission() {
     try {
@@ -260,7 +258,6 @@ export default class App extends Component {
   }
 }
 
-
 handlePress = () => {
   Linking.canOpenURL('whatsapp://send?phone=491707046434')
     .then((supported) => {
@@ -272,8 +269,6 @@ handlePress = () => {
     })
     .catch((err) => console.error('An error occurred', err));
 };
-
-
 
 const AppBottomBarNavigator = createBottomTabNavigator(
   {
@@ -287,11 +282,9 @@ const AppBottomBarNavigator = createBottomTabNavigator(
       },
     },
     Help: {
-      screen: () => null,
-      navigationOptions: {
-        tabBarOnPress: handlePress
-      }
+      screen: () => null, navigationOptions: { tabBarOnPress: handlePress }
     },
+    // TestBox: TestBox,
     Profile: Profile
   },
   {
@@ -329,6 +322,9 @@ const AppStackNavigator = createStackNavigator(
   {
     Main: AppBottomBarNavigator,
     Agreement: Agreement,
+    //-------------------------------
+    TestBox: TestBox,
+    //-------------------------------
     Intro: UserTypeSelection,
     NoNetwork: NoNetwork,
     HotLine: HotLine,
@@ -540,7 +536,6 @@ const AppStackNavigator = createStackNavigator(
   }
 );
 
-
 const AppDrawerNavigator = createDrawerNavigator(
   { App: AppStackNavigator },
   {
@@ -550,11 +545,9 @@ const AppDrawerNavigator = createDrawerNavigator(
 );
 
 const AppSwitchNaigator = createSwitchNavigator(
-
   { drawer: AppDrawerNavigator },
   { AppDrawerNavigator, AppStackNavigator },
   { initialRouteName: "AppStackNavigator" }
 )
 
 const AppContainer = createAppContainer(AppSwitchNaigator);
-
