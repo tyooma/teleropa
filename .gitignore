@@ -58,3 +58,4 @@ debug.log
 
 # Yevhen Build Scripts ***
 *.bat
+package-lock.json
