@@ -46,7 +46,10 @@ class ProductsByCategory extends Component {
     getProductsByCategory(id)
       .then(response => response.json())
       .then(responseJson => {
+<<<<<<< HEAD
         console.log('>>>>>', responseJson.products);
+=======
+>>>>>>> fd7de64f2eeca7d7bc4e7bed1882394dbab6a607
         this.setState({
           data: responseJson.products,
           IDs: responseJson.productsCount,

@@ -12,7 +12,10 @@
     "@react-native-community/netinfo": "2.0.3",
     "@react-navigation/bottom-tabs": "5.0.3",
     "@react-navigation/drawer": "5.0.3",
+<<<<<<< HEAD
     "iso-countries-lookup": "1.0.14",
+=======
+>>>>>>> fd7de64f2eeca7d7bc4e7bed1882394dbab6a607
     "react": "16.6.3",
     "react-dom": "16.13.0",
     "react-htmltext": "0.40.2",
