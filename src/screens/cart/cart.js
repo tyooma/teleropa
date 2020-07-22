@@ -139,10 +139,6 @@ export const CartItem = ({ img, name, pcs, price, companyPrice, selectedUserType
     )
 }
 
-
-
-
-
 class Cart extends Component {
     // constructor(props) {
     //     super(props);
