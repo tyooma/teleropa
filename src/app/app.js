@@ -87,13 +87,14 @@ import { YellowBox } from 'react-native';
 
 import { MenuButton, SearchButton } from '../common/header-buttons';
 import {
+  getCart,
   clearCart
 } from '../functions/cart-funcs';
 
 import Icons from 'react-native-vector-icons/Ionicons';
 
 //----------------------------------------------------------------[ELarin]
-import Agreement from '../screens/agreements/agreement';
+//import Agreement from '../screens/agreements/agreement';
 //------------------------------------------------------------------------
 
 YellowBox.ignoreWarnings(['Require cycle:']);
@@ -328,7 +329,7 @@ const AppBottomBarNavigator = createBottomTabNavigator(
 const AppStackNavigator = createStackNavigator(
   {
     Main: AppBottomBarNavigator,
-    Agreement: Agreement,
+    // Agreement: Agreement,
     Intro: UserTypeSelection,
     NoNetwork: NoNetwork,
     HotLine: HotLine,
@@ -375,6 +376,7 @@ const AppStackNavigator = createStackNavigator(
     CartPreview: CartPreview,
     WebPayPal: WebPayPal,
     ProductsByPoint: ProductsByPoint,
+    getCart: getCart,
   },
   {
     headerTitleStyle: {

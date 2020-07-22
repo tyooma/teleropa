@@ -1,15 +1,17 @@
-import AsyncStorage from '@react-native-community/async-storage'
-import Toast from 'react-native-root-toast';
-import { store } from '../app/app'
+import AsyncStorage from '@react-native-community/async-storage';
 
-import { setCart } from '../actions/cart-actions'
+import Toast from 'react-native-root-toast';;
+
+import { store } from '../app/app';
+
+import { setCart } from '../actions/cart-actions';
 
 export async function getCart() {
     return await AsyncStorage.getItem('Cart')
 
 }
 
-export async function addToCart(id) {
+export async function addToCart(id, bonus, selected) {
     try {
         await AsyncStorage.getItem('Cart', (err, res) => {
             if (!res) {
@@ -18,25 +20,34 @@ export async function addToCart(id) {
             }
             else {
                 const cart = JSON.parse(res)
-                const productInCart = cart.find(product => id === product.id) //searching if item already contain in cart
+                const productInCart = cart.find(product => id === product.id)
                 if (productInCart) {
-                    productInCart.count++
-                    const newCart = cart.map(product => {
-                        if (product.id === id) {
-                            return productInCart
-                        }
-                        return product
-                    })
-                    store.dispatch(setCart(newCart))
-                    AsyncStorage.setItem('Cart', JSON.stringify(newCart))                                                      
-                } else {
-                    const newProduct = {
-                        id, count: 1
+                    const productBuyMethodCart = cart.find(product => selected === product.selected)
+                    
+                    if (productBuyMethodCart) {
+                        productBuyMethodCart.count++
+                        const newCart = cart.map(product => {
+                            if (product.id === id && product.selected === selected) {
+                                return productBuyMethodCart
+                            }
+                            return product                        
+                        })
+                        store.dispatch(setCart(newCart))
+                        AsyncStorage.setItem('Cart', JSON.stringify(newCart))
+                    }                  
+                    else {
+                        const newProduct = { id, count: 1, bonus, selected }
+                        cart.push(newProduct)
+                        store.dispatch(setCart(cart))
+                        AsyncStorage.setItem('Cart', JSON.stringify(cart))
                     }
+                } else {
+                    const newProduct = { id, count: 1, bonus, selected }
                     cart.push(newProduct)
                     store.dispatch(setCart(cart))
                     AsyncStorage.setItem('Cart', JSON.stringify(cart))
                 }
+
                 Toast.show('Artikel wurde in den Warenkorb gelegt', {
                     shadow: false,
                     backgroundColor: '#505050',
@@ -51,12 +62,14 @@ export async function addToCart(id) {
 
 }
 
-export async function minusFromCart(id) {
+export async function minusFromCart(id, selected) {
+    console.log("ЙОбаная хуйняяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяя", selected)
     try {
         await AsyncStorage.getItem('Cart', (err, res) => {
             const cart = JSON.parse(res)
             const productInCart = cart.find(product => id === product.id) //searching item in cart
             if (productInCart.count === 1) {
+                console.log("ID ID ID ID productInCart.coun", id)
                 deleteFromCart(id)
             } else {
                 productInCart.count--
@@ -81,7 +94,7 @@ export async function deleteFromCart(id) {
     try {
         await AsyncStorage.getItem('Cart', (err, res) => {
             const cart = JSON.parse(res)
-            const newCart = cart.filter(product => product.id !== id)
+            const newCart = cart.filter(product => console.log("product.id !== id", product))
             store.dispatch(setCart(newCart))
             AsyncStorage.setItem('Cart', JSON.stringify(newCart))
         })

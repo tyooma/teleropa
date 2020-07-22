@@ -12,8 +12,10 @@ import NavigationService from '../../navigation-service';
 
 
 const TeleropaService = ({ text, image, title, userInfo, services }) => {
+    //console.log(" image OffersListItem TeleropaService TeleropaService ", image)
     return (
         <TouchableOpacity style={styles.container} onPress={() => NavigationService.navigate('ProductsByPoint', { name: text, title: title, services: services, userInfo: userInfo })}>
+
             <View style={{ alignItems: 'center' }}>
                 <Text style={styles.title} >{title}</Text>
             </View>
@@ -22,7 +24,6 @@ const TeleropaService = ({ text, image, title, userInfo, services }) => {
                 <View style={{ overflow: 'hidden', borderTopLeftRadius: 5, borderTopRightRadius: 5, flex: 5 }}>
                     <ImageLoader source={image} style={styles.image} key={image} />
                 </View>
-
                 <View style={{ flex: 6, flexDirection: 'column' }}>
                     <View>
                         <Text style={styles.name} numberOfLines={3} >{text}</Text>

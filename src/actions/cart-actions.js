@@ -1,4 +1,4 @@
-export const setCart = (cart) => {    
+export const setCart = (cart) => {
     return {
         type: 'SET_CART',
         payload: cart

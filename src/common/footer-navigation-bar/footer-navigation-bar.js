@@ -1,21 +1,25 @@
-import React, {PureComponent} from 'react';
-import {Linking, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, { PureComponent } from 'react';
+
+import { Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+
 import Icons from 'react-native-vector-icons/Ionicons';
-import AsyncStorage from '@react-native-community/async-storage'
+
+import AsyncStorage from '@react-native-community/async-storage';
 
 import NavigationService from '../../navigation-service';
 
 export default class FooterNavBar extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {badges: 0};
+    this.state = { badges: 0 };
   }
 
   GetBadges() {
     let count = 0;
     try {
       AsyncStorage.getItem('Cart', (err, res) => {
-        if(err) {
+        console.log("res GetBadges() AsyncStorage.getIte.", res)
+        if (err) {
           console.log('GetBadges() AsyncStorage.getItem(err): ', err.message);
         } else {
           if (res != null) {
@@ -25,17 +29,15 @@ export default class FooterNavBar extends PureComponent {
             }
           }
         }
-        console.log('getBadges() Badges =', count);
-        this.setState({badges: count});
+        this.setState({ badges: count });
       });
-    } catch(err) {
-      this.setState({badges: count});
+    } catch (err) {
+      this.setState({ badges: count });
       console.log('getBadges() AsyncStorage.getItem(err): ', err.message);
     }
   }
 
   componentDidMount() {
-    console.log('DidMount: this.badges: ', this.state.badges);
     this.GetBadges();
   }
 
@@ -56,11 +58,11 @@ export default class FooterNavBar extends PureComponent {
     const CartIcon = (
       <View style={s.CartConteiner}>
         <View style={s.IconConteiner}><Icons name="ios-cart" size={25} color="#586589" /></View>
-          <View style={s.BadgeConteiner}>
-          {badges>0 && (
+        <View style={s.BadgeConteiner}>
+          {badges > 0 && (
             <View style={s.BadgeCircle}><Text style={s.BadgeMarker}>{badges}</Text></View>
           )}
-          </View>
+        </View>
       </View>
     );
     // console.log('Render(): badges =', badges);
@@ -71,8 +73,8 @@ export default class FooterNavBar extends PureComponent {
           <View style={s.BarIcon}><Icons name="ios-home" size={25} color="#586589" /></View>
           <Text style={s.ButtonText}>Main</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => NavigationService.navigate('Cart', {cartReceaved: false})} style={s.ButtonConteiner}>
-        <View style={s.BarIcon}>{CartIcon}</View>
+        <TouchableOpacity onPress={() => NavigationService.navigate('Cart', { cartReceaved: false })} style={s.ButtonConteiner}>
+          <View style={s.BarIcon}>{CartIcon}</View>
           <Text style={s.ButtonText}>Warenkorb</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => this.HomePress()} style={s.ButtonConteiner}>
@@ -108,7 +110,7 @@ const s = StyleSheet.create({
 
   IconConteiner: {
     position: 'absolute', justifyContent: 'center', alignItems: 'center',
-    minWidth: 25, minHeight: 25, 
+    minWidth: 25, minHeight: 25,
   },
   BadgeConteiner: { alignItems: 'flex-end', minWidth: 25, minHeight: 25, top: -2, left: 6 },
   BadgeCircle: {

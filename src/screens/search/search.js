@@ -243,7 +243,7 @@ class Search extends Component {
             } else {
                 sorted = filtered
             }
-            new Promise((resolve) => {                
+            new Promise((resolve) => {
                 this.setState({ filteredIDs: sorted, products: [], from: 0 });
                 setTimeout(() => resolve(), 200)
             })
@@ -310,6 +310,8 @@ class Search extends Component {
     }
 
     renderHelper() {
+
+        console.log("this.state in search.js", this.state)
         if (!this.state.showResult) {
             return this.getSearchStory()
         }
@@ -356,7 +358,7 @@ class Search extends Component {
                     <FlatList
                         data={!sorted.length ? this.state.products : sorted}
                         renderItem={({ item }) => {
-                            const { companyPrice, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, id } = item                            
+                            const { companyPrice, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, id } = item
                             return (
                                 <View style={{ paddingBottom: 8 }}>
                                     <ProductListItem

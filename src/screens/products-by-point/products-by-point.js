@@ -10,7 +10,9 @@ import FilterButton from '../../common/filter-button';
 
 import FooterButton from '../../common/footer-button';
 
-import ProductListItem from '../../common/product-list-item';
+// import ProductListItem from '../../common/product-list-item';
+
+import BonusListItem from '../../common/bonus-list-item';
 
 import { getPreviewProductData, getBonusProducts } from '../../gets/productPosts';
 
@@ -18,7 +20,7 @@ import Loading from '../loading';
 
 import { connect } from 'react-redux'
 
-export default class ProductsByPoint extends Component {
+class ProductsByPoint extends Component {
     static navigationOptions = ({ navigation }) => {
         return {
             title: navigation.getParam('title'),
@@ -33,14 +35,33 @@ export default class ProductsByPoint extends Component {
     state = {
         userInfo: null,
         data: [],
+        sortedData: [],
         loaded: false,
+        routeName: 'ProductsByPoint',
+        from: 0,
+        minPrice: 0,
+        maxPrice: 0,
+        fromPrice: 0,
+        toPrice: 0,
+        sortBy: '',
     }
 
 
     componentDidMount() {
         const title = this.props.navigation.getParam('title', null)
         const userInfo = this.props.navigation.getParam('userInfo', null)
-        var a = []
+
+
+        this.props.navigation.addListener('didFocus', (route) => {
+            const filterOptions = this.props.navigation.getParam('filterOptions', null)
+            if (filterOptions) {
+                const { from, to, sortBy } = filterOptions
+                if (from !== this.state.fromPrice || to !== this.state.toPrice || sortBy !== this.state.sortBy) {
+                    this.getIDs(this.state.ids, from, to, sortBy)
+                }
+            }
+        });
+
         switch (title) {
             case 'TELEPOINTS':
                 getBonusProducts()
@@ -48,32 +69,74 @@ export default class ProductsByPoint extends Component {
                         responseJson.map(x => {
                             getPreviewProductData(x.productID)
                                 .then(res => {
-                                    if (res.status != "404") this.setState({ data: [...this.state.data, { ...res, productID: x.productID, bonuspoint: x.required_points, }], userInfo: userInfo, loaded: true })
+                                    if (res.status != "404") {
+                                        this.setState({ data: [...this.state.data, { ...res, productID: x.productID, bonuspoint: x.required_points, }], userInfo: userInfo })
+                                        this.SortByPoints()
+                                    }
                                 })
                         })
                     })
                 break;
             default: break
         }
+
+    }
+
+    getIDs(ids, fromPrice, toPrice, sortBy) {
+
+    }
+
+    SortByPoints() {
+        const filtered = this.state.data.filter(item => item.stock > 0);
+        const sorted = filtered.sort((first, second) => (Number(first.bonuspoint) < Number(second.bonuspoint)) ? -1 : ((Number(second.bonuspoint) < Number(first.bonuspoint)) ? 1 : 0))
+        this.setState({ sortedData: sorted, loaded: true })
     }
 
     render() {
+        console.log("this.state in product-by-point.js", this.state)
+
         if (!this.state.loaded) {
             return <Loading />
         }
+
+        const { minPrice, maxPrice, fromPrice, toPrice, sortBy } = this.state
+        // this.setState({ fromPrice, toPrice, sortBy })
+        // const filtered = this.state.data.filter(({ price }) => price >= fromPrice && price <= toPrice)
+        // console.log("FILTERED", filtered)
+        // let sorted = [];
+        // if (sortBy.length != 0) {
+        //     switch (sortBy) {
+        //         case 'popular':
+        //             sorted = filtered.sort((first, second) => (first.popularity > second.popularity) ? -1 : ((second.popularity > first.popularity) ? 1 : 0))
+        //             break
+        //         case 'alphabet':
+        //             sorted = filtered.sort((first, second) => (first.name > second.name) ? 1 : ((second.name > first.name) ? -1 : 0))
+        //             break
+        //         case 'price_down':
+        //             sorted = filtered.sort((first, second) => (first.price > second.price) ? -1 : ((second.price > first.price) ? 1 : 0))
+        //             break
+        //         case 'price_up':
+        //             sorted = filtered.sort((first, second) => (first.price < second.price) ? -1 : ((second.price < first.price) ? 1 : 0))
+        //             break
+        //         default: break
+        //     }
+        // }
+        // const filtered = this.state.data.filter(item => item.stock > 0);
+        // const sorted = filtered.sort((first, second) => (Number(first.bonuspoint) < Number(second.bonuspoint)) ? -1 : ((Number(second.bonuspoint) < Number(first.bonuspoint)) ? 1 : 0))
         return (
             <View>
                 <FlatList
-                    // contentContainerStyle={{paddingLeft: 18}}                    
-                    data={this.state.data.filter(item => item.stock > 0)}
+                    // data={!sorted.length ? this.state.data : sorted}
+                    data={this.state.sortedData}
                     renderItem={({ item }) => {
-                        const { companyPrice, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, productID, tax, bonuspoint } = item
+                        const { companyPrice, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, productID, tax, bonuspoint, } = item
                         return (
                             <View style={{ paddingBottom: 8 }}>
-                                <ProductListItem
+                                {/* <ProductListItem */}
+                                <BonusListItem
                                     name={productName}
                                     price={price}
-                                    key={productID}
+                                    // key={productID}
                                     companyPrice={companyPrice.toFixed(2)}
                                     imageURL={previewImgURL}
                                     salePrice={salePrice != 0 ? 'UVP ' + salePrice.toFixed(2) : ''}
@@ -84,23 +147,34 @@ export default class ProductsByPoint extends Component {
                                     tax={tax}
                                     bonuspoint={bonuspoint}
                                     salePercent={productSalePercent ? productSalePercent.int : null}
+                                    routeName={this.state.routeName}
                                 />
                             </View>
                         )
-
                         // }
                     }}
+
+
                     columnWrapperStyle={{ flexWrap: 'wrap' }}
                     numColumns={4}
-                    initialNumToRender={12}
-                    windowSize={4}
-                //keyExtractor={item => item.siteURL}
+                    // ListHeaderComponent={
+                    //     this.state.data.length !== 0 ?
+                    //         <FilterButton minPrice={minPrice} maxPrice={maxPrice} fromPrice={fromPrice} toPrice={toPrice} sortBy={sortBy} />
+                    //         : null
+                    // }
+                    //ListFooterComponent={this.state.filteredIDs.length > this.state.products.length && (this.state.from + 12 === this.state.products.length) ? <FooterButton text='Weitere Produkte' onPress={() => { this.getData(this.state.from + 12) }} /> : null}
+                    initialNumToRender={3}
+                    windowSize={2}
+                    keyExtractor={item => item.id}
                 />
             </View>
         )
     }
 }
 
+const mapStateToProps = ({ userInfo, cart }) => ({ userInfo, cart })
+
+export default connect(mapStateToProps)(ProductsByPoint)
 
 const styles = {
     popularText: {

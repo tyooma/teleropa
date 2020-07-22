@@ -99,7 +99,7 @@ export default class DeliveryService extends Component {
                         this.state.selected
                             ?
                             // this.props.navigation.navigate('Payment', { data: { ...this.props.navigation.getParam('data', null), deliveryData: this.state } })     
-                            NavigationService.navigate('CartPreview', { data: { ...this.props.navigation.getParam('data', null) }, deliveryData: { ...this.state } })
+                            NavigationService.navigate('CartPreview', { userInfo: { ...this.props.navigation.getParam('userInfo', null) }, data: { ...this.props.navigation.getParam('data', null) }, deliveryData: { ...this.state } })
                             :
                             Toast.show('Versandart wählen', {
                                 shadow: false,

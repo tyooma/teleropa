@@ -56,23 +56,28 @@ getStock = (stock, order, pcs) => {
     )
 }
 
-getCounter = (order, pcs, id, onMinus, onAdd) => {
+getCounter = (order, pcs, id, onMinus, onAdd, methodMoney) => {
+    console.log("order order order order ", order)
+    console.log("pcs pcs pcs pcs ", pcs)
+    console.log("id id ididid", id)
+    console.log("methodMoney ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", methodMoney)
     if (!order) {
         return (
-            <><TouchableOpacity style={styles.minusPlusButton} onPress={() => onMinus(id)}>
+            <><TouchableOpacity style={styles.minusPlusButton} onPress={() => onMinus(id, methodMoney)}>
                 <Image source={require('../../assets/icons/036-minus.png')} style={styles.minusPlusButtonImage} key={'cartMinusItem'} />
             </TouchableOpacity>
                 <Text style={styles.countText}>
                     {pcs}
                 </Text>
-                <TouchableOpacity style={styles.minusPlusButton} onPress={() => onAdd(id)}>
+                <TouchableOpacity style={styles.minusPlusButton} onPress={() => onAdd(id, methodMoney)}>
                     <Image source={require('../../assets/icons-color/035-more2.png')} style={styles.minusPlusButtonImage} key={'cartPlusItem'} />
                 </TouchableOpacity></>
         )
     }
 }
 
-export const CartItem = ({ img, name, pcs, price, companyPrice, selectedUserType, stock, order, orderReturnReason, id, onAdd, onMinus, onDelete }) => {
+export const CartItem = ({ img, name, pcs, price, companyPrice, selectedUserType, stock, order, orderReturnReason, id, onAdd, onMinus, onDelete, bonus, methodMoney }) => {
+    console.log("MethodMcONEY methodMoney", methodMoney)
     return (
         <TouchableOpacity style={styles.cartItemContainer} onPress={() => NavigationService.push('Product', { id, name })}>
             <View style={{ flexDirection: 'row' }}>
@@ -94,20 +99,25 @@ export const CartItem = ({ img, name, pcs, price, companyPrice, selectedUserType
                         <View>
                             {getStock(stock, order, pcs)}
                             <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
-                                {getCounter(order, pcs, id, onMinus, onAdd)}
+                                {getCounter(order, pcs, id, onMinus, onAdd, methodMoney)}
                             </View>
                         </View>
                         <View style={{ marginRight: 10, alignItems: 'flex-end' }}>
-                            {selectedUserType === 'H' ?
+                            {methodMoney == 'buyOfPoints' ?
                                 <>
-                                    <Text style={styles.pricePerProduct}>{companyPrice} €\St</Text>
-                                    <Text style={styles.price}>{(companyPrice * pcs).toFixed(2)} €</Text>
+                                    <Text style={styles.price}>{(bonus * pcs)} P.</Text>
                                 </>
                                 :
-                                <>
-                                    <Text style={styles.pricePerProduct}>{price} €\St</Text>
-                                    <Text style={styles.price}>{(price * pcs).toFixed(2)} €</Text>
-                                </>
+                                selectedUserType === 'H' ?
+                                    <>
+                                        <Text style={styles.pricePerProduct}>{companyPrice} €\St</Text>
+                                        <Text style={styles.price}>{(companyPrice * pcs).toFixed(2)} €</Text>
+                                    </>
+                                    :
+                                    <>
+                                        <Text style={styles.pricePerProduct}>{price} €\St</Text>
+                                        <Text style={styles.price}>{(price * pcs).toFixed(2)} €</Text>
+                                    </>
                             }
                         </View>
                     </View>
@@ -149,8 +159,9 @@ class Cart extends Component {
         discountValue: 0,
         cartReceaved: false,
         modalVisible: false,
-        //routeName: 'Cart'
-        // }
+        bonus: '',
+        methodMoney: '',
+
     }
 
     setModalVisible(visible) {
@@ -166,16 +177,6 @@ class Cart extends Component {
         )
     }
 
-    // shouldComponentUpdate(nextProps, { cartReceaved }) {
-    //     console.log('shouldComponentUpdate `````````nextProps', nextProps);
-    //     console.log('shouldComponentUpdate `````````cartReceaved', cartReceaved)
-    //     if (cartReceaved == true) {
-    //         this.setState({ cartReceaved: false })
-    //         return true
-    //     }
-    //     return false
-    // }
-
     componentDidMount() {
         if (!this.state.cartReceaved) {
             this.init()
@@ -183,131 +184,68 @@ class Cart extends Component {
     }
 
 
-    // componentDidUpdate(prevProps) {
-    //     if (this.props.id !== prevProps.id) {
-    //         this.setDefaultTranslation(this.props.context)
-    //     }
-    // }
+
 
     async componentWillReceiveProps(props) {
         if (this.state.cartReceaved == true) {
             await this.initAfterUpdate(props.cart)
-            // setTimeout(() => { this.initAfterUpdate(); }, 5);
         }
     }
 
 
     init() {
         const cart = this.props.cart
+        console.log("cart cart cart MAP in cart.js", cart)
         if (cart.length > 0 && !this.state.cartReceaved) { this.setState({ cartReceaved: true }) }
-        cart.map(({ id, count }) => {
+        cart.map(({ id, count, bonus, selected }) => {
+            console.log("selected selected selected", selected);
             getPreviewAsyncProductData(id)
-                .then(res => this.setState({ products: [...this.state.products, { ...res, id, count }] }))
+                .then(res => this.setState({ products: [...this.state.products, { ...res, id, count, bonus: bonus, methodMoney: selected }], bonus: bonus }))
         })
     }
 
     initAfterUpdate(cart) {
         this.setState({ products: [] })
-        cart.map(({ id, count }) => {
+        cart.map(({ id, count, bonus, selected }) => {
+            console.log("selected,selecteasdsadas ", selected)
             getPreviewAsyncProductData(id)
-                .then(res => this.setState({ products: [...this.state.products, { ...res, id, count }] }))
+                .then(res => this.setState({ products: [...this.state.products, { ...res, id, count, bonus: bonus, methodMoney: selected }], bonus: bonus, }))
         })
     }
 
-    itemsAvailableCount() {
-        const newProductsArray = this.state.products.map(product => {
-            if (product.stock < product.count) {
-                // const limitedStock = (productName, stock, count) => {
-                //     this.productName = productName;
-                //     this.stock = stock;
-                //     this.count = count;
-                // console.log('limitedStock',limitedStock.stock)
-                // }
 
-                // return (
-                //     <Modal
-                //         animationType="slide"
-                //         transparent={false}
-                //         visible={this.state.modalVisible}
-                //         onRequestClose={() => {
-                //             Alert.alert('Modal has been closed.');
-                //         }}>
-                //         <View style={{ marginTop: 22 }}>
-                //             <View>
-                //                 <Text>The quantity of this product exceeds the available:
-                //     {product.productName} (available {product.stock} pcs)</Text>
-
-                //                 <TouchableHighlight
-                //                     onPress={() => {
-                //                         this.setModalVisible(!this.state.modalVisible);
-                //                     }}>
-                //                     <Text>Hide Modal</Text>
-                //                 </TouchableHighlight>
-                //             </View>
-                //         </View>
-                //     </Modal>
-                // )
-
-                // Alert.alert(
-                // `The quantity of ${product.productName} exceeds the available (${product.stock} pcs)`,
-                // `The quantity of this product exceeds the available:`,
-                // `${product.productName} (available ${product.stock} pcs)`,
-                // [
-                // {
-                //     text: 'Nein',
-                //     onPress: () => this.props.navigation.goBack(),
-
-                //     style: 'cancel',
-                // },
-                // {
-                //     text: 'Ja',
-                //     onPress: async () => {
-                //     }
-                // }
-                // ],
-                // { cancelable: false }
-                // )
+    addToCartAndState(id, bonus, selected) {
+        const checkStatuspoint = this.props.cart.reduce((sum, { bonus, count }) => {
+            return (parseFloat(sum) + parseFloat(bonus) * count);
+        }, 0)
+        var oddMoney = this.props.userInfo.points - checkStatuspoint
+        console.log("selected selected selected selected", selected)
+        if (selected = 'buyOfPoints') {
+            if (oddMoney >= bonus) {
+                addToCart(id, bonus, selected)
+            } else {
+                Toast.show('Nicht genügend TELEPOINTS', {
+                    shadow: false,
+                    backgroundColor: 'black',
+                    duration: 1500 //время которое будет отображаться тост при добавлении товара в корзину
+                })
             }
-            //   console.log('newProductsArray',newProductsArray)  
-            // console.table('product.stock', product.stock, product.count, product.productName)
-        })
-        return newProductsArray
+        } else {
+            addToCart(id, bonus, selected)
+        }
     }
 
-
-    addToCartAndState(id) {
-        addToCart(id)
-        // const productToAdd = this.state.products.find(product => product.id === id)
-        // productToAdd.count++
-        // const newProductsArray = this.state.products.map(product => {
-        //     if (product.id === id) return productToAdd
-        //     return product
-        // })
-        
-        // this.setState({ products: newProductsArray })
+    minusFromCartAndState(id, bonus, selected) {
+        minusFromCart(id, bonus, selected)
     }
-    minusFromCartAndState(id) {
-        minusFromCart(id)
-        // const productToMinus = this.state.products.find(product => product.id === id)
-        // if (productToMinus.count === 1) {
-        //     this.deleteFromCartAndState(id)
-        // } else {
-        //     productToMinus.count--
-        //     const newProductsArray = this.state.products.map(product => {
-        //         if (product.id === id) return productToMinus
-        //         return product
-        //     })
-        //     this.setState({ products: newProductsArray })
-        // }
-    }
-    deleteFromCartAndState(id) {
-        deleteFromCart(id)
+    deleteFromCartAndState(id, bonus, selected) {
+        deleteFromCart(id, bonus, selected)
         const newProductsArray = this.state.products.filter(product => product.id !== id)
         this.setState({ products: newProductsArray })
     }
 
     getProductsCards() {
-        return this.state.products.map(({ id, previewImgURL, productName, price, companyPrice, stock, count }) => {
+        return this.state.products.map(({ id, previewImgURL, productName, price, companyPrice, stock, count, bonus, methodMoney }) => {
             return (
                 <CartItem
                     key={id}
@@ -319,9 +257,11 @@ class Cart extends Component {
                     companyPrice={companyPrice}
                     selectedUserType={this.props.userInfo.selectedUserType}
                     stock={stock}
-                    onAdd={id => this.addToCartAndState(id)}
-                    onMinus={id => this.minusFromCartAndState(id)}
-                    onDelete={id => this.deleteFromCartAndState(id)}
+                    bonus={bonus}
+                    methodMoney={methodMoney}
+                    onAdd={id => this.addToCartAndState(id, bonus, methodMoney)}
+                    onMinus={id => this.minusFromCartAndState(id, bonus, methodMoney)}
+                    onDelete={id => this.deleteFromCartAndState(id, bonus, methodMoney)}
                 />
             )
         })
@@ -335,6 +275,11 @@ class Cart extends Component {
     }
 
     setPrices() {
+        // if (this.state.points != undefined) {
+        //     this.state.products.reduce((sum, { points, count }) => {
+        //         return sum + points * count
+        //     }, 0)
+        // } else {
         const productsPrice = this.props.userInfo.selectedUserType === 'EK' ?
             this.state.products.reduce((sum, { price, count }) => {
                 return sum + price * count
@@ -343,7 +288,7 @@ class Cart extends Component {
             this.state.products.reduce((sum, { companyPrice, count }) => {
                 return sum + companyPrice * count
             }, 0)
-
+        // }
 
 
         const productsVAT = this.state.products.reduce((sum, { price, companyPrice, tax, count }) => {
@@ -351,9 +296,9 @@ class Cart extends Component {
             else return (sum + companyPrice / (1 + (tax / 100)) * count)
         }, 0)
 
-
         const discountProductsPrice = this.getDiscount(productsPrice)
         if (productsPrice.toFixed(2) !== this.state.originalProductsPrice || discountProductsPrice !== this.state.discountProductsPrice) {
+
             this.setState({
                 originalProductsPrice: productsPrice.toFixed(2),
                 discountProductsPrice,
@@ -408,16 +353,9 @@ class Cart extends Component {
     }
 
 
-
-    changeTitleText = () => {
-        var that = this;
-        that.props.navigation.setParams({
-            Title: 'New Activity Title'
-        });
-
-    }
-
     render() {
+        console.log("render: this.state in cart.js", this.state)
+        // console.log("render: this.poprs in cart.js", this.props)
         const shadowOpt = {
             width: sWidth,
             height: 50,
@@ -466,7 +404,7 @@ class Cart extends Component {
 
                         <View style={styles.line}>
                             <Text style={styles.summaryText}>Summe:</Text>
-                            <Text style={styles.summaryText}>{parseFloat(this.state.discountProductsPrice).toFixed(2)} €</Text>
+                            <Text style={styles.summaryText}>{this.state.methodMoney == 'buyOfPoints' ? parseFloat(0).toFixed(2) : parseFloat(this.state.discountProductsPrice).toFixed(2)} €</Text>
 
                         </View>
 
@@ -474,12 +412,12 @@ class Cart extends Component {
 
                         <View style={styles.line}>
                             <Text style={styles.summaryText}>Gesamtsumme ohne MwSt.:</Text>
-                            <Text style={styles.summaryText}>{this.state.orderVAT} €</Text>
+                            <Text style={styles.summaryText}>{this.state.methodMoney == 'buyOfPoints' ? parseFloat(0).toFixed(2) : this.state.orderVAT} €</Text>
                         </View>
 
                         <View style={styles.line}>
                             <Text style={styles.summaryText}>zzgl. MwSt.:</Text>
-                            <Text style={styles.summaryText}> {parseFloat(this.state.discountProductsPrice - this.state.orderVAT).toFixed(2)} €</Text>
+                            <Text style={styles.summaryText}> {this.state.methodMoney == 'buyOfPoints' ? parseFloat(0).toFixed(2) : parseFloat(this.state.discountProductsPrice - this.state.orderVAT).toFixed(2)} €</Text>
                         </View>
                     </View>
                 </ScrollView>
@@ -488,7 +426,7 @@ class Cart extends Component {
                     <View style={styles.footerSummaryContainer}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
                             <Text style={styles.summaryTextBold} >Gesamtbetrag:</Text>
-                            <Text style={styles.summaryTextBold} >{parseFloat(this.state.discountProductsPrice).toFixed(2)} €</Text>
+                            <Text style={styles.summaryTextBold} >{this.state.methodMoney == 'buyOfPoints' ? parseFloat(0).toFixed(2) : parseFloat(this.state.discountProductsPrice).toFixed(2)} €</Text>
                         </View>
                     </View>
                 </BoxShadow>
@@ -497,10 +435,7 @@ class Cart extends Component {
 
                 <FooterButton text={'Zur Kasse'} onPress={() => {
                     if (!this.props.userID || this.props.userID === "notloggedin") NavigationService.navigate('Login', { routeName: 'Cart' })
-                    //   NavigationService.navigate('Login', { routeName: this.state.routeName })                                                        
-                    else NavigationService.navigate('DeliveryService', { data: this.state })
-                    // this.itemsAvailableCount();
-                    // this.setModalVisible(true)                                           
+                    else NavigationService.navigate('DeliveryService', { data: this.state, userInfo: this.props.userInfo })
                 }} />
 
                 <ModalView

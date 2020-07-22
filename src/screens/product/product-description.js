@@ -1,15 +1,16 @@
-import React, { Component } from 'react'
-import { Text, View, ScrollView, TouchableOpacity, Image, Share, StyleSheet, LayoutAnimation } from 'react-native'
+import React, { Component } from 'react';
 
-import { addToCart } from '../../functions/cart-funcs'
+import { Text, View, ScrollView, TouchableOpacity, Image, Share, StyleSheet, LayoutAnimation, CheckBox } from 'react-native';
 
-import { connect } from 'react-redux'
+import { addToCart } from '../../functions/cart-funcs';
 
-import Loading from '../loading'
+import { connect } from 'react-redux';
 
-import { addToFavourite } from '../../posts/favouritesPosts'
+import Loading from '../loading';
 
-import { getPreviewProductData } from '../../gets/productPosts';
+import { addToFavourite } from '../../posts/favouritesPosts';
+
+import { getPreviewProductData, getBonusProducts } from '../../gets/productPosts';
 
 import Rating from '../../common/rating';
 
@@ -25,42 +26,47 @@ import HTML from 'react-native-render-html';
 
 import FooterAgreement from '../../common/footer-agreement/footer-agreement';
 
+import Toast from 'react-native-root-toast';
+
 class ProductDescription extends Component {
+
   componentDidMount() {
-    this.getSimilarToState(this.props.productSimilar)
+    this.getSimilarToState(this.props.productSimilar);
+    this.getBonusToState(this.props.id);
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.productSimilar != nextProps.productSimilar) {
       const productsIDs = nextProps.productSimilar
       productsIDs ? this.getSimilarToState(productsIDs) : null
-      // this.getSimilarToState(productsIDs)
-      // this.setState({...this.props.userInfo, });
     }
   }
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   // if(info.productName){
-  //   //   return true
-  //   // }
-  //   // console.log(nextProps)
-  //   return false
-  // }
 
-  componentWillUpdate() {
+  componentWillUpdate(nextProps, nextState) {
     LayoutAnimation.easeInEaseOut()
   }
 
   state = {
+    showCheckBonus: false,
     descMore: false,
-    similar: []
+    similar: [],
+    points: '',
+    // checkedMoney: true,
+    // checkedPoint: false,
+    loaded: false,
+    stop: false,
+    selected: '',
   }
+
 
   getProductImages(images) {
     return images.map(image => {
       return { uri: image }
     })
   }
+
+
 
   getStock(count) {
     if (count < 1) {
@@ -78,7 +84,6 @@ class ProductDescription extends Component {
 
       return (
         <View>
-          <Text style={styles.previousPrice}>{'UVP ' + salePrice.toFixed(2)} €</Text>
           <Text style={styles.salePrice}>{this.props.userInfo.selectedUserType === 'EK' ? price.toFixed(2) : companyPrice.toFixed(2)} €</Text>
         </View>
       )
@@ -121,6 +126,30 @@ class ProductDescription extends Component {
     )
   }
 
+  getBonusToState(id) {
+    const checkStatuspoint = this.props.cart.reduce((sum, { bonus, count }) => {
+      return (parseFloat(sum) + parseFloat(bonus) * count);
+    }, 0)
+    var oddMoney = this.props.userInfo.points - checkStatuspoint
+
+    getBonusProducts(id)
+      .then(res => {
+        res.map((elId) => {
+          if (elId.productID == id) {
+            if (this.props.userID !== 'notloggedin' && oddMoney >= parseFloat(elId.required_points)) {
+              this.setState({
+                showCheckBonus: true, points: elId.required_points, loaded: true, checkedMoney: true, checkedPoint: false, selected: 'buyOfMoney'
+              })
+            } else {
+              this.setState({
+                showCheckBonus: false, checkedMoney: true, checkedPoint: false, selected: 'buyOfMoney'
+              })
+            }
+          }
+        })
+      })
+  }
+
   getSimilarToState(productsIDs) {
     if (!productsIDs) {
       return
@@ -131,7 +160,7 @@ class ProductDescription extends Component {
     productsIDs.map((id) => {
       getPreviewProductData(id)
         .then(res => {
-          this.setState({ similar: [...this.state.similar, { ...res, id }] })
+          this.setState({ similar: [...this.state.similar, { ...res, id }], loaded: true, })
         })
     })
   }
@@ -154,18 +183,10 @@ class ProductDescription extends Component {
 
     return this.state.similar.map(product => {
       const { companyPrice, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, id, productID } = product
-      // return (
-      //   <Text style={styles.similarText}>
-      //       Ähnliche Produkte
-      //   </Text>
-      // )      
-      console.log("this.state.similar~~~~", this.state.similar);
       return (
         <ProductListItem
           name={productName}
           price={this.props.userInfo.selectedUserType === 'EK' ? price.toFixed(2) : companyPrice.toFixed(2)}
-
-          // salePrice={'UVP ' + salePrice.toFixed(2)}
           salePrice={salePrice != 0 ? 'UVP ' + salePrice.toFixed(2) : ''}
           companyPrice={companyPrice.toFixed(2)}
           rate={rate}
@@ -182,23 +203,52 @@ class ProductDescription extends Component {
 
   getCartButton(stock, id) {
     if (stock > 0) {
-      return (
-        <TouchableOpacity
-          style={styles.cartButton}
-          onPress={() => addToCart(id)}>
-          <Image style={styles.cartButtonImage} source={require('../../assets/icons-color/002-shopping2.png')} key={'cartImageOnProductPage'} />
-          <Text style={styles.cartButtonText}>In den Warenkorb</Text>
-        </TouchableOpacity>
-      )
+      const checkStatuspoint = this.props.cart.reduce((sum, { bonus, count }) => {
+        return (parseFloat(sum) + parseFloat(bonus) * count);
+      }, 0)
+      var oddMoney = this.props.userInfo.points - checkStatuspoint
+
+      if (!this.state.checkedMoney && !this.state.checkedPoint) {
+        Toast.show('Wähle deine Zahlungsmethode', {
+          shadow: false,
+          backgroundColor: '#505050',
+          duration: 1500
+        })
+      }
+
+
+      if (oddMoney <= parseFloat(this.state.points) && this.state.checkedMoney) {
+        this.getBonusToState(this.props.id);
+        return (
+          <TouchableOpacity
+            style={styles.cartButton}
+            onPress={() => addToCart(id, this.state.points, this.state.selected)}>
+            <Image style={styles.cartButtonImage} source={require('../../assets/icons-color/002-shopping2.png')} key={'cartImageOnProductPage'} />
+            <Text style={styles.cartButtonText}>In den Warenkorb</Text>
+          </TouchableOpacity>
+        )
+      } else {
+        return (
+          <TouchableOpacity
+            style={styles.cartButton}
+            onPress={() => addToCart(id, this.state.points, this.state.selected)}>
+            <Image style={styles.cartButtonImage} source={require('../../assets/icons-color/002-shopping2.png')} key={'cartImageOnProductPage'} />
+            <Text style={styles.cartButtonText}>In den Warenkorb</Text>
+          </TouchableOpacity>
+        )
+      }
     }
   }
 
   render() {
-    console.log("this.state in product-description.js", this.state)
+
+    console.log(":his.propsaasdasdasdsa cartcart ", this.state)
+
     const productInfo = this.props.productInfo
-    if (!this.props.productInfo.productName) {
+    if (!this.state.loaded) {
       return <Loading />
     }
+
     return (
       <View style={{ flex: 1 }}>
         <ScrollView>
@@ -260,7 +310,26 @@ class ProductDescription extends Component {
         </View>
 
         <View style={[styles.line]} >
-          {this.getPrices(productInfo.price, productInfo.salePrice, productInfo.companyPrice, productInfo, productInfo.stock)}
+          {this.state.showCheckBonus && Math.sign(this.state.points - this.props.userInfo.points) == -1 ?
+            <View style={{ flexDirection: 'column' }}>
+              <View style={{ flexDirection: 'row' }}>
+                <CheckBox
+                  value={this.state.checkedMoney}
+                  onValueChange={() => this.setState({ selected: 'buyOfMoney', checkedMoney: !this.state.checkedMoney, checkedPoint: false, loaded: true })}
+                />
+                {this.getPrices(productInfo.price, productInfo.salePrice, productInfo.companyPrice, productInfo, productInfo.stock)}
+              </View>
+              <View style={{ flexDirection: 'row' }}>
+                <CheckBox
+                  value={this.state.checkedPoint}
+                  onValueChange={() => this.setState({ selected: 'buyOfPoints', checkedPoint: !this.state.checkedPoint, checkedMoney: false, loaded: true })}
+                />
+                <Text style={{ fontSize: 20, marginTop: 8, color: '#000', flexDirection: 'row', }}>{this.state.points} TELEPOINTS</Text>
+              </View>
+            </View>
+            :
+            this.getPrices(productInfo.price, productInfo.salePrice, productInfo.companyPrice, productInfo, productInfo.stock)
+          }
           {this.getCartButton(productInfo.stock, this.props.id)}
         </View>
 
@@ -269,7 +338,7 @@ class ProductDescription extends Component {
   }
 }
 
-const mapStateToProps = ({ userID, userInfo }) => ({ userID, userInfo })
+const mapStateToProps = ({ userID, userInfo, cart }) => ({ userID, userInfo, cart })
 
 export default connect(mapStateToProps)(ProductDescription)
 
@@ -350,12 +419,14 @@ const styles = {
   price: {
     fontSize: 20,
     marginTop: 8,
-    color: '#000'
+    color: '#000',
+    flexDirection: 'row',
   },
   salePrice: {
     fontSize: 20,
     color: '#d10019',
-    marginTop: 8
+    marginTop: 8,
+    flexDirection: 'row',
   },
   previousPrice: {
     fontSize: 12,
@@ -459,5 +530,12 @@ const styles = {
   discountText: {
     fontSize: 12,
     color: '#fff'
-  }
+  },
+  checkboxContainer: {
+    flexDirection: "row",
+    marginBottom: 20,
+  },
+  checkbox: {
+    alignSelf: "center",
+  },
 }

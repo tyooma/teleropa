@@ -46,7 +46,6 @@ getStock = (stock, order, pcs) => {
 getCounterInPreview = (order, pcs) => {
     if (!order) {
         return (
-
             <Text style={styles.countText}>
                 Anzahl:  {pcs}
             </Text>
@@ -55,7 +54,12 @@ getCounterInPreview = (order, pcs) => {
     }
 }
 
-export const CartItemInPreview = ({ img, name, pcs, price, companyPrice, stock, order, orderReturnReason, id, userType, orderVAT, deliveryPrice }) => {
+
+
+
+export const CartItemInPreview = ({ img, name, pcs, price, companyPrice, selectedUserType, userType, stock, order, orderReturnReason, id, bonus, orderVAT, deliveryPrice }) => {
+    console.log("bonus bonusbonus bonus bonus CartItemInPreview", bonus)
+
     return (
         <TouchableOpacity style={styles.cartItemContainer} onPress={() => NavigationService.push('Product', { id, name })}>
             <View style={{ flexDirection: 'row' }}>
@@ -81,18 +85,21 @@ export const CartItemInPreview = ({ img, name, pcs, price, companyPrice, stock, 
                             </View>
                         </View>
                         <View style={{ marginRight: 10, alignItems: 'flex-end' }}>
-                            {userType && userType === 'H' ?
+                            {bonus != undefined ?
                                 <>
-                                    <Text style={styles.pricePerProduct}>{companyPrice} €\St</Text>
-                                    {/* <Text style={styles.price}>{parseFloat((companyPrice * pcs) + deliveryPrice).toFixed(2)} €</Text> */}
-                                    <Text style={styles.price}>{parseFloat((companyPrice * pcs)).toFixed(2)} €</Text>
+                                    <Text style={styles.price}>{parseFloat((bonus * pcs))} P.</Text>
                                 </>
                                 :
-                                <>
-                                    <Text style={styles.pricePerProduct}>{price} €\St</Text>
-                                    {/* <Text style={styles.price}>{((price * pcs) + deliveryPrice).toFixed(2)} €</Text> */}
-                                    <Text style={styles.price}>{((price * pcs)).toFixed(2)} €</Text>
-                                </>
+                                selectedUserType == 'H' ?
+                                    <>
+                                        <Text style={styles.pricePerProduct}>{companyPrice} €\St</Text>
+                                        <Text style={styles.price}>{parseFloat((companyPrice * pcs)).toFixed(2)} €</Text>
+                                    </>
+                                    :
+                                    <>
+                                        <Text style={styles.pricePerProduct}>{price} €\St</Text>
+                                        <Text style={styles.price}>{((price * pcs)).toFixed(2)} €</Text>
+                                    </>
                             }
                         </View>
                     </View>
@@ -109,6 +116,8 @@ export default class CartPreview extends Component {
         this.state = {
             deliveryData: this.props.navigation.getParam('deliveryData', null),
             cartInfo: this.props.navigation.getParam('data', null),
+            userInfo: this.props.navigation.getParam('userInfo', null),
+            // bonus: 
         }
     }
 
@@ -116,7 +125,7 @@ export default class CartPreview extends Component {
 
 
     getProductsCards() {
-        return this.state.cartInfo.products.map(({ id, previewImgURL, productName, price, companyPrice, stock, count }) => {
+        return this.state.cartInfo.products.map(({ id, previewImgURL, productName, price, companyPrice, stock, count, bonus }) => {
             return (
                 <CartItemInPreview
                     key={id}
@@ -127,7 +136,9 @@ export default class CartPreview extends Component {
                     price={price}
                     companyPrice={companyPrice}
                     stock={stock}
-                    userType={this.state.cartInfo.selectedUserType}
+                    bonus={bonus}
+                    selectedUserType={this.state.userInfo.selectedUserType}
+                    userType={this.state.userInfo.userType}
                     orderVAT={this.state.cartInfo.orderVAT}
                     deliveryPrice={this.state.deliveryData.deliveryPrice}
                 />
@@ -136,6 +147,17 @@ export default class CartPreview extends Component {
     }
 
 
+    productsVAT() {
+        return this.state.cartInfo.products.reduce((sum, { tax, count }) => {
+            return parseFloat(this.state.deliveryData.deliveryPrice / (1 + (tax / 100)) * count).toFixed(2)
+        }, 0)
+    }
+
+    zzglVAT() {
+        return this.state.cartInfo.products.reduce((sum, { tax, count }) => {
+            return parseFloat((this.state.deliveryData.deliveryPrice / (1 + (tax / 100)) * count) * (tax / 100)).toFixed(2)
+        }, 0)
+    }
 
     render() {
         const shadowOpt = {
@@ -148,6 +170,9 @@ export default class CartPreview extends Component {
             x: 0,
             y: 0
         }
+        console.log("this.state.cartInfo.discountProductsPrice", this.state)
+
+
         return (
             <View style={{ flex: 1 }}>
                 <ScrollView>
@@ -155,8 +180,8 @@ export default class CartPreview extends Component {
                         {this.getProductsCards()}
                         <View style={styles.line}>
                             <Text style={styles.summaryText}>Summe:</Text>
-                            <Text style={styles.summaryText}>{parseFloat(this.state.cartInfo.discountProductsPrice).toFixed(2)} €</Text>
-                            {/* <Text style={styles.summaryText}>{(parseFloat(this.state.cartInfo.discountProductsPrice) + parseFloat(this.state.cartInfo.orderVAT)).toFixed(2)} €</Text> */}
+                            {/* <Text style={styles.summaryText}>{parseFloat(this.state.cartInfo.discountProductsPrice).toFixed(2)} €</Text> */}
+                            <Text style={styles.summaryText}>{this.state.cartInfo.bonus != undefined ? parseFloat(0).toFixed(2) : parseFloat(this.state.cartInfo.discountProductsPrice).toFixed(2)} €</Text>
 
                         </View>
 
@@ -169,24 +194,25 @@ export default class CartPreview extends Component {
 
                         <View style={styles.line}>
                             <Text style={styles.summaryTextBold}>Gesamtsumme:</Text>
-                            <Text style={styles.summaryTextBold}>{(parseFloat(this.state.cartInfo.discountProductsPrice) + parseFloat(this.state.deliveryData.deliveryPrice)).toFixed(2)} €</Text>
+                            {/* <Text style={styles.summaryTextBold}>{(parseFloat(this.state.cartInfo.discountProductsPrice) + parseFloat(this.state.deliveryData.deliveryPrice)).toFixed(2)} €</Text> */}
+                            <Text style={styles.summaryTextBold}>{this.state.cartInfo.bonus != undefined ? parseFloat(parseFloat(0) + this.state.deliveryData.deliveryPrice).toFixed(2) : (parseFloat(this.state.cartInfo.discountProductsPrice) + parseFloat(this.state.deliveryData.deliveryPrice)).toFixed(2)} €</Text>
                         </View>
 
                         <View style={styles.line}>
                             <Text style={styles.summaryText}>Gesamtsumme ohne MwSt.:</Text>
-                            <Text style={styles.summaryText}>{this.state.cartInfo.orderVAT} €</Text>
+                            <Text style={styles.summaryText}>{this.state.cartInfo.bonus != undefined ? this.productsVAT() : this.state.cartInfo.orderVAT} €</Text>
                         </View>
 
                         <View style={styles.line}>
                             <Text style={styles.summaryText}>zzgl. MwSt.:</Text>
-                            <Text style={styles.summaryText}> {parseFloat(this.state.cartInfo.discountProductsPrice - this.state.cartInfo.orderVAT).toFixed(2)} €</Text>
+                            <Text style={styles.summaryText}> {this.state.cartInfo.bonus != undefined ? this.zzglVAT() : parseFloat(this.state.cartInfo.discountProductsPrice - this.state.cartInfo.orderVAT).toFixed(2)} €</Text>
                         </View>
 
 
                         <View style={styles.line}>
                             <Text style={styles.summaryTextPoint}>Punkte für die Bestellung:</Text>
                             <View style={styles.linePoint}>
-                                <Text style={styles.summaryTextPointGreen}>{'+ ' + Math.floor(parseFloat(this.state.cartInfo.discountProductsPrice))}</Text>
+                                <Text style={styles.summaryTextPointGreen}>{this.state.cartInfo.bonus != undefined ? '+ ' + 0 : '+ ' + Math.floor(parseFloat(this.state.cartInfo.discountProductsPrice))}</Text>
                                 <Text style={styles.radiusCircle}>P</Text>
                             </View>
                         </View>
@@ -194,7 +220,7 @@ export default class CartPreview extends Component {
                         <View style={styles.line}>
                             <Text style={styles.summaryTextPoint}>Punkte eingelöst:</Text>
                             <View style={styles.linePoint}>
-                                <Text style={styles.summaryTextPointRed}>{'- ' + 0}</Text>
+                                <Text style={styles.summaryTextPointRed}>{this.state.cartInfo.bonus != undefined ? '- ' + this.state.cartInfo.bonus : '-' + 0} </Text>
                                 <Text style={styles.radiusCircle}>P</Text>
                             </View>
                         </View>
@@ -208,7 +234,7 @@ export default class CartPreview extends Component {
                     <View style={styles.footerSummaryContainer}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
                             <Text style={styles.summaryTextBold} >Gesamtbetrag:</Text>
-                            <Text style={styles.summaryTextBold}>{(parseFloat(this.state.cartInfo.discountProductsPrice) + parseFloat(this.state.deliveryData.deliveryPrice)).toFixed(2)} €</Text>
+                            <Text style={styles.summaryTextBold}>{this.state.cartInfo.bonus != undefined ? parseFloat(parseFloat(0) + this.state.deliveryData.deliveryPrice).toFixed(2) : (parseFloat(this.state.cartInfo.discountProductsPrice) + parseFloat(this.state.deliveryData.deliveryPrice)).toFixed(2)} €</Text>
                         </View>
                     </View>
                 </BoxShadow>

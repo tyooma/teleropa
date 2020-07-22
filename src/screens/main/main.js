@@ -135,6 +135,7 @@ class Main extends Component {
 
     getServices() {
         return this.props.mainPage.services.filter(({ img_url, text, title, }) => {
+            console.log('this.props.mainPage', this.props.mainPage)
             return <TeleropaService text={text} image={{ uri: img_url }} title={title} />
         })
     }
