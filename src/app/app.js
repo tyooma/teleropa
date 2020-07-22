@@ -377,9 +377,7 @@ const AppStackNavigator = createStackNavigator(
   {
     headerTitleStyle: {
       color: 'rgb(0, 255, 63)',
-    },
-    // initialRouteName: 'Main',    
-    // initialRouteName: 'Main',
+    },    
     // initialRouteName: this.state.network ? 'Main' : <NoNetwork />,
     defaultNavigationOptions: ({ navigation }) => {
       try {
