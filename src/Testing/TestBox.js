@@ -3,9 +3,6 @@ import {Button, StyleSheet, Text, View} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import base64 from 'react-native-base64';
 
-import FooterNavBar from './modules/footer-navigation-bar';
-import FooterAgreement from '../common/footer-agreement/footer-agreement';
-
 export default class TestBox extends PureComponent {
   static navigationOptions = { title: 'Testing' };
   state = { order: '<NoNe>' };
