@@ -52,20 +52,20 @@ class ProductsByCategory extends Component {
           loaded: true,
         });
       });
-    }
+  }
 
-    // getData(from) {
-    //     this.setState({from})
-    //     const currentID = this.state.currentID 
-    //     console.log(currentID)
-    //     this.state.IDs.filter((id, key) => {
-    //         // console.log(id, key)
-    //         if(key >= from && key < (from + 12)) {
-    //             getPreviewProductData(id).then(res => {this.setState({data: [...this.state.data, {...res, id}]}); console.log('added')}).catch(e => console.log(id, e))
-    //             console.log(id)
-    //         }
-    //     })
-    // }
+  // getData(from) {
+  //     this.setState({from})
+  //     const currentID = this.state.currentID 
+  //     console.log(currentID)
+  //     this.state.IDs.filter((id, key) => {
+  //         // console.log(id, key)
+  //         if(key >= from && key < (from + 12)) {
+  //             getPreviewProductData(id).then(res => {this.setState({data: [...this.state.data, {...res, id}]}); console.log('added')}).catch(e => console.log(id, e))
+  //             console.log(id)
+  //         }
+  //     })
+  // }
 
   componentDidMount() {
     this.getProductsIDs();
@@ -96,10 +96,9 @@ class ProductsByCategory extends Component {
                 <View style={{ paddingBottom: 8 }}>
                   <ProductListItem
                     name={productName}
-                    //price={price}
-                    price={this.props.userInfo.selectedUserType === 'EK' ? price.toFixed(2) : companyPrice.toFixed(2)}
-                    salePrice={salePrice != 0 ? 'UVP ' + salePrice.toFixed(2) : ''}
-                    companyPrice={companyPrice.toFixed(2)}
+                    price={this.props.userInfo.selectedUserType === 'EK' ? price.replace(/,/, '.') : companyPrice.replace(/,/, '.')}
+                    salePrice={salePrice.replace(/,/, '.') != 0 ? 'UVP ' + salePrice.replace(/,/, '.') : ''}
+                    companyPrice={companyPrice.replace(/,/, '.')}
                     rate={rate}
                     stock={stock}
                     id={productID}
@@ -140,31 +139,31 @@ const mapStateToProps = ({ userID, userInfo }) => ({ userID, userInfo })
 export default connect(mapStateToProps)(ProductsByCategory)
 
 const styles = {
-    popularText: {
-        fontSize: 16,
-        color: '#030303',
-        marginLeft: 18,
-        marginTop: 18
-    },
-    productsLine: {
-        flexDirection: 'row',
-        marginLeft: 18,
-        flexWrap: 'wrap',
-        marginBottom: 16
-    },
-    noProductsContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    noProductImage: {
-        height: 80,
-        width: 80,
-        resizeMode: 'contain'
-    },
-    noProductText: {
-        marginTop: 10,
-        color: '#717171',
-        fontSize: 16
-    }
+  popularText: {
+    fontSize: 16,
+    color: '#030303',
+    marginLeft: 18,
+    marginTop: 18
+  },
+  productsLine: {
+    flexDirection: 'row',
+    marginLeft: 18,
+    flexWrap: 'wrap',
+    marginBottom: 16
+  },
+  noProductsContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  noProductImage: {
+    height: 80,
+    width: 80,
+    resizeMode: 'contain'
+  },
+  noProductText: {
+    marginTop: 10,
+    color: '#717171',
+    fontSize: 16
+  }
 }

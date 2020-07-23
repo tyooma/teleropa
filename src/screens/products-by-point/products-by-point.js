@@ -48,6 +48,7 @@ class ProductsByPoint extends Component {
 
 
     componentDidMount() {
+        var a = []
         const title = this.props.navigation.getParam('title', null)
         const userInfo = this.props.navigation.getParam('userInfo', null)
 
@@ -91,7 +92,6 @@ class ProductsByPoint extends Component {
         const sorted = filtered.sort((first, second) => (Number(first.bonuspoint) < Number(second.bonuspoint)) ? -1 : ((Number(second.bonuspoint) < Number(first.bonuspoint)) ? 1 : 0))
         this.setState({ sortedData: sorted, loaded: true })
     }
-
     render() {
         console.log("this.state in product-by-point.js", this.state)
 
@@ -128,18 +128,20 @@ class ProductsByPoint extends Component {
                 <FlatList
                     // data={!sorted.length ? this.state.data : sorted}
                     data={this.state.sortedData}
-                    renderItem={({ item }) => {
+                    renderItem={({ item, index }) => {
                         const { companyPrice, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, productID, tax, bonuspoint, } = item
                         return (
                             <View style={{ paddingBottom: 8 }}>
-                                {/* <ProductListItem */}
                                 <BonusListItem
                                     name={productName}
-                                    price={price}
-                                    // key={productID}
-                                    companyPrice={companyPrice.toFixed(2)}
+                                    key={index}
+                                    // price={this.props.userInfo.selectedUserType === 'EK' ? parseFloat(price).toFixed(2) : parseFloat(companyPrice).toFixed(2)}
+                                    // salePrice={parseFloat(salePrice).toFixed(2) != 0 ? 'UVP ' + parseFloat(salePrice).toFixed(2) : ''}
+                                    // companyPrice={parseFloat(companyPrice).toFixed(2)}
+                                    price={this.props.userInfo.selectedUserType === 'EK' ? price.replace(/,/, '.') : companyPrice.replace(/,/, '.')}
+                                    salePrice={salePrice.replace(/,/, '.') != 0 ? 'UVP ' + salePrice.replace(/,/, '.') : ''}
+                                    companyPrice={companyPrice.replace(/,/, '.')}
                                     imageURL={previewImgURL}
-                                    salePrice={salePrice != 0 ? 'UVP ' + salePrice.toFixed(2) : ''}
                                     rate={rate}
                                     stock={stock}
                                     id={productID}

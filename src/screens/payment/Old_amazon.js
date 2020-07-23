@@ -68,8 +68,8 @@ export default class AmazonLoginWebView extends Component {
 
     _onNavigationStateChange = (webViewState) => {
         console.log("webViewState", webViewState);
-        const productsPrice = parseFloat(this.state.cart.discountProductsPrice);
-        const deliveryPrice = parseFloat(this.state.cart.deliveryData.deliveryPrice);
+        const productsPrice = Number(this.state.cart.discountProductsPrice);
+        const deliveryPrice = Number(this.state.cart.deliveryData.deliveryPrice);
         const total = productsPrice + deliveryPrice;
 
         const productsQuantity = this.state.cart.products.reduce((sum, { count }) => {

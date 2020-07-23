@@ -67,9 +67,9 @@ class Favourite extends Component {
                     key={id}
                     imageURL={previewImgURL}
                     name={productName}
-                    price={price}
-                    salePercent={productSalePercent ? productSalePercent.int : null}
-                    salePrice={salePrice}
+                    price={this.props.userInfo.selectedUserType === 'EK' ? price.replace(/,/, '.') : companyPrice.replace(/,/, '.')}
+                    salePrice={salePrice.replace(/,/, '.') != 0 ? 'UVP ' + salePrice.replace(/,/, '.') : ''}
+                    companyPrice={companyPrice.replace(/,/, '.')}
                     favourite
                     deleteAction={() => this.deleteProduct(id)}
                     id={id}
