@@ -18,7 +18,6 @@ export default class FooterNavBar extends PureComponent {
     let count = 0;
     try {
       AsyncStorage.getItem('Cart', (err, res) => {
-        console.log("res GetBadges() AsyncStorage.getIte.", res)
         if (err) {
           console.log('GetBadges() AsyncStorage.getItem(err): ', err.message);
         } else {
@@ -33,7 +32,6 @@ export default class FooterNavBar extends PureComponent {
       });
     } catch (err) {
       this.setState({ badges: count });
-      console.log('getBadges() AsyncStorage.getItem(err): ', err.message);
     }
   }
 
@@ -65,7 +63,6 @@ export default class FooterNavBar extends PureComponent {
         </View>
       </View>
     );
-    // console.log('Render(): badges =', badges);
 
     return (
       <View style={s.BarConteiner}>

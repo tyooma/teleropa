@@ -85,10 +85,7 @@ import WhatsApp from '../screens/whatsapp'
 import { YellowBox } from 'react-native';
 
 import { MenuButton, SearchButton } from '../common/header-buttons';
-import {
-  getCart,
-  clearCart
-} from '../functions/cart-funcs';
+import { clearCart } from '../functions/cart-funcs';
 
 import Icons from 'react-native-vector-icons/Ionicons';
 
@@ -282,10 +279,10 @@ const AppBottomBarNavigator = createBottomTabNavigator(
         }
       },
     },
-    // Help: {
-    //   screen: () => null, navigationOptions: { tabBarOnPress: handlePress }
-    // },
-    Help: TestBox,
+    Help: {
+      screen: () => null, navigationOptions: { tabBarOnPress: handlePress }
+    },
+    // Help: TestBox,
     Profile: Profile
   },
   {
@@ -372,7 +369,6 @@ const AppStackNavigator = createStackNavigator(
     CartPreview: CartPreview,
     WebPayPal: WebPayPal,
     ProductsByPoint: ProductsByPoint,
-    getCart: getCart,
   },
   {
     headerTitleStyle: {

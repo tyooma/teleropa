@@ -17,7 +17,8 @@ import NavigationService from '../../navigation-service';
 
 import { sWidth } from '../../helpers/screenSize';
 
-function ProductListItem({ imageURL, name, price, salePrice, favourite, id, productID, stock, rate, salePercent, userID, userInfo, deleteAction, bonuspoint, companyPrice }) {
+function ProductListItem({ imageURL, name, price, salePrice, favourite, id, productID, stock, rate, salePercent, userID, userInfo, deleteAction, companyPrice }) {
+
     getStock = () => {
         if (stock > 0) {
             return (
@@ -51,12 +52,8 @@ function ProductListItem({ imageURL, name, price, salePrice, favourite, id, prod
     }
 
     getPrice = () => {
-        var showBonusPoint = '';
         const showingPrice = userInfo.selectedUserType === 'EK' ? price : companyPrice;
-        // if (userInfo.name.length == 0) showBonusPoint = parseFloat(bonuspoint)
-        // else showBonusPoint = parseFloat(bonuspoint) - parseFloat(userInfo.points);
-        // console.log("salePrice", salePrice)
-        if (salePrice != '0' && salePrice) {
+        if (salePrice != 0 && salePrice) {
             return (
                 <>
                     <Text style={styles.prevPrice}>
@@ -98,7 +95,7 @@ function ProductListItem({ imageURL, name, price, salePrice, favourite, id, prod
             return (
                 <TouchableOpacity
                     style={[styles.cartButton, { backgroundColor: '#3f911b' }]}
-                    onPress={() => addToCart(id)}
+                    onPress={() => addToCart(id, undefined, 'buyOfMoney')}
                 >
                     <Image style={{ width: 22, height: 18, resizeMode: 'contain' }} source={require('../../assets/icons-color/002-shopping2.png')} key={'cart'} />
                 </TouchableOpacity>
@@ -107,7 +104,6 @@ function ProductListItem({ imageURL, name, price, salePrice, favourite, id, prod
         return (
             <TouchableOpacity
                 style={[styles.cartButton, { opacity: .4 }]}
-            // onPress={() => addToCart(id)}
             >
                 {/* <Image style={{width: 22, height: 18, resizeMode: 'contain'}} source={require('../../assets/icons-color/002-shopping-cart-green.png')} key={'cart'} /> */}
                 <Text>Nicht verfügbar</Text>

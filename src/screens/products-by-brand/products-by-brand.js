@@ -99,19 +99,10 @@ export default class ProductsByBrand extends Component {
                         return (
                             <View style={{ paddingBottom: 8 }}>
                                 <ProductListItem
-
-                                    // price={this.props.userInfo.selectedUserType === 'EK' ? price.toFixed(2) : companyPrice.toFixed(2)}
-                                    // salePrice={'UVP ' + salePrice.toFixed(2)}
-                                    // companyPrice={companyPrice.toFixed(2)}
-
                                     name={productName}
-                                    price={price}
-                                    companyPrice={companyPrice.toFixed(2)}
-                                    // salePrice={'UVP ' + salePrice.toFixed(2)}
-                                    salePrice={salePrice != 0 ? 'UVP ' + salePrice.toFixed(2) : ''}
-                                    //companyPrice={companyPrice}
-                                    // salePrice={salePrice}
-
+                                    price={this.props.userInfo.selectedUserType === 'EK' ? price.replace(/,/, '.') : companyPrice.replace(/,/, '.')}
+                                    salePrice={salePrice.replace(/,/, '.') != 0 ? 'UVP ' + salePrice.replace(/,/, '.') : ''}
+                                    companyPrice={companyPrice.replace(/,/, '.')}
                                     rate={rate}
                                     stock={stock}
                                     id={productID}

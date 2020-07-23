@@ -4,7 +4,7 @@ import { View, Alert } from 'react-native';
 
 import { connect } from 'react-redux';
 
-import { createMaterialTopTabNavigator, createSwitchNavigator, createBottomTabNavigator, createAppContainer } from 'react-navigation';
+import { createMaterialTopTabNavigator, createAppContainer } from 'react-navigation';
 
 import { SearchButton } from '../../common/header-buttons';
 
@@ -19,16 +19,6 @@ import ProductPackage from './product-package';
 import ProductVideo from './product-video';
 
 import { getFullProductData } from '../../gets/productPosts';
-
-import Main from '../main';
-
-import Cart from '../cart';
-
-import Profile from '../profile';
-
-import Icons from 'react-native-vector-icons/Ionicons';
-
-import CartIconWithBadge from '../cart/CartIconWithBadge';
 
 import FooterNavBar from '../../common/footer-navigation-bar/footer-navigation-bar';
 
@@ -149,8 +139,6 @@ class Product extends Component {
         labelStyle: {
           color: '#fff',
           fontSize: 12,
-          // margin: 0,
-          // borderWidth: 1,
           height: 12,
           lineHeight: 12,
           textAlignVertical: 'center'
@@ -161,13 +149,13 @@ class Product extends Component {
 
     const ID = this.props.navigation.getParam('id')
     const name = this.props.navigation.getParam('name')
+
     const Tab = createMaterialTopTabNavigator({
       Beschreibung: {
         screen: props =>
-
           <ProductDescription
-            // {...props}
-            // id={this.state.id}
+            {...props}
+            key={ID}
             id={ID}
             name={name}
             images={this.state.images}
@@ -181,6 +169,7 @@ class Product extends Component {
         screen: props =>
           <ProductSpecs
             {...props}
+            key={this.state.id}
             id={this.state.id}
             name={name}
             details={this.state.productDetails}
@@ -191,6 +180,7 @@ class Product extends Component {
           <ProductPackage
             {...props}
             id={this.state.id}
+            key={this.state.id}
             name={name}
             packageInfo={this.state.productPackage}
           />
@@ -199,6 +189,7 @@ class Product extends Component {
         screen: props =>
           <ProductVideo
             {...props}
+            key={this.state.id}
             id={this.state.id}
             name={name}
             videoID={this.state.productVideo}
@@ -208,6 +199,7 @@ class Product extends Component {
         screen: props =>
           <ProductReviews
             {...props}
+            key={this.state.id}
             id={this.state.id}
             name={name}
             reviews={this.state.productReviews}
@@ -215,62 +207,16 @@ class Product extends Component {
       }
     }, tabOptions);
 
-    const AppBottomBarNavigator = createBottomTabNavigator(
-      {
-        Main: Main,
-        Cart: {
-          screen: Cart,
-          navigationOptions: {
-            tabBarOnPress: ({ navigation }) => {
-              NavigationService.navigate('Cart', { cartReceaved: false })
-            }
-          },
-        },
-        Help: {
-          screen: () => null,
-          navigationOptions: {
-            tabBarOnPress: handlePress
-          }
-        },
-        Profile: Profile
-      },
-      {
-        defaultNavigationOptions: ({ navigation }) => ({
-          tabBarIcon: ({ focused, horizontal, tintColor }) => {
-            const { routeName } = navigation.state;
-            let IconComponent = Icons;
-            let iconName;
-            if (routeName === 'Main') {
-              iconName = `ios-home`;
-            } else if (routeName === 'Cart') {
-              iconName = `ios-cart`;
-              IconComponent = CartIconWithBadge;
-            } else if (routeName === 'Help') {
-              iconName = `ios-help-circle-outline`;
-            } else if (routeName === 'Profile') {
-              iconName = `ios-person`;
-            }
-            return <IconComponent name={iconName} size={25} color={tintColor} />;
-          }
-        }),
-        tabBarOptions: {
-          activeTintColor: '#d7171f',
-          // activeTintColor: '#F8F8F8',
-          inactiveTintColor: '#586589',
-          style: {
-            backgroundColor: '#ffffff'
-            // backgroundColor: '#171F33'
-          },
-          tabStyle: {}
-        }
-      })
-
-    const Aaa = createAppContainer(AppBottomBarNavigator);
+    const Aaa = createAppContainer(Tab);
+    // return Tab;
     return (
       <>
-        <Aaa />     
+        <Aaa />
+        <FooterNavBar />
       </>
     );
   }
 }
 export default connect()(Product);
+
+

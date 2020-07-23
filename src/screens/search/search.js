@@ -188,8 +188,7 @@ class Search extends Component {
                     let ResponseServer = res.searchResult;
                     ResponseServer.filter((a) => {
                         if (a.name.toLowerCase().indexOf(searchString) != -1) result.push(a);
-                    })
-                    //this.getIDs(res.searchResult)
+                    })                  
                     this.getIDs(result)
                 }
                 else this.showToastNoSearch()
@@ -310,8 +309,6 @@ class Search extends Component {
     }
 
     renderHelper() {
-
-        console.log("this.state in search.js", this.state)
         if (!this.state.showResult) {
             return this.getSearchStory()
         }
@@ -359,15 +356,14 @@ class Search extends Component {
                         data={!sorted.length ? this.state.products : sorted}
                         renderItem={({ item }) => {
                             const { companyPrice, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, id } = item
+                            console.log('item in search', price.replace(/,/, '.'))
                             return (
                                 <View style={{ paddingBottom: 8 }}>
                                     <ProductListItem
                                         name={productName}
-                                        //price={this.props.price}
-                                        price={this.props.userInfo.selectedUserType === 'EK' ? price.toFixed(2) : companyPrice.toFixed(2)}
-                                        // salePrice={'UVP ' + salePrice.toFixed(2)}
-                                        salePrice={salePrice != 0 ? 'UVP ' + salePrice.toFixed(2) : ''}
-                                        companyPrice={companyPrice.toFixed(2)}
+                                        price={this.props.userInfo.selectedUserType === 'EK' ? price.replace(/,/, '.') : companyPrice.replace(/,/, '.')}
+                                        salePrice={salePrice.replace(/,/, '.') != 0 ? 'UVP ' + salePrice.replace(/,/, '.') : ''}
+                                        companyPrice={companyPrice.replace(/,/, '.')}
                                         rate={rate}
                                         stock={stock}
                                         id={id}
