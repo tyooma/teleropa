@@ -33,6 +33,9 @@ export class PrePayment extends PureComponent {
     surname: this.props.userInfo.surname,
     gender: this.props.userInfo.gender,
     email: this.props.userInfo.email,
+    street: this.props.userInfo.street,
+    post: this.props.userInfo.post,
+    city: this.props.userInfo.city,
     country: this.props.userInfo.country,
   }
 
@@ -262,42 +265,41 @@ export class PrePayment extends PureComponent {
   }
 
   render() {
-    // console.log(`<PrePayment="${this.state.title}">:`, this.props);
     console.log(`<PrePayment="${this.state.title}">:`, this.state);
     let screen = <Loading />;
     if(this.state.payment!==null) {
       const payment = this.state.payment;
-      console.log('payment:', payment);
-      const customer = <Text style={{fontWeight:'bold'}}>Уважаемый {`${this.state.gender} ${this.state.name} ${this.state.surname}`}</Text>;
+      console.log('Payment NOT NULL =>', payment);
+      const customer = `${this.state.gender} ${this.state.name} ${this.state.surname}`;
       switch(payment.code) {
         case 'success':
           // { code: 'success', text: 'Information erfolgreich aktualisiert', data: {orderNumber: '34217'} }
           const order = payment.data.orderNumber;
           screen = (
             <View style={s.ContentContainer}>
-              {customer}
+              <Text style={s.ContentBaseText}>Уважаемый <Text style={s.TextBold}>{customer}</Text></Text>
               {/* <Text style={s.ContentSuccessCaption}>{payment.text}</Text> */}
-              <Text style={s.ContentSuccessCaption}>Ваш заказ <Text style={{fontWeight:'bold'}}>«{order}»</Text> успешно выполнен!</Text>
+              <Text style={s.ContentSuccessCaption}>Ваш заказ «{order}» успешно выполнен!</Text>
+              <Text style={s.ContentBaseText}>Vielen Dank für Ihre Bestellung!</Text>
+              <Text style={s.ContentBaseText}>Fragen zu Ihrer Bestellung?</Text>
+              <Text style={s.ContentBaseText}>+49 (0) 6592 98487 0 Täglich von 8:00 bis 16:00 Uhr</Text>
               <Text></Text>
-              <Text>PaymentID: {this.state.paymentID}</Text>
-              <Text>PaymentName: {this.state.paymentName}</Text>
+              <Text style={s.ContentBaseText}>Wir haben Ihnen eine Bestellbestätigung per E-Mail geschickt: <Text style={s.TextBold}>«{this.state.email}»</Text>.</Text>
               <Text></Text>
-              <Text>DeliveryID: {this.state.deliveryID}</Text>
-              <Text>DeliveryName: {this.state.deliveryName}</Text>
+              <Text style={s.ContentBaseText, s.TextBold}>Rechnungs- und Lieferadresse</Text>
+              <Text style={s.ContentBaseTextItem}>{customer}</Text>
+              <Text style={s.ContentBaseTextItem}>{this.state.street}</Text>
+              <Text style={s.ContentBaseTextItem}>{this.state.post} {this.state.city}</Text>
+              <Text style={s.ContentBaseTextItem}>{this.state.country}</Text>
               <Text></Text>
-              <Text>Payment.Code: {this.state.payment.code}</Text>
-              <Text>Payment.Text: {this.state.payment.text}</Text>
-              <Text>Payment.OrderNumber: {this.state.payment.data.orderNumber}</Text>
-              <Text></Text>
-              <Text>CustomerID: {this.state.customerID}</Text>
-              <Text>CustomerName: {customer}</Text>
-              <Text>CustomerEmail: {this.state.cart.userInfo.email}</Text>
-              <Text>CustomerCountry: {this.state.cart.userInfo.country}</Text>
+              <Text style={s.ContentBaseText, s.TextBold}>Informationen</Text>
+              <Text style={s.ContentBaseTextItem}>Bestellnummer: {order}</Text>
+              <Text style={s.ContentBaseTextItem}>Gewählte Zahlungsart: {this.state.paymentName}</Text>
+              <Text style={s.ContentBaseTextItem}>Versandart: {this.state.deliveryName}</Text>
             </View>
           );
-          // email: this.props.userInfo.email,
-          // country: this.props.userInfo.country,
-          // clearCart();
+          clearCart();
+          console.log('.......... clearCart ..........');
           break;
         case 'error':
           screen = (
@@ -364,8 +366,9 @@ const s = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'bold',
     padding: 5,
-    marginTop: 5 },
-  ContentErrorText: { fontSize: 13, marginTop: 5 },
+    marginTop: 5
+  },
+  TextBold: { fontWeight: 'bold' },
 
   // Action section
   ActionConteiner: {
