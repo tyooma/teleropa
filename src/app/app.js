@@ -30,7 +30,7 @@ import reducers from '../reducers';
 import NavigationService from '../navigation-service';
 import { sWidth } from '../helpers/screenSize';
 
-import AmazonLoginWebView from '../screens/payment/AmazonLoginWebView'
+import AmazonLoginWebView from '../screens/payment/AmazonLoginWebView';
 import AskQuestion from '../screens/ask-question';
 import BackButton from '../common/header-buttons/back-button';
 import BecomePartner from '../screens/become-partner';
@@ -79,8 +79,8 @@ import TermsConfidentiality from '../screens/terms-confidentiality';
 import TermsDeliveryPayment from '../screens/terms-delivery-payment';
 import TermsReturn from '../screens/terms-return';
 import UserTypeSelection from '../screens/user-type-selection';
-import WebPayPal from '../screens/payment/WebPayPal'
-import WhatsApp from '../screens/whatsapp'
+import WebPayPal from '../screens/payment/WebPayPal';
+import WhatsApp from '../screens/whatsapp';
 
 import { YellowBox } from 'react-native';
 
@@ -91,7 +91,8 @@ import Icons from 'react-native-vector-icons/Ionicons';
 
 //----------------------------------------------------------------[ELarin]
 import Agreement from '../screens/agreements/agreement';
-//------------------------------------------------------------------------
+import PrePayment from '../screens/payment/PrePayment';
+//--------------------------------------------------------[Testing@ELarin]
 import TestBox from '../Testing/TestBox'; // For Testing
 //------------------------------------------------------------------------
 
@@ -319,10 +320,12 @@ const AppBottomBarNavigator = createBottomTabNavigator(
 const AppStackNavigator = createStackNavigator(
   {
     Main: AppBottomBarNavigator,
+    //----------------------------------------------------------------[ELarin]
     Agreement: Agreement,
-    //-------------------------------
+    PrePayment: PrePayment,
+    //--------------------------------------------------------[Testing@ELarin]
     TestBox: TestBox,
-    //-------------------------------
+    //------------------------------------------------------------------------
     Intro: UserTypeSelection,
     NoNetwork: NoNetwork,
     HotLine: HotLine,
@@ -373,9 +376,7 @@ const AppStackNavigator = createStackNavigator(
   {
     headerTitleStyle: {
       color: 'rgb(0, 255, 63)',
-    },
-    // initialRouteName: 'Main',    
-    // initialRouteName: 'Main',
+    },    
     // initialRouteName: this.state.network ? 'Main' : <NoNetwork />,
     defaultNavigationOptions: ({ navigation }) => {
       try {
@@ -489,9 +490,29 @@ const AppStackNavigator = createStackNavigator(
               marginLeft: Platform.OS === 'ios' ? 0 : -10
             }
           }
-        }//else if end
-      } //try end
-      catch{
+
+          return {
+            headerLeft: MenuButton,
+            headerBackImage: BackButton,
+            headerBackTitle: null,
+            headerStyle: { backgroundColor: '#d10019' },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontSize: 16,
+              marginLeft: 0,
+              left: 0
+            },
+            headerTitleContainerStyle: {
+              width: sWidth - 95,
+              marginLeft: 0,
+              justifyContent: 'flex-start',
+              left: 56,
+              paddingLeft: 0
+            },
+            headerLeftContainerStyle: { flex: 1, marginLeft: Platform.OS === 'ios' ? 0 : -10 }
+          }
+        }
+      } catch{
         return {
 
           headerLeft: (
