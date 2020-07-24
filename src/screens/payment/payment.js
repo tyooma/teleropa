@@ -124,6 +124,11 @@ class Payment extends Component {
             selected={this.isSelected('Vorkasse')}
             imageSource={require('../../assets/payments/Vorkasse.png')}
           />
+          {/* <PaymentOption
+            onPress={() => this.setState({ selected: 'TelePoints' })}
+            selected={this.isSelected('TelePoints')}
+            imageSource={require('../../assets/payments/TelePoints.png')}
+          /> */}
           {
             Platform.OS === 'ios' ?
               <PaymentOption
@@ -134,8 +139,7 @@ class Payment extends Component {
               : null
           }
         </ScrollView>
-        <FooterButton text='Zahlungspflichtig bestellen' onPress={() => this.handlePayClick()
-        } />
+        <FooterButton text='Zahlungspflichtig bestellen' onPress={() => this.handlePayClick()} />
       </View>
     )
   }
