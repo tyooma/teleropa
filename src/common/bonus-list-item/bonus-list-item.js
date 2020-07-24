@@ -9,7 +9,6 @@ import { connect } from 'react-redux'
 
 import { addToFavourite, deleteFavourite } from '../../posts/favouritesPosts'
 
-
 import NavigationService from '../../navigation-service';
 
 import { sWidth } from '../../helpers/screenSize';
@@ -70,7 +69,7 @@ function BonusListItem({ imageURL, name, price, salePrice, favourite, id, produc
             return (
                 <TouchableOpacity
                     style={[styles.cartButton, { backgroundColor: '#3f911b' }]}
-                    onPress={() => NavigationService.push('Product', { id: id, name: name, bonuspoint: showBonusPoint })}
+                    onPress={() => NavigationService.push('Product', { id: id, name: name, bonuspoint: showBonusPoint, })}
                 >
                     <Image style={{ width: 22, height: 18, resizeMode: 'contain' }} source={require('../../assets/icons-color/002-shopping2.png')} key={'cart'} />
                 </TouchableOpacity>

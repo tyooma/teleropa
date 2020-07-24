@@ -65,18 +65,22 @@ class ProductsByPoint extends Component {
 
         switch (title) {
             case 'TELEPOINTS':
-                getBonusProducts()
-                    .then(responseJson => {
-                        responseJson.map(x => {
-                            getPreviewProductData(x.productID)
-                                .then(res => {
-                                    if (res.status != "404") {
-                                        this.setState({ data: [...this.state.data, { ...res, productID: x.productID, bonuspoint: x.required_points, }], userInfo: userInfo })
-                                        this.SortByPoints()
-                                    }
-                                })
+                try {
+                    getBonusProducts()
+                        .then(responseJson => {
+                            responseJson.map(x => {
+                                getPreviewProductData(x.productID)
+                                    .then(res => {
+                                        if (res.status != "404") {
+                                            this.setState({ data: [...this.state.data, { ...res, productID: x.productID, bonuspoint: x.required_points, }], userInfo: userInfo })
+                                            this.SortByPoints()
+                                        }
+                                    })
+                            })
                         })
-                    })
+                } catch (e) {
+                    console.warn(e);
+                }
                 break;
             default: break
         }
@@ -134,10 +138,7 @@ class ProductsByPoint extends Component {
                             <View style={{ paddingBottom: 8 }}>
                                 <BonusListItem
                                     name={productName}
-                                    key={index}
-                                    // price={this.props.userInfo.selectedUserType === 'EK' ? parseFloat(price).toFixed(2) : parseFloat(companyPrice).toFixed(2)}
-                                    // salePrice={parseFloat(salePrice).toFixed(2) != 0 ? 'UVP ' + parseFloat(salePrice).toFixed(2) : ''}
-                                    // companyPrice={parseFloat(companyPrice).toFixed(2)}
+                                    key={productID}
                                     price={this.props.userInfo.selectedUserType === 'EK' ? price.replace(/,/, '.') : companyPrice.replace(/,/, '.')}
                                     salePrice={salePrice.replace(/,/, '.') != 0 ? 'UVP ' + salePrice.replace(/,/, '.') : ''}
                                     companyPrice={companyPrice.replace(/,/, '.')}

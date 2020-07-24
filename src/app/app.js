@@ -93,7 +93,7 @@ import Icons from 'react-native-vector-icons/Ionicons';
 import Agreement from '../screens/agreements/agreement';
 import PrePayment from '../screens/payment/PrePayment';
 //--------------------------------------------------------[Testing@ELarin]
-import TestBox from '../Testing/TestBox'; // For Testing
+//import TestBox from '../Testing/TestBox'; // For Testing
 //------------------------------------------------------------------------
 
 YellowBox.ignoreWarnings(['Require cycle:']);
@@ -324,7 +324,7 @@ const AppStackNavigator = createStackNavigator(
     Agreement: Agreement,
     PrePayment: PrePayment,
     //--------------------------------------------------------[Testing@ELarin]
-    TestBox: TestBox,
+    // TestBox: TestBox,
     //------------------------------------------------------------------------
     Intro: UserTypeSelection,
     NoNetwork: NoNetwork,
@@ -376,7 +376,7 @@ const AppStackNavigator = createStackNavigator(
   {
     headerTitleStyle: {
       color: 'rgb(0, 255, 63)',
-    },    
+    },
     // initialRouteName: this.state.network ? 'Main' : <NoNetwork />,
     defaultNavigationOptions: ({ navigation }) => {
       try {
@@ -394,6 +394,11 @@ const AppStackNavigator = createStackNavigator(
                 <SearchButton />
               </View>
             ),
+            // headerRight: (
+            //   <TouchableOpacity onPress={() => { clearCart(); NavigationService.back() }} style={{ height: '100%', justifyContent: 'center' }}>
+            //     <Text style={{ color: '#fff', fontSize: 16, marginRight: 18 }}>löschen</Text>
+            //   </TouchableOpacity>
+            // ),
 
             headerBackImage: BackButton,
             headerBackTitle: null,

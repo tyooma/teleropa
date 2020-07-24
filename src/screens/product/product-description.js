@@ -63,11 +63,9 @@ class ProductDescription extends Component {
     descMore: false,
     similar: [],
     points: "",
-    // checkedMoney: true,
-    // checkedPoint: false,
     loaded: false,
     stop: false,
-    selected: "",
+    selected: "buyOfMoney",
   };
 
   getProductImages(images) {
@@ -150,13 +148,14 @@ class ProductDescription extends Component {
     }, 0);
     var oddMoney = parseFloat(this.props.userInfo.points) - parseFloat(checkStatuspoint);
 
+
     getBonusProducts(id).then((res) => {
       res.map((elId) => {
         if (elId.productID == id) {
           if (this.props.userID !== "notloggedin") {
             this.setState({ showCheckBonus: true, points: elId.required_points, loaded: true, checkedMoney: true, checkedPoint: false, selected: "buyOfMoney", });
-            // } else {
-            //   this.setState({ showCheckBonus: false, checkedMoney: true, checkedPoint: false, selected: "buyOfMoney", });
+          } if (oddMoney <= required_points) {
+            this.setState({ showCheckBonus: false });
           }
         }
       });
@@ -232,7 +231,7 @@ class ProductDescription extends Component {
       return (
         <TouchableOpacity
           style={styles.cartButton}
-          onPress={() => addToCart(id, this.state.points, this.state.selected)}>
+          onPress={() => addToCart(id, this.state.points, this.state.selected, this.props.userInfo.points)}>
           <Image
             style={styles.cartButtonImage}
             source={require("../../assets/icons-color/002-shopping2.png")}
@@ -244,12 +243,22 @@ class ProductDescription extends Component {
     }
   }
   render() {
-    // if (!this.props.cart) {
-    //   this.props.cart.map((x) => {
-    //     if (x.selected == "buyOfPoint")
-    //       console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", x.length)
-    //   })
-    // }
+
+    var arr = [];
+    if (this.props.cart.length != 0) {
+      this.props.cart.map((x) => {
+        if (x.selected == "buyOfPoint") {
+          arr.push(x.selected)
+
+
+          if (x.selected.length > 1 && this.state.showCheckBonus) {
+            this.setState({ showCheckBonus: false })
+          } else {
+            this.setState({ showCheckBonus: true })
+          }
+        }
+      })
+    }
 
     const productInfo = this.props.productInfo;
     if (!this.state.loaded) {

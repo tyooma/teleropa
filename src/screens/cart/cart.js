@@ -56,26 +56,30 @@ getStock = (stock, order, pcs) => {
   )
 }
 
-getCounter = (order, pcs, id, onMinus, onAdd) => {
+getCounter = (order, pcs, id, onMinus, onAdd, methodMoney, bonus) => {
+  console.log("methodMoney in getCounter", methodMoney)
+  console.log("bonus in getCounter", bonus)
 
   if (!order) {
     return (
-      <><TouchableOpacity style={styles.minusPlusButton} onPress={() => onMinus(id)}>
+      <><TouchableOpacity style={styles.minusPlusButton} onPress={() => onMinus(id, bonus, methodMoney)}>
         <Image source={require('../../assets/icons/036-minus.png')} style={styles.minusPlusButtonImage} key={'cartMinusItem'} />
       </TouchableOpacity>
         <Text style={styles.countText}>
           {pcs}
         </Text>
-        <TouchableOpacity style={styles.minusPlusButton} onPress={() => onAdd(id)}>
+        <TouchableOpacity style={styles.minusPlusButton} onPress={() => onAdd(id, bonus, methodMoney)}>
           <Image source={require('../../assets/icons-color/035-more2.png')} style={styles.minusPlusButtonImage} key={'cartPlusItem'} />
         </TouchableOpacity></>
     )
   }
 }
 
-export const CartItem = ({ img, name, pcs, price, companyPrice, selectedUserType, stock, order, orderReturnReason, id, onAdd, onMinus, onDelete, bonus, methodMoney }) => {
+export const CartItem = ({ img, name, pcs, price, companyPrice, selectedUserType, stock, order, orderReturnReason, bonus, id, onAdd, onMinus, onDelete, methodMoney }) => {
+  console.log("methodMoney in export const CartItem   ", methodMoney);
+  console.log("bonus in export const CartItem   ", bonus);
   return (
-    <TouchableOpacity style={styles.cartItemContainer} onPress={() => NavigationService.push('Product', { id, name })}>
+    <TouchableOpacity style={styles.cartItemContainer} onPress={() => NavigationService.push('Product', { id, name, bonus, methodMoney })}>
       <View style={{ flexDirection: 'row' }}>
         {img ?
           <View>
@@ -139,7 +143,6 @@ class Cart extends Component {
   state = {
     promocodeModalVisible: false,
     products: [],
-    bonuses: [],
     originalProductsPrice: 0,
     discountProductsPrice: 0,
     orderVAT: 0,
@@ -179,7 +182,6 @@ class Cart extends Component {
   async componentWillReceiveProps(props) {
     if (this.state.cartReceaved == true) {
       await this.initAfterUpdate(props.cart)
-      console.log("await this.initAfterUpdate(props.cart)", await this.initAfterUpdate(props.cart))
     }
   }
 
@@ -188,93 +190,59 @@ class Cart extends Component {
     const cart = this.props.cart
     if (cart.length > 0 && !this.state.cartReceaved) { this.setState({ cartReceaved: true }) }
     cart.map(({ id, count, bonus, selected }) => {
-      console.log("selected selected v selected init", selected)
       getPreviewAsyncProductData(id)
         .then(res =>
-          selected == "buyOfPoints" ?
-            this.setState({ bonuses: [...this.state.bonuses, { ...res, id, count, methodMoney: selected }] })
-            : this.setState({ products: [...this.state.products, { ...res, id, count, methodMoney: selected }] }))
+          this.setState({ products: [...this.state.products, { ...res, id, count, methodMoney: selected, bonus }] }))
     })
   }
 
   initAfterUpdate(cart) {
     this.setState({ products: [] })
     cart.map(({ id, count, bonus, selected }) => {
-      console.log("selected selected v selected initAfterUpdate", selected)
       getPreviewAsyncProductData(id)
         .then(res =>
-          selected == "buyOfPoints" ?
-            this.setState({ bonuses: [...this.state.bonuses, { ...res, id, count, methodMoney: selected }] })
-            : this.setState({ products: [...this.state.products, { ...res, id, count, methodMoney: selected }] }))
+          this.setState({ products: [...this.state.products, { ...res, id, count, methodMoney: selected, bonus }] }))
     })
   }
 
 
-  addToCartAndState(id, bonus, selected) {
-    addToCart(id, bonus, selected)
+  addToCartAndState(id, bonus, methodMoney) {
+    addToCart(id, bonus, methodMoney, this.props.userInfo.points)
   }
 
   minusFromCartAndState(id, bonus, selected) {
     minusFromCart(id, bonus, selected)
   }
 
-  
+
   deleteFromCartAndState(id, bonus, selected) {
     deleteFromCart(id, bonus, selected)
-    const newProductsArray = []
-    if (this.state.products.length != 0) {
-      newProductsArray = this.state.products.filter(product => product.id !== id)
-      this.setState({ products: newProductsArray })
-    } else {
-      newProductsArray = this.state.bonuses.filter(product => product.id !== id)
-      this.setState({ bonuses: newProductsArray })
-    }
+    // var newProductsArray = this.state.products.filter(product => product.id !== id && product.selected !== selected)
+    // console.log("newProductsArray newProductsArray", newProductsArray)
+    // this.setState({ products: newProductsArray })
   }
 
   getProductsCards() {
-    if (this.state.products.length != 0) {
-      return this.state.products.map(({ id, previewImgURL, productName, price, companyPrice, stock, count, methodMoney }) => {
-        return (
-          <CartItem
-            key={id}
-            id={id}
-            img={previewImgURL}
-            name={productName}
-            pcs={count}
-            price={price}
-            companyPrice={companyPrice}
-            selectedUserType={this.props.userInfo.selectedUserType}
-            stock={stock}
-            methodMoney={methodMoney}
-            onAdd={id => this.addToCartAndState(id, methodMoney)}
-            onMinus={id => this.minusFromCartAndState(id, methodMoney)}
-            onDelete={id => this.deleteFromCartAndState(id, methodMoney)}
-          />
-        )
-      })
-    } else {
-      return this.state.bonuses.map(({ id, previewImgURL, productName, price, companyPrice, stock, count, bonus, methodMoney }) => {
-        return (
-          <CartItem
-            key={id}
-            id={id}
-            img={previewImgURL}
-            name={productName}
-            pcs={count}
-            price={price}
-            companyPrice={companyPrice}
-            selectedUserType={this.props.userInfo.selectedUserType}
-            stock={stock}
-            bonus={bonus}
-            methodMoney={methodMoney}
-            onAdd={id => this.addToCartAndState(id, bonus, methodMoney)}
-            onMinus={id => this.minusFromCartAndState(id, bonus, methodMoney)}
-            onDelete={id => this.deleteFromCartAndState(id, bonus, methodMoney)}
-          />
-        )
-      })
-    }
-
+    return this.state.products.map(({ id, previewImgURL, productName, price, companyPrice, stock, bonus, count, methodMoney }) => {
+      return (
+        <CartItem
+          key={id}
+          id={id}
+          img={previewImgURL}
+          name={productName}
+          pcs={count}
+          price={price}
+          companyPrice={companyPrice}
+          selectedUserType={this.props.userInfo.selectedUserType}
+          stock={stock}
+          bonus={bonus}
+          methodMoney={methodMoney}
+          onAdd={id => this.addToCartAndState(id, bonus, methodMoney, count)}
+          onMinus={id => this.minusFromCartAndState(id, bonus, methodMoney, count)}
+          onDelete={id => this.deleteFromCartAndState(id, bonus, methodMoney)}
+        />
+      )
+    })
   }
 
   isEmpty() {
@@ -295,10 +263,6 @@ class Cart extends Component {
       }, 0)
     // }
 
-
-    console.log("originalProductsPrice originalProductsPrice originalProductsPrice ", productsPrice)
-
-
     const productsVAT = this.state.products.reduce((sum, { price, companyPrice, tax, count }) => {
       if (this.props.userInfo.selectedUserType === 'EK') return (sum + price / (1 + (tax / 100)) * count)
       else return (sum + companyPrice / (1 + (tax / 100)) * count)
@@ -306,6 +270,7 @@ class Cart extends Component {
 
     const discountProductsPrice = this.getDiscount(productsPrice)
     if (productsPrice.toFixed(2) !== this.state.originalProductsPrice || discountProductsPrice !== this.state.discountProductsPrice) {
+      console.log("discountProductsPrice", discountProductsPrice)
 
       this.setState({
         originalProductsPrice: parseFloat(productsPrice).toFixed(2),
@@ -382,12 +347,10 @@ class Cart extends Component {
         </View>
       )
     }
-    console.log("this.state.products.length + this.state.bonuses.length ", this.state.products.length + this.state.bonuses.length)
-    console.log("this.props.cart.length this.props.cart.length ", this.props.cart.length)
 
-    // if (this.state.products.length + this.state.bonuses.length !== this.props.cart.length) {
-    //   return <Loading />
-    // }
+    if (this.state.products.length !== this.props.cart.length) {
+      return <Loading />
+    }
     this.setPrices()
 
     return (

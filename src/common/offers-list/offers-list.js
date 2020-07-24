@@ -19,9 +19,10 @@ const OffersListItem = ({ id, text, image, price, companyPrice, salePrice, userI
 
     let salepricefixed = parseFloat(salePrice).toFixed(2)
     let formattedsaleprice = salepricefixed.toString().replace('.', ',');
-    console.log(" image OffersListItem OffersListItem OffersListItem ", image)
+
+
     return (
-        <TouchableOpacity style={styles.container} onPress={() => NavigationService.push('Product', { id: id, name: text, images: image, price: price, companyPrice: companyPrice, salePrice: salePrice })}>
+        <TouchableOpacity style={styles.container} onPress={() => NavigationService.push('Product', { id: id, name: text, images: image, price: price, companyPrice: companyPrice, salePrice: salePrice, methodMoney: 'buyOfMoney' })}>
             <View style={{ flex: 2, flexDirection: 'row', alignItems: 'flex-start' }}>
                 <View style={{ overflow: 'hidden', borderTopLeftRadius: 5, borderTopRightRadius: 5, flex: 5 }}>
                     <ImageLoader source={image} style={styles.image} key={image} />

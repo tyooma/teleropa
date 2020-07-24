@@ -149,7 +149,6 @@ class Product extends Component {
 
     const ID = this.props.navigation.getParam('id')
     const name = this.props.navigation.getParam('name')
-
     const Tab = createMaterialTopTabNavigator({
       Beschreibung: {
         screen: props =>

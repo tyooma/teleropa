@@ -61,7 +61,7 @@ export const CartItemInPreview = ({ img, name, pcs, price, companyPrice, selecte
     console.log("bonus bonusbonus bonus bonus CartItemInPreview", bonus)
 
     return (
-        <TouchableOpacity style={styles.cartItemContainer} onPress={() => NavigationService.push('Product', { id, name })}>
+        <TouchableOpacity style={styles.cartItemContainer} onPress={() => NavigationService.push('Product', { id, name, methodMoney: 'buyOfMoney' })}>
             <View style={{ flexDirection: 'row' }}>
                 {img ?
                     <View>

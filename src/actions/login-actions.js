@@ -1,5 +1,4 @@
 export const setLoggedUserInfo = (userInfo) => {
-    //ACTION CREATOR
     return {
         type: 'SET_LOGGED_USER_INFO',
         payload: userInfo

@@ -95,7 +95,7 @@ function ProductListItem({ imageURL, name, price, salePrice, favourite, id, prod
             return (
                 <TouchableOpacity
                     style={[styles.cartButton, { backgroundColor: '#3f911b' }]}
-                    onPress={() => addToCart(id, undefined, 'buyOfMoney')}
+                    onPress={() => addToCart(id, undefined, 'buyOfMoney', )}
                 >
                     <Image style={{ width: 22, height: 18, resizeMode: 'contain' }} source={require('../../assets/icons-color/002-shopping2.png')} key={'cart'} />
                 </TouchableOpacity>
@@ -125,7 +125,7 @@ function ProductListItem({ imageURL, name, price, salePrice, favourite, id, prod
     }
 
     return (
-        <TouchableOpacity style={styles.productContainer} onPress={() => NavigationService.push('Product', { id: id, name: name })} >
+        <TouchableOpacity style={styles.productContainer} onPress={() => NavigationService.push('Product', { id: id, name: name, methodMoney: 'buyOfMoney' })} >
             <View style={{ flex: 1 }}>
                 {this.getImage()}
             </View>

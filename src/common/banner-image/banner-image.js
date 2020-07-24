@@ -6,7 +6,7 @@ import { sWidth } from '../../helpers/screenSize';
 import NavigationService from '../../navigation-service';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
-export const bannerHeight = 170 
+export const bannerHeight = 170
 
 const BannerImage = ({ title, subtitle, text_1, text_2, list_text_1, list_text_2, list_text_3, list_text_4, logo, url, price, companyPrice, background_color, text_color, product_image, background_image, position, userInfo }) => {
 
@@ -29,14 +29,14 @@ const BannerImage = ({ title, subtitle, text_1, text_2, list_text_1, list_text_2
             </Text>
         )
     }
-    
+
     return (
-        <TouchableOpacity style={[styles.container, { backgroundColor: background_color }]} onPress={() => NavigationService.push('Product', { id: url })}>
+        <TouchableOpacity style={[styles.container, { backgroundColor: background_color }]} onPress={() => NavigationService.push('Product', { id: url, methodMoney: 'buyOfMoney' })}>
             <ImageBackground
                 source={{ uri: 'https://teleropa.de/' + product_image }}
                 style={{ flex: 1, resizeMode: "cover", justifyContent: "center", width: sWidth, height: bannerHeight }}
             />
-            <View style={{ marginVertical: 5, marginHorizontal: 5, height: bannerHeight-10, width: sWidth/1.9, backgroundColor: '#d10019', alignSelf: infoblockPosition }}>
+            <View style={{ marginVertical: 5, marginHorizontal: 5, height: bannerHeight - 10, width: sWidth / 1.9, backgroundColor: '#d10019', alignSelf: infoblockPosition }}>
 
                 <View style={{ flexDirection: 'column', paddingVertical: 7, marginHorizontal: 5 }}>
                     <Text style={{ fontSize: 20, color: text_color, fontFamily: 'Poppins-Bold', lineHeight: 22, textAlignVertical: 'bottom' }}>{title} </Text>
@@ -54,13 +54,13 @@ const BannerImage = ({ title, subtitle, text_1, text_2, list_text_1, list_text_2
 
                 </View>
 
-                <View style={{ position: 'absolute', bottom: 0, alignSelf:'flex-end', marginHorizontal: 5, marginBottom: 3, flexDirection: 'row', lineHeight: 12, justifyContent: 'space-between' }}>
-                    { logo ?
-                    <ImageLoader style={{ width: 80, height: 10, bottom: 0 }} source={{ uri: 'https://teleropa.de/' + logo }} key={logo} />
-                    : null }
-                    { showingprice ? 
-                    <Text style={{ right: 0, bottom: 0, fontSize: 12, fontFamily: 'Poppins-Medium', backgroundColor: '#FFC600', color: 'black', lineHeight: 18 }}>  NUR <Text style={{ fontSize: 14, fontFamily: 'Poppins-BoldItalic' }}>{showingprice} €  </Text></Text>
-                    : null }
+                <View style={{ position: 'absolute', bottom: 0, alignSelf: 'flex-end', marginHorizontal: 5, marginBottom: 3, flexDirection: 'row', lineHeight: 12, justifyContent: 'space-between' }}>
+                    {logo ?
+                        <ImageLoader style={{ width: 80, height: 10, bottom: 0 }} source={{ uri: 'https://teleropa.de/' + logo }} key={logo} />
+                        : null}
+                    {showingprice ?
+                        <Text style={{ right: 0, bottom: 0, fontSize: 12, fontFamily: 'Poppins-Medium', backgroundColor: '#FFC600', color: 'black', lineHeight: 18 }}>  NUR <Text style={{ fontSize: 14, fontFamily: 'Poppins-BoldItalic' }}>{showingprice} €  </Text></Text>
+                        : null}
                 </View>
             </View>
         </TouchableOpacity >

@@ -7,13 +7,13 @@ import { getPreviewAsyncProductData } from '../../gets/productPosts';
 import NavigationService from '../../navigation-service';
 
 const NewestListItem = ({ id, text, image, price, companyPrice, userInfo }) => {
-// const NewestListItem = ({ id, text, image, price, companyPrice, userInfo }) => {
+    // const NewestListItem = ({ id, text, image, price, companyPrice, userInfo }) => {
     const showingprice = userInfo.selectedUserType === 'EK' ? price : companyPrice;
     let pricefixed = parseFloat(showingprice).toFixed(2)
     let formattedprice = pricefixed.toString().replace('.', ',');
 
     return (
-        <TouchableOpacity style={styles.container} onPress={() => NavigationService.push('Product', { id: id, name: text, images: image, price: price, companyPrice: companyPrice })
+        <TouchableOpacity style={styles.container} onPress={() => NavigationService.push('Product', { id: id, name: text, images: image, price: price, companyPrice: companyPrice, methodMoney: 'buyOfMoney' })
         }>
             <View style={{ flex: 2, flexDirection: 'row', alignItems: 'flex-start' }}>
                 <View style={{ overflow: 'hidden', borderTopLeftRadius: 5, borderTopRightRadius: 5, flex: 5, alignContent: 'flex-start', alignContent: 'flex-start' }}>
