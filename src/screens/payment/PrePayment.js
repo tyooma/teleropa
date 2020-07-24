@@ -5,8 +5,6 @@ import Icons from 'react-native-vector-icons/Ionicons';
 import Loading from '../loading';
 import { clearCart } from '../../functions/cart-funcs';
 
-import { testOrder } from '../../Testing/libs/libPrepayments';
-
 const unit = '<PrePayment>';
 
 class PrePayment extends PureComponent {
@@ -57,8 +55,6 @@ class PrePayment extends PureComponent {
     console.log('................................................................................');
     console.log(`${unit}.<${method}>`);
     try {
-      // testOrder(); // testlibs method for PrePayment
-
       // const ORDER = this.getUrlEncodedOrder();
       // console.log(`${unit}.<${method}> ORDER:`, ORDER);
       //.....................................................................................................
