@@ -1,42 +1,13 @@
 import React, { PureComponent } from 'react';
-
 import { Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-
 import Icons from 'react-native-vector-icons/Ionicons';
-
 import AsyncStorage from '@react-native-community/async-storage';
-
 import NavigationService from '../../navigation-service';
+import { connect } from 'react-redux';
 
-export default class FooterNavBar extends PureComponent {
+class FooterNavBar extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = { badges: 0 };
-  }
-
-  GetBadges() {
-    let count = 0;
-    try {
-      AsyncStorage.getItem('Cart', (err, res) => {
-        if (err) {
-          console.log('GetBadges() AsyncStorage.getItem(err): ', err.message);
-        } else {
-          if (res != null) {
-            const arr = JSON.parse(res);
-            if (arr.length > 0) {
-              arr.forEach(element => count += element.count);
-            }
-          }
-        }
-        this.setState({ badges: count });
-      });
-    } catch (err) {
-      this.setState({ badges: count });
-    }
-  }
-
-  componentDidMount() {
-    this.GetBadges();
   }
 
   HomePress() {
@@ -52,13 +23,12 @@ export default class FooterNavBar extends PureComponent {
   };
 
   render() {
-    const badges = this.state.badges;
     const CartIcon = (
       <View style={s.CartConteiner}>
         <View style={s.IconConteiner}><Icons name="ios-cart" size={25} color="#586589" /></View>
         <View style={s.BadgeConteiner}>
-          {badges > 0 && (
-            <View style={s.BadgeCircle}><Text style={s.BadgeMarker}>{badges}</Text></View>
+          {this.props.cart.length > 0 && (
+            <View style={s.BadgeCircle}><Text style={s.BadgeMarker}>{this.props.cart.length}</Text></View>
           )}
         </View>
       </View>
@@ -116,3 +86,6 @@ const s = StyleSheet.create({
   },
   BadgeMarker: { color: 'white', fontSize: 10, fontWeight: 'bold' },
 });
+
+const mapStateToProps = ({ cart }) => ({ cart });
+export default connect(mapStateToProps)(FooterNavBar);
