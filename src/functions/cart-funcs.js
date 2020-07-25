@@ -1,13 +1,11 @@
 import AsyncStorage from "@react-native-community/async-storage";
-
 import Toast from "react-native-root-toast";
-
 import { store } from "../app/app";
-
 import { setCart } from "../actions/cart-actions";
-
 import product from "../screens/product/product";
 import Cart from "../screens/cart";
+
+const unit = '<CartFunc>';
 
 export async function getCart() {
     return await AsyncStorage.getItem("Cart");
@@ -217,4 +215,19 @@ export async function deleteFromCart(id, bonus, selected) {
 export async function clearCart() {
     store.dispatch(setCart([]));
     await AsyncStorage.setItem("Cart", JSON.stringify([]));
+}
+
+export function getPrice(vprice, count) {
+  let price = vprice;
+  if(typeof price === 'string') {
+    price = price.replace(',','.');
+    price = parseFloat(price);
+  }
+  if(typeof price === 'number') {
+    // console.log(`${unit} count: `, count);
+    if(typeof count === 'undefined' && count>0) {
+      price = price * count;
+    }
+  }
+  return price;  
 }
