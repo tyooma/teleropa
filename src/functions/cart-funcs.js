@@ -7,42 +7,34 @@ import { store } from "../app/app";
 import { setCart } from "../actions/cart-actions";
 
 import product from "../screens/product/product";
+import Cart from "../screens/cart";
 
 export async function getCart() {
     return await AsyncStorage.getItem("Cart");
 }
 
+// фунция для додавання карточки в редукс 
 export async function addToCart(id, bonus, selected, userPoints) {
+    //перевірка чи приходить вибраний метод, якщо ні, то робимо його за Гроші
     if (selected.length == 0) {
         return selected = 'buyOfMoney'
     }
-    console.log("ID in addToCart", id)
-    console.log("bonus in addToCart ", bonus)
-    console.log("selected in addToCart:", selected)
 
     try {
+        //Беремо карточку з редуксу
         await AsyncStorage.getItem("Cart", (err, res) => {
             if (!res) {
+                //ящко рес повертає нам пусте  то кладемо карточку та викликаємо метод додавання карточки 
                 AsyncStorage.setItem("Cart", JSON.stringify([]));
                 addToCart(id, selected);
             } else {
+                // Парсим Джсон та записуємо до карточки
                 const cart = JSON.parse(res);
                 const productInCart = cart.find((product) => id === product.id);
                 if (productInCart) {
-                    const productBuyMethodCart = cart.find((product) => selected === product.selected);
+                    const productBuyMethodCart = cart.find((product) => id === product.id && selected === product.selected);
                     if (productBuyMethodCart) {
                         var oddMoney = parseFloat(userPoints) - parseFloat(bonus) * parseFloat(productBuyMethodCart.count);
-                        console.log("productBuyMethodCart.selected ", productBuyMethodCart.selected)
-
-                        console.log("productBuyMethodCart.id ", productBuyMethodCart.id)
-
-                        console.log("ШВ ШВ ИД  ", id)
-                        console.log("ШparseFloat(oddMoney) parseFloat(oddMoney)  ", oddMoney)
-                        console.log("arseFloat(bonus) arseFloat(bonus)  ", bonus)
-
-                        console.log("productBuyMethodCart.selected ", productBuyMethodCart.selected)
-
-
                         if (productBuyMethodCart.selected == "buyOfPoints" && productBuyMethodCart.id == id && parseFloat(oddMoney) >= parseFloat(bonus)) {
                             productBuyMethodCart.count++;
                             const newCart = cart.map((product) => {
@@ -51,9 +43,8 @@ export async function addToCart(id, bonus, selected, userPoints) {
                                 }
                                 return product;
                             });
-                            // store.dispatch(setCart(newCart));
-                            // AsyncStorage.setItem("Cart", JSON.stringify(newCart));
-                            console.log("Увеличили КАУНТ ДЛя поинта если есть ПОинты", newCart)
+                            store.dispatch(setCart(newCart));
+                            AsyncStorage.setItem("Cart", JSON.stringify(newCart));
                             Toast.show("Artikel wurde in den Warenkorb gelegt", {
                                 shadow: false,
                                 backgroundColor: "#505050",
@@ -63,14 +54,13 @@ export async function addToCart(id, bonus, selected, userPoints) {
                             productBuyMethodCart.count++;
                             const newCart = cart.map((product) => {
                                 if (product.id === id && product.selected === selected) {
-                                    console.log("Увеличили productBuyMethodCartКАУНТ ДЛя Денег", productBuyMethodCart)
+                                    // console.log("Увеличили productBuyMethodCartКАУНТ ДЛя Денег", productBuyMethodCart)
                                     return productBuyMethodCart;
                                 }
                                 return product;
                             });
                             store.dispatch(setCart(newCart));
                             AsyncStorage.setItem("Cart", JSON.stringify(newCart));
-                            console.log("Увеличили КАУНТ ДЛя Денег", newCart)
                             Toast.show("Artikel wurde in den Warenkorb gelegt", {
                                 shadow: false,
                                 backgroundColor: "#505050",
@@ -88,9 +78,8 @@ export async function addToCart(id, bonus, selected, userPoints) {
 
                         const newProduct = { id, count: 1, bonus, selected };
                         cart.push(newProduct);
-                        // store.dispatch(setCart(cart));
-                        // AsyncStorage.setItem("Cart", JSON.stringify(cart));
-
+                        store.dispatch(setCart(cart));
+                        AsyncStorage.setItem("Cart", JSON.stringify(cart));
                         Toast.show("Artikel wurde in den Warenkorb gelegt", {
                             shadow: false,
                             backgroundColor: "#505050",
@@ -110,7 +99,6 @@ export async function addToCart(id, bonus, selected, userPoints) {
                                     store.dispatch(setCart(cart));
                                     AsyncStorage.setItem("Cart", JSON.stringify(cart));
 
-                                    console.log("Добавили Для поинтов если Меньше 1")
                                     Toast.show("Artikel wurde in den Warenkorb gelegt", {
                                         shadow: false,
                                         backgroundColor: "#505050",
@@ -132,7 +120,6 @@ export async function addToCart(id, bonus, selected, userPoints) {
                                     store.dispatch(setCart(cart));
                                     AsyncStorage.setItem("Cart", JSON.stringify(cart));
 
-                                    console.log("Создали для денег если их меньше 3")
                                     Toast.show("Artikel wurde in den Warenkorb gelegt", {
                                         shadow: false,
                                         backgroundColor: "#505050",
@@ -155,7 +142,6 @@ export async function addToCart(id, bonus, selected, userPoints) {
                         store.dispatch(setCart(cart));
                         AsyncStorage.setItem("Cart", JSON.stringify(cart));
 
-                        console.log("Просто Создали новый карточку")
                         Toast.show("Artikel wurde in den Warenkorb gelegt", {
                             shadow: false,
                             backgroundColor: "#505050",
@@ -171,9 +157,6 @@ export async function addToCart(id, bonus, selected, userPoints) {
 }
 
 export async function minusFromCart(id, bonus, selected) {
-    console.log("id id id", id)
-    console.log("bonus bonus bonus ", bonus)
-    console.log("selected selected selected", selected)
     try {
         await AsyncStorage.getItem("Cart", (err, res) => {
             const cart = JSON.parse(res);
@@ -198,22 +181,33 @@ export async function minusFromCart(id, bonus, selected) {
 }
 
 export async function deleteFromCart(id, bonus, selected) {
-    console.log("id", id);
-    console.log("selected", selected);
     try {
         await AsyncStorage.getItem("Cart", (err, res) => {
             const cart = JSON.parse(res);
-            const productInCart = cart.find((product) => id === product.id);
-            if (productInCart) {
+            const productBuyMethodCart = cart.find((product) => id === product.id && selected === product.selected);
+            // console.log("Знаходимо на що натиснули productBuyMethodCart ", productBuyMethodCart)
+            if (productBuyMethodCart.selected == "buyOfPoints" && productBuyMethodCart.id == id) {
+                //Якщо натиснули олату за Поінти, то залишаемо тільки за гроші                
+                const newCart = cart.filter((product) => product.selected != selected);
+                // console.log("Оплата за поинти, залишили оплату за Гроші", newCart);
+                store.dispatch(setCart(newCart));
+                AsyncStorage.setItem("Cart", JSON.stringify(newCart));
 
             }
+            else if (productBuyMethodCart.selected == "buyOfMoney") {
+                //Якщо натиснули олату за гроші та Ид співпадають, то залишаемо тільки за гроші                       
+                var newCart = [];
+                cart.map((product) => {
+                    if (product.id == id && product.selected != 'buyOfMoney') {
+                        newCart.push(product)
 
-
-
-            //  const newCart = cart.filter((product) => product.id == !id);
-
-            //store.dispatch(setCart(newCart));
-            //AsyncStorage.setItem("Cart", JSON.stringify(newCart));
+                    } else if (product.id != id) {
+                        newCart.push(product)
+                    }
+                })
+                store.dispatch(setCart(newCart));
+                AsyncStorage.setItem("Cart", JSON.stringify(newCart));
+            }
         });
     } catch (e) {
         console.warn(e);

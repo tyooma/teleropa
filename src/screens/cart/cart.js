@@ -57,9 +57,6 @@ getStock = (stock, order, pcs) => {
 }
 
 getCounter = (order, pcs, id, onMinus, onAdd, methodMoney, bonus) => {
-  console.log("methodMoney in getCounter", methodMoney)
-  console.log("bonus in getCounter", bonus)
-
   if (!order) {
     return (
       <><TouchableOpacity style={styles.minusPlusButton} onPress={() => onMinus(id, bonus, methodMoney)}>
@@ -216,10 +213,7 @@ class Cart extends Component {
 
 
   deleteFromCartAndState(id, bonus, selected) {
-    deleteFromCart(id, bonus, selected)
-    // var newProductsArray = this.state.products.filter(product => product.id !== id && product.selected !== selected)
-    // console.log("newProductsArray newProductsArray", newProductsArray)
-    // this.setState({ products: newProductsArray })
+    deleteFromCart(id, bonus, selected)  
   }
 
   getProductsCards() {

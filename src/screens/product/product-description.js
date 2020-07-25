@@ -243,7 +243,7 @@ class ProductDescription extends Component {
     }
   }
   render() {
-
+    console.log("this.render", this.state)
     var arr = [];
     if (this.props.cart.length != 0) {
       this.props.cart.map((x) => {

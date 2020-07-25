@@ -48,7 +48,8 @@ class ProductsByPoint extends Component {
 
 
     componentDidMount() {
-        var a = []
+        var arr = [];
+        var sorted = [];
         const title = this.props.navigation.getParam('title', null)
         const userInfo = this.props.navigation.getParam('userInfo', null)
 
@@ -71,9 +72,10 @@ class ProductsByPoint extends Component {
                             responseJson.map(x => {
                                 getPreviewProductData(x.productID)
                                     .then(res => {
-                                        if (res.status != "404") {
-                                            this.setState({ data: [...this.state.data, { ...res, productID: x.productID, bonuspoint: x.required_points, }], userInfo: userInfo })
-                                            this.SortByPoints()
+                                        if (res.status != "404" && res.stock > 0) {
+                                            arr.push({ ...res, productID: x.productID, bonuspoint: x.required_points, })
+                                            sorted = arr.sort((first, second) => (Number(first.bonuspoint) < Number(second.bonuspoint)) ? -1 : ((Number(second.bonuspoint) < Number(first.bonuspoint)) ? 1 : 0))
+                                            this.setState({ sortedData: sorted, loaded: true, userInfo: userInfo })
                                         }
                                     })
                             })
@@ -91,11 +93,6 @@ class ProductsByPoint extends Component {
 
     }
 
-    SortByPoints() {
-        const filtered = this.state.data.filter(item => item.stock > 0);
-        const sorted = filtered.sort((first, second) => (Number(first.bonuspoint) < Number(second.bonuspoint)) ? -1 : ((Number(second.bonuspoint) < Number(first.bonuspoint)) ? 1 : 0))
-        this.setState({ sortedData: sorted, loaded: true })
-    }
     render() {
         console.log("this.state in product-by-point.js", this.state)
 
