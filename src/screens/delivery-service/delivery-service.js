@@ -9,6 +9,10 @@ import { getDeliverySuppliers } from '../../gets/ordersPosts';
 import Toast from 'react-native-root-toast';
 import NavigationService from '../../navigation-service';
 
+import { fixPrice } from '../../functions/cart-funcs';
+
+const unit = 'DeliveryService';
+
 export default class DeliveryService extends Component {
   static navigationOptions = { title: 'Versandart wählen' };
 
@@ -27,9 +31,9 @@ export default class DeliveryService extends Component {
     const productsPrice = this.props.navigation.getParam('productsPrice', 0);
     this.setState({ productsPrice });
     getDeliverySuppliers()
-      .then(services => {
-        this.setState({ services, loaded: true });
-      });
+    .then(services => {
+      this.setState({ services, loaded: true });
+    });
   }
 
   getDeliveryOptions() {
@@ -49,36 +53,42 @@ export default class DeliveryService extends Component {
   }
 
   getDeliveryPrice() {
-    const deliveryOption = this.state.services.find((service) => service.id === this.state.selected)
-    const Q = deliveryOption.costs.sort((first, second) => (first.from > second.from) ? 1 : ((second.from > first.from) ? -1 : 0))
-    const price = deliveryOption.costs.reverse().find(({ from }) => from < this.state.productsPrice)
-    if (price) this.setState({ deliveryPrice: price.value })
-    else this.setState({ deliveryPrice: deliveryOption.shippingFree })
+    const deliveryOption = this.state.services.find((service) => service.id === this.state.selected);
+    const Q = deliveryOption.costs.sort((first, second) => (first.from > second.from) ? 1 : ((second.from > first.from) ? -1 : 0));
+    const price = deliveryOption.costs.reverse().find(({ from }) => from < this.state.productsPrice);
+    if(price) {
+      this.setState({ deliveryPrice: price.value });
+    } else {
+      this.setState({ deliveryPrice: deliveryOption.shippingFree });
+    }
   }
 
   render() {
-    console.log('<Delivery-Service>:', this.state);
+    console.log(unit, 'this.state:', this.state);
+
     const shadowOpt = {
-            width: sWidth,
-            height: 50,
-            color: "#000",
-            border: 6,
-            radius: 1,
-            opacity: 0.1,
-            x: 0,
-            y: 0
+      width: sWidth,
+      height: 50,
+      color: "#000",
+      border: 6,
+      radius: 1,
+      opacity: 0.1,
+      x: 0,
+      y: 0
     }
-    if (!this.state.loaded) return <Loading />;
+
+    if(!this.state.loaded) return <Loading />;
+
     return (
       <View style={{ flex: 1 }}>
         <ScrollView style={{ paddingHorizontal: 18 }}>
           {this.getDeliveryOptions()}
         </ScrollView>
         <BoxShadow setting={shadowOpt}>
-          <View style={styles.footerSummaryContainer}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
-              <Text style={styles.summaryText} >Versandkosten:</Text>
-              <Text style={styles.summaryText} >{this.state.deliveryPrice} €</Text>
+          <View style={s.footerSummaryContainer}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <Text style={s.summaryText}>Versandkosten:</Text>
+              <Text style={s.summaryText}>{this.state.deliveryPrice} €</Text>
             </View>
           </View>
         </BoxShadow>
@@ -87,7 +97,6 @@ export default class DeliveryService extends Component {
           onPress={() =>
             this.state.selected
             ?
-            // this.props.navigation.navigate('Payment', { data: { ...this.props.navigation.getParam('data', null), deliveryData: this.state } })     
             NavigationService.navigate('CartPreview', { userInfo: { ...this.props.navigation.getParam('userInfo', null) }, data: { ...this.props.navigation.getParam('data', null) }, deliveryData: { ...this.state } })
             :
             Toast.show('Versandart wählen', {shadow: false, backgroundColor: '#505050', duration: 1500})
@@ -98,15 +107,12 @@ export default class DeliveryService extends Component {
   }
 }
 
-const styles = {
-    footerSummaryContainer: {
-        height: 50,
-        paddingHorizontal: 18,
-        backgroundColor: '#fff',
-        justifyContent: 'center',
-    },
-    summaryText: {
-        color: '#040404',
-        fontSize: 16
-    }
+const s = {
+  footerSummaryContainer: {
+    height: 50,
+    paddingHorizontal: 18,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+  },
+  summaryText: { color: '#040404', fontSize: 16 },
 }

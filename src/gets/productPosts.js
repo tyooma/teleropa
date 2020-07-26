@@ -1,4 +1,4 @@
-import { getPrice } from '../functions/cart-funcs'; 
+import { fixPrice } from '../functions/cart-funcs';
 
 export function getProductInfo(id) {
     return fetch('https://teleropa.de/WebiProgCommunicationApplicationArticle/getInfo', {
@@ -46,14 +46,10 @@ export async function getPreviewAsyncProductData(id) {
     });
     const json = await response.json();
     // convert STRING prices to NUMBER
-    // json.salePrice = parseFloat(json.salePrice).toFixed(2);
-    // json.companyPrice = parseFloat(json.companyPrice).toFixed(2);
-    // json.price = parseFloat(json.price).toFixed(2);
-    // json.tax = parseFloat(json.tax).toFixed(2);
-    json.salePrice = getPrice(json.salePrice);
-    json.companyPrice = getPrice(json.companyPrice);
-    json.price = getPrice(json.price);
-    json.tax = getPrice(json.tax);
+    json.salePrice = fixPrice(json.salePrice, 2);
+    json.companyPrice = fixPrice(json.companyPrice, 2);
+    json.price = fixPrice(json.price, 2);
+    json.tax = fixPrice(json.tax, 2);
     console.log('getPreviewAsyncProductData => JSON:', json);
     //
     return json;

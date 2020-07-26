@@ -12,7 +12,9 @@ import Loading from '../loading'
 import Input from '../../common/input';
 import ModalView from '../../common/modal-view';
 import { getPreviewAsyncProductData, getPromocodeData } from '../../gets/productPosts';
-import { addToCart, minusFromCart, deleteFromCart, clearCart, getPrice } from '../../functions/cart-funcs'; 
+import { addToCart, minusFromCart, deleteFromCart, clearCart } from '../../functions/cart-funcs'; 
+
+import { fixPrice } from '../../functions/cart-funcs';
 
 getStock = (stock, order, pcs) => {
   if (!order) {
@@ -74,13 +76,13 @@ export const CartItem = ({ img, name, pcs, price, companyPrice, selectedUserType
                   <>
                     <Text style={styles.pricePerProduct}>{(companyPrice)} €\St</Text>
                     {/* <Text style={styles.price}>{(parseFloat(companyPrice).toFixed(2) * pcs)} €</Text> */}
-                    <Text style={styles.price}>{getPrice(companyPrice)} €</Text>
-                    <Text style={styles.price}>{(parseFloat(companyPrice).toFixed(2) * pcs)} €</Text>
+                    <Text style={styles.price}>{companyPrice} €</Text>
+                    <Text style={styles.price}>{(companyPrice.toFixed(2) * pcs)} €</Text>
                   </>
                   :
                   <>
                     <Text style={styles.pricePerProduct}>{price} €\St</Text>
-                    <Text style={styles.price}>{getPrice(price)} €</Text>
+                    <Text style={styles.price}>{price} €</Text>
                     <Text style={styles.price}>{(parseFloat(price).toFixed(2) * pcs)} €</Text>
                   </>
               }
@@ -109,7 +111,7 @@ class Cart extends Component {
     headerRight: (
       <TouchableOpacity onPress={() => { clearCart(); NavigationService.back() }} style={{ height: '100%', justifyContent: 'center' }}>
         <Text style={{ color: '#fff', fontSize: 16, marginRight: 18 }}>löschen</Text>
-      </TouchableOpacity >
+      </TouchableOpacity>
     )
   }
 
@@ -144,7 +146,9 @@ class Cart extends Component {
     console.log('init() => cart:', cart);
     console.log('init() => this.state.products:', this.state.products);
 
-    if (cart.length > 0 && !this.state.cartReceaved) { this.setState({ cartReceaved: true }) }
+    if(cart.length > 0 && !this.state.cartReceaved) {
+      this.setState({ cartReceaved: true })
+    }
     cart.map(({ id, count, bonus, selected }) => {
       getPreviewAsyncProductData(id).then(res =>
         this.setState({ products: [...this.state.products, { ...res, id, count, methodMoney: selected, bonus }] })
@@ -167,10 +171,7 @@ class Cart extends Component {
 
   minusFromCartAndState(id, bonus, selected) { minusFromCart(id, bonus, selected) }
 
-
-  deleteFromCartAndState(id, bonus, selected) {
-    deleteFromCart(id, bonus, selected)  
-  }
+  deleteFromCartAndState(id, bonus, selected) { deleteFromCart(id, bonus, selected) }
 
   getProductsCards() {
     return this.state.products.map(({ id, previewImgURL, productName, price, companyPrice, stock, bonus, count, methodMoney }) => {
@@ -200,71 +201,66 @@ class Cart extends Component {
     return false
   }
 
+  getDiscount(price) {
+    if(this.state.promocodeData) {
+      const { percental, minimumcharge, value } = this.state.promocodeData;
+      if(minimumcharge > price) {
+        alert('Der Gutscheincode kann nicht eingelöst werden, weil Ihr Warenkorb-Wert nicht ausreichend ist.');
+        this.setState({ promocode: '', promocodeData: null, promocodeValue: 0, discountValue: 0 });
+        // return parseFloat(price).toFixed(2);
+        return price;
+      }
+      if(percental) {
+        // parseFloat(price - price / 100 * value).toFixed(2);
+        return (price - price / 100 * value);
+      }
+      // return parseFloat(price - value).toFixed(2);
+      return (price - value);
+    }
+    // return parseFloat(price).toFixed(2);
+    return price;
+  }
+
   setPrices() {
     const p = this.state.products;
     console.log('products:',p);
-    console.log(`setPrices: 
-      id = ${p.id}
-      productName = ${p.productName}
-      companyPrice = ${p.companyPrice} typeof = ${typeof p.companyPrice}
-      price = ${p.price} typeof = ${typeof p.price}
-      count = ${p.count} typeof = ${typeof p.count}
-      stock = ${p.stock} typeof = ${typeof p.stock}
-      bonus = ${p.bonus}
-      methodMoney = ${p.methodMoney}
-    `);
 
     const productsPrice = this.props.userInfo.selectedUserType === 'EK' ?
       this.state.products.reduce((sum, {price, count}) => { return sum + price * count }, 0)
       :
       this.state.products.reduce((sum, { companyPrice, count }) => { return sum + companyPrice * count }, 0)
 
-    console.log('productsPrice:', productsPrice);
+    console.log('productsPrice:', productsPrice, 'typeof:', typeof productsPrice);
 
     const productsVAT = this.state.products.reduce((sum, { price, companyPrice, tax, count }) => {
-      if (this.props.userInfo.selectedUserType === 'EK') return (sum + price / (1 + (tax / 100)) * count)
-      else return (sum + companyPrice / (1 + (tax / 100)) * count)
-    }, 0)
+      if(this.props.userInfo.selectedUserType === 'EK') {
+        return (sum + price / (1 + (tax / 100)) * count);
+      } else {
+        return (sum + companyPrice / (1 + (tax / 100)) * count);
+      }
+    }, 0);
 
-    const discountProductsPrice = this.getDiscount(productsPrice);
+    const discountProductsPrice = fixPrice(this.getDiscount(productsPrice), 2);
+    console.log('discountProductsPrice:', discountProductsPrice, 'typeof:', typeof discountProductsPrice);
 
-    console.log('discountProductsPrice:', discountProductsPrice);
-    console.log('originalProductsPrice:', this.state.originalProductsPrice);
+    console.log('originalProductsPrice:', this.state.originalProductsPrice, 'typeof:', typeof this.state.originalProductsPrice);
 
-    if (productsPrice.toFixed(2) !== this.state.originalProductsPrice || discountProductsPrice !== this.state.discountProductsPrice) {
-      // console.log("discountProductsPrice", discountProductsPrice);
+    if(productsPrice !== this.state.originalProductsPrice || discountProductsPrice !== this.state.discountProductsPrice) {
       this.setState({
-        originalProductsPrice: parseFloat(productsPrice).toFixed(2),
-        discountProductsPrice,
-        discountValue: parseFloat(productsPrice - discountProductsPrice).toFixed(2),
-        orderVAT: parseFloat(productsVAT).toFixed(2)
-      })
+        originalProductsPrice: fixPrice(productsPrice,2),
+        discountProductsPrice: fixPrice(discountProductsPrice,2),
+        discountValue: fixPrice(productsPrice - discountProductsPrice, 2),
+        orderVAT: fixPrice(productsVAT,2)
+      });
     }
-  }
-
-  getDiscount(price) {
-    if (this.state.promocodeData) {
-      const { percental, minimumcharge, value } = this.state.promocodeData;
-      if (minimumcharge > price) {
-        alert('Der Gutscheincode kann nicht eingelöst werden, weil Ihr Warenkorb-Wert nicht ausreichend ist.')
-        this.setState({ promocode: '', promocodeData: null, promocodeValue: 0, discountValue: 0 })
-        return parseFloat(price).toFixed(2)
-      }
-      if (percental) {
-        parseFloat(price - price / 100 * value).toFixed(2)
-        return (price - price / 100 * value)
-      }
-      return parseFloat(price - value).toFixed(2)
-    }
-    return parseFloat(price).toFixed(2)
   }
 
   handlePromocodeSubmit() {
-    if (this.state.promocode.length < 1) {
+    if(this.state.promocode.length < 1) {
       return alert('Bitte geben Sie den Gutscheincode ein.');
     }
     getPromocodeData(this.state.promocode).then(promocodeData => {
-      if (promocodeData.status.code === 'success') {
+      if(promocodeData.status.code === 'success') {
         this.setState({ promocodeData });
       }
       Toast.show(promocodeData.status.text, { shadow: false, backgroundColor: '#505050' });
@@ -295,7 +291,7 @@ class Cart extends Component {
       x: 0,
       y: 0
     }
-    if (this.isEmpty()) {
+    if(this.isEmpty()) {
       return (
         <View style={styles.emptyCartContainer}>
           <Image style={styles.emptyCartImage} source={require('../../assets/message-icons/cart-empty.png')} />
@@ -322,17 +318,17 @@ class Cart extends Component {
 
             <View style={styles.line}>
               <Text style={styles.summaryText}>Summe:</Text>
-              <Text style={styles.summaryText}>{this.state.methodMoney == 'buyOfPoints' ? parseFloat(0).toFixed(2) : parseFloat(this.state.discountProductsPrice)} €</Text>
+              <Text style={styles.summaryText}>{this.state.methodMoney == 'buyOfPoints' ? fixPrice(0,2) : fixPrice(this.state.discountProductsPrice,2)} €</Text>
             </View>
 
             <View style={styles.line}>
               <Text style={styles.summaryText}>Gesamtsumme ohne MwSt.:</Text>
-              <Text style={styles.summaryText}>{this.state.methodMoney == 'buyOfPoints' ? parseFloat(0).toFixed(2) : this.state.orderVAT} €</Text>
+              <Text style={styles.summaryText}>{this.state.methodMoney == 'buyOfPoints' ? fixPrice(0,2) : fixPrice(this.state.orderVAT,2)} €</Text>
             </View>
 
             <View style={styles.line}>
               <Text style={styles.summaryText}>zzgl. MwSt.:</Text>
-              <Text style={styles.summaryText}> {this.state.methodMoney == 'buyOfPoints' ? parseFloat(0).toFixed(2) : parseFloat(this.state.discountProductsPrice - this.state.orderVAT)} €</Text>
+              <Text style={styles.summaryText}> {this.state.methodMoney == 'buyOfPoints' ? fixPrice(0,2) : fixPrice(this.state.discountProductsPrice - this.state.orderVAT,2)} €</Text>
             </View>
           </View>
         </ScrollView>
@@ -363,7 +359,7 @@ class Cart extends Component {
         >
           <Input placeholder='Promo-Code eingeben' value={this.state.promocode} onChangeText={promocode => this.setState({ promocode })} />
         </ModalView>
-      </View >
+      </View>
     );
   }
 }

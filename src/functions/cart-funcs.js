@@ -217,17 +217,21 @@ export async function clearCart() {
     await AsyncStorage.setItem("Cart", JSON.stringify([]));
 }
 
-export function getPrice(vprice, count) {
+export function fixPrice(vprice, fixed) {
+  // console.log(`${unit} fixed: `, fixed);
   let price = vprice;
-  if(typeof price === 'string') {
-    price = price.replace(',','.');
-    price = parseFloat(price);
-  }
-  if(typeof price === 'number') {
-    // console.log(`${unit} count: `, count);
-    if(typeof count === 'undefined' && count>0) {
-      price = price * count;
-    }
+  switch(typeof price) {
+    case 'string':
+      price = price.replace(',','.');
+      price = parseFloat(price);
+      break;
+    case 'number':
+      if(typeof fixed !== 'undefined' && fixed>=0) {
+        price = parseFloat(price.toFixed(fixed));
+      }
+      break;
+    default:
+      console.log(`${unit} typeof price: `, typeof price);
   }
   return price;  
 }
