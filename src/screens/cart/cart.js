@@ -74,23 +74,21 @@ export const CartItem = ({ img, name, pcs, price, companyPrice, selectedUserType
                 :
                 selectedUserType === 'H' ?
                   <>
-                    <Text style={styles.pricePerProduct}>{(companyPrice)} €\St</Text>
-                    {/* <Text style={styles.price}>{(parseFloat(companyPrice).toFixed(2) * pcs)} €</Text> */}
-                    <Text style={styles.price}>{companyPrice} €</Text>
-                    <Text style={styles.price}>{(companyPrice.toFixed(2) * pcs)} €</Text>
+                    <Text style={styles.pricePerProduct}>{companyPrice} €\St</Text>
+                    <Text style={styles.price}>{companyPrice * pcs} €</Text>
                   </>
                   :
                   <>
                     <Text style={styles.pricePerProduct}>{price} €\St</Text>
-                    <Text style={styles.price}>{price} €</Text>
-                    <Text style={styles.price}>{(parseFloat(price).toFixed(2) * pcs)} €</Text>
+                    <Text style={styles.price}>{price * pcs} €</Text>
                   </>
               }
             </View>
           </View>
           {orderReturnReason ?
             <Text style={{ marginBottom: 5 }}>Grund für Rückgabe: {orderReturnReason}</Text>
-            : null
+            :
+            null
           }
         </View>
         {
@@ -98,7 +96,8 @@ export const CartItem = ({ img, name, pcs, price, companyPrice, selectedUserType
             <TouchableOpacity style={styles.deleteButton} onPress={() => onDelete(id)}>
               <Image source={require('../../assets/icons/009-close.png')} style={styles.deleteButtonImage} key={'deleteFromCartButton'} />
             </TouchableOpacity>
-            : null
+            :
+            null
         }
       </View>
     </TouchableOpacity>
