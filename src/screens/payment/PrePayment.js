@@ -68,15 +68,15 @@ class PrePayment extends PureComponent {
     try {
       //.....................................................................................................
       // Dummy Fetch for Payment-Object
-      // const payment = { code: 'success', text: 'Information erfolgreich aktualisiert', data: { orderNumber: '11111' } };
+      const payment = { code: 'success', text: 'Information erfolgreich aktualisiert', data: { orderNumber: '11111' } };
       // const payment = { code: 'error', text: 'Information konnte nicht aktualisiert werden' };
       // const payment = { code: 'requestError', text: 'Сайт Teleropa.de пока не может обработать этот запрос: «HTTP ERROR 500»' };
-      // this.setState({ payment: payment });
+      this.setState({ payment: payment });
       //.....................................................................................................
 
       const ORDER = this.getUrlEncodedOrder();
       // console.log(`${unit}.<${method}> ORDER:`, ORDER);
-
+/*
       fetch('https://teleropa.de/WebiProgCommunicationApplicationUser/createOrder', {
         method: 'POST',
         headers: { 'Accept': 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -94,7 +94,7 @@ class PrePayment extends PureComponent {
         this.setState({payment: {code: 'requestError', text: err.message}});
         console.log(`${unit}.<${method}>.<fetchError>:`, err);
       });
-
+*/
     } catch(err) {
       this.setState({payment: {code: 'unknown_error', text: err.message}});
       console.log(`${unit}.<${method}>.<tryError>:`, err);
