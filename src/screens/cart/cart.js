@@ -335,8 +335,7 @@ class Cart extends Component {
           </View>
         </BoxShadow>
 
-        {/* <FooterButton text={'Zur Kasse'} onPress={() => { */}
-        <FooterButton text={'Versandart'} onPress={() => {
+        <FooterButton text={'Weiter'} onPress={() => {
           if (!this.props.userID || this.props.userID === "notloggedin") {
             NavigationService.navigate('Login', { routeName: 'Cart' });
           } else {

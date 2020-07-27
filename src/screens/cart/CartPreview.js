@@ -177,7 +177,8 @@ export default class CartPreview extends Component {
         </ScrollView>
 
         <FooterButton
-          text={'Zahlungspflichtig bestellen'} 
+          // text={'Zahlungspflichtig bestellen'}
+          text={'Weiter'}
           onPress={() => { NavigationService.navigate('Payment', { data: this.state }) }} />
       </View>
     );
