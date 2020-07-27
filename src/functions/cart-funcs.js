@@ -241,6 +241,6 @@ export function getPurchasePoints(products) {
   //      {id:3, methodMoney:'buyOfPoints', bonus:'150'},
   //      {id:3, methodMoney:'buyOfMoney', bonus:''},
   //      {id:4, methodMoney:'buyOfMoney', bonus:'300'}];
-  return products.filter(p => p.methodMoney==='buyOfPoints').reduce((sum, {bonus}) => {
-    return sum + parseFloat(bonus) }, 0);
+  return products.filter(p => p.methodMoney==='buyOfPoints').reduce((sum, {bonus, count}) => {
+    return sum + parseFloat(bonus)*count }, 0);
 }

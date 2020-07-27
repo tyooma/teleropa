@@ -27,7 +27,7 @@ getCounterInPreview = (order, pcs) => {
 
 export const CartItemInPreview = ({id, bonus, methodMoney, name, pcs, price, companyPrice, selectedUserType, img, userType, stock, order, orderReturnReason }) => {
   // console.log(`${unit} CartItemInPreview: ${bonus}`);
-  // console.log(`id: ${id} | methodMoney: ${methodMoney} | bonus: ${bonus}`);
+  console.log(`id: ${id} | methodMoney: ${methodMoney} | bonus: ${bonus} - ${typeof bonus} totalBonus: ${bonus*pcs}`);
   return (
     <TouchableOpacity style={s.cartItemContainer} onPress={() => NavigationService.push('Product', { id, name, methodMoney: 'buyOfMoney' })}>
       <View style={{flexDirection: 'row'}}>
