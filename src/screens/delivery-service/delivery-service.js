@@ -88,7 +88,7 @@ export default class DeliveryService extends Component {
           <View style={s.footerSummaryContainer}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
               <Text style={s.summaryText}>Versandkosten:</Text>
-              <Text style={s.summaryText}>{this.state.deliveryPrice} €</Text>
+              <Text style={s.summaryText}>{this.state.deliveryPrice.toFixed(2)} €</Text>
             </View>
           </View>
         </BoxShadow>

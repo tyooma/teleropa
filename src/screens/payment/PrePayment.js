@@ -38,16 +38,27 @@ class PrePayment extends PureComponent {
     
     let items = '';
     // console.log(`${unit}.<${method}> cartInfo: `, this.state.cart.cartInfo);
-    this.state.cart.cartInfo.products.forEach(product => {
-      items += `{productID:${product.id},`;
-      if(product.methodMoney!=='' && product.methodMoney.toUpperCase()==='BUYOFPOINTS') items += 'bonus:1,';
-      items += `quantity:${product.count}},`;
+    const pOpen = encodeURI('[');
+    const pClose = encodeURI(']');
+    let pref = '';
+    this.state.cart.cartInfo.products.forEach((product,index) => {
+      pref = `products${pOpen}${index}${pClose}`;
+
+      items += `${pref}${pOpen}productID${pClose}=${product.id}&`;
+      if(product.methodMoney!=='' && product.methodMoney.toUpperCase()==='BUYOFPOINTS') {
+        items += `${pref}${pOpen}bonus${pClose}=1&`;
+      }
+      items += `${pref}${pOpen}quantity${pClose}=${product.count}&`;
+      // products%5B0%5D%5BproductID%5D=3090&products%5B0%5D%5Bquantity%5D=1&products%5B0%5D%5Bbonus%5D=1
+      // products[0][productID]=3090&products[0][quantity]=1&products[0][bonus]=1
     });
-    const products = `products=[${items}]`;
+    // const products = `products=[${items}]`;
+    const products = items;
 
     const uri = `${customerID}&${paymentID}&${dispatchID}&${products}`;
-    const uriEncoded = encodeURI(uri);
-    return uriEncoded;
+    // const uriEncoded = encodeURI(uri);
+    // return uriEncoded;
+    return uri;
   }
 
   componentWillMount() {
@@ -55,17 +66,17 @@ class PrePayment extends PureComponent {
     console.log('................................................................................');
     console.log(`${unit}.<${method}>`);
     try {
-      // const ORDER = this.getUrlEncodedOrder();
-      // console.log(`${unit}.<${method}> ORDER:`, ORDER);
       //.....................................................................................................
       // Dummy Fetch for Payment-Object
-      const payment = { code: 'success', text: 'Information erfolgreich aktualisiert', data: { orderNumber: '34217' } };
+      // const payment = { code: 'success', text: 'Information erfolgreich aktualisiert', data: { orderNumber: '11111' } };
       // const payment = { code: 'error', text: 'Information konnte nicht aktualisiert werden' };
       // const payment = { code: 'requestError', text: 'Сайт Teleropa.de пока не может обработать этот запрос: «HTTP ERROR 500»' };
-      this.setState({ payment: payment });
+      // this.setState({ payment: payment });
       //.....................................................................................................
 
-      /*
+      const ORDER = this.getUrlEncodedOrder();
+      // console.log(`${unit}.<${method}> ORDER:`, ORDER);
+
       fetch('https://teleropa.de/WebiProgCommunicationApplicationUser/createOrder', {
         method: 'POST',
         headers: { 'Accept': 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -73,25 +84,19 @@ class PrePayment extends PureComponent {
       })
       .then(res => res.json())
       .then(json => {
-        console.log(`${unit}.<${method}>.<json>:`, json);
+        // console.log(`${unit}.<${method}>.<json>:`, json);
         const { code, text, data } = json;
         const payment = { code: code, text: text, data: data };
-        this.setState({
-          payment: payment
-        });
+        this.setState({payment: payment});
         console.log(`${unit}.<${method}>.<fetchSuccess>:`, payment);
       })
       .catch(err => {
-        this.setState({
-          payment: { code: 'requestError', text: err.message }
-        });
+        this.setState({payment: {code: 'requestError', text: err.message}});
         console.log(`${unit}.<${method}>.<fetchError>:`, err);
       });
-      */
+
     } catch(err) {
-      this.setState({
-        payment: { code: 'unknown_error', text: err.message }
-      });
+      this.setState({payment: {code: 'unknown_error', text: err.message}});
       console.log(`${unit}.<${method}>.<tryError>:`, err);
     }
     console.log('................................................................................');
@@ -99,7 +104,7 @@ class PrePayment extends PureComponent {
 
   render() {
     console.log(`${unit}.<"${this.props.navigation.getParam('Payment')}"><RENDER>:`, this.state);
-    // const productsCount = this.state.cart.cartInfo.products.length;
+    const productsCount = this.state.cart.cartInfo.products.length;
     let screen = null;
     if (this.state.payment !== null) {
       const payment = this.state.payment;
@@ -167,8 +172,8 @@ class PrePayment extends PureComponent {
     }
     return (
       <SafeAreaView style={s.Container}>
-        {/* <Text style={s.ContentSuccessCaption}>Товаров в Корзине: {productsCount}</Text>
-        <Text>......................................</Text> */}
+        <Text style={s.ContentSuccessCaption}>Товаров в Корзине: {productsCount}</Text>
+        <Text>......................................</Text>
         {screen}
         <View style={s.ActionConteiner}>
           <TouchableOpacity style={s.ButtonConteiner} onPress={() => { this.props.navigation.navigate('Main') }}>

@@ -32,9 +32,9 @@ class Payment extends Component {
         case 'PayPalPlus':
           this.props.navigation.navigate("WebPayPal", { CartData: this.state.data });
           break;
-        case 'AmazonPay':
-          this.props.navigation.navigate("AmazonLoginWebView", { CartData: this.state.data });
-          break;
+        // case 'AmazonPay':
+        //   this.props.navigation.navigate("AmazonLoginWebView", { CartData: this.state.data });
+        //   break;
         case 'Vorkasse':
           this.props.navigation.navigate("PrePayment", { CartData: this.state.data, Payment: 'Vorkasse', PaymentID: 5 });
           break;
@@ -114,21 +114,16 @@ class Payment extends Component {
             selected={this.isSelected('PayPalPlus')}
             imageSource={require('../../assets/payments/PayPalPlus.png')}
           />
-          <PaymentOption
+          {/* <PaymentOption
             onPress={() => this.setState({ selected: 'AmazonPay' })}
             selected={this.isSelected('AmazonPay')}
             imageSource={require('../../assets/payments/AmazonPay.png')}
-          />
+          /> */}
           <PaymentOption
             onPress={() => this.setState({ selected: 'Vorkasse' })}
             selected={this.isSelected('Vorkasse')}
             imageSource={require('../../assets/payments/Vorkasse.png')}
           />
-          {/* <PaymentOption
-            onPress={() => this.setState({ selected: 'TelePoints' })}
-            selected={this.isSelected('TelePoints')}
-            imageSource={require('../../assets/payments/TelePoints.png')}
-          /> */}
           {
             Platform.OS === 'ios' ?
               <PaymentOption
@@ -141,7 +136,7 @@ class Payment extends Component {
         </ScrollView>
         <FooterButton text='Zahlungspflichtig bestellen' onPress={() => this.handlePayClick()} />
       </View>
-    )
+    );
   }
 }
 

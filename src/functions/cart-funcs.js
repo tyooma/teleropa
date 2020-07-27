@@ -185,7 +185,7 @@ export async function deleteFromCart(id, bonus, selected) {
             const productBuyMethodCart = cart.find((product) => id === product.id && selected === product.selected);
             // console.log("Знаходимо на що натиснули productBuyMethodCart ", productBuyMethodCart)
             if (productBuyMethodCart.selected == "buyOfPoints" && productBuyMethodCart.id == id) {
-                //Якщо натиснули олату за Поінти, то залишаемо тільки за гроші                
+                //Якщо натиснули олату за Поінти, то залишаемо тільки за гроші
                 const newCart = cart.filter((product) => product.selected != selected);
                 // console.log("Оплата за поинти, залишили оплату за Гроші", newCart);
                 store.dispatch(setCart(newCart));
@@ -231,7 +231,16 @@ export function fixPrice(vprice, fixed) {
       }
       break;
     default:
-      console.log(`${unit} typeof price: `, typeof price);
+      // console.log(`${unit} typeof price: `, typeof price);
   }
   return price;  
+}
+
+export function getPurchasePoints(products) {
+  // p = [{id:1, methodMoney:'buyOfPoints', bonus:'50'},
+  //      {id:3, methodMoney:'buyOfPoints', bonus:'150'},
+  //      {id:3, methodMoney:'buyOfMoney', bonus:''},
+  //      {id:4, methodMoney:'buyOfMoney', bonus:'300'}];
+  return products.filter(p => p.methodMoney==='buyOfPoints').reduce((sum, {bonus}) => {
+    return sum + parseFloat(bonus) }, 0);
 }

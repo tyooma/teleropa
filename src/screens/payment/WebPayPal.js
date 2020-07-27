@@ -37,11 +37,11 @@ export class WebPayPal extends Component {
     //const password = 'EPBftFl3oHshi5rBEYudrbsCho_aqm1-ynQYkJbW3T0z3APbEt4g76lI01EZs_zLnYexSWScCIU7Ex6K';//Sandbox
     const username = 'AcIGgF0XrYF4her0z9zSlXCuUnqEDazkaM0DDU5emhhp70UggARzDbd5LW1yQhr8qEaV2Q7r-AmK3bHH';
     const password = 'EHN2OcacoZFk8823hZ_oWXHoI_T-SmtDcs2XklW07F0Lwd57Tjjs9C63hdz_5woXimmEenYveCY2zMtF';
-    const productsPrice = parseFloat(this.state.cart.discountProductsPrice);
-    const deliveryPrice = parseFloat(this.state.cart.deliveryData.deliveryPrice);
+    const productsPrice = (this.state.cart.discountProductsPrice);
+    const deliveryPrice = (this.state.cart.deliveryData.deliveryPrice);
 
     
-    const total = (productsPrice + deliveryPrice).toFixed(2);
+    const total = (productsPrice + deliveryPrice);
     const token = base64.encode(`${username}:${password}`);
     console.log(`${unit} -- TOKEN: `, token);
     // QWNJR2dGMFhyWUY0aGVyMHo5elNsWEN1VW5xRURhemthTTBERFU1ZW1oaHA3MFVnZ0FSekRiZDVMVzF5UWhyOHFFYVYyUTdyLUFtSzNiSEg6RUhOMk9jYWNvWkZrODgyM2haX29XWEhvSV9ULVNtdERjczJYa2xXMDdGMEx3ZDU3VGpqczlDNjNoZHpfNXdvWGltbUVlbll2ZUNZMnpNdEY=
