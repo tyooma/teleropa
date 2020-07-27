@@ -12,7 +12,7 @@ import NavigationService from '../../navigation-service';
 
 
 const TeleropaService = ({ text, image, title, userInfo, services }) => {
-    //console.log(" image OffersListItem TeleropaService TeleropaService ", image)
+    console.log(" image OffersListItem TeleropaService TeleropaService ", image)
     return (
         <TouchableOpacity style={styles.container} onPress={() => NavigationService.navigate('ProductsByPoint', { name: text, title: title, services: services, userInfo: userInfo })}>
 

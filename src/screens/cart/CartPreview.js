@@ -49,8 +49,10 @@ export const CartItemInPreview = ({ img, name, pcs, price, companyPrice, selecte
                 </View>
             </View>
             <View style={{ marginRight: 10, alignItems: 'flex-end' }}>
-                {bonus != undefined ?
-                <Text style={s.price}>{bonus * pc} P.</Text>
+                {
+                (typeof bonus !== 'undefined' &&  bonus !== '') 
+                ?
+                <Text style={s.price}>{bonus * pcs} P.</Text>
                 :
                 selectedUserType == 'H' ?
                 <>

@@ -218,20 +218,20 @@ export async function clearCart() {
 }
 
 export function fixPrice(vprice, fixed) {
-  // console.log(`${unit} fixed: `, fixed);
-  let price = vprice;
-  switch(typeof price) {
-    case 'string':
-      price = price.replace(',','.');
-      price = parseFloat(price);
-      break;
-    case 'number':
-      if(typeof fixed !== 'undefined' && fixed>=0) {
-        price = parseFloat(price.toFixed(fixed));
-      }
-      break;
-    default:
-      console.log(`${unit} typeof price: `, typeof price);
-  }
-  return price;  
+    // console.log(`${unit} fixed: `, fixed);
+    let price = vprice;
+    switch (typeof price) {
+        case 'string':
+            price = price.replace(',', '.');
+            price = parseFloat(price);
+            break;
+        case 'number':
+            if (typeof fixed !== 'undefined' && fixed >= 0) {
+                price = parseFloat(price.toFixed(fixed));
+            }
+            break;
+        default:
+            console.log(`${unit} typeof price: `, typeof price);
+    }
+    return price;
 }

@@ -4,6 +4,7 @@ import { Alert, ScrollView, Platform, View } from 'react-native';
 import FooterButton from '../../common/footer-button';
 import PaymentOption from '../../common/payment-option';
 import Loading from '../loading';
+import { getPreviewProductData } from '../../gets/productPosts';
 
 const unit = '<Payment>';
 
@@ -22,29 +23,28 @@ class Payment extends Component {
   }
 
   handlePayClick() {
-    // console.log('...................................................................................');
-    // console.log('<PAYMENT> Cart:', this.props);
     const products = this.props.cart.length;
-    // console.log('<PAYMENT> Products:', products);
-    // console.log('...................................................................................');
     if (products > 0) {
       switch (this.state.selected) {
         case 'PayPalPlus':
           this.props.navigation.navigate("WebPayPal", { CartData: this.state.data });
           break;
-        case 'AmazonPay':
-          this.props.navigation.navigate("AmazonLoginWebView", { CartData: this.state.data });
-          break;
+        // case 'AmazonPay':
+        //   this.props.navigation.navigate("AmazonLoginWebView", { CartData: this.state.data });
+        //   break;
         case 'Vorkasse':
           this.props.navigation.navigate("PrePayment", { CartData: this.state.data, Payment: 'Vorkasse', PaymentID: 5 });
+          break;
+        case 'Kauf auf rechnung':
+          this.props.navigation.navigate("PayPalRechung", { CartData: this.state.data });
           break;
         case 'ApplePay':
           this.payWithApplePay();
           break;
         default:
           Alert.alert(
-            // 'WÄHLEN SIE DIE ZAHLUNGSMETHODE', '',
-            'ВЫБЕРИТЕ МЕТОД ОПЛАТЫ', '',
+            'WÄHLEN SIE DIE ZAHLUNGSMETHODE', '',
+            // 'ВЫБЕРИТЕ МЕТОД ОПЛАТЫ', '',
             [{ text: 'OK', onPress: () => null }],
             { cancelable: false },
           );
@@ -52,8 +52,8 @@ class Payment extends Component {
       }
     } else {
       Alert.alert(
-        'Ваш заказ уже обработан. Вернитесь в главное меню, чтобы разместить новый заказ', '',
-        // 'Ihre Bestellung wurde bereits bearbeitet. Kehren Sie zum Hauptmenü zurück, um eine neue Bestellung aufzugeben', '',
+        // 'Ваш заказ уже обработан. Вернитесь в главное меню, чтобы разместить новый заказ', '',
+        'Ihre Bestellung wurde bereits bearbeitet. Kehren Sie zum Hauptmenü zurück, um eine neue Bestellung aufzugeben', '',
         [{ text: 'Main', onPress: () => this.props.navigation.navigate('Main') }],
         { cancelable: false },
       );
@@ -104,7 +104,8 @@ class Payment extends Component {
   }
 
   render() {
-    console.log(`${unit} state:`, this.state);
+    console.log(`state in payments:`, this.state);
+    console.log(`props in payments:`, this.props);
     if (this.state.loading) return <Loading />;
     return (
       <View style={{ flex: 1 }}>
@@ -115,15 +116,21 @@ class Payment extends Component {
             imageSource={require('../../assets/payments/PayPalPlus.png')}
           />
           <PaymentOption
+            onPress={() => this.setState({ selected: 'Kauf auf rechnung' })}
+            selected={this.isSelected('Kauf auf rechnung')}
+          // imageSource={require('../../assets/payments/Vorkasse.png')}
+          />
+          {/* <PaymentOption
             onPress={() => this.setState({ selected: 'AmazonPay' })}
             selected={this.isSelected('AmazonPay')}
             imageSource={require('../../assets/payments/AmazonPay.png')}
-          />
+          /> */}
           <PaymentOption
             onPress={() => this.setState({ selected: 'Vorkasse' })}
             selected={this.isSelected('Vorkasse')}
             imageSource={require('../../assets/payments/Vorkasse.png')}
           />
+
           {/* <PaymentOption
             onPress={() => this.setState({ selected: 'TelePoints' })}
             selected={this.isSelected('TelePoints')}

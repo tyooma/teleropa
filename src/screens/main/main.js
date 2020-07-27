@@ -134,8 +134,9 @@ class Main extends Component {
     }
 
     getServices() {
-        return this.props.mainPage.services.filter(({ img_url, text, title, }) => {            
-            return <TeleropaService text={text} image={{ uri: img_url }} title={title} />
+        return this.props.mainPage.services.filter(({ img_url, text, title, }) => {
+            console.log("img_url", img_url)
+            return <TeleropaService text={text} image={{ src:'https://'+img_url }} title={title} />
         })
     }
 
@@ -160,6 +161,7 @@ class Main extends Component {
     }
 
     render() {
+        console.log("this.prosp", this.props)
         if (
             !this.props.mainPage.categories ||
             // !this.props.mainPage.brands || 

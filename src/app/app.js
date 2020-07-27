@@ -80,6 +80,7 @@ import TermsDeliveryPayment from '../screens/terms-delivery-payment';
 import TermsReturn from '../screens/terms-return';
 import UserTypeSelection from '../screens/user-type-selection';
 import WebPayPal from '../screens/payment/WebPayPal';
+import PayPalRechung from '../screens/payment/PayPalRechung';
 import WhatsApp from '../screens/whatsapp';
 
 import { YellowBox } from 'react-native';
@@ -371,6 +372,7 @@ const AppStackNavigator = createStackNavigator(
     DeliveryService: DeliveryService,
     CartPreview: CartPreview,
     WebPayPal: WebPayPal,
+    PayPalRechung: PayPalRechung,
     ProductsByPoint: ProductsByPoint,
   },
   {
