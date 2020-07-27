@@ -4,6 +4,7 @@ import { Alert, ScrollView, Platform, View } from 'react-native';
 import FooterButton from '../../common/footer-button';
 import PaymentOption from '../../common/payment-option';
 import Loading from '../loading';
+import { getPreviewProductData } from '../../gets/productPosts';
 
 const unit = '<Payment>';
 
@@ -11,7 +12,7 @@ class Payment extends Component {
   static navigationOptions = { title: 'Zahlungsweise' }
 
   state = {
-    selected: 'PayPalPlus',
+    selected: 'PayPal',
     data: this.props.navigation.getParam('data', null),
     loading: false,
   }
@@ -22,14 +23,10 @@ class Payment extends Component {
   }
 
   handlePayClick() {
-    // console.log('...................................................................................');
-    // console.log('<PAYMENT> Cart:', this.props);
     const products = this.props.cart.length;
-    // console.log('<PAYMENT> Products:', products);
-    // console.log('...................................................................................');
     if (products > 0) {
       switch (this.state.selected) {
-        case 'PayPalPlus':
+        case 'PayPal':
           this.props.navigation.navigate("WebPayPal", { CartData: this.state.data });
           break;
         // case 'AmazonPay':
@@ -38,13 +35,16 @@ class Payment extends Component {
         case 'Vorkasse':
           this.props.navigation.navigate("PrePayment", { CartData: this.state.data, Payment: 'Vorkasse', PaymentID: 5 });
           break;
+        case 'Rechnung':
+          this.props.navigation.navigate("PayPalRechung", { CartData: this.state.data });
+          break;
         case 'ApplePay':
           this.payWithApplePay();
           break;
         default:
           Alert.alert(
-            // 'WÄHLEN SIE DIE ZAHLUNGSMETHODE', '',
-            'ВЫБЕРИТЕ МЕТОД ОПЛАТЫ', '',
+            'WÄHLEN SIE DIE ZAHLUNGSMETHODE', '',
+            // 'ВЫБЕРИТЕ МЕТОД ОПЛАТЫ', '',
             [{ text: 'OK', onPress: () => null }],
             { cancelable: false },
           );
@@ -52,8 +52,8 @@ class Payment extends Component {
       }
     } else {
       Alert.alert(
-        'Ваш заказ уже обработан. Вернитесь в главное меню, чтобы разместить новый заказ', '',
-        // 'Ihre Bestellung wurde bereits bearbeitet. Kehren Sie zum Hauptmenü zurück, um eine neue Bestellung aufzugeben', '',
+        // 'Ваш заказ уже обработан. Вернитесь в главное меню, чтобы разместить новый заказ', '',
+        'Ihre Bestellung wurde bereits bearbeitet. Kehren Sie zum Hauptmenü zurück, um eine neue Bestellung aufzugeben', '',
         [{ text: 'Main', onPress: () => this.props.navigation.navigate('Main') }],
         { cancelable: false },
       );
@@ -104,15 +104,21 @@ class Payment extends Component {
   }
 
   render() {
-    console.log(`${unit} state:`, this.state);
+    console.log(`state in payments:`, this.state);
+    console.log(`props in payments:`, this.props);
     if (this.state.loading) return <Loading />;
     return (
       <View style={{ flex: 1 }}>
         <ScrollView style={{ marginHorizontal: 18 }}>
           <PaymentOption
-            onPress={() => this.setState({ selected: 'PayPalPlus' })}
-            selected={this.isSelected('PayPalPlus')}
+            onPress={() => this.setState({ selected: 'PayPal' })}
+            selected={this.isSelected('PayPal')}
             imageSource={require('../../assets/payments/PayPalPlus.png')}
+          />
+          <PaymentOption
+            onPress={() => this.setState({ selected: 'Rechnung' })}
+            selected={this.isSelected('Kauf auf rechnung')}
+            imageSource={require('../../assets/payments/Rechnung.png')}
           />
           {/* <PaymentOption
             onPress={() => this.setState({ selected: 'AmazonPay' })}
