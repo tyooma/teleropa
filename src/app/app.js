@@ -79,8 +79,9 @@ import TermsConfidentiality from '../screens/terms-confidentiality';
 import TermsDeliveryPayment from '../screens/terms-delivery-payment';
 import TermsReturn from '../screens/terms-return';
 import UserTypeSelection from '../screens/user-type-selection';
-import WebPayPal from '../screens/payment/WebPayPal';
-import PayPalRechung from '../screens/payment/PayPalRechung';
+// import WebPayPal from '../screens/payment/WebPayPal';
+// import PayPalRechnung from '../screens/payment/PayPalRechnung';
+import PayPal from '../screens/payment/PayPal';
 import WhatsApp from '../screens/whatsapp';
 
 import { YellowBox } from 'react-native';
@@ -371,8 +372,9 @@ const AppStackNavigator = createStackNavigator(
     CategoryInfo: CategoryInfo,
     DeliveryService: DeliveryService,
     CartPreview: CartPreview,
-    WebPayPal: WebPayPal,
-    PayPalRechung: PayPalRechung,
+    // WebPayPal: WebPayPal,
+    // PayPalRechnung: PayPalRechnung,
+    PayPal: PayPal,
     ProductsByPoint: ProductsByPoint,
   },
   {

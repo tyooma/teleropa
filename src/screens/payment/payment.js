@@ -4,7 +4,6 @@ import { Alert, ScrollView, Platform, View } from 'react-native';
 import FooterButton from '../../common/footer-button';
 import PaymentOption from '../../common/payment-option';
 import Loading from '../loading';
-import { getPreviewProductData } from '../../gets/productPosts';
 
 const unit = '<Payment>';
 
@@ -22,28 +21,25 @@ class Payment extends Component {
     return false
   }
 
-  handlePayClick() {
+  onPay() {
     const products = this.props.cart.length;
     if (products > 0) {
+      const cart = this.state.data;
       switch (this.state.selected) {
         case 'PayPal':
-          this.props.navigation.navigate("WebPayPal", { CartData: this.state.data });
-          break;
-        // case 'AmazonPay':
-        //   this.props.navigation.navigate("AmazonLoginWebView", { CartData: this.state.data });
-        //   break;
-        case 'Vorkasse':
-          this.props.navigation.navigate("PrePayment", { CartData: this.state.data, Payment: 'Vorkasse', PaymentID: 5 });
+          this.props.navigation.navigate('PayPal', { CartData: cart, Payment: 'PayPal', PaymentID: 28 });
           break;
         case 'Rechnung':
-          this.props.navigation.navigate("PayPalRechung", { CartData: this.state.data });
+          this.props.navigation.navigate('PayPal', { CartData: cart, Payment: 'Rechnung', PaymentID: 28 });
+          break;
+        case 'Vorkasse':
+          this.props.navigation.navigate('PrePayment', { CartData: cart, Payment: 'Vorkasse', PaymentID: 5 });
           break;
         case 'ApplePay':
           this.payWithApplePay();
           break;
         default:
-          Alert.alert(
-            'WÄHLEN SIE DIE ZAHLUNGSMETHODE', '',
+          Alert.alert('WARNUNG!', 'WÄHLEN SIE DIE ZAHLUNGSMETHODE',
             // 'ВЫБЕРИТЕ МЕТОД ОПЛАТЫ', '',
             [{ text: 'OK', onPress: () => null }],
             { cancelable: false },
@@ -106,6 +102,7 @@ class Payment extends Component {
   render() {
     console.log(`state in payments:`, this.state);
     console.log(`props in payments:`, this.props);
+
     if (this.state.loading) return <Loading />;
     return (
       <View style={{ flex: 1 }}>
@@ -113,11 +110,13 @@ class Payment extends Component {
           <PaymentOption
             onPress={() => this.setState({ selected: 'PayPal' })}
             selected={this.isSelected('PayPal')}
-            imageSource={require('../../assets/payments/PayPalPlus.png')}
+            text={'PayPal'}
+            imageSource={require('../../assets/payments/PayPal.png')}
           />
           <PaymentOption
             onPress={() => this.setState({ selected: 'Rechnung' })}
-            selected={this.isSelected('Kauf auf rechnung')}
+            selected={this.isSelected('Rechnung')}
+            text={'Kauf auf Rechnung'}
             imageSource={require('../../assets/payments/Rechnung.png')}
           />
           {/* <PaymentOption
@@ -128,6 +127,7 @@ class Payment extends Component {
           <PaymentOption
             onPress={() => this.setState({ selected: 'Vorkasse' })}
             selected={this.isSelected('Vorkasse')}
+            text={'Vorkasse'}
             imageSource={require('../../assets/payments/Vorkasse.png')}
           />
           {
@@ -140,7 +140,7 @@ class Payment extends Component {
               : null
           }
         </ScrollView>
-        <FooterButton text='Zahlungspflichtig bestellen' onPress={() => this.handlePayClick()} />
+        <FooterButton text='Zahlungspflichtig bestellen' onPress={() => this.onPay()} />
       </View>
     );
   }

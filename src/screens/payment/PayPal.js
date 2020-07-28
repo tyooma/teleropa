@@ -4,24 +4,26 @@ import { View, ToastAndroid, Alert } from 'react-native';
 import { WebView } from 'react-native-webview';
 import base64 from 'react-native-base64';
 import Loading from '../loading';
-import { addToCart, minusFromCart, deleteFromCart, clearCart } from '../../functions/cart-funcs';
+import { clearCart } from '../../functions/cart-funcs';
 
-const unit = '<WebPayPal>';
+const unit = '<PayPal>';
 
-export class WebPayPal extends Component {
+export class PayPal extends Component {
   constructor(props) {
     super(props);
     this.state = {
       cart: this.props.navigation.getParam('CartData').cartInfo,
+      productsBonus: this.props.navigation.getParam('CartData').cartInfo.products.filter(p => p.methodMoney==='buyOfPoints'),
+      productsMoney: this.props.navigation.getParam('CartData').cartInfo.products.filter(p => p.methodMoney==='buyOfMoney'),
+
       delivery: this.props.navigation.getParam('CartData').deliveryData,
       user: this.props.navigation.getParam('CartData').userInfo,
       // PAYPAL section
-      paymentId: '',
-      access_token: '',
+      paymentId: null,
+      access_token: null,
       approvalUrl: null,
-      // count: true,
-      // url: false,
-      // id: '',
+      count: true,
+
       loading: false,      
     }
   }
@@ -35,12 +37,11 @@ export class WebPayPal extends Component {
     //const seller_password = 'EPBftFl3oHshi5rBEYudrbsCho_aqm1-ynQYkJbW3T0z3APbEt4g76lI01EZs_zLnYexSWScCIU7Ex6K';//Sandbox
     const seller_username = 'AcIGgF0XrYF4her0z9zSlXCuUnqEDazkaM0DDU5emhhp70UggARzDbd5LW1yQhr8qEaV2Q7r-AmK3bHH';
     const seller_password = 'EHN2OcacoZFk8823hZ_oWXHoI_T-SmtDcs2XklW07F0Lwd57Tjjs9C63hdz_5woXimmEenYveCY2zMtF';
-    
-    const orderPrice = this.state.cart.discountValue;
-    const deliveryPrice = this.state.delivery.deliveryPrice;
-    
     const token = base64.encode(`${seller_username}:${seller_password}`);
     // console.log(`${unit} -- TOKEN: `, token);
+
+    const orderPrice = this.state.cart.discountValue;
+    const deliveryPrice = this.state.delivery.deliveryPrice;
 
     try {
       // Get AccessToken for PayPal
@@ -58,13 +59,6 @@ export class WebPayPal extends Component {
         .then(res => { return res.json() })
         .then(json => { return json.access_token })
         .then(access_token => {
-          const name = this.state.user.name;
-          const surname = this.state.user.surname;
-          const phone = this.state.user.phone;
-          const street = this.state.user.street;
-          const city = this.state.user.city;
-          const post = this.state.user.post;
-
           const PAYMENT = {
             intent: 'sale',
             payer: { payment_method: 'paypal' },
@@ -85,12 +79,12 @@ export class WebPayPal extends Component {
                   }
                 }),
                 shipping_address: {
-                  recipient_name: `${name} ${surname}`,
-                  line1: street,
-                  city: city,
+                  recipient_name: `${this.state.user.name} ${this.state.user.surname}`,
+                  line1: this.state.user.street,
+                  city: this.state.user.city,
                   country_code: 'DE',
-                  postal_code: post,
-                  phone: phone,
+                  postal_code: this.state.user.post,
+                  phone: this.state.user.phone,
                 },
               },
             }],
@@ -114,25 +108,32 @@ export class WebPayPal extends Component {
             .then(res => res.json())
             .then(json => {
               console.log('JSON:', json);
-              const { id, links } = json;
-              const approvalUrl = links.find(data => data.rel === 'approval_url');
-
-              this.setState({
-                paymentId: id, approvalUrl: approvalUrl.href, access_token: access_token
-              });
+              const { id, links, name, information_link, details } = json;
+              if ( typeof name !== 'undefined' && name === 'VALIDATION_ERROR' ) {
+                console.log(`${unit}: Payment Validation Error!`);
+                Alert.alert(`PayPal Payment Validation Error!`,`${details[0].issue}`,
+                  [{ text: 'OK', onPress: () => this.props.navigation.navigate('Cart') }],
+                  { cancelable: false },
+                );
+              } else {
+                const approvalUrl = links.find(data => data.rel === 'approval_url');
+                this.setState({
+                  paymentId: id, approvalUrl: approvalUrl.href, access_token: access_token
+                });
+              }
             })
             .catch(err => {
-              console.log('Payment-Fetch Eror:', err);
+              console.log('Payment-Fetch Catch-Eror:', err);
               Alert.alert(
-                // "Bitte geben Sie eine gültige Lieferadresse ein", '',
-                'Пожалуйста, введите действительный адрес доставки!','',
+                'WARNUNG!', 'Bitte geben Sie eine gültige Lieferadresse ein',
+                // 'Пожалуйста, введите действительный адрес доставки!','',
                 [{ text: 'OK', onPress: () => this.props.navigation.navigate('Cart') }],
                 { cancelable: false },
               );
             });
         })
         .catch(err => {
-          console.log('Token-Fetch Eror:', err);
+          console.log('Token-Fetch Catch-Eror:', err);
         });
     } catch (err) {
       console.log('Try-Catch Eror:', err);
@@ -140,7 +141,7 @@ export class WebPayPal extends Component {
   }
 
   _onNavigationStateChange = (webViewState) => {
-    console.log('webViewState', webViewState)
+    console.log('<onNavigationStateChange>...............webViewState', webViewState);
     if (webViewState.url.includes('https://example.com/')) {
       this.setState({
         approvalUrl: null
@@ -149,8 +150,10 @@ export class WebPayPal extends Component {
       const params = webViewState.url.toString();
       const p = params.indexOf('PayerID=');    
 
-      // if (p >= 0 && this.state.count) {
-      if (p >= 0) {
+      console.log('<onNavigationStateChange>...............webViewState.url.includes');
+      if (p >= 0 && this.state.count) {
+      // if (p >= 0) {
+        console.log('<onNavigationStateChange>...............webViewState.url.includes  P>=0');
         this.setState({ count: false });
         const l = params.length;
         const res = params.substring(p, l).replace('PayerID=', "");
@@ -167,22 +170,21 @@ export class WebPayPal extends Component {
       fetch('https://api.paypal.com/v1/payments/payment/' + this.state.paymentId + '/execute', {
         method: 'POST',
         headers: {
-          accept: 'application/json',
+          'Accept': 'application/json',
           'Authorization': 'Bearer ' + this.state.access_token,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          "payer_id": payer
-        })
+        body: JSON.stringify({payer_id: payer})
       })
         .then(response => {
           console.log("response.json();", response.json())
           response.json();
-          new Promise((resolve) => {
-            ToastAndroid.show(`Ihre Zahlung wird nicht bestätigt`, ToastAndroid.LONG);
-            this.props.navigation.navigate('Payment');
-            setTimeout(() => resolve(), 200)
-          })
+
+          // new Promise((resolve) => {
+          //   ToastAndroid.show(`Ihre Zahlung wird nicht bestätigt`, ToastAndroid.LONG);
+          //   this.props.navigation.navigate('Payment');
+          //   setTimeout(() => resolve(), 200)
+          // })
         })
         .then(responseJson => {
           console.log("responseJson11111111111", responseJson)
@@ -203,6 +205,7 @@ export class WebPayPal extends Component {
             this.props.navigation.navigate('Payment');
           }
         })
+
     } catch (error) {
       Alert.alert(
         "Ihr Gerätecode ", error,
@@ -243,4 +246,4 @@ export class WebPayPal extends Component {
 
 const mapStateToProps = ({ userInfo, userID }) => ({ userInfo, userID });
 
-export default connect(mapStateToProps)(WebPayPal);
+export default connect(mapStateToProps)(PayPal);

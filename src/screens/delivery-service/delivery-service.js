@@ -1,21 +1,22 @@
 import React, { Component } from 'react';
-import { View, Text, Image, ScrollView } from 'react-native';
+import { Alert, View, Text, Image, ScrollView } from 'react-native';
 import FooterButton from '../../common/footer-button';
 import DeliveryOption from '../../common/delivery-option';
 import { BoxShadow } from 'react-native-shadow';
 import { sWidth } from '../../helpers/screenSize';
 import Loading from '../loading';
 import { getDeliverySuppliers } from '../../gets/ordersPosts';
-import Toast from 'react-native-root-toast';
 import NavigationService from '../../navigation-service';
 
-import { fixPrice } from '../../functions/cart-funcs';
-
-const unit = 'DeliveryService';
+const unit = '<DeliveryService>';
 
 export default class DeliveryService extends Component {
   static navigationOptions = { title: 'Versandart wählen' };
-
+  
+  constructor(props) {
+    super(props);
+    this.SelectionChange = this.SelectionChange.bind(this);
+  }
   state = {
     productsPrice: 0,
     deliveryPrice: 0,
@@ -24,47 +25,46 @@ export default class DeliveryService extends Component {
     services: [],
     loaded: false
   }
-
   isSelected(id) { return id === this.state.selected }
 
-  componentDidMount() {
-    const productsPrice = this.props.navigation.getParam('productsPrice', 0);
-    this.setState({ productsPrice });
+  componentWillMount() {
+    const productsPrice = this.props.navigation.getParam('data', null).discountValue;
+    // console.log('productsPrice:',productsPrice);
     getDeliverySuppliers()
     .then(services => {
-      this.setState({ services, loaded: true });
+      this.setState({ productsPrice: productsPrice, services: services, loaded: true });
+    })
+    .catch(err => {
+      console.log('getDeliverySuppliers fetchEror:', err);
     });
   }
 
-  getDeliveryOptions() {
-    return this.state.services.map(({ id, description, name }) => (
+  DeliveryOptions() {
+    return this.state.services.map(({ id, name, description, shippingFree, costs }) => (
       <DeliveryOption
-        onPress={() => this.handleSelectionChange(id, name)}
-        selected={this.isSelected(id)}
-        name={name}
-        description={description}
         key={id}
+        SelectionChange={this.SelectionChange}
+        selected={this.isSelected(id)}
+        id={id}
+        name={name}
+        shippingFree={shippingFree}
+        costs={costs}
+        description={description}
       />
     ));
   }
 
-  handleSelectionChange(selected, name) {
-    this.setState({ selected, name }, this.getDeliveryPrice);
-  }
-
-  getDeliveryPrice() {
-    const deliveryOption = this.state.services.find((service) => service.id === this.state.selected);
-    const Q = deliveryOption.costs.sort((first, second) => (first.from > second.from) ? 1 : ((second.from > first.from) ? -1 : 0));
-    const price = deliveryOption.costs.reverse().find(({ from }) => from < this.state.productsPrice);
-    if(price) {
-      this.setState({ deliveryPrice: price.value });
-    } else {
-      this.setState({ deliveryPrice: deliveryOption.shippingFree });
-    }
+  SelectionChange(id, name, shippingFree, costs) {
+    // console.log('SelectionChange..................................................');
+    // console.log('id:',id,'name:',name,'shippingFree:',shippingFree,'costs:',costs);
+    const price = costs.reverse().find(({ from }) => from < this.state.productsPrice);
+    let deliveryPrice = shippingFree;
+    if(price) { deliveryPrice = price.value; }
+    this.setState({ selected: id, name: name, deliveryPrice: deliveryPrice });
   }
 
   render() {
-    console.log(unit, 'this.state:', this.state);
+    console.log(unit, 'RENDER => this.state:', this.state);
 
     const shadowOpt = {
       width: sWidth,
@@ -82,7 +82,7 @@ export default class DeliveryService extends Component {
     return (
       <View style={{ flex: 1 }}>
         <ScrollView style={{ paddingHorizontal: 18 }}>
-          {this.getDeliveryOptions()}
+          {this.DeliveryOptions()}
         </ScrollView>
         <BoxShadow setting={shadowOpt}>
           <View style={s.footerSummaryContainer}>
@@ -99,7 +99,8 @@ export default class DeliveryService extends Component {
             ?
             NavigationService.navigate('CartPreview', { userInfo: { ...this.props.navigation.getParam('userInfo', null) }, data: { ...this.props.navigation.getParam('data', null) }, deliveryData: { ...this.state } })
             :
-            Toast.show('Versandart wählen', {shadow: false, backgroundColor: '#505050', duration: 1500})
+            Alert.alert('Versandart wählen', '', [{ text: 'OK', onPress: () => null }], { cancelable: false })
+            // Toast.show('Versandart wählen', {shadow: false, backgroundColor: '#505050', duration: 1500})
           }
         />
       </View>
