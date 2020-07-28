@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, View, Text, Image, ScrollView } from 'react-native';
+import { Alert, ScrollView, Text, View } from 'react-native';
 import FooterButton from '../../common/footer-button';
 import DeliveryOption from '../../common/delivery-option';
 import { BoxShadow } from 'react-native-shadow';
@@ -17,6 +17,7 @@ export default class DeliveryService extends Component {
     super(props);
     this.SelectionChange = this.SelectionChange.bind(this);
   }
+
   state = {
     productsPrice: 0,
     deliveryPrice: 0,
@@ -25,6 +26,7 @@ export default class DeliveryService extends Component {
     services: [],
     loaded: false
   }
+
   isSelected(id) { return id === this.state.selected }
 
   componentWillMount() {
@@ -32,7 +34,16 @@ export default class DeliveryService extends Component {
     // console.log('productsPrice:',productsPrice);
     getDeliverySuppliers()
     .then(services => {
-      this.setState({ productsPrice: productsPrice, services: services, loaded: true });
+      let delivery = [];
+      services.map(service => {
+        if(service.costs.reverse().find(({ from }) => from < productsPrice) !== undefined) {
+          delivery.push(service);
+        }
+      });
+      // console.log('delivery:', delivery);
+      this.setState({
+        productsPrice: productsPrice, services: delivery, loaded: true
+      });
     })
     .catch(err => {
       console.log('getDeliverySuppliers fetchEror:', err);
@@ -100,7 +111,6 @@ export default class DeliveryService extends Component {
             NavigationService.navigate('CartPreview', { userInfo: { ...this.props.navigation.getParam('userInfo', null) }, data: { ...this.props.navigation.getParam('data', null) }, deliveryData: { ...this.state } })
             :
             Alert.alert('Versandart wählen', '', [{ text: 'OK', onPress: () => null }], { cancelable: false })
-            // Toast.show('Versandart wählen', {shadow: false, backgroundColor: '#505050', duration: 1500})
           }
         />
       </View>
