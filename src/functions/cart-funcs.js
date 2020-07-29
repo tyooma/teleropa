@@ -178,7 +178,7 @@ export async function minusFromCart(id, bonus, selected) {
     }
 }
 
-export async function deleteFromCart(id, selected) {
+export async function deleteFromCart(id, bonus, selected) {
     try {
         await AsyncStorage.getItem("Cart", (err, res) => {
             const cart = JSON.parse(res);

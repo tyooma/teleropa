@@ -273,6 +273,8 @@ class Cart extends Component {
   }
 
   render() {
+    console.log(this.props);
+
     const shadowOpt = {
       width: sWidth,
       height: 50,

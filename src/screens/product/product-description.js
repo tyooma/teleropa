@@ -346,7 +346,7 @@ class ProductDescription extends Component {
             {this.getDescButton()}
           </View>
 
-          <FooterAgreement />
+          {/* <FooterAgreement /> ДОБАВИТЬ КОГДА ЗАПЛАТЯТ!!!  */}
 
           <TouchableOpacity
             style={styles.subscribeButton}
