@@ -500,26 +500,7 @@ const AppStackNavigator = createStackNavigator(
             }
           }
 
-          return {
-            headerLeft: MenuButton,
-            headerBackImage: BackButton,
-            headerBackTitle: null,
-            headerStyle: { backgroundColor: '#d10019' },
-            headerTintColor: '#fff',
-            headerTitleStyle: {
-              fontSize: 16,
-              marginLeft: 0,
-              left: 0
-            },
-            headerTitleContainerStyle: {
-              width: sWidth - 95,
-              marginLeft: 0,
-              justifyContent: 'flex-start',
-              left: 56,
-              paddingLeft: 0
-            },
-            headerLeftContainerStyle: { flex: 1, marginLeft: Platform.OS === 'ios' ? 0 : -10 }
-          }
+        
         }
       } catch{
         return {

@@ -123,7 +123,7 @@ export async function addToCart(id, bonus, selected, userPoints) {
 
                             }
                         } else if (selected == "buyOfMoney") {
-                            if (CheckMoney.length > 3) {
+                            if (CheckMoney.length > 2) {
                                 Toast.show("Nicht mehr als 3 Artikel pro €", {
                                     shadow: false,
                                     backgroundColor: "#505050",
