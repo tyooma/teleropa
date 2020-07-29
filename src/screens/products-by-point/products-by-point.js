@@ -14,7 +14,7 @@ import FooterButton from '../../common/footer-button';
 
 import BonusListItem from '../../common/bonus-list-item';
 
-import { getPreviewProductData, getBonusProducts } from '../../gets/productPosts';
+import { getPreviewProductData, getPreviewProductData1, getBonusProducts } from '../../gets/productPosts';
 
 import Loading from '../loading';
 
@@ -47,9 +47,11 @@ class ProductsByPoint extends Component {
     }
 
 
-    componentDidMount() {
+    async componentDidMount() {
         var arr = [];
         var sorted = [];
+
+
         const title = this.props.navigation.getParam('title', null)
         const userInfo = this.props.navigation.getParam('userInfo', null)
 
@@ -67,27 +69,37 @@ class ProductsByPoint extends Component {
         switch (title) {
             case 'TELEPOINTS':
                 try {
-                    getBonusProducts()
-                        .then(responseJson => {
-                            responseJson.map(x => {
-                                getPreviewProductData(x.productID)
-                                    .then(res => {
-                                        if (res.status != "404" && res.stock > 0) {
-                                            arr.push({ ...res, productID: x.productID, bonuspoint: x.required_points, })
-                                            sorted = arr.sort((first, second) => (Number(first.bonuspoint) < Number(second.bonuspoint)) ? -1 : ((Number(second.bonuspoint) < Number(first.bonuspoint)) ? 1 : 0))
-                                            this.setState({ sortedData: sorted, loaded: true, userInfo: userInfo })
-                                        }
-                                    })
+                    let getBonusProductsJSON = await getBonusProducts()
+                    count = getBonusProductsJSON.length;
+                    count1 = 0;
+                    getBonusProductsJSON.map((x) => {
+                        let respJSON = getPreviewProductData1(x.productID)
+                        respJSON
+                            .then(ResponseRespJSON => {
+                                count1++;
+                                if (ResponseRespJSON.status != "404" && ResponseRespJSON.stock > 0) {
+                                    arr.push({ ...ResponseRespJSON, productID: x.productID, bonuspoint: x.required_points, })
+                                    //sorted = arr.sort((first, second) => (Number(first.bonuspoint) < Number(second.bonuspoint)) ? -1 : ((Number(second.bonuspoint) < Number(first.bonuspoint)) ? 1 : 0))
+                                    //this.setState({ sortedData: sorted, loaded: true, userInfo: userInfo })
+                                }
+                                if (count === count1) {
+                                    sorted = arr.sort((first, second) => (Number(first.bonuspoint) < Number(second.bonuspoint)) ? -1 : ((Number(second.bonuspoint) < Number(first.bonuspoint)) ? 1 : 0))
+                                    this.setState({ sortedData: sorted, loaded: true, userInfo: userInfo })
+                                }
                             })
-                        })
+
+                    })
+                    console.log("ТУт ложится хуйня сортированная")
+
                 } catch (e) {
                     console.warn(e);
                 }
                 break;
-            default: break
+            default: this.props.navigation.navigate('Main');
         }
 
     }
+
 
     getIDs(ids, fromPrice, toPrice, sortBy) {
 
@@ -130,12 +142,13 @@ class ProductsByPoint extends Component {
                     // data={!sorted.length ? this.state.data : sorted}
                     data={this.state.sortedData}
                     renderItem={({ item, index }) => {
+
                         const { companyPrice, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, productID, tax, bonuspoint, } = item
                         return (
-                            <View style={{ paddingBottom: 8 }}>
+                            <View key={index} style={{ paddingBottom: 8 }}>
                                 <BonusListItem
+                                    key={index}
                                     name={productName}
-                                    key={productID}
                                     price={this.props.userInfo.selectedUserType === 'EK' ? price.replace(/,/, '.') : companyPrice.replace(/,/, '.')}
                                     salePrice={salePrice.replace(/,/, '.') != 0 ? 'UVP ' + salePrice.replace(/,/, '.') : ''}
                                     companyPrice={companyPrice.replace(/,/, '.')}

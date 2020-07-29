@@ -12,7 +12,7 @@ import Loading from '../loading'
 import Input from '../../common/input';
 import ModalView from '../../common/modal-view';
 import { getPreviewAsyncProductData, getPromocodeData } from '../../gets/productPosts';
-import { addToCart, minusFromCart, deleteFromCart, clearCart } from '../../functions/cart-funcs'; 
+import { addToCart, minusFromCart, deleteFromCart, clearCart } from '../../functions/cart-funcs';
 
 import { fixPrice } from '../../functions/cart-funcs';
 
@@ -31,11 +31,11 @@ getCounter = (order, pcs, id, onMinus, onAdd, methodMoney, bonus) => {
     return (
       <>
         <TouchableOpacity style={styles.minusPlusButton} onPress={() => onMinus(id, bonus, methodMoney)}>
-          <Image source={require('../../assets/icons/036-minus.png')} style={styles.minusPlusButtonImage} key={id+methodMoney+'cartMinusItem'} />
+          <Image source={require('../../assets/icons/036-minus.png')} style={styles.minusPlusButtonImage} key={id + methodMoney + 'cartMinusItem'} />
         </TouchableOpacity>
         <Text style={styles.countText}>{pcs}</Text>
         <TouchableOpacity style={styles.minusPlusButton} onPress={() => onAdd(id, bonus, methodMoney)}>
-          <Image source={require('../../assets/icons-color/035-more2.png')} style={styles.minusPlusButtonImage} key={id+methodMoney+'cartPlusItem'} />
+          <Image source={require('../../assets/icons-color/035-more2.png')} style={styles.minusPlusButtonImage} key={id + methodMoney + 'cartPlusItem'} />
         </TouchableOpacity>
       </>
     )
@@ -50,11 +50,11 @@ export const CartItem = ({ img, name, pcs, price, companyPrice, selectedUserType
       <View style={{ flexDirection: 'row' }}>
         {img ?
           <View>
-            <ImageLoader style={styles.cartItemImage} source={{ uri: img }} key={id+methodMoney+img} />
+            <ImageLoader style={styles.cartItemImage} source={{ uri: img }} key={id + methodMoney + img} />
           </View>
           :
           <View>
-            <Image style={styles.cartItemImage} source={require('../../assets/message-icons/no-photo.png')} key={id+methodMoney+'no-image'} />
+            <Image style={styles.cartItemImage} source={require('../../assets/message-icons/no-photo.png')} key={id + methodMoney + 'no-image'} />
           </View>
         }
         <View style={{ flex: 1 }}>
@@ -94,7 +94,7 @@ export const CartItem = ({ img, name, pcs, price, companyPrice, selectedUserType
         {
           !order ?
             <TouchableOpacity style={styles.deleteButton} onPress={() => onDelete(id)}>
-              <Image source={require('../../assets/icons/009-close.png')} style={styles.deleteButtonImage} key={id+methodMoney+'deleteFromCartButton'} />
+              <Image source={require('../../assets/icons/009-close.png')} style={styles.deleteButtonImage} key={id + methodMoney + 'deleteFromCartButton'} />
             </TouchableOpacity>
             :
             null
@@ -132,7 +132,7 @@ class Cart extends Component {
 
   componentDidMount() { if (!this.state.cartReceaved) { this.init() } }
 
-  async componentWillReceiveProps(props) { 
+  async componentWillReceiveProps(props) {
     if (this.state.cartReceaved == true) { await this.initAfterUpdate(props.cart) }
   }
 
@@ -140,7 +140,7 @@ class Cart extends Component {
     const cart = this.props.cart;
     // console.log('init() => cart:', cart);
     // console.log('init() => this.state.products:', this.state.products);
-    if(cart.length > 0 && !this.state.cartReceaved) {
+    if (cart.length > 0 && !this.state.cartReceaved) {
       this.setState({ cartReceaved: true })
     }
     cart.map(({ id, count, bonus, selected }) => {
@@ -170,7 +170,7 @@ class Cart extends Component {
     return this.state.products.map(({ id, previewImgURL, productName, price, companyPrice, stock, bonus, count, methodMoney }) => {
       return (
         <CartItem
-          key={id+methodMoney}
+          key={id + methodMoney}
           id={id}
           img={previewImgURL}
           name={productName}
@@ -196,14 +196,14 @@ class Cart extends Component {
 
   getDiscount(price) {
     // console.log('getDiscount: ', this.state.promocodeData);
-    if(this.state.promocodeData!==null) {
+    if (this.state.promocodeData !== null) {
       const { percental, minimumcharge, value } = this.state.promocodeData;
-      if(minimumcharge > price) {
+      if (minimumcharge > price) {
         alert('Der Gutscheincode kann nicht eingelöst werden, weil Ihr Warenkorb-Wert nicht ausreichend ist.');
         this.setState({ promocode: '', promocodeData: null, promocodeValue: 0, discountValue: 0 });
         return price;
       }
-      if(percental) {
+      if (percental) {
         return (price - price / 100 * value);
       }
       return (price - value);
@@ -216,7 +216,7 @@ class Cart extends Component {
   setPrices() {
     // console.log('this.state.products',this.state.products);
 
-    const products = this.state.products.filter(p => p.methodMoney==='buyOfMoney');
+    const products = this.state.products.filter(p => p.methodMoney === 'buyOfMoney');
     let originalProductsPrice, orderVAT, discountProductsPrice;
 
     // const isMoney = products.length;
@@ -225,21 +225,21 @@ class Cart extends Component {
     // console.log('<setPrices> isMoney:', isMoney);
 
     originalProductsPrice = this.props.userInfo.selectedUserType === 'EK' ?
-      products.reduce((sum,{price,count}) => { return sum+price*count }, 0)
+      products.reduce((sum, { price, count }) => { return sum + price * count }, 0)
       :
-      products.reduce((sum,{companyPrice,count}) => { return sum+companyPrice*count }, 0);
+      products.reduce((sum, { companyPrice, count }) => { return sum + companyPrice * count }, 0);
 
     orderVAT = this.props.userInfo.selectedUserType === 'EK' ?
-      products.reduce((sum,{price,tax,count}) => { return (sum+price/(1+(tax/100))*count) }, 0)
+      products.reduce((sum, { price, tax, count }) => { return (sum + price / (1 + (tax / 100)) * count) }, 0)
       :
-      products.reduce((sum,{companyPrice,tax,count}) => { return (sum+companyPrice/(1+(tax/100))*count) }, 0);
+      products.reduce((sum, { companyPrice, tax, count }) => { return (sum + companyPrice / (1 + (tax / 100)) * count) }, 0);
 
     discountProductsPrice = this.getDiscount(originalProductsPrice);
 
     console.log('<setPrices> originalProductsPrice:', originalProductsPrice, '-', typeof originalProductsPrice);
     console.log('<setPrices> discountProductsPrice:', discountProductsPrice, '-', typeof discountProductsPrice);
 
-    if(originalProductsPrice !== this.state.originalProductsPrice || discountProductsPrice !== this.state.discountProductsPrice) {
+    if (originalProductsPrice !== this.state.originalProductsPrice || discountProductsPrice !== this.state.discountProductsPrice) {
       this.setState({
         originalProductsPrice: originalProductsPrice,
         discountProductsPrice: discountProductsPrice,
@@ -250,11 +250,11 @@ class Cart extends Component {
   }
 
   handlePromocodeSubmit() {
-    if(this.state.promocode.length < 1) {
+    if (this.state.promocode.length < 1) {
       return alert('Bitte geben Sie den Gutscheincode ein.');
     }
     getPromocodeData(this.state.promocode).then(promocodeData => {
-      if(promocodeData.status.code === 'success') {
+      if (promocodeData.status.code === 'success') {
         this.setState({ promocodeData });
       }
       Toast.show(promocodeData.status.text, { shadow: false, backgroundColor: '#505050' });
@@ -273,6 +273,7 @@ class Cart extends Component {
   }
 
   render() {
+    console.log("this.props in cart.js", this.props)
     const shadowOpt = {
       width: sWidth,
       height: 50,
@@ -283,7 +284,7 @@ class Cart extends Component {
       x: 0,
       y: 0
     }
-    if(this.isEmpty()) {
+    if (this.isEmpty()) {
       return (
         <View style={styles.emptyCartContainer}>
           <Image style={styles.emptyCartImage} source={require('../../assets/message-icons/cart-empty.png')} />
@@ -321,7 +322,7 @@ class Cart extends Component {
 
             <View style={styles.line}>
               <Text style={styles.summaryText}>zzgl. MwSt.:</Text>
-              <Text style={styles.summaryText}>{(this.state.originalProductsPrice-this.state.orderVAT).toFixed(2)} €</Text>
+              <Text style={styles.summaryText}>{(this.state.originalProductsPrice - this.state.orderVAT).toFixed(2)} €</Text>
             </View>
           </View>
         </ScrollView>

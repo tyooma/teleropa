@@ -29,11 +29,15 @@ export async function addToCart(id, bonus, selected, userPoints) {
                 // Парсим Джсон та записуємо до карточки
                 const cart = JSON.parse(res);
                 const productInCart = cart.find((product) => id === product.id);
+                console.log("productInCart", productInCart)
                 if (productInCart) {
                     const productBuyMethodCart = cart.find((product) => id === product.id && selected === product.selected);
+                    console.log("productBuyMethodCart для поинтов  productBuyMethodCart.count++ ", productBuyMethodCart)
                     if (productBuyMethodCart) {
                         var oddMoney = parseFloat(userPoints) - parseFloat(bonus) * parseFloat(productBuyMethodCart.count);
+                        console.log("oddMoney  для поинтов productBuyMethodCart.count++ ", oddMoney)
                         if (productBuyMethodCart.selected == "buyOfPoints" && productBuyMethodCart.id == id && parseFloat(oddMoney) >= parseFloat(bonus)) {
+                            console.log("Если у нас за Поинты и ид==ид а так все ок")
                             productBuyMethodCart.count++;
                             const newCart = cart.map((product) => {
                                 if (product.id === id && product.selected === selected) {
@@ -41,6 +45,7 @@ export async function addToCart(id, bonus, selected, userPoints) {
                                 }
                                 return product;
                             });
+                            console.log("newCart   для поинтов  productBuyMethodCart.count++;", newCart)
                             store.dispatch(setCart(newCart));
                             AsyncStorage.setItem("Cart", JSON.stringify(newCart));
                             Toast.show("Artikel wurde in den Warenkorb gelegt", {
@@ -49,6 +54,7 @@ export async function addToCart(id, bonus, selected, userPoints) {
                                 duration: 1500,
                             })
                         } else if (productBuyMethodCart.selected == "buyOfMoney" && productBuyMethodCart.id == id) {
+                            console.log("newCart   для за БАБКИ  productBuyMethodCart.count++;")
                             productBuyMethodCart.count++;
                             const newCart = cart.map((product) => {
                                 if (product.id === id && product.selected === selected) {
@@ -57,6 +63,7 @@ export async function addToCart(id, bonus, selected, userPoints) {
                                 }
                                 return product;
                             });
+                            console.log("newCart   для Бабок  productBuyMethodCart.count++;", newCart)
                             store.dispatch(setCart(newCart));
                             AsyncStorage.setItem("Cart", JSON.stringify(newCart));
                             Toast.show("Artikel wurde in den Warenkorb gelegt", {
@@ -73,8 +80,9 @@ export async function addToCart(id, bonus, selected, userPoints) {
                         }
 
                     } else {
-
+                        console.log("ЕЛСЕ ХЗ")
                         const newProduct = { id, count: 1, bonus, selected };
+                        console.log("ЕЛСЕ ХЗ newProduct", newProduct)
                         cart.push(newProduct);
                         store.dispatch(setCart(cart));
                         AsyncStorage.setItem("Cart", JSON.stringify(cart));
@@ -86,56 +94,109 @@ export async function addToCart(id, bonus, selected, userPoints) {
                     }
                 }
                 else {
+                    console.log("cart.length!=0", cart.length)
+
                     if (cart.length != 0) {
                         var CheckMoney = cart.filter(noMoney => noMoney.selected == "buyOfMoney")
                         var CheckPoint = cart.filter(noPoint => noPoint.selected == "buyOfPoints")
-                        cart.map((x) => {
-                            if (x.selected == "buyOfPoints" && x.selected == selected) {
-                                if (CheckPoint.length < 1) {
-                                    const newProduct = { id, count: 1, bonus, selected };
-                                    cart.push(newProduct);
-                                    store.dispatch(setCart(cart));
-                                    AsyncStorage.setItem("Cart", JSON.stringify(cart));
+                        console.log("CheckMoney", CheckMoney)
+                        console.log("CheckPoint", CheckPoint)
+                        if (selected == "buyOfPoints") {
+                            console.log(" выбрали за ОЧКИ другой товар");
+                            if (CheckPoint.length < 1) {
+                                const newProduct = { id, count: 1, bonus, selected };
+                                cart.push(newProduct);
+                                store.dispatch(setCart(cart));
+                                AsyncStorage.setItem("Cart", JSON.stringify(cart));
 
-                                    Toast.show("Artikel wurde in den Warenkorb gelegt", {
-                                        shadow: false,
-                                        backgroundColor: "#505050",
-                                        duration: 1500,
-                                    });
-                                } else {
-                                    Toast.show("Nicht mehr als ein Gegenstand pro Punkt", {
-                                        shadow: false,
-                                        backgroundColor: "#505050",
-                                        duration: 1500,
-                                    })
+                                Toast.show("Artikel wurde in den Warenkorb gelegt", {
+                                    shadow: false,
+                                    backgroundColor: "#505050",
+                                    duration: 1500,
+                                });
+                            } else {
+                                Toast.show("Nicht mehr als ein Gegenstand pro Punkt", {
+                                    shadow: false,
+                                    backgroundColor: "#505050",
+                                    duration: 1500,
+                                })
 
-                                }
                             }
-                            else if (x.selected == "buyOfMoney" && x.selected == selected) {
-                                if (CheckMoney.length < 3) {
-                                    const newProduct = { id, count: 1, bonus, selected };
-                                    cart.push(newProduct);
-                                    store.dispatch(setCart(cart));
-                                    AsyncStorage.setItem("Cart", JSON.stringify(cart));
+                        } else if (selected == "buyOfMoney") {
+                            if (CheckMoney.length > 3) {
+                                Toast.show("Nicht mehr als 3 Artikel pro €", {
+                                    shadow: false,
+                                    backgroundColor: "#505050",
+                                    duration: 1500,
+                                });
+                            } else {
+                                const newProduct = { id, count: 1, bonus, selected };
+                                console.log("Добавление за бабосики и когда меньше 3 товаров", newProduct)
+                                cart.push(newProduct);
+                                store.dispatch(setCart(cart));
+                                AsyncStorage.setItem("Cart", JSON.stringify(cart));
 
-                                    Toast.show("Artikel wurde in den Warenkorb gelegt", {
-                                        shadow: false,
-                                        backgroundColor: "#505050",
-                                        duration: 1500,
-                                    });
-                                } else {
-                                    Toast.show("Nicht mehr als 3 Artikel pro €", {
-                                        shadow: false,
-                                        backgroundColor: "#505050",
-                                        duration: 1500,
-                                    });
-                                }
+                                Toast.show("Artikel wurde in den Warenkorb gelegt", {
+                                    shadow: false,
+                                    backgroundColor: "#505050",
+                                    duration: 1500,
+                                });
                             }
+                        }
+                        // cart.map((x) => {
+                        //     if (x.selected == "buyOfPoints" && x.selected == selected) {
+                        //         console.log(" выбрали за ОЧКИ");
+                        //         if (CheckPoint.length < 1) {
+                        //             const newProduct = { id, count: 1, bonus, selected };
+                        //             cart.push(newProduct);
+                        //             store.dispatch(setCart(cart));
+                        //             AsyncStorage.setItem("Cart", JSON.stringify(cart));
 
-                        })
+                        //             Toast.show("Artikel wurde in den Warenkorb gelegt", {
+                        //                 shadow: false,
+                        //                 backgroundColor: "#505050",
+                        //                 duration: 1500,
+                        //             });
+                        //         } else {
+                        //             Toast.show("Nicht mehr als ein Gegenstand pro Punkt", {
+                        //                 shadow: false,
+                        //                 backgroundColor: "#505050",
+                        //                 duration: 1500,
+                        //             })
+
+                        //         }
+                        //     }
+
+                        // else if (x.selected == "buyOfMoney" && x.selected == selected) {
+                        //     console.log("x.selected == buyOfMoney && x.selected == selected x.selected == buyOfMoney && x.selected == selected ")
+                        //     if (CheckMoney.length > 3) {
+                        //         Toast.show("Nicht mehr als 3 Artikel pro €", {
+                        //             shadow: false,
+                        //             backgroundColor: "#505050",
+                        //             duration: 1500,
+                        //         });
+                        //     } else {
+                        //         console.log("x", x)
+                        //         const newProduct = { id, count: 1, bonus, selected };
+                        //         console.log("Добавление за бабосики и когда меньше 3 товаров", newProduct)
+                        //         cart.push(newProduct);
+                        //         store.dispatch(setCart(cart));
+                        //         AsyncStorage.setItem("Cart", JSON.stringify(cart));
+
+                        //         Toast.show("Artikel wurde in den Warenkorb gelegt", {
+                        //             shadow: false,
+                        //             backgroundColor: "#505050",
+                        //             duration: 1500,
+                        //         });
+                        //     }
+                        // }
+
+                        // })
+
                     }
                     else {
                         const newProduct = { id, count: 1, bonus, selected };
+                        console.log("ELSE  else newProduct newProduct newProduct ", newProduct)
                         cart.push(newProduct);
                         store.dispatch(setCart(cart));
                         AsyncStorage.setItem("Cart", JSON.stringify(cart));
@@ -231,29 +292,30 @@ export async function clearCart() {
 // }
 
 export function fixPrice(vprice, fixed) {
-  // console.log(`${unit} fixed: `, fixed);
-  let price = vprice;
-  switch (typeof price) {
-    case 'string':
-      price = price.replace(',', '.');
-      price = parseFloat(price);
-      break;
-    case 'number':
-      if (typeof fixed !== 'undefined' && fixed >= 0) {
-        price = parseFloat(price.toFixed(fixed));
-      }
-      break;
-    default:
-      console.log(`${unit} typeof price: `, typeof price);
-  }
-  return price;
+    // console.log(`${unit} fixed: `, fixed);
+    let price = vprice;
+    switch (typeof price) {
+        case 'string':
+            price = price.replace(',', '.');
+            price = parseFloat(price);
+            break;
+        case 'number':
+            if (typeof fixed !== 'undefined' && fixed >= 0) {
+                price = parseFloat(price.toFixed(fixed));
+            }
+            break;
+        default:
+            console.log(`${unit} typeof price: `, typeof price);
+    }
+    return price;
 }
 
 export function getPurchasePoints(products) {
-  // p = [{id:1, methodMoney:'buyOfPoints', bonus:'50'},
-  //      {id:3, methodMoney:'buyOfPoints', bonus:'150'},
-  //      {id:3, methodMoney:'buyOfMoney', bonus:''},
-  //      {id:4, methodMoney:'buyOfMoney', bonus:'300'}];
-  return products.filter(p => p.methodMoney==='buyOfPoints').reduce((sum, {bonus, count}) => {
-    return sum + parseFloat(bonus)*count }, 0);
+    // p = [{id:1, methodMoney:'buyOfPoints', bonus:'50'},
+    //      {id:3, methodMoney:'buyOfPoints', bonus:'150'},
+    //      {id:3, methodMoney:'buyOfMoney', bonus:''},
+    //      {id:4, methodMoney:'buyOfMoney', bonus:'300'}];
+    return products.filter(p => p.methodMoney === 'buyOfPoints').reduce((sum, { bonus, count }) => {
+        return sum + parseFloat(bonus) * count
+    }, 0);
 }

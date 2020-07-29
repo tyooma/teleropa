@@ -37,25 +37,43 @@ export function getPreviewProductData(id) {
 
 }
 
+export async function getPreviewProductData1(id) {
+    try {
+        const response = await fetch('https://teleropa.de/WebiProgCommunicationApplicationArticle/getPreviewProductData', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `productID=${id}`
+        })
+        if (response.ok && response.status == 200) {
+            const json = await response.json();
+            return json;
+        }
+    } catch (err) {
+        console.error('getPreviewAsyncProductData1(id): ERROR = ', err);
+    }
+}
+
 export async function getPreviewAsyncProductData(id) {
-  try {
-    const response = await fetch('https://teleropa.de/WebiProgCommunicationApplicationArticle/getPreviewProductData', {
-      method: 'POST',
-      headers: { Accept: 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `productID=${id}`
-    });
-    const json = await response.json();
-    // convert STRING prices to NUMBER
-    json.salePrice = fixPrice(json.salePrice, 2);
-    json.companyPrice = fixPrice(json.companyPrice, 2);
-    json.price = fixPrice(json.price, 2);
-    json.tax = fixPrice(json.tax, 2);
-    console.log('getPreviewAsyncProductData => JSON:', json);
-    //
-    return json;
-  } catch (err) {
-    console.error('getPreviewAsyncProductData(id): ERROR = ', err);
-  }
+    try {
+        const response = await fetch('https://teleropa.de/WebiProgCommunicationApplicationArticle/getPreviewProductData', {
+            method: 'POST',
+            headers: { Accept: 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `productID=${id}`
+        });
+        const json = await response.json();
+        json.salePrice = fixPrice(json.salePrice, 2);
+        json.companyPrice = fixPrice(json.companyPrice, 2);
+        json.price = fixPrice(json.price, 2);
+        json.tax = fixPrice(json.tax, 2);
+        console.log('getPreviewAsyncProductData => JSON:', json);
+        //
+        return json;
+    } catch (err) {
+        console.error('getPreviewAsyncProductData(id): ERROR = ', err);
+    }
 }
 
 export async function getBonusProducts() {
@@ -84,7 +102,7 @@ export function getPreviewProductImage(id) {
         },
         body: `productID=${id}`
     })
-        .then(res => res.json()) 
+        .then(res => res.json())
 }
 
 export function getFullSizeProductImages(id) {

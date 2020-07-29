@@ -239,7 +239,6 @@ class Main extends Component {
                             horizontal
                             data={this.getServices()}
                             renderItem={({ item }) => {
-                                console.log("ITEM ITEM для БОНУСОВ", item)
                                 return <TeleropaService text={item.text} image={{ uri: 'https://' + item.img_url }} title={item.title} />
                             }}
                             keyExtractor={item => item.text}
