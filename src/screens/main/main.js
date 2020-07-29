@@ -135,8 +135,7 @@ class Main extends Component {
 
     getServices() {
         return this.props.mainPage.services.filter(({ img_url, text, title, }) => {
-            console.log("img_url", img_url)
-            return <TeleropaService text={text} image={{ src:'https://'+img_url }} title={title} />
+            return <TeleropaService key={title} text={text} image={{ uri: img_url }} title={title} />
         })
     }
 
@@ -240,7 +239,8 @@ class Main extends Component {
                             horizontal
                             data={this.getServices()}
                             renderItem={({ item }) => {
-                                return <TeleropaService text={item.text} image={{ uri: item.img_url }} title={item.title} />
+                                console.log("ITEM ITEM для БОНУСОВ", item)
+                                return <TeleropaService text={item.text} image={{ uri: 'https://' + item.img_url }} title={item.title} />
                             }}
                             keyExtractor={item => item.text}
                             initialNumToRender={3}
