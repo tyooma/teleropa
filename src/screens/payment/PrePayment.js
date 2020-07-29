@@ -55,9 +55,11 @@ class PrePayment extends PureComponent {
       // const payment = { code: 'requestError', text: 'Сайт Teleropa.de пока не может обработать этот запрос: «HTTP ERROR 500»' };
       //.....................................................................................................
 
-      const payment = ExecuteOrder(orderInfo);
-      console.log(unit+'.'+method+' ExecuteOrder Success:', payment);
-      this.setState({payment: payment});
+      ExecuteOrder(this.state.orderInfo).then((payment) => {
+        console.log(unit+'.'+method+' ExecuteOrder Success:', payment);
+        this.setState({payment: payment});
+      });
+      
     } catch(err) {
       this.setState({payment: {code: 'unknown_error', text: err.message}});
       console.log(unit+'.'+method+' Try-Catch Error:', err);
