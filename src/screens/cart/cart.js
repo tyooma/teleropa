@@ -14,8 +14,6 @@ import ModalView from '../../common/modal-view';
 import { getPreviewAsyncProductData, getPromocodeData } from '../../gets/productPosts';
 import { addToCart, minusFromCart, deleteFromCart, clearCart } from '../../functions/cart-funcs'; 
 
-import { fixPrice } from '../../functions/cart-funcs';
-
 getStock = (stock, order, pcs) => {
   if (!order) {
     if (stock > 0) {
@@ -273,7 +271,7 @@ class Cart extends Component {
   }
 
   render() {
-    console.log(this.props);
+    console.log('Cart => RENDER => this.props:', this.props);
 
     const shadowOpt = {
       width: sWidth,
