@@ -20,6 +20,8 @@ import Loading from '../loading';
 
 import { connect } from 'react-redux'
 
+import FooterNavBar from '../../common/footer-navigation-bar/footer-navigation-bar';
+
 class ProductsByPoint extends Component {
     static navigationOptions = ({ navigation }) => {
         return {
@@ -125,7 +127,8 @@ class ProductsByPoint extends Component {
         // const filtered = this.state.data.filter(item => item.stock > 0);
         // const sorted = filtered.sort((first, second) => (Number(first.bonuspoint) < Number(second.bonuspoint)) ? -1 : ((Number(second.bonuspoint) < Number(first.bonuspoint)) ? 1 : 0))
         return (
-            <View>
+            <View style={styles.container}>
+              {/* <View style={styles.container}> */}
                 <FlatList
                     // data={!sorted.length ? this.state.data : sorted}
                     data={this.state.sortedData}
@@ -153,8 +156,6 @@ class ProductsByPoint extends Component {
                         )
                         // }
                     }}
-
-
                     columnWrapperStyle={{ flexWrap: 'wrap' }}
                     numColumns={4}
                     // ListHeaderComponent={
@@ -167,6 +168,9 @@ class ProductsByPoint extends Component {
                     windowSize={2}
                     keyExtractor={item => item.id}
                 />
+              <View style={styles.footer}>
+                <FooterNavBar />
+              </View>
             </View>
         )
     }
@@ -177,6 +181,16 @@ const mapStateToProps = ({ userInfo, cart }) => ({ userInfo, cart })
 export default connect(mapStateToProps)(ProductsByPoint)
 
 const styles = {
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  footer: {
+    width: '100%',
+  },
+
     popularText: {
         fontSize: 16,
         color: '#030303',
