@@ -178,7 +178,7 @@ export async function minusFromCart(id, bonus, selected) {
     }
 }
 
-export async function deleteFromCart(id, bonus, selected) {
+export async function deleteFromCart(id, selected) {
     try {
         await AsyncStorage.getItem("Cart", (err, res) => {
             const cart = JSON.parse(res);
@@ -215,6 +215,33 @@ export async function deleteFromCart(id, bonus, selected) {
 export async function clearCart() {
     store.dispatch(setCart([]));
     await AsyncStorage.setItem("Cart", JSON.stringify([]));
+}
+
+//----------------------------------------------------------------------
+
+export async function DeleteFromCartByID(productID) {
+  try {
+    // с Редукса забираємо те, що нам потрібно
+    await AsyncStorage.getItem("Cart", (err, res) => {
+      /* парсимо його */
+      const cart = JSON.parse(res);
+      // находимо всіх продуктів не з таким ід котрий ми передали
+      const newCart = cart.filter((product) => product.id !== productID);
+      // перезаписуємо редукс
+      store.dispatch(setCart(newCart));
+      // для редукса новий массив записуємо
+      AsyncStorage.setItem("Cart", JSON.stringify(newCart));
+      console.log('<DeleteFromCartByID> Success Delete by ID:', productID);
+    });
+  } catch(e) {
+    console.log('<DeleteFromCartByID> Try-Catch Error:', err);
+  }
+}
+
+export function ClearCartByProducts(products, methodMoney) {
+  products.map((product) => {
+    deleteFromCart(product.id, methodMoney);
+  });
 }
 
 export function fixPrice(vprice, fixed) {

@@ -4,6 +4,7 @@ import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-na
 import Icons from 'react-native-vector-icons/Ionicons';
 import Loading from '../loading';
 import { clearCart } from '../../functions/cart-funcs';
+import { ExecuteOrder } from './PrePaymentOrder';
 
 const unit = '<PrePayment>';
 
@@ -13,14 +14,25 @@ class PrePayment extends PureComponent {
   constructor(props) { super(props) }
 
   state = {
-    cart: this.props.navigation.getParam('CartData'),
-    paymentID: this.props.navigation.getParam('PaymentID'),
-    paymentName: this.props.navigation.getParam('Payment'),
-    deliveryID: this.props.navigation.getParam('CartData').deliveryData.selected,
-    deliveryName: this.props.navigation.getParam('CartData').deliveryData.name,
+    // ORDER
     payment: null,
-    // Info from REDUX props:
-    customerID: this.props.userID,
+    orderInfo: {
+      customerID: this.props.userID,
+      paymentID: this.props.navigation.getParam('PaymentID'),
+      dispatchID: this.props.navigation.getParam('CartData').deliveryData.selected,
+      products: this.props.navigation.getParam('CartData').cartInfo.products,
+    },
+
+    // PAYMENT
+    paymentName: this.props.navigation.getParam('Payment'),
+
+    // DELIVERY
+    deliveryName: this.props.navigation.getParam('CartData').deliveryData.name,
+
+    // CART
+    cart: this.props.navigation.getParam('CartData'),
+
+    // USER
     name: this.props.userInfo.name,
     surname: this.props.userInfo.surname,
     gender: this.props.userInfo.gender,
@@ -31,80 +43,30 @@ class PrePayment extends PureComponent {
     country: this.props.userInfo.country,
   }
 
-  getUrlEncodedOrder() {
-    const customerID = `customerID=${this.state.customerID}`;
-    const paymentID = `paymentID=${this.state.paymentID}`;
-    const dispatchID = `dispatchID=${this.state.deliveryID}`;
-    
-    let items = '';
-    // console.log(`${unit}.<${method}> cartInfo: `, this.state.cart.cartInfo);
-    const pOpen = encodeURI('[');
-    const pClose = encodeURI(']');
-    let pref = '';
-    this.state.cart.cartInfo.products.forEach((product,index) => {
-      pref = `products${pOpen}${index}${pClose}`;
-
-      items += `${pref}${pOpen}productID${pClose}=${product.id}&`;
-      if(product.methodMoney!=='' && product.methodMoney.toUpperCase()==='BUYOFPOINTS') {
-        items += `${pref}${pOpen}bonus${pClose}=1&`;
-      }
-      items += `${pref}${pOpen}quantity${pClose}=${product.count}&`;
-      // products%5B0%5D%5BproductID%5D=3090&products%5B0%5D%5Bquantity%5D=1&products%5B0%5D%5Bbonus%5D=1
-      // products[0][productID]=3090&products[0][quantity]=1&products[0][bonus]=1
-    });
-    // const products = `products=[${items}]`;
-    const products = items;
-
-    const uri = `${customerID}&${paymentID}&${dispatchID}&${products}`;
-    // const uriEncoded = encodeURI(uri);
-    // return uriEncoded;
-    return uri;
-  }
-
   componentWillMount() {
-    const method = 'componentWillMount';
+    const method = '<componentWillMount>';
     console.log('................................................................................');
-    console.log(`${unit}.<${method}>`);
+    console.log(unit+'.'+method);
     try {
       //.....................................................................................................
       // Dummy Fetch for Payment-Object
-      const payment = { code: 'success', text: 'Information erfolgreich aktualisiert', data: { orderNumber: '11111' } };
+      // const payment = { code: 'success', text: 'Information erfolgreich aktualisiert', data: { orderNumber: '11111' } };
       // const payment = { code: 'error', text: 'Information konnte nicht aktualisiert werden' };
       // const payment = { code: 'requestError', text: 'Сайт Teleropa.de пока не может обработать этот запрос: «HTTP ERROR 500»' };
-      this.setState({ payment: payment });
       //.....................................................................................................
 
-      const ORDER = this.getUrlEncodedOrder();
-      // console.log(`${unit}.<${method}> ORDER:`, ORDER);
-/*
-      fetch('https://teleropa.de/WebiProgCommunicationApplicationUser/createOrder', {
-        method: 'POST',
-        headers: { 'Accept': 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: ORDER
-      })
-      .then(res => res.json())
-      .then(json => {
-        // console.log(`${unit}.<${method}>.<json>:`, json);
-        const { code, text, data } = json;
-        const payment = { code: code, text: text, data: data };
-        this.setState({payment: payment});
-        console.log(`${unit}.<${method}>.<fetchSuccess>:`, payment);
-      })
-      .catch(err => {
-        this.setState({payment: {code: 'requestError', text: err.message}});
-        console.log(`${unit}.<${method}>.<fetchError>:`, err);
-      });
-*/
+      const payment = ExecuteOrder(orderInfo);
+      console.log(unit+'.'+method+' ExecuteOrder Success:', payment);
+      this.setState({payment: payment});
     } catch(err) {
       this.setState({payment: {code: 'unknown_error', text: err.message}});
-      console.log(`${unit}.<${method}>.<tryError>:`, err);
+      console.log(unit+'.'+method+' Try-Catch Error:', err);
     }
     console.log('................................................................................');
   }
 
   render() {
     console.log(`${unit}.<"${this.props.navigation.getParam('Payment')}"><RENDER>:`, this.state);
-    const productsCount = this.state.cart.cartInfo.products.length;
     let screen = null;
     if (this.state.payment !== null) {
       const payment = this.state.payment;
@@ -133,7 +95,7 @@ class PrePayment extends PureComponent {
               <Text style={s.ContentBaseTextItem}>Versandart: {this.state.deliveryName}</Text>
             </View>
           );
-          // clearCart();
+          clearCart();
           console.log(`${unit}.<RENDER> payment=success: clearCart()`);
           break;
         case 'error':
@@ -172,8 +134,6 @@ class PrePayment extends PureComponent {
     }
     return (
       <SafeAreaView style={s.Container}>
-        <Text style={s.ContentSuccessCaption}>Товаров в Корзине: {productsCount}</Text>
-        <Text>......................................</Text>
         {screen}
         <View style={s.ActionConteiner}>
           <TouchableOpacity style={s.ButtonConteiner} onPress={() => { this.props.navigation.navigate('Main') }}>
