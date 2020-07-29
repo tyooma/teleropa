@@ -278,18 +278,32 @@ export async function clearCart() {
     await AsyncStorage.setItem("Cart", JSON.stringify([]));
 }
 
-// export async function deleteIDfromCart(id /* це ІД котрий треба видалити */) {
-//     try {
-//         await AsyncStorage.getItem("Cart" /* с Редукса забираємо те, що нам потрібно    */, (err, res) => {
-//             const cart = JSON.parse(res); /*парсимо його */            
-//             const newCart = cart.filter((product) => product.id != id); /*находимо всіх продуктів не з таким ід котрий ми передали *
-//             store.dispatch(setCart(newCart));/* перезаписуємо редукс  */
-//             AsyncStorage.setItem("Cart", JSON.stringify(newCart)); /*  для редукса новий массив записуємо */
-//         })
-//     } catch (e) {
-//         console.warn(e);
-//     }
-// }
+//----------------------------------------------------------------------
+
+export async function DeleteFromCartByID(productID) {
+  try {
+    // с Редукса забираємо те, що нам потрібно
+    await AsyncStorage.getItem("Cart", (err, res) => {
+      /* парсимо його */
+      const cart = JSON.parse(res);
+      // находимо всіх продуктів не з таким ід котрий ми передали
+      const newCart = cart.filter((product) => product.id !== productID);
+      // перезаписуємо редукс
+      store.dispatch(setCart(newCart));
+      // для редукса новий массив записуємо
+      AsyncStorage.setItem("Cart", JSON.stringify(newCart));
+      console.log('<DeleteFromCartByID> Success Delete by ID:', productID);
+    });
+  } catch(e) {
+    console.log('<DeleteFromCartByID> Try-Catch Error:', err);
+  }
+}
+
+export function ClearCartByProducts(products, methodMoney) {
+  products.map((product) => {
+    deleteFromCart(product.id, methodMoney);
+  });
+}
 
 export function fixPrice(vprice, fixed) {
     // console.log(`${unit} fixed: `, fixed);

@@ -31,16 +31,21 @@ export default class DeliveryService extends Component {
 
   componentWillMount() {
     const productsPrice = this.props.navigation.getParam('data', null).discountValue;
-    // console.log('productsPrice:',productsPrice);
+    console.log('productsPrice:',productsPrice);
     getDeliverySuppliers()
     .then(services => {
+      console.log('services:', services);
       let delivery = [];
+      let tdelivery = null;
       services.map(service => {
-        if(service.costs.reverse().find(({ from }) => from < productsPrice) !== undefined) {
+        tdelivery = service.costs.reverse().find(({ from }) => from < productsPrice);
+        console.log('tdelivery:', tdelivery);
+
+        if( service.costs.reverse().find(({ from }) => from < productsPrice) !== undefined ) {
           delivery.push(service);
         }
       });
-      // console.log('delivery:', delivery);
+      console.log('delivery:', delivery);
       this.setState({
         productsPrice: productsPrice, services: delivery, loaded: true
       });
@@ -67,8 +72,10 @@ export default class DeliveryService extends Component {
 
   SelectionChange(id, name, shippingFree, costs) {
     // console.log('SelectionChange..................................................');
-    // console.log('id:',id,'name:',name,'shippingFree:',shippingFree,'costs:',costs);
+    console.log('id:',id,'name:',name,'shippingFree:',shippingFree,'costs:',costs);
     const price = costs.reverse().find(({ from }) => from < this.state.productsPrice);
+    console.log('price:', price);
+
     let deliveryPrice = shippingFree;
     if(price) { deliveryPrice = price.value; }
     this.setState({ selected: id, name: name, deliveryPrice: deliveryPrice });

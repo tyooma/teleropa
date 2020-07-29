@@ -14,8 +14,6 @@ import ModalView from '../../common/modal-view';
 import { getPreviewAsyncProductData, getPromocodeData } from '../../gets/productPosts';
 import { addToCart, minusFromCart, deleteFromCart, clearCart } from '../../functions/cart-funcs';
 
-import { fixPrice } from '../../functions/cart-funcs';
-
 getStock = (stock, order, pcs) => {
   if (!order) {
     if (stock > 0) {
