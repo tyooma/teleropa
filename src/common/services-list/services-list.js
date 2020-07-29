@@ -12,7 +12,6 @@ import NavigationService from '../../navigation-service';
 
 
 const TeleropaService = ({ text, image, title, userInfo, services }) => {
-    console.log(" image OffersListItem TeleropaService TeleropaService ", image)
     return (
         <TouchableOpacity style={styles.container} onPress={() => NavigationService.navigate('ProductsByPoint', { name: text, title: title, services: services, userInfo: userInfo })}>
 
@@ -68,18 +67,17 @@ const styles = {
         height: 16,
     },
     image: {
-        width: width / 2,
-        height: 150,
+        height: 135,
         resizeMode: 'contain',
+        paddingHorizontal: 5,
     },
     name: {
         marginTop: 12,
         height: 75,
-        // lineHeight: 18,
         fontSize: 16,
         fontWeight: '400',
         fontFamily: 'Poppins-Medium',
         color: '#040404',
-        //paddingHorizontal: 8,
+        paddingHorizontal: 8,
     }
 }

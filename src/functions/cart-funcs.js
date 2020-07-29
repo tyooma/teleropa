@@ -217,6 +217,19 @@ export async function clearCart() {
     await AsyncStorage.setItem("Cart", JSON.stringify([]));
 }
 
+// export async function deleteIDfromCart(id /* це ІД котрий треба видалити */) {
+//     try {
+//         await AsyncStorage.getItem("Cart" /* с Редукса забираємо те, що нам потрібно    */, (err, res) => {
+//             const cart = JSON.parse(res); /*парсимо його */            
+//             const newCart = cart.filter((product) => product.id != id); /*находимо всіх продуктів не з таким ід котрий ми передали *
+//             store.dispatch(setCart(newCart));/* перезаписуємо редукс  */
+//             AsyncStorage.setItem("Cart", JSON.stringify(newCart)); /*  для редукса новий массив записуємо */
+//         })
+//     } catch (e) {
+//         console.warn(e);
+//     }
+// }
+
 export function fixPrice(vprice, fixed) {
     // console.log(`${unit} fixed: `, fixed);
     let price = vprice;
