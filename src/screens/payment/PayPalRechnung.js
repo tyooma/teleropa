@@ -6,34 +6,35 @@ import base64 from 'react-native-base64';
 import Loading from '../loading';
 import { clearCart } from '../../functions/cart-funcs';
 
-
 export class PayPalRechung extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            count: true,
-            access_token: '',
-            approvalUrl: null,
-            url: false,
-            id: '',
-            loading: false,
-            paymentId: '',
-            cart: this.props.navigation.getParam('CartData'),
-            name: this.props.userInfo.name,
-            surname: this.props.userInfo.surname,
-            phone: this.props.userInfo.phone,
-            country: this.props.userInfo.country,
-            street: this.props.userInfo.street,
-            city: this.props.userInfo.city,
-            post: this.props.userInfo.post,
-        }
+  constructor(props) {
+    super(props);
+    this.state = {
+      count: true,
+      access_token: '',
+      approvalUrl: null,
+      url: false,
+      id: '',
+      loading: false,
+      paymentId: '',
+      
+      cart: this.props.navigation.getParam('CartData'),
+      name: this.props.userInfo.name,
+      surname: this.props.userInfo.surname,
+      phone: this.props.userInfo.phone,
+      country: this.props.userInfo.country,
+      street: this.props.userInfo.street,
+      city: this.props.userInfo.city,
+      post: this.props.userInfo.post,
     }
+  }
 
-    componentWillMount() {
-        const username = 'AcIGgF0XrYF4her0z9zSlXCuUnqEDazkaM0DDU5emhhp70UggARzDbd5LW1yQhr8qEaV2Q7r-AmK3bHH';
-        const password = 'EHN2OcacoZFk8823hZ_oWXHoI_T-SmtDcs2XklW07F0Lwd57Tjjs9C63hdz_5woXimmEenYveCY2zMtF';
-        const productsPrice = this.state.cart.cartInfo.discountProductsPrice;
-        const deliveryPrice = this.state.cart.deliveryData.deliveryPrice;
+  componentWillMount() {
+    const username = 'AcIGgF0XrYF4her0z9zSlXCuUnqEDazkaM0DDU5emhhp70UggARzDbd5LW1yQhr8qEaV2Q7r-AmK3bHH';
+    const password = 'EHN2OcacoZFk8823hZ_oWXHoI_T-SmtDcs2XklW07F0Lwd57Tjjs9C63hdz_5woXimmEenYveCY2zMtF';
+ 
+    const productsPrice = this.state.cart.cartInfo.discountProductsPrice;
+    const deliveryPrice = this.state.cart.deliveryData.deliveryPrice;
         // console.log(` -- productsPrice: `, productsPrice);
         // console.log(` -- deliveryPrice: `, deliveryPrice);
 

@@ -1,17 +1,13 @@
 import React, { Component } from 'react';
 import { Text, TouchableOpacity, View, Image, StyleSheet } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { BoxShadow } from 'react-native-shadow';
 import ImageLoader from '../../helpers/image-loader';
 import { sWidth } from '../../helpers/screenSize';
 import NavigationService from '../../navigation-service';
 import FooterButton from '../../common/footer-button';
-// import Toast from 'react-native-root-toast';
-// import Loading from '../loading';
+import { getPurchasePoints } from '../../functions/cart-funcs';
 
-import { fixPrice } from '../../functions/cart-funcs';
-
-const unit = 'CartPreview';
+const unit = '<CartPreview>';
 
 getStock = (stock, order, pcs) => {
   if(!order) {
@@ -29,45 +25,44 @@ getCounterInPreview = (order, pcs) => {
   }
 }
 
-export const CartItemInPreview = ({ img, name, pcs, price, companyPrice, selectedUserType, userType, stock, order, orderReturnReason, id, bonus, orderVAT, deliveryPrice }) => {
-  console.log(`${unit} CartItemInPreview: ${bonus}`);
+export const CartItemInPreview = ({id, bonus, methodMoney, name, pcs, price, companyPrice, selectedUserType, img, userType, stock, order, orderReturnReason }) => {
+  // console.log(`${unit} CartItemInPreview: ${bonus}`);
+  console.log(`id: ${id} | methodMoney: ${methodMoney} | bonus: ${bonus} - ${typeof bonus} totalBonus: ${bonus*pcs}`);
   return (
     <TouchableOpacity style={s.cartItemContainer} onPress={() => NavigationService.push('Product', { id, name, methodMoney: 'buyOfMoney' })}>
       <View style={{flexDirection: 'row'}}>
         {img ?
-        <View><ImageLoader style={s.cartItemImage} source={{ uri: img }} key={img} /></View>
+        <View><ImageLoader style={s.cartItemImage} source={{uri:img}} key={id+name+img} /></View>
         :
-        <View><Image style={s.cartItemImage} source={require('../../assets/message-icons/no-photo.png')} key={'no-image'} /></View>
+        <View><Image style={s.cartItemImage} source={require('../../assets/message-icons/no-photo.png')} key={id+name+'no-image'} /></View>
         }
         <View style={{ flex: 1 }}>
           <Text style={s.cartItemName} numberOfLines={2}>{name}</Text>
           <View style={{ marginTop: 4, marginBottom: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <View>
-                {getStock(stock, order, pcs)}
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
+              {getStock(stock, order, pcs)}
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
                 {getCounterInPreview(order, pcs, id)}
-                </View>
+              </View>
             </View>
             <View style={{ marginRight: 10, alignItems: 'flex-end' }}>
-                {
-                (typeof bonus !== 'undefined' &&  bonus !== '') 
-                ?
-                <Text style={s.price}>{bonus * pcs} P.</Text>
-                :
-                selectedUserType == 'H' ?
+            { (typeof methodMoney !== 'undefined' && methodMoney !== '' && methodMoney === 'buyOfPoints') ?
+              <Text style={s.price}>{bonus * pcs} P.</Text>
+              :
+              selectedUserType === 'H' ?
                 <>
-                    <Text style={s.pricePerProduct}>{companyPrice} €\St</Text>
-                    <Text style={s.price}>{companyPrice * pcs} €</Text>
+                  <Text style={s.pricePerProduct}>{companyPrice} €\St</Text>
+                  <Text style={s.price}>{companyPrice * pcs} €</Text>
                 </>
                 :
                 <>
-                    <Text style={s.pricePerProduct}>{price} €\St</Text>
-                    <Text style={s.price}>{price * pcs} €</Text>
+                  <Text style={s.pricePerProduct}>{price} €\St</Text>
+                  <Text style={s.price}>{price * pcs} €</Text>
                 </>
-                }
+            }
             </View>
           </View>
-          {orderReturnReason ?
+          { orderReturnReason ?
             <Text style={{ marginBottom: 5 }}>Grund für Rückgabe: {orderReturnReason}</Text>
             :
             null
@@ -91,9 +86,9 @@ export default class CartPreview extends Component {
   }
   
   getProductsCards() {
-    return this.state.cartInfo.products.map(({ id, previewImgURL, productName, price, companyPrice, stock, count, bonus }) => {
+    return this.state.cartInfo.products.map(({ id, previewImgURL, productName, price, companyPrice, stock, count, bonus, methodMoney }) => {
       return <CartItemInPreview
-                key={id}
+                key={id+methodMoney}
                 id={id}
                 img={previewImgURL}
                 name={productName}
@@ -101,6 +96,7 @@ export default class CartPreview extends Component {
                 price={price}
                 companyPrice={companyPrice}
                 stock={stock}
+                methodMoney={methodMoney}
                 bonus={bonus}
                 selectedUserType={this.state.userInfo.selectedUserType}
                 userType={this.state.userInfo.userType}
@@ -111,14 +107,16 @@ export default class CartPreview extends Component {
   }
 
   productsVAT() {
-    return this.state.cartInfo.products.reduce((sum, { tax, count }) => {
-      return fixPrice(this.state.deliveryData.deliveryPrice / (1 + (tax / 100)) * count, 2);
+    const totalPrice = this.state.cartInfo.discountValue + this.state.deliveryData.deliveryPrice;
+    return this.state.cartInfo.products.filter(p => p.methodMoney==='buyOfMoney').reduce((sum, { tax, count }) => {
+      return (totalPrice / (1 + (tax / 100)) * count)
     }, 0);
   }
 
   zzglVAT() {
-    return this.state.cartInfo.products.reduce((sum, { tax, count }) => {
-      return fixPrice((this.state.deliveryData.deliveryPrice / (1 + (tax / 100)) * count) * (tax / 100), 2);
+    const totalPrice = this.state.cartInfo.discountValue + this.state.deliveryData.deliveryPrice;
+    return this.state.cartInfo.products.filter(p => p.methodMoney==='buyOfMoney').reduce((sum, { tax, count }) => {
+      return ((totalPrice / (1 + (tax / 100)) * count) * (tax / 100))
     }, 0);
   }
 
@@ -135,9 +133,6 @@ export default class CartPreview extends Component {
     }
 
     console.log(unit, 'this.state:', this.state);
-    
-    console.log(unit, 'this.state.cartInfo.bonus:', this.state.cartInfo.bonus);
-
     return (
       <View style={{ flex: 1 }}>
         <ScrollView>
@@ -145,98 +140,46 @@ export default class CartPreview extends Component {
             {this.getProductsCards()}
             <View style={s.line}>
               <Text style={s.summaryText}>Summe:</Text>
-              <Text style={s.summaryText}>
-              { (typeof this.state.cartInfo.bonus !== 'undefined' && this.state.cartInfo.bonus !== '') ?
-                0
-                :
-                this.state.cartInfo.discountProductsPrice
-              } €
-              </Text>
+              <Text style={s.summaryText}>{this.state.cartInfo.discountValue.toFixed(2)} €</Text>
             </View>
             <View style={s.line}>
               <Text style={s.summaryText}>Versandkosten:</Text>
-              <Text style={s.summaryText}>{this.state.deliveryData.deliveryPrice} €</Text>
+              <Text style={s.summaryText}>{this.state.deliveryData.deliveryPrice.toFixed(2)} €</Text>
             </View>
             <View style={s.line}>
               <Text style={s.summaryTextBold}>Gesamtsumme:</Text>
-              <Text style={s.summaryTextBold}>
-              { (typeof this.state.cartInfo.bonus !== 'undefined' && this.state.cartInfo.bonus !== '') ?
-                this.state.deliveryData.deliveryPrice
-                :
-                this.state.cartInfo.discountProductsPrice + this.state.deliveryData.deliveryPrice
-              } €
-              </Text>
-
+              <Text style={s.summaryTextBold}>{(this.state.cartInfo.discountValue+this.state.deliveryData.deliveryPrice).toFixed(2)} €</Text>
             </View>
             <View style={s.line}>
               <Text style={s.summaryText}>Gesamtsumme ohne MwSt.:</Text>
-              <Text style={s.summaryText}>
-              { (typeof this.state.cartInfo.bonus !== 'undefined' && this.state.cartInfo.bonus !== '') ?
-                this.productsVAT()
-                :
-                this.state.cartInfo.orderVAT
-              } €
-              </Text>
+              <Text style={s.summaryText}>{this.productsVAT().toFixed(2)} €</Text>
             </View>
             <View style={s.line}>
               <Text style={s.summaryText}>zzgl. MwSt.:</Text>
-              <Text style={s.summaryText}>
-              { (typeof this.state.cartInfo.bonus !== 'undefined' && this.state.cartInfo.bonus !== '') ?
-                this.zzglVAT()
-                :
-                fixPrice(this.state.cartInfo.discountProductsPrice - this.state.cartInfo.orderVAT, 2)
-              } €
-              </Text>
+              <Text style={s.summaryText}>{this.zzglVAT().toFixed(2)} €</Text>
             </View>
             <View style={s.line}>
               <Text style={s.summaryTextPoint}>Punkte für die Bestellung:</Text>
               <View style={s.linePoint}>
-                <Text style={s.summaryTextPointGreen}>
-                { (typeof this.state.cartInfo.bonus !== 'undefined' && this.state.cartInfo.bonus !== '') ?
-                  '+ ' + 0
-                  :
-                  '+ ' + Math.floor(this.state.cartInfo.discountProductsPrice)
-                }
-                </Text>
+                <Text style={s.summaryTextPointGreen}>{'+ ' + Math.floor(this.state.cartInfo.discountValue)}</Text>
                 <Text style={s.radiusCircle}>P</Text>
               </View>
             </View>
             <View style={s.line}>
               <Text style={s.summaryTextPoint}>Punkte eingelöst:</Text>
               <View style={s.linePoint}>
-                <Text style={s.summaryTextPointRed}>
-                { (typeof this.state.cartInfo.bonus !== 'undefined' && this.state.cartInfo.bonus !== '') ?
-                  '- ' + this.state.cartInfo.bonus
-                  :
-                  '-' + 0
-                }
-                </Text>
+                <Text style={s.summaryTextPointRed}>{this.state.cartInfo.bonus}</Text>
+                <Text style={s.summaryTextPointRed}>{'- ' + getPurchasePoints(this.state.cartInfo.products)}</Text>
                 <Text style={s.radiusCircle}>P</Text>
               </View>
             </View>
           </View>
         </ScrollView>
 
-        <BoxShadow setting={shadowOpt}>
-          <View style={s.footerSummaryContainer}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
-              <Text style={s.summaryTextBold} >Gesamtbetrag:</Text>
-              <Text style={s.summaryTextBold}>
-              { (typeof this.state.cartInfo.bonus !== 'undefined' && this.state.cartInfo.bonus !== '') ?
-                this.state.deliveryData.deliveryPrice
-                :
-                (this.state.cartInfo.discountProductsPrice + this.state.deliveryData.deliveryPrice)
-              } €
-              </Text>
-            </View>
-          </View>
-        </BoxShadow>
-
         <FooterButton
-          text={'Zahlungspflichtig bestellen'} 
-          onPress={() => {
-            NavigationService.navigate('Payment', { data: this.state }) 
-          }} />
+          // text={'Zahlungspflichtig bestellen'}
+          text={'Weiter'}
+          onPress={() => { NavigationService.navigate('Payment', { data: this.state }) }} />
       </View>
     );
   }
@@ -326,4 +269,4 @@ const s = StyleSheet.create({
     backgroundColor: '#fff',
     justifyContent: 'center',
   },
-})
+});
