@@ -67,7 +67,7 @@ export const CartItem = ({ img, name, pcs, price, companyPrice, selectedUserType
             <View style={{ marginRight: 10, alignItems: 'flex-end' }}>
               {methodMoney == 'buyOfPoints' ?
                 <>
-                  <Text style={styles.price}>{(bonus * pcs)} P.</Text>
+                  <Text style={styles.price}>{(bonus * pcs).toFixed(0)} P.</Text>
                 </>
                 :
                 selectedUserType === 'H' ?
@@ -212,29 +212,25 @@ class Cart extends Component {
   }
 
   setPrices() {
-    // console.log('this.state.products',this.state.products);
-
     const products = this.state.products.filter(p => p.methodMoney === 'buyOfMoney');
     let originalProductsPrice, orderVAT, discountProductsPrice;
-
-    // const isMoney = products.length;
-    // if methodMoney == 'buyOfPoints' => isMoney == 0
-    // if methodMoney == 'buyOfMoney' => isMoney == 1
-    // console.log('<setPrices> isMoney:', isMoney);
 
     originalProductsPrice = this.props.userInfo.selectedUserType === 'EK' ?
       products.reduce((sum, { price, count }) => { return sum + price * count }, 0)
       :
       products.reduce((sum, { companyPrice, count }) => { return sum + companyPrice * count }, 0);
 
-    orderVAT = this.props.userInfo.selectedUserType === 'EK' ?
-      products.reduce((sum, { price, tax, count }) => { return (sum + price / (1 + (tax / 100)) * count) }, 0)
-      :
-      products.reduce((sum, { companyPrice, tax, count }) => { return (sum + companyPrice / (1 + (tax / 100)) * count) }, 0);
+  //------------------------------------------------------------------------------------------------------------------------------
+    orderVAT = 0;
+    products.map((p) => {
+      orderVAT += (p.tax/100) * (this.props.userInfo.selectedUserType==='H' ? p.companyPrice:p.price * p.count);
+    });
+  //------------------------------------------------------------------------------------------------------------------------------
 
     discountProductsPrice = this.getDiscount(originalProductsPrice);
 
     console.log('<setPrices> originalProductsPrice:', originalProductsPrice, '-', typeof originalProductsPrice);
+    console.log('<setPrices> orderVAT:', orderVAT, '-', typeof orderVAT);
     console.log('<setPrices> discountProductsPrice:', discountProductsPrice, '-', typeof discountProductsPrice);
 
     if (originalProductsPrice !== this.state.originalProductsPrice || discountProductsPrice !== this.state.discountProductsPrice) {
@@ -315,12 +311,12 @@ class Cart extends Component {
 
             <View style={styles.line}>
               <Text style={styles.summaryText}>Gesamtsumme ohne MwSt.:</Text>
-              <Text style={styles.summaryText}>{this.state.orderVAT.toFixed(2)} €</Text>
+              <Text style={styles.summaryText}>{(this.state.originalProductsPrice - this.state.orderVAT).toFixed(2)} €</Text>
             </View>
 
             <View style={styles.line}>
               <Text style={styles.summaryText}>zzgl. MwSt.:</Text>
-              <Text style={styles.summaryText}>{(this.state.originalProductsPrice - this.state.orderVAT).toFixed(2)} €</Text>
+              <Text style={styles.summaryText}>{this.state.orderVAT.toFixed(2)} €</Text>
             </View>
           </View>
         </ScrollView>

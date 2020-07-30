@@ -49,6 +49,7 @@ export class PayPal extends Component {
     const token = base64.encode(`${seller_username}:${seller_password}`);
     const orderPrice = this.state.cart.discountValue;
     const deliveryPrice = this.state.delivery.deliveryPrice;
+    const totalPrice = orderPrice + deliveryPrice;
     try {
       // Get AccessToken for PayPal
       // 'https://api.sandbox.paypal.com/v1/oauth2/token'
@@ -70,9 +71,9 @@ export class PayPal extends Component {
           payer: { payment_method: 'paypal' },
           transactions: [{
             amount: {
-              total: orderPrice+deliveryPrice,
+              total: totalPrice.toFixed(2),
               currency: 'EUR',
-              details: { subtotal: orderPrice, shipping: deliveryPrice }
+              details: { subtotal: orderPrice.toFixed(2), shipping: deliveryPrice.toFixed(2) }
             },
             description: this.state.paymentName==='PayPal' ? 'Teleropa PayPal payment.':'Teleropa PayPal Kauf auf Rechnung payment.',
             item_list: {
@@ -195,21 +196,21 @@ export class PayPal extends Component {
     if (WebViewState.url.includes('https://example.com/')) {
       this.setState({
         approvalUrl: null
-      })
+      });
+    }
     
-      const params = WebViewState.url.toString();
-      const p = params.indexOf('PayerID=');    
+    const params = WebViewState.url.toString();
+    const p = params.indexOf('PayerID=');    
 
-      console.log('<onNavigationStateChange>...............WebViewState.url.includes');
-      if (p >= 0 && this.state.count) {
-      // if (p >= 0) {
-        console.log('<onNavigationStateChange>...............WebViewState.url.includes  P>=0');
-        this.setState({ count: false });
-        const l = params.length;
-        const res = params.substring(p, l).replace('PayerID=', "");
-        console.log('res res res', res)
-        const paid = this.PayPalExecute(res);
-      }
+    console.log('<onNavigationStateChange>...............WebViewState.url.includes');
+    if (p >= 0 && this.state.count) {
+    // if (p >= 0) {
+      console.log('<onNavigationStateChange>...............WebViewState.url.includes  P>=0');
+      this.setState({ count: false });
+      const l = params.length;
+      const res = params.substring(p, l).replace('PayerID=', "");
+      console.log('PayerID', res)
+      const paid = this.PayPalExecute(res);
     }
   }
 

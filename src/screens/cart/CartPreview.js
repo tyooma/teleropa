@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Suspense } from 'react';
 import { Text, TouchableOpacity, View, Image, StyleSheet } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import ImageLoader from '../../helpers/image-loader';
@@ -52,12 +52,12 @@ export const CartItemInPreview = ({id, bonus, methodMoney, name, pcs, price, com
               selectedUserType === 'H' ?
                 <>
                   <Text style={s.pricePerProduct}>{companyPrice} €\St</Text>
-                  <Text style={s.price}>{companyPrice * pcs} €</Text>
+                  <Text style={s.price}>{(companyPrice * pcs).toFixed(2)} €</Text>
                 </>
                 :
                 <>
                   <Text style={s.pricePerProduct}>{price} €\St</Text>
-                  <Text style={s.price}>{price * pcs} €</Text>
+                  <Text style={s.price}>{(price * pcs).toFixed(2)} €</Text>
                 </>
             }
             </View>
@@ -108,16 +108,15 @@ export default class CartPreview extends Component {
 
   productsVAT() {
     const totalPrice = this.state.cartInfo.discountValue + this.state.deliveryData.deliveryPrice;
-    return this.state.cartInfo.products.filter(p => p.methodMoney==='buyOfMoney').reduce((sum, { tax, count }) => {
-      return (totalPrice / (1 + (tax / 100)) * count)
-    }, 0);
+    return totalPrice - this.zzglVAT();
   }
 
   zzglVAT() {
-    const totalPrice = this.state.cartInfo.discountValue + this.state.deliveryData.deliveryPrice;
-    return this.state.cartInfo.products.filter(p => p.methodMoney==='buyOfMoney').reduce((sum, { tax, count }) => {
-      return ((totalPrice / (1 + (tax / 100)) * count) * (tax / 100))
-    }, 0);
+    let sum = 0;
+    this.state.cartInfo.products.filter(p => p.methodMoney==='buyOfMoney').map((p) => {
+      sum += (p.tax/100) * (this.state.userInfo.selectedUserType==='H' ? p.companyPrice:p.price * p.count);
+    });
+    return sum;
   }
 
   render() {
