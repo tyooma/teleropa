@@ -112,7 +112,8 @@ export default class CartPreview extends Component {
   }
 
   zzglVAT() {
-    let sum = 0;
+    // let sum = 0;
+    let sum = (this.state.deliveryData.deliveryPrice * (0.16));
     this.state.cartInfo.products.filter(p => p.methodMoney==='buyOfMoney').map((p) => {
       sum += (p.tax/100) * (this.state.userInfo.selectedUserType==='H' ? p.companyPrice:p.price * p.count);
     });
