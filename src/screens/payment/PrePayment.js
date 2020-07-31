@@ -148,7 +148,8 @@ class PrePayment extends PureComponent {
           <TouchableOpacity style={s.ButtonConteiner} onPress={() => { this.props.navigation.navigate('Main') }}>
             <View style={s.ButtonIcon}><Icons name="ios-home" size={30} color="#FFFFFF" /></View>
             {/* Main */}
-            <Text style={s.ButtonText}>Hauptbildschirm</Text>
+            {/* <Text style={s.ButtonText}>Hauptbildschirm</Text> */}
+            <Text style={s.ButtonText}>Zurück zum shop</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -183,24 +184,23 @@ const s = StyleSheet.create({
 
   // Action section
   ActionConteiner: {
-    borderTopWidth: 0.5,
+    borderTopWidth: 1,
     borderColor: '#A7A7AA',
     justifyContent: 'center',
     alignItems: 'center',
+    width: '100%',
     height: 50,
     marginTop: 10,
   },
   ButtonConteiner: {
     flexDirection: 'row',
     backgroundColor: '#2196F3',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    width: 100,
     height: 40,
     paddingHorizontal: 10,
     marginTop: 10,
   },
-  ButtonIcon: { paddingRight: 5 },
+  ButtonIcon: { paddingRight: 10 },
   ButtonText: { color: '#FFFFFF', fontSize: 24, marginBottom: 1.5 },
 });
 
