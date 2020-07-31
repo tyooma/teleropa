@@ -31,24 +31,20 @@ export default class DeliveryService extends Component {
 
   componentWillMount() {
     const productsPrice = this.props.navigation.getParam('data', null).discountValue;
-    console.log('productsPrice:',productsPrice);
+    console.log('productsPrice:', productsPrice);
     getDeliverySuppliers()
     .then(services => {
-      console.log('services:', services);
+      console.table('services:', services);
       let delivery = [];
       let tdelivery = null;
       services.map(service => {
-        tdelivery = service.costs.reverse().find(({ from }) => from < productsPrice);
+        tdelivery = service.costs.reverse().find(({ from }) => productsPrice >= from );
         console.log('tdelivery:', tdelivery);
-
-        if( service.costs.reverse().find(({ from }) => from < productsPrice) !== undefined ) {
-          delivery.push(service);
-        }
+        if( tdelivery !== undefined ) { delivery.push(service) }
       });
       console.log('delivery:', delivery);
-      this.setState({
-        productsPrice: productsPrice, services: delivery, loaded: true
-      });
+
+      this.setState({ productsPrice: productsPrice, services: delivery, loaded: true });
     })
     .catch(err => {
       console.log('getDeliverySuppliers fetchEror:', err);
@@ -71,13 +67,14 @@ export default class DeliveryService extends Component {
   }
 
   SelectionChange(id, name, shippingFree, costs) {
-    // console.log('SelectionChange..................................................');
-    console.log('id:',id,'name:',name,'shippingFree:',shippingFree,'costs:',costs);
-    const price = costs.reverse().find(({ from }) => from < this.state.productsPrice);
-    console.log('price:', price);
+    console.log('..................................................');
+    console.log('SelectionChange => id:',id,'name:',name,'shippingFree:',shippingFree,'costs:',costs);
+    // const price = costs.reverse().find(({ from }) => from < this.state.productsPrice);
+    const price = costs.find(({ from }) => this.state.productsPrice >= from );
+    console.log('SelectionChange => price:', price);
+    const deliveryPrice = price.value;
+    console.log('SelectionChange => deliveryPrice:', deliveryPrice);
 
-    let deliveryPrice = shippingFree;
-    if(price) { deliveryPrice = price.value; }
     this.setState({ selected: id, name: name, deliveryPrice: deliveryPrice });
   }
 
