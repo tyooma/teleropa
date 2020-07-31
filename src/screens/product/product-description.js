@@ -389,7 +389,7 @@ class ProductDescription extends Component {
                   onValueChange={() =>
                     this.setState({ selected: "buyOfPoints", checkedPoint: !this.state.checkedPoint, checkedMoney: false, loaded: true, })}
                 />
-                <Text style={{ fontSize: 20, marginTop: 8, color: "#000", flexDirection: "row", }}                  >
+                <Text style={{ fontSize: 20, marginTop: 8, color: "#000", flexDirection: "row", textAlign: 'left' }}                  >
                   {this.state.points} TELEPOINTS
                 </Text>
               </View>

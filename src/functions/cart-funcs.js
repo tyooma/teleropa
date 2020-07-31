@@ -5,7 +5,6 @@ import { setCart } from "../actions/cart-actions";
 import product from "../screens/product/product";
 import Cart from "../screens/cart";
 
-const unit = '<CartFunc>';
 
 export async function getCart() {
     return await AsyncStorage.getItem("Cart");
@@ -29,7 +28,6 @@ export async function addToCart(id, bonus, selected, userPoints) {
                 // Парсим Джсон та записуємо до карточки
                 const cart = JSON.parse(res);
                 const productInCart = cart.find((product) => id === product.id);
-                console.log("productInCart", productInCart)
                 if (productInCart) {
                     const productBuyMethodCart = cart.find((product) => id === product.id && selected === product.selected);
                     console.log("productBuyMethodCart для поинтов  productBuyMethodCart.count++ ", productBuyMethodCart)
@@ -72,7 +70,7 @@ export async function addToCart(id, bonus, selected, userPoints) {
                                 duration: 1500,
                             })
                         } else {
-                            Toast.show("Не хватает очков ДЕТКА", {
+                            Toast.show("Nicht genügend TELEPOINTS", {
                                 shadow: false,
                                 backgroundColor: "#505050",
                                 duration: 1500,
@@ -115,7 +113,7 @@ export async function addToCart(id, bonus, selected, userPoints) {
                                     duration: 1500,
                                 });
                             } else {
-                                Toast.show("Nicht mehr als ein Gegenstand pro Punkt", {
+                                Toast.show("Nicht mehr als ein Gegenstand pro TELEPOINTS", {
                                     shadow: false,
                                     backgroundColor: "#505050",
                                     duration: 1500,
@@ -143,56 +141,6 @@ export async function addToCart(id, bonus, selected, userPoints) {
                                 });
                             }
                         }
-                        // cart.map((x) => {
-                        //     if (x.selected == "buyOfPoints" && x.selected == selected) {
-                        //         console.log(" выбрали за ОЧКИ");
-                        //         if (CheckPoint.length < 1) {
-                        //             const newProduct = { id, count: 1, bonus, selected };
-                        //             cart.push(newProduct);
-                        //             store.dispatch(setCart(cart));
-                        //             AsyncStorage.setItem("Cart", JSON.stringify(cart));
-
-                        //             Toast.show("Artikel wurde in den Warenkorb gelegt", {
-                        //                 shadow: false,
-                        //                 backgroundColor: "#505050",
-                        //                 duration: 1500,
-                        //             });
-                        //         } else {
-                        //             Toast.show("Nicht mehr als ein Gegenstand pro Punkt", {
-                        //                 shadow: false,
-                        //                 backgroundColor: "#505050",
-                        //                 duration: 1500,
-                        //             })
-
-                        //         }
-                        //     }
-
-                        // else if (x.selected == "buyOfMoney" && x.selected == selected) {
-                        //     console.log("x.selected == buyOfMoney && x.selected == selected x.selected == buyOfMoney && x.selected == selected ")
-                        //     if (CheckMoney.length > 3) {
-                        //         Toast.show("Nicht mehr als 3 Artikel pro €", {
-                        //             shadow: false,
-                        //             backgroundColor: "#505050",
-                        //             duration: 1500,
-                        //         });
-                        //     } else {
-                        //         console.log("x", x)
-                        //         const newProduct = { id, count: 1, bonus, selected };
-                        //         console.log("Добавление за бабосики и когда меньше 3 товаров", newProduct)
-                        //         cart.push(newProduct);
-                        //         store.dispatch(setCart(cart));
-                        //         AsyncStorage.setItem("Cart", JSON.stringify(cart));
-
-                        //         Toast.show("Artikel wurde in den Warenkorb gelegt", {
-                        //             shadow: false,
-                        //             backgroundColor: "#505050",
-                        //             duration: 1500,
-                        //         });
-                        //     }
-                        // }
-
-                        // })
-
                     }
                     else {
                         const newProduct = { id, count: 1, bonus, selected };
@@ -281,28 +229,28 @@ export async function clearCart() {
 //----------------------------------------------------------------------
 
 export async function DeleteFromCartByID(productID) {
-  try {
-    // с Редукса забираємо те, що нам потрібно
-    await AsyncStorage.getItem("Cart", (err, res) => {
-      /* парсимо його */
-      const cart = JSON.parse(res);
-      // находимо всіх продуктів не з таким ід котрий ми передали
-      const newCart = cart.filter((product) => product.id !== productID);
-      // перезаписуємо редукс
-      store.dispatch(setCart(newCart));
-      // для редукса новий массив записуємо
-      AsyncStorage.setItem("Cart", JSON.stringify(newCart));
-      console.log('<DeleteFromCartByID> Success Delete by ID:', productID);
-    });
-  } catch(e) {
-    console.log('<DeleteFromCartByID> Try-Catch Error:', err);
-  }
+    try {
+        // с Редукса забираємо те, що нам потрібно
+        await AsyncStorage.getItem("Cart", (err, res) => {
+            /* парсимо його */
+            const cart = JSON.parse(res);
+            // находимо всіх продуктів не з таким ід котрий ми передали
+            const newCart = cart.filter((product) => product.id !== productID);
+            // перезаписуємо редукс
+            store.dispatch(setCart(newCart));
+            // для редукса новий массив записуємо
+            AsyncStorage.setItem("Cart", JSON.stringify(newCart));
+            console.log('<DeleteFromCartByID> Success Delete by ID:', productID);
+        });
+    } catch (e) {
+        console.log('<DeleteFromCartByID> Try-Catch Error:', err);
+    }
 }
 
 export function ClearCartByProducts(products, methodMoney) {
-  products.map((product) => {
-    deleteFromCart(product.id, methodMoney);
-  });
+    products.map((product) => {
+        deleteFromCart(product.id, methodMoney);
+    });
 }
 
 export function fixPrice(vprice, fixed) {
