@@ -164,8 +164,8 @@ export class PayPal extends Component {
         .catch(err => {
           console.log('Payment-Fetch Catch-Eror:', err);
           Alert.alert(
-            'WARNUNG!', 'Bitte geben Sie eine gültige Lieferadresse ein',
-            // 'Пожалуйста, введите действительный адрес доставки!','',
+            'WARNUNG!', 'Bei der Verarbeitung der Zahlung ist ein unbekannter Fehler aufgetreten: '+err,
+            // 'Ошибка!','При обработке платежа возникла неизвестная ошибка!',
             [{ text: 'OK', onPress: () => this.props.navigation.navigate('Cart') }],
             { cancelable: false },
           );
@@ -175,7 +175,7 @@ export class PayPal extends Component {
         console.log('Token-Fetch Catch-Eror:', err);
         Alert.alert(
           'WARNUNG!', 'Paypal hat beim Versuch, sich anzumelden, einen Fehler verursacht',
-          // 'Пайпал вызвал ошибку при попытке авторизоваться!','',
+          // 'Ошибка!','Пайпал вызвал ошибку при попытке авторизоваться!',
           [{ text: 'OK', onPress: () => this.props.navigation.navigate('Cart') }],
           { cancelable: false },
         );
@@ -183,8 +183,8 @@ export class PayPal extends Component {
     } catch (err) {
       console.log('Try-Catch Eror:', err);
       Alert.alert(
-        'WARNUNG!', 'Die Anwendung hat bei der Verarbeitung der Anforderung einen Fehler ausgelöst',
-        // 'При обработке запроса приложение вызвало ошибку!','',
+        'WARNUNG!', 'Die Anwendung hat bei der Verarbeitung der Anforderung einen Fehler ausgelöst: '+err,
+        // 'Ошибка!','Приложение выдало ошибку при обработке запроса',
         [{ text: 'OK', onPress: () => this.props.navigation.navigate('Cart') }],
         { cancelable: false },
       );

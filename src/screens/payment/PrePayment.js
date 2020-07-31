@@ -104,9 +104,11 @@ class PrePayment extends PureComponent {
           screen = (
             <View style={s.ContentContainer}>
               <Text style={s.ContentBaseText, s.TextBold}>{customer}</Text>
-              <Text style={s.ContentBaseText}>Сервис оплаты вернул ошибку при обработке Вашего заказа:</Text>
+              {/* Сервис оплаты вернул ошибку при обработке Вашего заказа: */}
+              <Text style={s.ContentBaseText}>Der Zahlungsservice hat bei der Bearbeitung Ihrer Bestellung einen Fehler zurückgegeben:</Text>
               <Text style={s.ContentErrorCaption}>{payment.text}</Text>
-              <Text style={s.ContentBaseText}>Просим Вас повторить операцию позже или обратиться в службу поддержки магазина Teleropa.</Text>
+              {/* Просим Вас повторить операцию позже или обратиться в службу поддержки магазина Teleropa. */}
+              <Text style={s.ContentBaseText}>Wir bitten Sie, den Vorgang später zu wiederholen oder sich an den Support des Teleropa-Geschäfts zu wenden.</Text>
             </View>
           );
           break;
@@ -114,9 +116,11 @@ class PrePayment extends PureComponent {
           screen = (
             <View style={s.ContentContainer}>
               <Text style={s.ContentBaseText, s.TextBold}>{customer}</Text>
-              <Text style={s.ContentBaseText}>При обработке Вашего заказа возникла ошибка соединения:</Text>
+              {/* При обработке Вашего заказа возникла ошибка соединения: */}
+              <Text style={s.ContentBaseText}>Bei der Bearbeitung Ihrer Bestellung ist ein Verbindungsfehler aufgetreten:</Text>
               <Text style={s.ContentErrorCaption}>{payment.text}</Text>
-              <Text style={s.ContentBaseText}>Просим Вас повторить операцию позже или обратиться в службу поддержки магазина Teleropa.</Text>
+              {/* Просим Вас повторить операцию позже или обратиться в службу поддержки магазина Teleropa. */}
+              <Text style={s.ContentBaseText}>Wir bitten Sie, den Vorgang später zu wiederholen oder sich an den Support des Teleropa-Geschäfts zu wenden.</Text>
             </View>
           );
           break;
@@ -124,8 +128,11 @@ class PrePayment extends PureComponent {
           screen = (
             <View style={s.ContentContainer}>
               <Text style={s.ContentBaseText, s.TextBold}>{customer}</Text>
-              <Text style={s.ContentErrorCaption}>При обработке Вашего заказа возникла неизвестная ошибка</Text>
-              <Text style={s.ContentBaseText}>Просим Вас повторить операцию позже или обратиться в службу поддержки магазина Teleropa.</Text>
+              {/* <Text style={s.ContentErrorCaption}>При обработке Вашего заказа возникла неизвестная ошибка: */}
+              <Text style={s.ContentErrorCaption}>Bei der Bearbeitung Ihrer Bestellung ist ein unbekannter Fehler aufgetreten:</Text>
+              <Text style={s.ContentErrorCaption}>{payment.text}</Text>
+              {/* Просим Вас повторить операцию позже или обратиться в службу поддержки магазина Teleropa. */}
+              <Text style={s.ContentBaseText}>Wir bitten Sie, den Vorgang später zu wiederholen oder sich an den Support des Teleropa-Geschäfts zu wenden.</Text>
             </View>
           );
           break;
@@ -140,7 +147,8 @@ class PrePayment extends PureComponent {
         <View style={s.ActionConteiner}>
           <TouchableOpacity style={s.ButtonConteiner} onPress={() => { this.props.navigation.navigate('Main') }}>
             <View style={s.ButtonIcon}><Icons name="ios-home" size={30} color="#FFFFFF" /></View>
-            <Text style={s.ButtonText}>Main</Text>
+            {/* Main */}
+            <Text style={s.ButtonText}>Hauptbildschirm</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
