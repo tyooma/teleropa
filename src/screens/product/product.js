@@ -67,7 +67,7 @@ class Product extends Component {
             "Error 404 niet gevonden",
             [
               {
-                text: "OK",
+                text: "Ja",
                 onPress: () => {
                   this.props.navigation.goBack();
                 },

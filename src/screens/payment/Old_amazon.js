@@ -102,7 +102,7 @@ export default class AmazonLoginWebView extends Component {
         Alert.alert(
             "", "Code erfolgreich kopiert",
             [
-                { text: 'OK', onPress: () => console.log("OK") },
+                { text: 'Ja', onPress: () => console.log("OK") },
             ],
             { cancelable: false },
         )

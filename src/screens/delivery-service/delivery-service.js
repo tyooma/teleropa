@@ -114,7 +114,7 @@ export default class DeliveryService extends Component {
             ?
             NavigationService.navigate('CartPreview', { userInfo: { ...this.props.navigation.getParam('userInfo', null) }, data: { ...this.props.navigation.getParam('data', null) }, deliveryData: { ...this.state } })
             :
-            Alert.alert('Versandart wählen', '', [{ text: 'OK', onPress: () => null }], { cancelable: false })
+            Alert.alert('Versandart wählen', '', [{ text: 'Ja', onPress: () => null }], { cancelable: false })
           }
         />
       </View>

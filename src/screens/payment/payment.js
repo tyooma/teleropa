@@ -41,7 +41,7 @@ class Payment extends Component {
         default:
           Alert.alert('WARNUNG!', 'WÄHLEN SIE DIE ZAHLUNGSMETHODE',
             // 'Предупреждение!', 'ВЫБЕРИТЕ МЕТОД ОПЛАТЫ',
-            [{ text: 'OK', onPress: () => null }],
+            [{ text: 'Ja', onPress: () => null }],
             { cancelable: false },
           );
           break;
@@ -50,7 +50,7 @@ class Payment extends Component {
       Alert.alert(
         // 'Предупреждение!', 'Ваш заказ уже обработан. Вернитесь в главное меню, чтобы разместить новый заказ',
         'WARNUNG!', 'Ihre Bestellung wurde bereits bearbeitet. Kehren Sie zum Hauptmenü zurück, um eine neue Bestellung aufzugeben',
-        [{ text: 'Main', onPress: () => this.props.navigation.navigate('Main') }],
+        [{ text: 'Zurück zum shop', onPress: () => this.props.navigation.navigate('Main') }],
         { cancelable: false },
       );
     }

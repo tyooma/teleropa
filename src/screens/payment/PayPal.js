@@ -121,7 +121,7 @@ export class PayPal extends Component {
             Alert.alert(
               `PayPal Zahlungsvalidierungsfehler!`,`${details[0].issue}`,
               // `PayPal Payment Validation Error!`,`${details[0].issue}`,
-              [{ text: 'OK', onPress: () => this.props.navigation.navigate('Cart') }],
+              [{ text: 'Ja', onPress: () => this.props.navigation.navigate('Cart') }],
               { cancelable: false },
             );
           } else {
@@ -154,7 +154,7 @@ export class PayPal extends Component {
                 Alert.alert(
                   'WARNUNG!', 'Paypal hat beim Versuch, sich anzumelden, einen Fehler verursacht',
                   // 'Пайпал вызвал ошибку при попытке авторизоваться!','',
-                  [{ text: 'OK', onPress: () => this.props.navigation.navigate('Cart') }],
+                  [{ text: 'Ja', onPress: () => this.props.navigation.navigate('Cart') }],
                   { cancelable: false },
                 );
               }
@@ -166,7 +166,7 @@ export class PayPal extends Component {
           Alert.alert(
             'WARNUNG!', 'Bei der Verarbeitung der Zahlung ist ein unbekannter Fehler aufgetreten: '+err,
             // 'Ошибка!','При обработке платежа возникла неизвестная ошибка!',
-            [{ text: 'OK', onPress: () => this.props.navigation.navigate('Cart') }],
+            [{ text: 'Ja', onPress: () => this.props.navigation.navigate('Cart') }],
             { cancelable: false },
           );
         });
@@ -176,7 +176,7 @@ export class PayPal extends Component {
         Alert.alert(
           'WARNUNG!', 'Paypal hat beim Versuch, sich anzumelden, einen Fehler verursacht',
           // 'Ошибка!','Пайпал вызвал ошибку при попытке авторизоваться!',
-          [{ text: 'OK', onPress: () => this.props.navigation.navigate('Cart') }],
+          [{ text: 'Ja', onPress: () => this.props.navigation.navigate('Cart') }],
           { cancelable: false },
         );
       });
@@ -185,7 +185,7 @@ export class PayPal extends Component {
       Alert.alert(
         'WARNUNG!', 'Die Anwendung hat bei der Verarbeitung der Anforderung einen Fehler ausgelöst: '+err,
         // 'Ошибка!','Приложение выдало ошибку при обработке запроса',
-        [{ text: 'OK', onPress: () => this.props.navigation.navigate('Cart') }],
+        [{ text: 'Ja', onPress: () => this.props.navigation.navigate('Cart') }],
         { cancelable: false },
       );
     }
@@ -239,7 +239,7 @@ export class PayPal extends Component {
           Alert.alert(
             'WARNUNG!', 'Ihre Zahlung wird nicht bestätigt',
             // '','Ваш платеж не подтвержден',
-            [{ text: 'OK', onPress: () => this.props.navigation.navigate('Payment') }],
+            [{ text: 'Ja', onPress: () => this.props.navigation.navigate('Payment') }],
             { cancelable: false },
           );
         }
@@ -248,7 +248,7 @@ export class PayPal extends Component {
           Alert.alert(
             'WARNUNG!', 'Ihre Zahlung wird nicht bestätigt',
             // '','Ваш платеж не подтвержден',
-            [{ text: 'OK', onPress: () => this.props.navigation.navigate('Payment') }],
+            [{ text: 'Ja', onPress: () => this.props.navigation.navigate('Payment') }],
             { cancelable: false },
           );
         }
@@ -268,24 +268,24 @@ export class PayPal extends Component {
           const payment = ExecuteOrder(orderInfo);
 
           // {code: "error", text: "incorrect parameters"}
-          let prepayment_message = 'Ошибка при покупке бонусных товаров';
+          let prepayment_message = 'Fehler beim Kauf von Bonus Artikeln';
           // {code: "success", text: "Information erfolgreich aktualisiert", data: {…}}
           if ( payment.code === 'success' ) {
-            prepayment_message = `Заказ #${payment.data.orderNumber} на покупку бонусных товаров успешно выполнен.`;
+            prepayment_message = `Bestellung #${payment.data.orderNumber} für Bonusartikel erfolgreich abgeschlossen.`;
             ClearCartByProducts(productsBonus, 'buyOfPoints');
           }
           //---------------------------------------------------------------------------
           Alert.alert(
-            'Обработка заказа!', `Заказ по оплате PayPal успешно выполнен\n\r${prepayment_message}`,
+            'Auftragsabwicklung!!', `PayPal-Bestellung erfolgreich abgeschlossen\n\r${prepayment_message}`,
             // '','***********************',
-            [{ text: 'OK', onPress: () => this.props.navigation.navigate('Main') }],
+            [{ text: 'Ja', onPress: () => this.props.navigation.navigate('Main') }],
             { cancelable: false },
           );
         } else {
           Alert.alert(
             'WARNUNG!', 'Ihre Zahlung wird nicht bestätigt',
             // '','Ваш платеж не подтвержден',
-            [{ text: 'OK', onPress: () => this.props.navigation.navigate('Payment') }],
+            [{ text: 'Ja', onPress: () => this.props.navigation.navigate('Payment') }],
             { cancelable: false },
           );
         }
@@ -294,7 +294,7 @@ export class PayPal extends Component {
       console.log('Try-Catch Eror:', err);
       Alert.alert(
         "Ihr Gerätecode", error,
-        [{ text: 'OK', onPress: () => this.props.navigation.navigate('Main') }],
+        [{ text: 'Ja', onPress: () => this.props.navigation.navigate('Main') }],
         { cancelable: false },
       );
     }

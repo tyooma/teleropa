@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, FlatList, Text, Image, Alert } from 'react-native'
+import { View, FlatList, Text, Image } from 'react-native'
 
 import { SearchButton } from '../../common/header-buttons';
 

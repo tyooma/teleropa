@@ -209,7 +209,7 @@ export default class App extends Component {
     Alert.alert(
       title, body,
       [
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
+        { text: 'Ja', onPress: () => console.log('OK Pressed') },
       ],
       { cancelable: false },
     );
