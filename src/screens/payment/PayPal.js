@@ -23,8 +23,8 @@ export class PayPal extends Component {
 
       // CART
       cart: this.props.navigation.getParam('CartData').cartInfo,
-      productsMoney: this.props.navigation.getParam('CartData').cartInfo.products.filter(p => p.methodMoney==='buyOfMoney'),
-      productsBonus: this.props.navigation.getParam('CartData').cartInfo.products.filter(p => p.methodMoney==='buyOfPoints'),
+      productsMoney: this.props.navigation.getParam('CartData').cartInfo.products.filter(p => p.methodMoney === 'buyOfMoney'),
+      productsBonus: this.props.navigation.getParam('CartData').cartInfo.products.filter(p => p.methodMoney === 'buyOfPoints'),
 
       // DELIVERY
       deliveryID: this.props.navigation.getParam('CartData').deliveryData.selected,
@@ -37,7 +37,7 @@ export class PayPal extends Component {
       approvalUrl: null,
       count: true,
 
-      loading: false,      
+      loading: false,
     }
   }
 
@@ -63,127 +63,127 @@ export class PayPal extends Component {
         },
         body: 'grant_type=client_credentials'
       })
-      .then(res => { return res.json() })
-      .then(json => { return json.access_token })
-      .then(access_token => {
-        const PAYMENT = {
-          intent: 'sale',
-          payer: { payment_method: 'paypal' },
-          transactions: [{
-            amount: {
-              total: totalPrice.toFixed(2),
-              currency: 'EUR',
-              details: { subtotal: orderPrice.toFixed(2), shipping: deliveryPrice.toFixed(2) }
-            },
-            description: this.state.paymentName==='PayPal' ? 'Teleropa PayPal payment.':'Teleropa PayPal Kauf auf Rechnung payment.',
-            item_list: {
-              items: this.state.productsMoney.map((product) => {
-                return {
-                  name: product.productName,
-                  quantity: product.count,
-                  price: this.state.user.selectedUserType === 'EK' ? product.price : product.companyPrice,
-                  currency: 'EUR'
-                }
-              }),
-              shipping_address: {
-                recipient_name: `${this.state.user.name} ${this.state.user.surname}`,
-                line1: this.state.user.street,
-                city: this.state.user.city,
-                country_code: 'DE',
-                postal_code: this.state.user.post,
-                phone: this.state.user.phone,
+        .then(res => { return res.json() })
+        .then(json => { return json.access_token })
+        .then(access_token => {
+          const PAYMENT = {
+            intent: 'sale',
+            payer: { payment_method: 'paypal' },
+            transactions: [{
+              amount: {
+                total: totalPrice.toFixed(2),
+                currency: 'EUR',
+                details: { subtotal: orderPrice.toFixed(2), shipping: deliveryPrice.toFixed(2) }
               },
+              description: this.state.paymentName === 'PayPal' ? 'Teleropa PayPal payment.' : 'Teleropa PayPal Kauf auf Rechnung payment.',
+              item_list: {
+                items: this.state.productsMoney.map((product) => {
+                  return {
+                    name: product.productName,
+                    quantity: product.count,
+                    price: this.state.user.selectedUserType === 'EK' ? product.price : product.companyPrice,
+                    currency: 'EUR'
+                  }
+                }),
+                shipping_address: {
+                  recipient_name: `${this.state.user.name} ${this.state.user.surname}`,
+                  line1: this.state.user.street,
+                  city: this.state.user.city,
+                  country_code: 'DE',
+                  postal_code: this.state.user.post,
+                  phone: this.state.user.phone,
+                },
+              },
+            }],
+            redirect_urls: {
+              return_url: 'https://teleropa.de/return', cancel_url: 'https://teleropa.de/cancel'
             },
-          }],
-          redirect_urls: {
-            return_url: 'https://teleropa.de/return', cancel_url: 'https://teleropa.de/cancel'
-          },
-        }
-        console.log('PAYMENT:', PAYMENT);
+          }
+          console.log('PAYMENT:', PAYMENT);
 
-        // Get "ApprovalURL" for PayPal with AccessToken
-        // 'https://api.sandbox.paypal.com/v1/payments/payment'
-        fetch('https://api.paypal.com/v1/payments/payment', {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': `Bearer ${access_token}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(PAYMENT)
-        })
-        .then(res => res.json())
-        .then(json => {
-          console.log('JSON:', json);
-          const { id, links, name, details } = json;
-          if ( typeof name !== 'undefined' && name === 'VALIDATION_ERROR' ) {
-            console.log(`${unit}: Payment Validation Error!`);
-            Alert.alert(
-              `PayPal Zahlungsvalidierungsfehler!`,`${details[0].issue}`,
-              // `PayPal Payment Validation Error!`,`${details[0].issue}`,
-              [{ text: 'Ja', onPress: () => this.props.navigation.navigate('Cart') }],
-              { cancelable: false },
-            );
-          } else {
-            const approvalUrl = links.find(data => data.rel === 'approval_url');
-            if ( this.state.paymentName === 'PayPal' ) {
-              this.setState({
-                paymentId: id, approvalUrl: approvalUrl.href, access_token: access_token
-              });
-            }
-            if ( this.state.paymentName === 'Rechnung' ) {
-              if (approvalUrl.length != 0) {
-                const params = approvalUrl.href.toString();
-                const rech_token = getUrlParam(params, 'token');
-                function getUrlParam(url, param) {
-                  if (url.indexOf('?') < 0) return null;
-                  var vars = url.substring(url.indexOf('?') + 1);
-                  var result = null;
-                  var s = vars.split('&');
-                  s.forEach(function (elem) {
-                    var name = elem.split('=')[0];
-                    var value = elem.split('=')[1];
-                    if (name == param) result = value;
-                  });
-                  return result;
-                }
-                console.log('Rechnung TOKEN:', rech_token);
-                this.setState({ paymentId: id, approvalUrl: 'https://www.paypal.com/webapps/xoonboarding?token=' + rech_token });
-              } else {
-                console.log('Token-Fetch Catch-Eror:', err);
+          // Get "ApprovalURL" for PayPal with AccessToken
+          // 'https://api.sandbox.paypal.com/v1/payments/payment'
+          fetch('https://api.paypal.com/v1/payments/payment', {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Authorization': `Bearer ${access_token}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(PAYMENT)
+          })
+            .then(res => res.json())
+            .then(json => {
+              console.log('JSON:', json);
+              const { id, links, name, details } = json;
+              if (typeof name !== 'undefined' && name === 'VALIDATION_ERROR') {
+                console.log(`${unit}: Payment Validation Error!`);
                 Alert.alert(
-                  'WARNUNG!', 'Paypal hat beim Versuch, sich anzumelden, einen Fehler verursacht',
-                  // 'Пайпал вызвал ошибку при попытке авторизоваться!','',
+                  `PayPal Zahlungsvalidierungsfehler!`, `${details[0].issue}`,
+                  // `PayPal Payment Validation Error!`,`${details[0].issue}`,
                   [{ text: 'Ja', onPress: () => this.props.navigation.navigate('Cart') }],
                   { cancelable: false },
                 );
+              } else {
+                const approvalUrl = links.find(data => data.rel === 'approval_url');
+                if (this.state.paymentName === 'PayPal') {
+                  this.setState({
+                    paymentId: id, approvalUrl: approvalUrl.href, access_token: access_token
+                  });
+                }
+                if (this.state.paymentName === 'Rechnung') {
+                  if (approvalUrl.length != 0) {
+                    const params = approvalUrl.href.toString();
+                    const rech_token = getUrlParam(params, 'token');
+                    function getUrlParam(url, param) {
+                      if (url.indexOf('?') < 0) return null;
+                      var vars = url.substring(url.indexOf('?') + 1);
+                      var result = null;
+                      var s = vars.split('&');
+                      s.forEach(function (elem) {
+                        var name = elem.split('=')[0];
+                        var value = elem.split('=')[1];
+                        if (name == param) result = value;
+                      });
+                      return result;
+                    }
+                    console.log('Rechnung TOKEN:', rech_token);
+                    this.setState({ paymentId: id, approvalUrl: 'https://www.paypal.com/webapps/xoonboarding?token=' + rech_token });
+                  } else {
+                    console.log('Token-Fetch Catch-Eror:', err);
+                    Alert.alert(
+                      'WARNUNG!', 'Bei der Anmeldung ist ein Fehler auf dem Paypal-Server entstanden',
+                      // 'Пайпал вызвал ошибку при попытке авторизоваться!','',
+                      [{ text: 'Ja', onPress: () => this.props.navigation.navigate('Cart') }],
+                      { cancelable: false },
+                    );
+                  }
+                }
               }
-            }
-          }
+            })
+            .catch(err => {
+              console.log('Payment-Fetch Catch-Eror:', err);
+              Alert.alert(
+                'WARNUNG!', 'Die Anwendung hat bei der Anfrage-Bearbeitung einen Fehler ausgelöst: ' + err,
+                // 'Ошибка!','При обработке платежа возникла неизвестная ошибка!',
+                [{ text: 'Ja', onPress: () => this.props.navigation.navigate('Cart') }],
+                { cancelable: false },
+              );
+            });
         })
         .catch(err => {
-          console.log('Payment-Fetch Catch-Eror:', err);
+          console.log('Token-Fetch Catch-Eror:', err);
           Alert.alert(
-            'WARNUNG!', 'Bei der Verarbeitung der Zahlung ist ein unbekannter Fehler aufgetreten: '+err,
-            // 'Ошибка!','При обработке платежа возникла неизвестная ошибка!',
+            'WARNUNG!', 'Paypal hat beim Versuch, sich anzumelden, einen Fehler verursacht',
+            // 'Ошибка!','Пайпал вызвал ошибку при попытке авторизоваться!',
             [{ text: 'Ja', onPress: () => this.props.navigation.navigate('Cart') }],
             { cancelable: false },
           );
         });
-      })
-      .catch(err => {
-        console.log('Token-Fetch Catch-Eror:', err);
-        Alert.alert(
-          'WARNUNG!', 'Paypal hat beim Versuch, sich anzumelden, einen Fehler verursacht',
-          // 'Ошибка!','Пайпал вызвал ошибку при попытке авторизоваться!',
-          [{ text: 'Ja', onPress: () => this.props.navigation.navigate('Cart') }],
-          { cancelable: false },
-        );
-      });
     } catch (err) {
       console.log('Try-Catch Eror:', err);
       Alert.alert(
-        'WARNUNG!', 'Die Anwendung hat bei der Verarbeitung der Anforderung einen Fehler ausgelöst: '+err,
+        'WARNUNG!', 'Die Anwendung hat bei der Anfrage-Bearbeitung einen Fehler ausgelöst: ' + err,
         // 'Ошибка!','Приложение выдало ошибку при обработке запроса',
         [{ text: 'Ja', onPress: () => this.props.navigation.navigate('Cart') }],
         { cancelable: false },
@@ -198,13 +198,13 @@ export class PayPal extends Component {
         approvalUrl: null
       });
     }
-    
+
     const params = WebViewState.url.toString();
-    const p = params.indexOf('PayerID=');    
+    const p = params.indexOf('PayerID=');
 
     console.log('<onNavigationStateChange>...............WebViewState.url.includes');
     if (p >= 0 && this.state.count) {
-    // if (p >= 0) {
+      // if (p >= 0) {
       console.log('<onNavigationStateChange>...............WebViewState.url.includes  P>=0');
       this.setState({ count: false });
       const l = params.length;
@@ -226,70 +226,70 @@ export class PayPal extends Component {
           'Authorization': 'Bearer ' + this.state.access_token,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({payer_id: PayerID})
+        body: JSON.stringify({ payer_id: PayerID })
       })
-      .then(res => {
-        console.log('<PayPalExecute> Response.JSON:', res.json());
-        res.json();
-      })
-      .then(json => {
-        console.log('<PayPalExecute> JSON:', json);
-        if (json === undefined) {
-          console.log('<PayPalExecute> Execute Fail:', json);
-          Alert.alert(
-            'WARNUNG!', 'Ihre Zahlung wird nicht bestätigt',
-            // '','Ваш платеж не подтвержден',
-            [{ text: 'Ja', onPress: () => this.props.navigation.navigate('Payment') }],
-            { cancelable: false },
-          );
-        }
-        if (json.name == 'INSTRUMENT_DECLINED') {
-          console.log('<PayPalExecute> Execute Fail:', json);
-          Alert.alert(
-            'WARNUNG!', 'Ihre Zahlung wird nicht bestätigt',
-            // '','Ваш платеж не подтвержден',
-            [{ text: 'Ja', onPress: () => this.props.navigation.navigate('Payment') }],
-            { cancelable: false },
-          );
-        }
-        if (json.failed_transactions.length == 0) {
-          //---------------------------------------------------------------------------
-          ClearCartByProducts(this.state.productsMoney, 'buyOfMoney');
-          console.log('<PayPalExecute> PayPal Execute Success:', json);
-          //--------------------------------------------
-          const orderInfo = {
-            customerID: this.state.customerID,
-            paymentID: this.state.paymentID,
-            dispatchID: this.state.deliveryID,
-            products: this.state.productsBonus,
+        .then(res => {
+          console.log('<PayPalExecute> Response.JSON:', res.json());
+          res.json();
+        })
+        .then(json => {
+          console.log('<PayPalExecute> JSON:', json);
+          if (json === undefined) {
+            console.log('<PayPalExecute> Execute Fail:', json);
+            Alert.alert(
+              'WARNUNG!', 'Ihre Zahlung wird nicht bestätigt',
+              // '','Ваш платеж не подтвержден',
+              [{ text: 'Ja', onPress: () => this.props.navigation.navigate('Payment') }],
+              { cancelable: false },
+            );
           }
-
-          // Buy of Bonus-Points
-          const payment = ExecuteOrder(orderInfo);
-
-          // {code: "error", text: "incorrect parameters"}
-          let prepayment_message = 'Fehler beim Kauf von Bonus Artikeln';
-          // {code: "success", text: "Information erfolgreich aktualisiert", data: {…}}
-          if ( payment.code === 'success' ) {
-            prepayment_message = `Bestellung #${payment.data.orderNumber} für Bonusartikel erfolgreich abgeschlossen.`;
-            ClearCartByProducts(productsBonus, 'buyOfPoints');
+          if (json.name == 'INSTRUMENT_DECLINED') {
+            console.log('<PayPalExecute> Execute Fail:', json);
+            Alert.alert(
+              'WARNUNG!', 'Ihre Zahlung wird nicht bestätigt',
+              // '','Ваш платеж не подтвержден',
+              [{ text: 'Ja', onPress: () => this.props.navigation.navigate('Payment') }],
+              { cancelable: false },
+            );
           }
-          //---------------------------------------------------------------------------
-          Alert.alert(
-            'Auftragsabwicklung!!', `PayPal-Bestellung erfolgreich abgeschlossen\n\r${prepayment_message}`,
-            // '','***********************',
-            [{ text: 'Ja', onPress: () => this.props.navigation.navigate('Main') }],
-            { cancelable: false },
-          );
-        } else {
-          Alert.alert(
-            'WARNUNG!', 'Ihre Zahlung wird nicht bestätigt',
-            // '','Ваш платеж не подтвержден',
-            [{ text: 'Ja', onPress: () => this.props.navigation.navigate('Payment') }],
-            { cancelable: false },
-          );
-        }
-      });
+          if (json.failed_transactions.length == 0) {
+            //---------------------------------------------------------------------------
+            ClearCartByProducts(this.state.productsMoney, 'buyOfMoney');
+            console.log('<PayPalExecute> PayPal Execute Success:', json);
+            //--------------------------------------------
+            const orderInfo = {
+              customerID: this.state.customerID,
+              paymentID: this.state.paymentID,
+              dispatchID: this.state.deliveryID,
+              products: this.state.productsBonus,
+            }
+
+            // Buy of Bonus-Points
+            const payment = ExecuteOrder(orderInfo);
+
+            // {code: "error", text: "incorrect parameters"}
+            let prepayment_message = 'Fehler beim Kauf von Bonus Artikeln';
+            // {code: "success", text: "Information erfolgreich aktualisiert", data: {…}}
+            if (payment.code === 'success') {
+              prepayment_message = `Bestellung #${payment.data.orderNumber} für Bonusartikel erfolgreich abgeschlossen.`;
+              ClearCartByProducts(productsBonus, 'buyOfPoints');
+            }
+            //---------------------------------------------------------------------------
+            Alert.alert(
+              'Auftragsabwicklung!!', `PayPal-Bestellung erfolgreich abgeschlossen\n\r${prepayment_message}`,
+              // '','***********************',
+              [{ text: 'Ja', onPress: () => this.props.navigation.navigate('Main') }],
+              { cancelable: false },
+            );
+          } else {
+            Alert.alert(
+              'WARNUNG!', 'Ihre Zahlung wird nicht bestätigt',
+              // '','Ваш платеж не подтвержден',
+              [{ text: 'Ja', onPress: () => this.props.navigation.navigate('Payment') }],
+              { cancelable: false },
+            );
+          }
+        });
     } catch (error) {
       console.log('Try-Catch Eror:', err);
       Alert.alert(
@@ -307,20 +307,20 @@ export class PayPal extends Component {
       <View style={{ flex: 1 }}>
         {
           this.state.approvalUrl ?
-          <WebView
-            style={{ height: 400, width: 300 }}
-            source={{ uri: this.state.approvalUrl }}
-            onNavigationStateChange={this.WebViewChange}
-            javaScriptEnabled={true}
-            domStorageEnabled={true}
-            startInLoadingState={false}
-            injectedJavaScript={this.state.cookie}
-            BackAndroid={true}
-            BackHandler={true}
-            style={{ marginTop: 20 }}
-          />
-          :
-          <Loading />
+            <WebView
+              style={{ height: 400, width: 300 }}
+              source={{ uri: this.state.approvalUrl }}
+              onNavigationStateChange={this.WebViewChange}
+              javaScriptEnabled={true}
+              domStorageEnabled={true}
+              startInLoadingState={false}
+              injectedJavaScript={this.state.cookie}
+              BackAndroid={true}
+              BackHandler={true}
+              style={{ marginTop: 20 }}
+            />
+            :
+            <Loading />
         }
       </View>
     );

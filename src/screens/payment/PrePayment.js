@@ -46,7 +46,7 @@ class PrePayment extends PureComponent {
   componentWillMount() {
     const method = '<componentWillMount>';
     console.log('................................................................................');
-    console.log(unit+'.'+method);
+    console.log(unit + '.' + method);
     try {
       //.....................................................................................................
       // Dummy Fetch for Payment-Object
@@ -56,13 +56,13 @@ class PrePayment extends PureComponent {
       //.....................................................................................................
 
       ExecuteOrder(this.state.orderInfo).then((payment) => {
-        console.log(unit+'.'+method+' ExecuteOrder Success:', payment);
-        this.setState({payment: payment});
+        console.log(unit + '.' + method + ' ExecuteOrder Success:', payment);
+        this.setState({ payment: payment });
       });
-      
-    } catch(err) {
-      this.setState({payment: {code: 'unknown_error', text: err.message}});
-      console.log(unit+'.'+method+' Try-Catch Error:', err);
+
+    } catch (err) {
+      this.setState({ payment: { code: 'unknown_error', text: err.message } });
+      console.log(unit + '.' + method + ' Try-Catch Error:', err);
     }
     console.log('................................................................................');
   }
@@ -108,7 +108,7 @@ class PrePayment extends PureComponent {
               <Text style={s.ContentBaseText}>Der Zahlungsservice hat bei der Bearbeitung Ihrer Bestellung einen Fehler zurückgegeben:</Text>
               <Text style={s.ContentErrorCaption}>{payment.text}</Text>
               {/* Просим Вас повторить операцию позже или обратиться в службу поддержки магазина Teleropa. */}
-              <Text style={s.ContentBaseText}>Wir bitten Sie, den Vorgang später zu wiederholen oder sich an den Support des Teleropa-Geschäfts zu wenden.</Text>
+              <Text style={s.ContentBaseText}>Wir bitten Sie, den Vorgang später zu wiederholen oder sich an den Teleropa-Support zu wenden.</Text>
             </View>
           );
           break;
@@ -120,7 +120,7 @@ class PrePayment extends PureComponent {
               <Text style={s.ContentBaseText}>Bei der Bearbeitung Ihrer Bestellung ist ein Verbindungsfehler aufgetreten:</Text>
               <Text style={s.ContentErrorCaption}>{payment.text}</Text>
               {/* Просим Вас повторить операцию позже или обратиться в службу поддержки магазина Teleropa. */}
-              <Text style={s.ContentBaseText}>Wir bitten Sie, den Vorgang später zu wiederholen oder sich an den Support des Teleropa-Geschäfts zu wenden.</Text>
+              <Text style={s.ContentBaseText}>Wir bitten Sie, den Vorgang später zu wiederholen oder sich an den Teleropa-Support zu wenden.</Text>
             </View>
           );
           break;
@@ -132,7 +132,7 @@ class PrePayment extends PureComponent {
               <Text style={s.ContentErrorCaption}>Bei der Bearbeitung Ihrer Bestellung ist ein unbekannter Fehler aufgetreten:</Text>
               <Text style={s.ContentErrorCaption}>{payment.text}</Text>
               {/* Просим Вас повторить операцию позже или обратиться в службу поддержки магазина Teleropa. */}
-              <Text style={s.ContentBaseText}>Wir bitten Sie, den Vorgang später zu wiederholen oder sich an den Support des Teleropa-Geschäfts zu wenden.</Text>
+              <Text style={s.ContentBaseText}>Wir bitten Sie, den Vorgang später zu wiederholen oder sich an den Teleropa-Support zu wenden.</Text>
             </View>
           );
           break;
@@ -149,7 +149,7 @@ class PrePayment extends PureComponent {
             <View style={s.ButtonIcon}><Icons name="ios-home" size={30} color="#FFFFFF" /></View>
             {/* Main */}
             {/* <Text style={s.ButtonText}>Hauptbildschirm</Text> */}
-            <Text style={s.ButtonText}>Zurück zum shop</Text>
+            <Text style={s.ButtonText}>Zurück zum Shop</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
