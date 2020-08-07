@@ -86,7 +86,8 @@ export function register(body, email, password) {
         .then(({ status }) => {
             Toast.show(status.text, {
                 shadow: false,
-                backgroundColor: '#505050'
+                backgroundColor: "#505050",
+                duration: 1500,
             })
             if (status.code === 'success') {
                 logIn(email, password)
@@ -107,7 +108,8 @@ export function resetPassword(email) {
         .then(({ status }) => {
             Toast.show(status.text, {
                 shadow: false,
-                backgroundColor: '#505050'
+                backgroundColor: "#505050",
+                duration: 1500,
             })
         })
 }
@@ -123,9 +125,10 @@ export function sendToken(token) {
     })
         .then(res => res.json())
         .then((res) => {
-            Toast.show('Токен отправлен', {
+            Toast.show('Token gesendet', {
                 shadow: false,
-                backgroundColor: '#505050'
+                backgroundColor: "#505050",
+                duration: 1500,
             })
         })
 }

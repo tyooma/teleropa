@@ -212,10 +212,12 @@ class Search extends Component {
     }
 
     getIDs(ids, fromPrice, toPrice, sortBy) {
-        if (fromPrice == 0 || toPrice == 0) {           
+        if (fromPrice == 0 || toPrice == 0) {
+
             Toast.show("Prijs kan niet 0 zijn", {
                 shadow: false,
-                backgroundColor: '#505050'
+                backgroundColor: "#505050",
+                duration: 1500,
             })
         }
         if (fromPrice && toPrice) {
@@ -289,19 +291,23 @@ class Search extends Component {
         return null
     }
 
-    showToastNoSearch() {      
+    showToastNoSearch() {
         Toast.show("Nichts gefunden", {
             shadow: false,
-            backgroundColor: '#505050'
+            backgroundColor: "#505050",
+            duration: Toast.durations.LONG
         })
-        this.setState({ loaded: false })
+        console.log('Фигня не работающая ', Toast.durations)
+        NavigationService.back()
+
     }
 
 
-    showToast() {        
+    showToast() {
         Toast.show("Nicht verfügbar", {
             shadow: false,
-            backgroundColor: '#505050'
+            backgroundColor: "#505050",
+            duration: 1500,
         })
     }
 

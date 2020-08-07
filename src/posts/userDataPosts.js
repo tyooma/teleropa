@@ -15,7 +15,8 @@ export function changeDeliveryAddress(userID, customerType, company, department,
     .then(({status}) => {
         Toast.show(status.text, {
             shadow: false,
-            backgroundColor: '#505050'
+            backgroundColor: "#505050",
+            duration: 1500,
         })
         NavigationService.navigate('PersonalData', {reload: true}) 
     })
@@ -34,7 +35,8 @@ export function changePaymentAddress(userID, customerType, company, department, 
     .then(({status}) => {
         Toast.show(status.text, {
             shadow: false,
-            backgroundColor: '#505050'
+            backgroundColor: "#505050",
+            duration: 1500,
         })
         NavigationService.navigate('PersonalData', {reload: true}) 
     })
@@ -53,7 +55,8 @@ export function changePassword(userID, password) {
     .then(({status}) => {
         Toast.show(status.text, {
             shadow: false,
-            backgroundColor: '#505050'
+            backgroundColor: "#505050",
+            duration: 1500,
         })  
     })
 }
@@ -71,7 +74,8 @@ export function changeUserInfo(userID, name, surname, birthDate, gender) {
     .then(({status}) => {
         Toast.show(status.text, {
             shadow: false,
-            backgroundColor: '#505050'
+            backgroundColor: "#505050",
+            duration: 1500,
         })
         NavigationService.navigate('PersonalData', {reload: true}) 
         console.log(status)})

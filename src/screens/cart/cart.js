@@ -220,12 +220,12 @@ class Cart extends Component {
       :
       products.reduce((sum, { companyPrice, count }) => { return sum + companyPrice * count }, 0);
 
-  //------------------------------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------------------------------------
     orderVAT = 0;
     products.map((p) => {
-      orderVAT += (p.tax/100) * (this.props.userInfo.selectedUserType==='H' ? p.companyPrice:p.price * p.count);
+      orderVAT += (p.tax / 100) * (this.props.userInfo.selectedUserType === 'H' ? p.companyPrice : p.price * p.count);
     });
-  //------------------------------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------------------------------------
 
     discountProductsPrice = this.getDiscount(originalProductsPrice);
 
@@ -251,7 +251,11 @@ class Cart extends Component {
       if (promocodeData.status.code === 'success') {
         this.setState({ promocodeData });
       }
-      Toast.show(promocodeData.status.text, { shadow: false, backgroundColor: '#505050' });
+      Toast.show(promocodeData.status.text, {
+        shadow: false,
+        backgroundColor: "#505050",
+        duration: 1500,
+      });
     });
   }
 
