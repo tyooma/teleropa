@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { View, ToastAndroid, Alert } from 'react-native';
+import { View, Alert } from 'react-native';
 import { WebView } from 'react-native-webview';
 import base64 from 'react-native-base64';
 import Loading from '../loading';

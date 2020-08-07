@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { View, Image, TextInput, TouchableOpacity, Text, SafeAreaView, Platform, ScrollView, StyleSheet, FlatList, ToastAndroid } from 'react-native';
+import { View, Image, TextInput, TouchableOpacity, Text, SafeAreaView, Platform, ScrollView, StyleSheet, FlatList } from 'react-native';
 
 import Toast from 'react-native-root-toast';
 
@@ -188,7 +188,7 @@ class Search extends Component {
                     let ResponseServer = res.searchResult;
                     ResponseServer.filter((a) => {
                         if (a.name.toLowerCase().indexOf(searchString) != -1) result.push(a);
-                    })                  
+                    })
                     this.getIDs(result)
                 }
                 else this.showToastNoSearch()
@@ -212,12 +212,11 @@ class Search extends Component {
     }
 
     getIDs(ids, fromPrice, toPrice, sortBy) {
-        if (fromPrice == 0 || toPrice == 0) {
-            ToastAndroid.showWithGravity(
-                "Prijs kan niet 0 zijn",
-                ToastAndroid.SHORT,
-                ToastAndroid.CENTER,
-            )
+        if (fromPrice == 0 || toPrice == 0) {           
+            Toast.show("Prijs kan niet 0 zijn", {
+                shadow: false,
+                backgroundColor: '#505050'
+            })
         }
         if (fromPrice && toPrice) {
             this.setState({ fromPrice, toPrice, sortBy })
@@ -290,22 +289,20 @@ class Search extends Component {
         return null
     }
 
-    showToastNoSearch() {
-        ToastAndroid.showWithGravity(
-            "Nichts gefunden",
-            ToastAndroid.SHORT,
-            ToastAndroid.CENTER,
-        )
+    showToastNoSearch() {      
+        Toast.show("Nichts gefunden", {
+            shadow: false,
+            backgroundColor: '#505050'
+        })
         this.setState({ loaded: false })
     }
 
 
-    showToast() {
-        ToastAndroid.showWithGravity(
-            "Nicht verfügbar",
-            ToastAndroid.SHORT,
-            ToastAndroid.CENTER,
-        )
+    showToast() {        
+        Toast.show("Nicht verfügbar", {
+            shadow: false,
+            backgroundColor: '#505050'
+        })
     }
 
     renderHelper() {
