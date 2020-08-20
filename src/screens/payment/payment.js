@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Alert, ScrollView, Platform, View } from 'react-native';
-import FooterButton from '../../common/footer-button';
-import PaymentOption from '../../common/payment-option';
-import Loading from '../loading';
 
-const unit = '<Payment>';
+import { connect } from 'react-redux';
+
+import { Alert, ScrollView, Platform, View } from 'react-native';
+
+import FooterButton from '../../common/footer-button';
+
+import PaymentOption from '../../common/payment-option';
+
+import Loading from '../loading';
 
 class Payment extends Component {
   static navigationOptions = { title: 'Zahlungsweise' }
@@ -28,6 +31,9 @@ class Payment extends Component {
       switch (this.state.selected) {
         case 'PayPal':
           this.props.navigation.navigate('PayPal', { CartData: cart, Payment: 'PayPal', PaymentID: 28 });
+          break;
+        case 'AmazonPay':
+          this.props.navigation.navigate('AmazonLoginWebView', { CartData: cart, Payment: 'AmazonLoginWebView', PaymentID: 28 });
           break;
         case 'Rechnung':
           this.props.navigation.navigate('PayPal', { CartData: cart, Payment: 'Rechnung', PaymentID: 28 });
@@ -119,11 +125,11 @@ class Payment extends Component {
             text={'Kauf auf Rechnung'}
             imageSource={require('../../assets/payments/Rechnung.png')}
           />
-          {/* <PaymentOption
+          <PaymentOption
             onPress={() => this.setState({ selected: 'AmazonPay' })}
             selected={this.isSelected('AmazonPay')}
             imageSource={require('../../assets/payments/AmazonPay.png')}
-          /> */}
+          />
           <PaymentOption
             onPress={() => this.setState({ selected: 'Vorkasse' })}
             selected={this.isSelected('Vorkasse')}

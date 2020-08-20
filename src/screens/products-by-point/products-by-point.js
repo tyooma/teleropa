@@ -4,23 +4,17 @@ import { View, FlatList, Text, Image } from 'react-native'
 
 import { SearchButton } from '../../common/header-buttons';
 
-import CategoryInfoButton from '../../common/header-buttons/category-info-button'
-
-import FilterButton from '../../common/filter-button';
-
-import FooterButton from '../../common/footer-button';
-
-// import ProductListItem from '../../common/product-list-item';
-
 import BonusListItem from '../../common/bonus-list-item';
 
-import { getPreviewProductData, getPreviewProductData1, getBonusProducts } from '../../gets/productPosts';
+import { getPreviewProductData1, getBonusProducts } from '../../gets/productPosts';
 
 import Loading from '../loading';
 
 import { connect } from 'react-redux'
 
 import FooterNavBar from '../../common/footer-navigation-bar/footer-navigation-bar';
+
+import FilterButtonPoint from '../../common/filter-point-button';
 
 class ProductsByPoint extends Component {
     static navigationOptions = ({ navigation }) => {
@@ -36,38 +30,42 @@ class ProductsByPoint extends Component {
 
     state = {
         userInfo: null,
-        data: [],
-        sortedData: [],
+        originalIDs: [],
+        filteredIDs: [],
         loaded: false,
         routeName: 'ProductsByPoint',
         from: 0,
-        minPrice: 0,
-        maxPrice: 0,
-        fromPrice: 0,
-        toPrice: 0,
+        minBonuspoint: 0,
+        maxBonuspoint: 0,
+        fromBonuspoint: 0,
+        toBonuspoint: 0,
         sortBy: '',
     }
-
 
     async componentDidMount() {
         var arr = [];
         var sorted = [];
 
-
         const title = this.props.navigation.getParam('title', null)
         const userInfo = this.props.navigation.getParam('userInfo', null)
-
+        const checkURL = this.props.navigation.getParam('checkURL', null)
 
         this.props.navigation.addListener('didFocus', (route) => {
-            const filterOptions = this.props.navigation.getParam('filterOptions', null)
+            const filterOptions = this.props.navigation.getParam('filterOptions', null)            
             if (filterOptions) {
                 const { from, to, sortBy } = filterOptions
-                if (from !== this.state.fromPrice || to !== this.state.toPrice || sortBy !== this.state.sortBy) {
+                if (from !== this.state.fromBonuspoint || to !== this.state.toBonuspoint || sortBy !== this.state.sortBy) {
                     this.getIDs(this.state.ids, from, to, sortBy)
                 }
             }
         });
 
+        // learnRegExp = () => {
+        //     return /((ftp|https?):\/\/)?(www\.)?[a-z0-9\-\.]{3,}\.[a-z]{3}$/.test(learnRegExp.arguments[0]);
+        // }
+
+
+        // switch (title, checkURL) {
         switch (title) {
             case 'TELEPOINTS':
                 try {
@@ -81,71 +79,82 @@ class ProductsByPoint extends Component {
                                 count1++;
                                 if (ResponseRespJSON.status != "404" && ResponseRespJSON.stock > 0) {
                                     arr.push({ ...ResponseRespJSON, productID: x.productID, bonuspoint: x.required_points, })
-                                    //sorted = arr.sort((first, second) => (Number(first.bonuspoint) < Number(second.bonuspoint)) ? -1 : ((Number(second.bonuspoint) < Number(first.bonuspoint)) ? 1 : 0))
-                                    //this.setState({ sortedData: sorted, loaded: true, userInfo: userInfo })
                                 }
                                 if (count === count1) {
                                     sorted = arr.sort((first, second) => (Number(first.bonuspoint) < Number(second.bonuspoint)) ? -1 : ((Number(second.bonuspoint) < Number(first.bonuspoint)) ? 1 : 0))
-                                    this.setState({ sortedData: sorted, loaded: true, userInfo: userInfo })
+                                    //this.setState({ sortedData: sorted, loaded: true, userInfo: userInfo })                                             
+                                    this.getIDs(sorted)
                                 }
                             })
-
                     })
-                    console.log("ТУт ложится хуйня сортированная")
-
                 } catch (e) {
                     console.warn(e);
                 }
                 break;
-            default: this.props.navigation.navigate('Main');
+            default:
+                this.props.navigation.navigate('Main');
         }
 
     }
 
 
-    getIDs(ids, fromPrice, toPrice, sortBy) {
-
+    findMinMaxPrice(ids) {
+        const Bonuspoint = ids.map(({ bonuspoint }) => bonuspoint);
+        const maxBonuspoint = Math.max(...Bonuspoint)
+        const minBonuspoint = Math.min(...Bonuspoint)
+        this.setState({ minBonuspoint, maxBonuspoint, fromBonuspoint: minBonuspoint, toBonuspoint: maxBonuspoint, originalIDs: ids, filteredIDs: ids, loaded: true, })
+        // this.getData(0)
     }
+
+    getIDs(ids, fromBonuspoint, toBonuspoint, sortBy) {
+        // console.log("ids", ids, "fromBonuspoint", fromBonuspoint, "toBonuspoint", toBonuspoint, " sortBy", sortBy);
+        if (fromBonuspoint == 0 || toBonuspoint == 0) {
+            Toast.show("Prijs kan niet 0 zijn", {
+                shadow: false,
+                backgroundColor: "#505050",
+                duration: 1500,
+            })
+        }
+        if (fromBonuspoint && toBonuspoint) {
+            const filtered = this.state.originalIDs.filter(({ bonuspoint }) => bonuspoint >= fromBonuspoint && bonuspoint <= toBonuspoint)
+            let sorted = [];
+            if (sortBy.length != 0) {
+                switch (sortBy) {
+                    case 'popular':
+                        sorted = filtered.sort((first, second) => (first.rate > second.rate) ? -1 : ((second.rate > first.rate) ? 1 : 0))
+                        break
+                    case 'alphabet':
+                        sorted = filtered.sort((first, second) => (first.productName > second.productName) ? 1 : ((second.productName > first.productName) ? -1 : 0))
+                        break
+                    case 'price_down':
+                        sorted = filtered.sort((first, second) => (parseFloat(first.bonuspoint) > parseFloat(second.bonuspoint)) ? -1 : ((parseFloat(second.bonuspoint) > parseFloat(first.bonuspoint)) ? 1 : 0))
+                        break
+                    case 'price_up':
+                        sorted = filtered.sort((first, second) => (parseFloat(first.bonuspoint) < parseFloat(second.bonuspoint)) ? -1 : ((parseFloat(second.bonuspoint) < parseFloat(first.bonuspoint)) ? 1 : 0))
+                        break
+                    default: break
+                }
+                this.setState({ filteredIDs: sorted, from: 0, fromBonuspoint, toBonuspoint, sortBy, });
+            } else {
+                sorted = filtered
+                this.setState({ filteredIDs: sorted, from: 0, fromBonuspoint, toBonuspoint, sortBy, });
+            }        
+        } else { this.findMinMaxPrice(ids) }
+    }
+
+
 
     render() {
-        console.log("this.state in product-by-point.js", this.state)
+    //    console.log("this.state in product-by-point.js ", this.state)
 
-        if (!this.state.loaded) {
-            return <Loading />
-        }
+        if (!this.state.loaded) { return <Loading /> }
 
-        const { minPrice, maxPrice, fromPrice, toPrice, sortBy } = this.state
-        // this.setState({ fromPrice, toPrice, sortBy })
-        // const filtered = this.state.data.filter(({ price }) => price >= fromPrice && price <= toPrice)
-        // console.log("FILTERED", filtered)
-        // let sorted = [];
-        // if (sortBy.length != 0) {
-        //     switch (sortBy) {
-        //         case 'popular':
-        //             sorted = filtered.sort((first, second) => (first.popularity > second.popularity) ? -1 : ((second.popularity > first.popularity) ? 1 : 0))
-        //             break
-        //         case 'alphabet':
-        //             sorted = filtered.sort((first, second) => (first.name > second.name) ? 1 : ((second.name > first.name) ? -1 : 0))
-        //             break
-        //         case 'price_down':
-        //             sorted = filtered.sort((first, second) => (first.price > second.price) ? -1 : ((second.price > first.price) ? 1 : 0))
-        //             break
-        //         case 'price_up':
-        //             sorted = filtered.sort((first, second) => (first.price < second.price) ? -1 : ((second.price < first.price) ? 1 : 0))
-        //             break
-        //         default: break
-        //     }
-        // }
-        // const filtered = this.state.data.filter(item => item.stock > 0);
-        // const sorted = filtered.sort((first, second) => (Number(first.bonuspoint) < Number(second.bonuspoint)) ? -1 : ((Number(second.bonuspoint) < Number(first.bonuspoint)) ? 1 : 0))
+        const { minBonuspoint, maxBonuspoint, fromBonuspoint, toBonuspoint, sortBy } = this.state
         return (
             <View style={styles.container}>
-              {/* <View style={styles.container}> */}
                 <FlatList
-                    // data={!sorted.length ? this.state.data : sorted}
-                    data={this.state.sortedData}
+                    data={this.state.filteredIDs}
                     renderItem={({ item, index }) => {
-
                         const { companyPrice, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, productID, tax, bonuspoint, } = item
                         return (
                             <View key={index} style={{ paddingBottom: 8 }}>
@@ -167,23 +176,20 @@ class ProductsByPoint extends Component {
                                 />
                             </View>
                         )
-                        // }
                     }}
                     columnWrapperStyle={{ flexWrap: 'wrap' }}
                     numColumns={4}
-                    // ListHeaderComponent={
-                    //     this.state.data.length !== 0 ?
-                    //         <FilterButton minPrice={minPrice} maxPrice={maxPrice} fromPrice={fromPrice} toPrice={toPrice} sortBy={sortBy} />
-                    //         : null
-                    // }
+                    ListHeaderComponent={
+                        <FilterButtonPoint minBonuspoint={minBonuspoint} maxBonuspoint={maxBonuspoint} fromBonuspoint={fromBonuspoint} toBonuspoint={toBonuspoint} sortBy={sortBy} />
+                    }
                     //ListFooterComponent={this.state.filteredIDs.length > this.state.products.length && (this.state.from + 12 === this.state.products.length) ? <FooterButton text='Weitere Produkte' onPress={() => { this.getData(this.state.from + 12) }} /> : null}
                     initialNumToRender={3}
                     windowSize={2}
                     keyExtractor={item => item.id}
                 />
-              <View style={styles.footer}>
-                <FooterNavBar />
-              </View>
+                <View style={styles.footer}>
+                    <FooterNavBar />
+                </View>
             </View>
         )
     }
@@ -194,15 +200,15 @@ const mapStateToProps = ({ userInfo, cart }) => ({ userInfo, cart })
 export default connect(mapStateToProps)(ProductsByPoint)
 
 const styles = {
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-  },
-  footer: {
-    width: '100%',
-  },
+    container: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+    },
+    footer: {
+        width: '100%',
+    },
 
     popularText: {
         fontSize: 16,

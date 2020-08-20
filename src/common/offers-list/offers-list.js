@@ -29,12 +29,12 @@ const OffersListItem = ({ id, text, image, price, companyPrice, salePrice, userI
                 </View>
 
                 <View style={{ flex: 6, flexDirection: 'column' }}>
-                    <View>
-                        <Text style={styles.name} numberOfLines={3} >{text}</Text>
+                <View style={styles.descriptionContainer}>
+                        <Text style={styles.name} numberOfLines={5} >{text}</Text>
                     </View>
-                    <View style={{ paddingBottom: 10 }}>
-                        <Text style={styles.saleprice}>uvp <Text style={[styles.saleprice, { textDecorationLine: 'line-through' }]}>{formattedsaleprice} €</Text></Text>
-                        <Text style={styles.price}>{formattedprice} €</Text>
+                    <View style={{ paddingЕщз: 5 }}>
+                        <Text style={styles.saleprice}>uvp <Text style={[styles.saleprice, { textDecorationLine: 'line-through' }]}>{formattedsaleprice}</Text></Text>
+                        <Text style={styles.price}>{formattedprice}</Text>
                     </View>
                 </View>
             </View>
@@ -68,18 +68,22 @@ const styles = {
         height: 140,
         resizeMode: 'contain',
     },
-    name: {
-        marginTop: 12,
-        height: 75,
-        // lineHeight: 18,
-        fontSize: 16,
+    descriptionContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        // alignSelf: 'center',
+    },
+    name: {        
+        marginTop: 7,        
+        fontSize: 14,
         fontWeight: '400',
         fontFamily: 'Poppins-Medium',
         color: '#040404',
         paddingHorizontal: 8,
+        flexWrap: 'wrap',
     },
-    price: {
-        padding: 0,
+    price: {            
         fontSize: 20,
         // fontWeight: '800',
         fontFamily: 'Poppins-ExtraBoldItalic',
@@ -93,7 +97,7 @@ const styles = {
         paddingHorizontal: 8,
     },
     saleprice: {
-        fontSize: 13,
+        fontSize: 12,
         fontStyle: 'italic',
         fontFamily: 'Poppins-Medium',
         textShadowColor: 'gray',

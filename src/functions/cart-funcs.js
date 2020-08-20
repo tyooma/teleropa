@@ -247,14 +247,13 @@ export async function DeleteFromCartByID(productID) {
     }
 }
 
-export function ClearCartByProducts(products, methodMoney) {
+export function ClearCartByProducts(produfcts, methodMoney) {
     products.map((product) => {
         deleteFromCart(product.id, methodMoney);
     });
 }
 
 export function fixPrice(vprice, fixed) {
-    // console.log(`${unit} fixed: `, fixed);
     let price = vprice;
     switch (typeof price) {
         case 'string':
@@ -267,7 +266,7 @@ export function fixPrice(vprice, fixed) {
             }
             break;
         default:
-            console.log(`${unit} typeof price: `, typeof price);
+            typeof price;
     }
     return price;
 }

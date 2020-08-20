@@ -45,7 +45,7 @@ export default function Rating({ rating }) {
     if (!rating) {
         return (
             <Text style={styles.noRating}>
-                Noch nicht bewertet
+                {/* Noch nicht bewertet */}
             </Text>
         )
     }

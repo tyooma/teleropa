@@ -26,9 +26,9 @@ import ProductListItem from '../../common/product-list-item';
 
 import { connect } from 'react-redux';
 
-import { SearchBar } from "react-native-elements";
+// import { SearchBar } from "react-native-elements";
 
-import { sWidth } from '../../helpers/screenSize';
+// import { sWidth } from '../../helpers/screenSize';
 
 //import SearchHeader from './SearchHeader';
 
@@ -117,6 +117,7 @@ class Search extends Component {
         loaded: false,
         searchText: '',
         searchStory: [],
+        filteredIDs: [],
     }
 
     handleSearchSubmit() {
@@ -195,18 +196,18 @@ class Search extends Component {
             })
     }
 
-    findMinMaxPrice() {
+    findMinMaxPrice(ids) {
         if (this.props.userInfo.selectedUserType === 'EK') {
-            const prices = this.state.originalIDs.map(({ price }) => price)
+            const prices = ids.map(({ price }) => price)
             const maxPrice = Math.max(...prices)
             const minPrice = Math.min(...prices)
-            this.setState({ minPrice, maxPrice, fromPrice: minPrice, toPrice: maxPrice })
+            this.setState({ minPrice, maxPrice, fromPrice: minPrice, toPrice: maxPrice, originalIDs: ids, filteredIDs: ids, loaded: true, })
             this.getData(0)
         } else {
-            const companyPrice = this.state.originalIDs.map(({ companyPrice }) => companyPrice.toFixed(2));
+            const companyPrice = ids.map(({ companyPrice }) => companyPrice.toFixed(2));
             const maxPrice = Math.max(...companyPrice)
             const minPrice = Math.min(...companyPrice)
-            this.setState({ minPrice, maxPrice, fromPrice: minPrice, toPrice: maxPrice })
+            this.setState({ minPrice, maxPrice, fromPrice: minPrice, toPrice: maxPrice, originalIDs: ids, filteredIDs: ids, loaded: true, })
             this.getData(0)
         }
     }
@@ -250,8 +251,8 @@ class Search extends Component {
                 .then(() =>
                     this.getData(0, sortBy))
         } else {
-            this.setState({ originalIDs: ids, filteredIDs: ids, loaded: true, })
-            this.findMinMaxPrice()
+            //this.setState({ originalIDs: ids, filteredIDs: ids, loaded: true, })
+            this.findMinMaxPrice(ids)
 
         }
     }
@@ -296,8 +297,7 @@ class Search extends Component {
             shadow: false,
             backgroundColor: "#505050",
             duration: Toast.durations.LONG
-        })
-        console.log('Фигня не работающая ', Toast.durations)
+        })        
         NavigationService.back()
 
     }
@@ -316,7 +316,6 @@ class Search extends Component {
             return this.getSearchStory()
         }
         if (!this.state.loaded || this.state.products.length < 1) return <Loading />
-
         const { minPrice, maxPrice, fromPrice, toPrice, sortBy } = this.state
         let sorted = [];
         if (this.props.userInfo.selectedUserType == 'H') {
@@ -359,7 +358,6 @@ class Search extends Component {
                         data={!sorted.length ? this.state.products : sorted}
                         renderItem={({ item }) => {
                             const { companyPrice, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, id } = item
-                            console.log('item in search', price.replace(/,/, '.'))
                             return (
                                 <View style={{ paddingBottom: 8 }}>
                                     <ProductListItem
@@ -379,9 +377,7 @@ class Search extends Component {
                         columnWrapperStyle={{ flexWrap: 'wrap' }}
                         numColumns={4}
                         ListHeaderComponent={
-                            this.state.products.length !== 0 ?
-                                <FilterButton minPrice={minPrice} maxPrice={maxPrice} fromPrice={fromPrice} toPrice={toPrice} sortBy={sortBy} />
-                                : null
+                            <FilterButton minPrice={minPrice} maxPrice={maxPrice} fromPrice={fromPrice} toPrice={toPrice} sortBy={sortBy} screenBack={this.props.navigation.state.routeName} />
                         }
                         ListFooterComponent={this.state.filteredIDs.length > this.state.products.length && (this.state.from + 12 === this.state.products.length) ? <FooterButton text='Weitere Produkte' onPress={() => { this.getData(this.state.from + 12) }} /> : null}
                         initialNumToRender={3}

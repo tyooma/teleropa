@@ -23,7 +23,6 @@ class FooterNavBar extends PureComponent {
   };
 
   render() {
-    console.log('FooterNavBar => RENDER => this.props.cart', this.props.cart);
     const CartIcon = (
       <View style={s.CartConteiner}>
         <View style={s.IconConteiner}><Icons name="ios-cart" size={25} color="#586589" /></View>
@@ -31,7 +30,7 @@ class FooterNavBar extends PureComponent {
           {this.props.cart.length > 0 && (
             <View style={s.BadgeCircle}>
               <Text style={s.BadgeMarker}>
-                { this.props.cart.reduce((sum, { count }) => { return ( sum + count) }, 0) }
+                {this.props.cart.reduce((sum, { count }) => { return (sum + count) }, 0)}
               </Text></View>
           )}
         </View>

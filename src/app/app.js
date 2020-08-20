@@ -51,6 +51,7 @@ import DeliveryService from '../screens/delivery-service';
 import Favourite from '../screens/favourite';
 import Feedback from '../screens/feedback';
 import Filter from '../screens/filter';
+import FilterBonus from '../screens/filter-bonus';
 import HotLine from '../screens/hot-line';
 import Info from '../screens/info';
 import LeaveReview from '../screens/leave-review';
@@ -350,6 +351,7 @@ const AppStackNavigator = createStackNavigator(
     SubcategoriesList: SubcategoriesList,
     ChangePersonalData: ChangePersonalData,
     Filter: Filter,
+    FilterBonus:FilterBonus,
     Product: Product,
     Cart: Cart,
     Search: Search,

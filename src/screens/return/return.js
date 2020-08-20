@@ -33,7 +33,7 @@ class Return extends Component {
                 <Text style={styles.itemSeparator} >Artikel</Text>
                 <View style={styles.namePriceContainer}>
                     <Text style={styles.productName} >{name}</Text>
-                    <Text style={styles.productPrice} >{price}€</Text>
+                    <Text style={styles.productPrice} >{price}</Text>
                 </View>
                 {
                     this.state.editable ? 

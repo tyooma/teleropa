@@ -37,9 +37,9 @@ import NavigationService from "../../navigation-service";
 
 import HTML from "react-native-render-html";
 
-import FooterAgreement from "../../common/footer-agreement/footer-agreement";
+// import FooterAgreement from "../../common/footer-agreement/footer-agreement";
 
-import Toast from "react-native-root-toast";
+// import Toast from "react-native-root-toast";
 
 class ProductDescription extends Component {
   componentDidMount() {
@@ -91,7 +91,7 @@ class ProductDescription extends Component {
       return (
         <View>
           <Text style={styles.salePrice}>
-            {this.props.userInfo.selectedUserType === "EK" ? price : companyPrice} €
+            {this.props.userInfo.selectedUserType === "EK" ? price : companyPrice}
           </Text>
         </View>
       );
@@ -99,9 +99,29 @@ class ProductDescription extends Component {
       return (
         <View>
           <Text style={styles.price}>
-            {this.props.userInfo.selectedUserType === "EK" ? price : companyPrice} €
+            {this.props.userInfo.selectedUserType === "EK" ? price : companyPrice}
           </Text>
         </View>
+      );
+    }
+  }
+
+  getMathPrices(price, salePrice, companyPrice, productInfo) {
+    if (salePrice != 0) {
+      const products = [productInfo];
+      const productsVAT = products.reduce((sum, { price, companyPrice }) => {
+        return sum + (parseFloat(companyPrice) - parseFloat(companyPrice)) * 1;
+      }, 0);
+      return (
+        <Text style={{ fontSize: 16, color: "#d10019", }}>
+          {this.props.userInfo.selectedUserType === "EK" ? Math.floor(parseFloat(price)) : Math.floor(parseFloat(companyPrice))}
+        </Text>
+      );
+    } else {
+      return (
+        <Text style={{ fontSize: 16, color: "#d10019", }}>
+          {this.props.userInfo.selectedUserType === "EK" ? Math.floor(parseFloat(price)) : Math.floor(parseFloat(companyPrice))}
+        </Text>
       );
     }
   }
@@ -243,7 +263,7 @@ class ProductDescription extends Component {
     }
   }
   render() {
-    console.log("this.render", this.state)
+    console.log("this props in product-descrition.js", this.props)
     var arr = [];
     if (this.props.cart.length != 0) {
       this.props.cart.map((x) => {
@@ -350,12 +370,7 @@ class ProductDescription extends Component {
 
           <TouchableOpacity
             style={styles.subscribeButton}
-            onPress={() =>
-              NavigationService.navigate("ProductSubscribe", {
-                productID: this.props.id,
-              })
-            }
-          >
+            onPress={() => NavigationService.navigate("ProductSubscribe", { productID: this.props.id, })}>
             <Text style={styles.subscribeButtonText}>Newsletter anmelden</Text>
           </TouchableOpacity>
           {this.getSimilarText()}
@@ -366,13 +381,27 @@ class ProductDescription extends Component {
           </View>
         </ScrollView>
 
+
         {/* цена в описании продукта (стики) */}
-        <View style={[styles.line, { marginTop: 10 }]}>
+        {/* <View style={[styles.RowLine, { marginTop: 10 }]}>
           {this.getStock(productInfo.stock)}
-          <Text style={styles.id}>Artikelnummer: {this.props.id} </Text>
+        </View> */}
+
+
+        <View style={styles.RowLine}>
+          <View style={[styles]}>
+            {this.getStock(productInfo.stock)}
+            <Text style={styles.id}>Artikelnummer: {this.props.id} </Text>
+          </View>
+          <View style={[styles.lineTelePoints]}>
+            <Text style={styles.id}>
+              Beim Kauf dieses Artikels erhalten Sie: {this.getMathPrices(productInfo.price, productInfo.salePrice, productInfo.companyPrice, productInfo, productInfo.stock)} Telepoints
+            </Text>
+          </View>
         </View>
 
-        <View style={[styles.line]}>
+
+        <View style={[styles.lineLeft]}>
           {this.state.showCheckBonus && Math.sign(this.state.points - this.props.userInfo.points) == -1 ? (
             <View style={{ flexDirection: "column" }}>
               <View style={{ flexDirection: "row" }}>
@@ -389,20 +418,15 @@ class ProductDescription extends Component {
                   onValueChange={() =>
                     this.setState({ selected: "buyOfPoints", checkedPoint: !this.state.checkedPoint, checkedMoney: false, loaded: true, })}
                 />
-                <Text style={{ fontSize: 20, marginTop: 8, color: "#000", flexDirection: "row", textAlign: 'left' }}                  >
+                <Text style={{ fontSize: 12, marginTop: 8, color: "#000", flexDirection: "row", flexWrap: 'wrap', textAlign: 'left' }}                  >
                   {this.state.points} TELEPOINTS
                 </Text>
               </View>
             </View>
-          ) : (
-              this.getPrices(
-                productInfo.price,
-                productInfo.salePrice,
-                productInfo.companyPrice,
-                productInfo,
-                productInfo.stock
-              )
-            )}
+          ) : (this.getPrices(productInfo.price, productInfo.salePrice, productInfo.companyPrice, productInfo, productInfo.stock))
+          }
+
+
           {this.getCartButton(
             productInfo.stock,
             this.props.id,
@@ -449,12 +473,33 @@ const styles = {
     borderRadius: 4,
     backgroundColor: "#fff",
   },
+  RowLine: {
+    flexDirection: "row",
+    marginHorizontal: 18,
+    alignItems: "center",
+
+  },
+
+  // ОТображение инфы о БОНУСАХ
+  lineTelePoints: {
+    alignItems: 'center',
+    flexDirection: "row",
+    marginHorizontal: "5%",
+    width: "50%",
+  },
   line: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     marginHorizontal: 18,
   },
+  lineLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginHorizontal: 18,
+  },
+
   name: {
     fontSize: 16,
     color: "#040404",

@@ -57,10 +57,10 @@ function ProductListItem({ imageURL, name, price, salePrice, favourite, id, prod
             return (
                 <>
                     <Text style={styles.prevPrice}>
-                        {salePrice}<Text style={{ fontSize: 10 }}>€</Text>
+                        {salePrice}<Text style={{ fontSize: 10 }}></Text>
                     </Text>
                     <Text style={styles.salePrice}>
-                        {showingPrice}<Text style={{ fontSize: 16 }}>€</Text>
+                        {showingPrice}<Text style={{ fontSize: 16 }}></Text>
                     </Text>
                 </>
             )
@@ -72,7 +72,7 @@ function ProductListItem({ imageURL, name, price, salePrice, favourite, id, prod
                 </Text>
 
                 <Text style={styles.price}>
-                    {showingPrice}<Text style={{ fontSize: 16 }}>€</Text>
+                    {showingPrice}<Text style={{ fontSize: 16 }}></Text>
                 </Text>
             </>
         )

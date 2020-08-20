@@ -8,7 +8,7 @@ import FooterButton from '../../common/footer-button';
 
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 
-export default class Filter extends Component {
+export default class FilterBonus extends Component {
 
   static navigationOptions = ({ navigation }) => {
     const { params = {} } = navigation.state;
@@ -23,27 +23,24 @@ export default class Filter extends Component {
   }
 
   componentDidMount() {
-    this.props.navigation.setParams({
-      resetFilter: this.resetFilter
-    })
+    this.props.navigation.setParams({ resetFilter: this.resetFilter })
   }
-
   state = {
-    from: this.props.navigation.getParam('fromPrice', 0),
-    to: this.props.navigation.getParam('toPrice', 1000),
-    min: this.props.navigation.getParam('minPrice', 0),
-    max: this.props.navigation.getParam('maxPrice', 1000),
+    from: this.props.navigation.getParam('fromBonuspoint', 0),
+    to: this.props.navigation.getParam('toBonuspoint', 1000),
+    min: this.props.navigation.getParam('minBonuspoint', 0),
+    max: this.props.navigation.getParam('maxBonuspoint', 1000),
     sortBy: this.props.navigation.getParam('sortBy', 'popular'),
-    screenBack: this.props.navigation.getParam('screenBack'),
     scrollEnabled: true
   }
+
 
   enableScroll = () => this.setState({ scrollEnabled: true });
   disableScroll = () => this.setState({ scrollEnabled: false });
 
 
   resetFilter = () => {
-    this.setState({ from: this.props.navigation.getParam('minPrice', 0), to: this.props.navigation.getParam('maxPrice', 1000), sortBy: 'popular' })
+    this.setState({ from: this.props.navigation.getParam('minBonuspoint', 0), to: this.props.navigation.getParam('maxBonuspoint', 1000), sortBy: 'popular' })
   }
 
   getButtonStyle(sortBy) {
@@ -60,8 +57,7 @@ export default class Filter extends Component {
     return styles.sortButtonText
   }
 
-
-  render() {    
+  render() {
     return (
       <View style={{ flex: 1, marginTop: 12 }}>
         <ScrollView scrollEnabled={this.state.scrollEnabled}>
@@ -69,7 +65,7 @@ export default class Filter extends Component {
           <View style={styles.sortBlockStyle}>
             <View style={styles.sortLine}>
               <TouchableOpacity onPress={() => { this.setState({ sortBy: 'popular' }) }} style={this.getButtonStyle('popular')}>
-                <Text style={this.getTextStyle('popular')}> Beliebtheiten </Text>
+                <Text style={this.getTextStyle('popular')}> Beliebtheit </Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => { this.setState({ sortBy: 'alphabet' }) }} style={this.getButtonStyle('alphabet')}>
                 <Text style={this.getTextStyle('alphabet')}> Artikelbezeichnung </Text>
@@ -77,10 +73,10 @@ export default class Filter extends Component {
             </View>
             <View style={styles.sortLine}>
               <TouchableOpacity onPress={() => { this.setState({ sortBy: 'price_down' }) }} style={this.getButtonStyle('price_down')}>
-                <Text style={this.getTextStyle('price_down')}> Höchster Preis </Text>
+                <Text style={this.getTextStyle('price_down')}> Punkte absteigend</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => { this.setState({ sortBy: 'price_up' }) }} style={this.getButtonStyle('price_up')}>
-                <Text style={this.getTextStyle('price_up')}> Niedrigster Preis </Text>
+                <Text style={this.getTextStyle('price_up')}>  Punkte aufsteigend </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -99,7 +95,6 @@ export default class Filter extends Component {
                   } else {
                     this.setState({ from: newFrom })
                   }
-
                 }}
               />
             </View>
@@ -150,9 +145,7 @@ export default class Filter extends Component {
             />
           </View>
         </ScrollView>
-        <FooterButton onPress={() => { this.props.navigation.navigate(`${this.state.screenBack}`, { filterOptions: this.state }) }} text='Filtern' />
-
-        {/* <FooterButton onPress={() => {this.props.navigation.navigate('Search', { filterOptions: this.state }) }} text='Filtern' /> */}
+        <FooterButton onPress={() => { this.props.navigation.navigate('ProductsByPoint', { filterOptions: this.state }) }} text='Filtern' />
       </View>
 
     )

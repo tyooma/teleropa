@@ -59,7 +59,7 @@ const BannerImage = ({ title, subtitle, text_1, text_2, list_text_1, list_text_2
                         <ImageLoader style={{ width: 80, height: 10, bottom: 0 }} source={{ uri: 'https://teleropa.de/' + logo }} key={logo} />
                         : null}
                     {showingprice ?
-                        <Text style={{ right: 0, bottom: 0, fontSize: 12, fontFamily: 'Poppins-Medium', backgroundColor: '#FFC600', color: 'black', lineHeight: 18 }}>  NUR <Text style={{ fontSize: 14, fontFamily: 'Poppins-BoldItalic' }}>{showingprice} €  </Text></Text>
+                        <Text style={{ right: 0, bottom: 0, fontSize: 12, fontFamily: 'Poppins-Medium', backgroundColor: '#FFC600', color: 'black', lineHeight: 18 }}>  NUR <Text style={{ fontSize: 14, fontFamily: 'Poppins-BoldItalic' }}>{showingprice}   </Text></Text>
                         : null}
                 </View>
             </View>

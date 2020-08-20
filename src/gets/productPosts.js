@@ -217,11 +217,15 @@ export function getProductsBySupplier(supplierID) {
     // .then(dataRes => console.log(dataRes))
 }
 
-export function getProductsByCategory(categoryID) {
-    console.log('categoryID in productPosts.js', categoryID)
-    return fetch(`https://teleropa.de/WebiProgCommunicationApplicationCategory/getProductsBy?id=${categoryID}&type=category`, {
-        method: 'GET',
-    })
-    //     .then(res => console.log('res.json() res.json() res.json() res.json()', res.json()));
-    // // .then(dataRes => console.log(dataRes))
+export async function getProductsByCategory(categoryID) {
+    let q = [];
+    try {
+        const response = await fetch(`https://teleropa.de/WebiProgCommunicationApplicationCategory/getProductsBy?id=${categoryID}&type=category`, {
+            method: 'GET',
+        })
+        const json = await response.json();
+        return json
+    } catch (error) {
+        console.error(error);
+    }
 }

@@ -21,13 +21,11 @@ const NewestListItem = ({ id, text, image, price, companyPrice, userInfo }) => {
                 </View>
 
                 <View style={{ flex: 6, flexDirection: 'column' }}>
-                    <View>
-                        <Text style={styles.name} numberOfLines={3}
-                        //  ellipsizeMode='middle'
-                        >{text}</Text>
+                    <View style={styles.descriptionContainer}>
+                        <Text style={styles.name} numberOfLines={5}>{text}</Text>
                     </View>
                     <View>
-                        <Text style={styles.price}>{formattedprice} €</Text>
+                        <Text style={styles.price}>{formattedprice}</Text>
                     </View>
                 </View>
             </View>
@@ -66,13 +64,20 @@ const styles = {
         height: 140,
         resizeMode: 'contain',
     },
+    descriptionContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        // alignSelf: 'center',
+    },
     name: {
         marginTop: 12,
-        height: 90,
-        fontSize: 16,
+        // height: 90,
+        fontSize: 14,
         fontWeight: '400',
         fontFamily: 'Poppins-Medium',
         color: '#040404',
+        flexWrap: 'wrap',
         paddingHorizontal: 8,
     },
     price: {

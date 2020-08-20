@@ -60,7 +60,8 @@ export default class SubcategoriesList extends Component {
     const userInfo = this.state.userInfo;
     const id = this.state.currentCategory.id;
     const cmsText = this.state.currentCategory.cmsText;
-    if (this.state.categories.length > 1) return <CategoriesListItem name={'Alle producten van de categorie'} id={id} key={id} cmsText={cmsText} userInfo={userInfo} />
+    if (this.state.categories.length > 1) return <CategoriesListItem name={'Alle Kategorien anzeigen'} id={id} key={id} cmsText={cmsText} userInfo={userInfo} textStyle={{ color: '#d10019' }} />
+
   }
 
   render() {

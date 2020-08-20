@@ -11,21 +11,22 @@ import { sWidth } from '../../helpers/screenSize';
 import NavigationService from '../../navigation-service';
 
 
-const TeleropaService = ({ text, image, title, userInfo, services }) => {
+const TeleropaService = ({ text, image, title, userInfo, services, checkURL }) => {
     return (
-        <TouchableOpacity style={styles.container} onPress={() => NavigationService.navigate('ProductsByPoint', { name: text, title: title, services: services, userInfo: userInfo })}>
+        <TouchableOpacity style={styles.container} onPress={() => NavigationService.navigate('ProductsByPoint', { name: text, title: title, services: services, userInfo: userInfo, checkURL: checkURL })}>
 
             <View style={{ alignItems: 'center' }}>
                 <Text style={styles.title} >{title}</Text>
             </View>
 
             <View style={{ flex: 2, flexDirection: 'row', alignItems: 'flex-start' }}>
-                <View style={{ overflow: 'hidden', borderTopLeftRadius: 5, borderTopRightRadius: 5, flex: 5 }}>
+
+                <View style={{ paddingLeft: 5, overflow: 'hidden', borderTopLeftRadius: 5, borderTopRightRadius: 5, flex: 5, alignContent: 'flex-start', alignContent: 'flex-start' }}>
                     <ImageLoader source={image} style={styles.image} key={image} />
                 </View>
                 <View style={{ flex: 6, flexDirection: 'column' }}>
-                    <View>
-                        <Text style={styles.name} numberOfLines={3} >{text}</Text>
+                    <View style={styles.descriptionContainer}>
+                        <Text style={styles.name} numberOfLines={5}>{text}</Text>
                     </View>
                 </View>
             </View>
@@ -71,13 +72,20 @@ const styles = {
         resizeMode: 'contain',
         paddingHorizontal: 5,
     },
+    descriptionContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        // alignSelf: 'center',
+    },
+
     name: {
         marginTop: 12,
-        height: 75,
-        fontSize: 16,
+        fontSize: 10,
         fontWeight: '400',
         fontFamily: 'Poppins-Medium',
         color: '#040404',
+        flexWrap: 'wrap',
         paddingHorizontal: 8,
     }
 }
