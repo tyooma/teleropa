@@ -83,8 +83,7 @@ class DeliveryAddress extends Component {
           }
       }
 
-    render() {
-        console.log(this.state)
+    render() {        
         if(!this.state.loaded || !this.state.availableCountries) return <Loading />
         return(
             <View style={{flex: 1}}>

@@ -1,3 +1,5 @@
+import { fixPrice } from '../functions/cart-funcs';
+
 export function getProductInfo(id) {
     return fetch('https://teleropa.de/WebiProgCommunicationApplicationArticle/getInfo', {
         method: 'POST',
@@ -8,13 +10,10 @@ export function getProductInfo(id) {
         body: `productID=${id}`
     })
         .then(res => res.json())
-    // .then(dataRes => console.log(dataRes))
-    // .then(productInfo => {
-    //     console.log(productInfo)
-    // })
 }
 
 export function getFullProductData(id) {
+    console.log("ID getFullProductData in productPosts.js", id)
     return fetch('https://teleropa.de/WebiProgCommunicationApplicationArticle/getFullProductData', {
         method: 'POST',
         headers: {
@@ -23,18 +22,9 @@ export function getFullProductData(id) {
         },
         body: `productID=${id}`
     })
-    // .then(res => res.json())
-
-    // .then(res =>
-    //     console.log('getFullProductData res.json()', res.json()),
-    // )
-    // .then(dataRes => console.log(dataRes))
-    // .then(productInfo => {
-    //     console.log(productInfo)
-    // })
 }
 
-export function getPreviewProductData(id) {    
+export function getPreviewProductData(id) {
     return fetch('https://teleropa.de/WebiProgCommunicationApplicationArticle/getPreviewProductData', {
         method: 'POST',
         headers: {
@@ -44,9 +34,10 @@ export function getPreviewProductData(id) {
         body: `productID=${id}`
     })
         .then(res => res.json())
+
 }
 
-export async function getPreviewAsyncProductData(id) {
+export async function getPreviewProductData1(id) {
     try {
         const response = await fetch('https://teleropa.de/WebiProgCommunicationApplicationArticle/getPreviewProductData', {
             method: 'POST',
@@ -55,6 +46,44 @@ export async function getPreviewAsyncProductData(id) {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
             body: `productID=${id}`
+        })
+        if (response.ok && response.status == 200) {
+            const json = await response.json();
+            return json;
+        }
+    } catch (err) {
+        console.error('getPreviewAsyncProductData1(id): ERROR = ', err);
+    }
+}
+
+export async function getPreviewAsyncProductData(id) {
+    try {
+        const response = await fetch('https://teleropa.de/WebiProgCommunicationApplicationArticle/getPreviewProductData', {
+            method: 'POST',
+            headers: { Accept: 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `productID=${id}`
+        });
+        const json = await response.json();
+        json.salePrice = fixPrice(json.salePrice, 2);
+        json.companyPrice = fixPrice(json.companyPrice, 2);
+        json.price = fixPrice(json.price, 2);
+        json.tax = fixPrice(json.tax, 2);
+        console.log('getPreviewAsyncProductData => JSON:', json);
+        //
+        return json;
+    } catch (err) {
+        console.error('getPreviewAsyncProductData(id): ERROR = ', err);
+    }
+}
+
+export async function getBonusProducts() {
+    try {
+        const response = await fetch('https://teleropa.de/WebiProgCommunicationApplicationArticle/getBonusProducts ', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded',
+            }
         })
         const json = await response.json();
         return json
@@ -74,7 +103,6 @@ export function getPreviewProductImage(id) {
         body: `productID=${id}`
     })
         .then(res => res.json())
-    // .then(dataRes => console.log(dataRes))
 }
 
 export function getFullSizeProductImages(id) {
@@ -189,11 +217,15 @@ export function getProductsBySupplier(supplierID) {
     // .then(dataRes => console.log(dataRes))
 }
 
-export function getProductsByCategory(categoryID) {
-    console.log('categoryID in productPosts.js', categoryID)
-    return fetch(`https://teleropa.de/WebiProgCommunicationApplicationCategory/getProductsBy?id=${categoryID}&type=category`, {
-        method: 'GET',
-    })
-    //     .then(res => console.log('res.json() res.json() res.json() res.json()', res.json()));
-    // // .then(dataRes => console.log(dataRes))
+export async function getProductsByCategory(categoryID) {
+    let q = [];
+    try {
+        const response = await fetch(`https://teleropa.de/WebiProgCommunicationApplicationCategory/getProductsBy?id=${categoryID}&type=category`, {
+            method: 'GET',
+        })
+        const json = await response.json();
+        return json
+    } catch (error) {
+        console.error(error);
+    }
 }

@@ -65,11 +65,10 @@ export function getReturnData(id) {
 }
 
 export function getDeliverySuppliers() {
-    return fetch('https://teleropa.de/WebiProgCommunicationApplicationUser/getDeliverySuppliers', {
-        method: 'POST',
-        headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded',
-        }
-    }).then(res => res.json())
+  //Сколько стоит доставка
+  return fetch('https://teleropa.de/WebiProgCommunicationApplicationUser/getDeliverySuppliers', {
+    method: 'POST',
+    headers: { 'Accept': 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' }
+  })
+  .then(res => res.json());
 }

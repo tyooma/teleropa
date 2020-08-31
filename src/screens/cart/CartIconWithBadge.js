@@ -1,9 +1,14 @@
 import React from 'react';
-import IconWithBadge from '../cart/IconWithBadge'
-import AsyncStorage from '@react-native-community/async-storage'
-import { connect } from 'react-redux'
-import { Provider } from 'react-redux'
-import { store } from '../../app/app'
+
+import IconWithBadge from '../cart/IconWithBadge';
+
+import AsyncStorage from '@react-native-community/async-storage';
+
+import { connect } from 'react-redux';
+
+import { Provider } from 'react-redux';
+
+import { store } from '../../app/app';
 
 class CartIconWithBadge extends React.Component {
 

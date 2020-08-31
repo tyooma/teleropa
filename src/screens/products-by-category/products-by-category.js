@@ -5,129 +5,205 @@ import { SearchButton } from '../../common/header-buttons';
 
 import CategoryInfoButton from '../../common/header-buttons/category-info-button'
 
-// import { getProductsByCategory } from '../../gets/productsListPost';
 import FilterButton from '../../common/filter-button';
-
-import FooterButton from '../../common/footer-button';
 
 import ProductListItem from '../../common/product-list-item';
 
-import { getPreviewProductData, getProductsByCategory } from '../../gets/productPosts';
+import { getProductsByCategory } from '../../gets/productPosts';
 
 import Loading from '../loading';
 
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 
-//export default class ProductsByCategory extends Component {
+import FooterNavBar from '../../common/footer-navigation-bar/footer-navigation-bar';
+import { sHeight } from '../../helpers/screenSize';
+
 class ProductsByCategory extends Component {
 
-    static navigationOptions = ({ navigation }) => {
-        const cmsText = navigation.getParam('cmsText', null)
-        const name = navigation.getParam('categoryName', 'Kategorien')
-        return {
-            title: name,
-            headerRight: (
-                <View style={{ flexDirection: 'row', marginRight: 9 }}>
-                    {/* {cmsText ? <CategoryInfoButton cmsText={cmsText} name={name} /> : null} */}
-                    <CategoryInfoButton cmsText={cmsText} name={name} />
-                    <SearchButton />
+  static navigationOptions = ({ navigation }) => {
+    const cmsText = navigation.getParam('cmsText', null);
+    const name = navigation.getParam('categoryName', 'Kategorien');
+    return {
+      title: name,
+      headerRight: (
+        <View style={{ flexDirection: 'row', marginRight: 9 }}>
+          {/* {cmsText ? <CategoryInfoButton cmsText={cmsText} name={name} /> : null} */}
+          <CategoryInfoButton cmsText={cmsText} name={name} />
+          <SearchButton />
+        </View>
+      )
+    }
+  }
+
+  state = {
+    loaded: false,
+    originalIDs: [],
+    filteredIDs: [],
+
+    from: 0,
+    minPrice: 0,
+    maxPrice: 0,
+    fromPrice: 0,
+    toPrice: 0,
+  }
+
+
+  getProductsIDs() {
+    const id = this.props.navigation.getParam('categoryID', null);
+    getProductsByCategory(id)
+      .then(responseJson => {
+        this.getIDs(responseJson.products);
+      });
+  }
+
+  componentDidMount() {
+    this.props.navigation.addListener('didFocus', (route) => {
+      const filterOptions = this.props.navigation.getParam('filterOptions', null)
+      if (filterOptions) {
+        const { from, to, sortBy } = filterOptions
+        if (from !== this.state.fromPrice || to !== this.state.toPrice || sortBy !== this.state.sortBy) {
+          this.getIDs(this.state.ids, from, to, sortBy)
+        }
+      }
+    });
+
+    this.getProductsIDs();
+  }
+
+
+  getIDs(ids, fromPrice, toPrice, sortBy) {
+
+    if (fromPrice == 0 || toPrice == 0) {
+      Toast.show("Prijs kan niet 0 zijn", {
+        shadow: false,
+        backgroundColor: "#505050",
+        duration: 1500,
+      })
+    }
+    if (fromPrice && toPrice) {
+      this.setState({ fromPrice, toPrice, sortBy })
+      var sorted = [];
+      var filtered = [];
+      if (this.props.userInfo.selectedUserType == 'EK') {
+        filtered = this.state.originalIDs.filter(({ price }) => parseFloat(price.replace(/\./g, '').replace(/,/, '.')) >= fromPrice && parseFloat(price.replace(/\./g, '').replace(/,/, '.')) <= toPrice)
+        if (sortBy != undefined) {
+          switch (sortBy) {
+            case 'popular':
+              sorted = filtered.sort((first, second) => (first.rate > second.rate) ? -1 : ((second.rate > first.rate) ? 1 : 0))
+              break
+            case 'alphabet':
+              sorted = filtered.sort((first, second) => (first.productName > second.productName) ? 1 : ((second.productName > first.productName) ? -1 : 0))
+              break
+            case 'price_down':
+              sorted = filtered.sort((first, second) => (parseFloat(first.price.replace(/\./g, '').replace(/,/, '.')) > parseFloat(second.price.replace(/\./g, '').replace(/,/, '.'))) ? -1 : ((parseFloat(second.price.replace(/\./g, '').replace(/,/, '.')) > parseFloat(first.price.replace(/\./g, '').replace(/,/, '.'))) ? 1 : 0))
+              break
+            case 'price_up':
+              sorted = filtered.sort((first, second) => (parseFloat(first.price.replace(/\./g, '').replace(/,/, '.')) < parseFloat(second.price.replace(/\./g, '').replace(/,/, '.'))) ? -1 : ((parseFloat(second.price.replace(/\./g, '').replace(/,/, '.')) < parseFloat(first.price.replace(/\./g, '').replace(/,/, '.'))) ? 1 : 0))
+              break
+            default: break
+          }
+        } else {
+          sorted = filtered
+        }
+      } else {
+        filtered = this.state.originalIDs.filter(({ companyPrice }) => parseFloat(companyPrice.replace(/\./g, '').replace(/,/, '.')) >= fromPrice && parseFloat(companyPrice.replace(/\./g, '').replace(/,/, '.')) <= toPrice)
+        if (sortBy != undefined) {
+          switch (sortBy) {
+            case 'popular':
+              sorted = filtered.sort((first, second) => (parseFloat(first.rate) > parseFloat(second.rate)) ? -1 : ((parseFloat(second.rate) > parseFloat(first.rate)) ? 1 : 0))
+              break
+            case 'alphabet':
+              sorted = filtered.sort((first, second) => (first.productName > second.productName) ? 1 : ((second.productName > first.productName) ? -1 : 0))
+              break
+            case 'price_down':
+              sorted = filtered.sort((first, second) => (parseFloat(first.companyPrice.replace(/\./g, '').replace(/,/, '.')) > parseFloat(second.companyPrice.replace(/\./g, '').replace(/,/, '.'))) ? -1 : ((parseFloat(second.companyPrice.replace(/\./g, '').replace(/,/, '.')) > parseFloat(first.companyPrice.replace(/\./g, '').replace(/,/, '.'))) ? 1 : 0))
+              break
+            case 'price_up':
+              sorted = filtered.sort((first, second) => (parseFloat(first.companyPrice.replace(/\./g, '').replace(/,/, '.')) < parseFloat(second.companyPrice.replace(/\./g, '').replace(/,/, '.'))) ? -1 : ((parseFloat(second.companyPrice.replace(/\./g, '').replace(/,/, '.')) < parseFloat(first.companyPrice.replace(/\./g, '').replace(/,/, '.'))) ? 1 : 0))
+              break
+            default: break
+          }
+        } else {
+          sorted = filtered
+        }
+      }
+      new Promise((resolve) => {
+        this.setState({ filteredIDs: sorted, from: 0, loaded: true });
+        setTimeout(() => resolve(), 200)
+      })
+    } else {
+      this.findMinMaxPrice(ids)
+
+    }
+  }
+
+  findMinMaxPrice(ids) {
+    if (this.props.userInfo.selectedUserType === 'EK') {
+      const prices = ids.map(({ price }) => (parseFloat(price.replace(/\./g, '').replace(/,/, '.'))));
+      const maxPrice = Math.max(...prices)
+      const minPrice = Math.min(...prices)
+      this.setState({ minPrice, maxPrice, fromPrice: minPrice, toPrice: maxPrice, originalIDs: ids, filteredIDs: ids, loaded: true })
+    } else {
+      const companyPrice = ids.map(({ companyPrice }) => (parseFloat(companyPrice.replace(/\./g, '').replace(/,/, '.'))))
+      const maxPrice = Math.max(...companyPrice)
+      const minPrice = Math.min(...companyPrice)
+      this.setState({ minPrice, maxPrice, fromPrice: minPrice, toPrice: maxPrice, originalIDs: ids, filteredIDs: ids, loaded: true, })
+
+    }
+  }
+
+
+
+  render() {
+    console.log("this.state RENDER() in products-by-category.js", this.state);
+
+    if (!this.state.loaded) {
+      return <Loading />
+    }
+
+
+    const { minPrice, maxPrice, fromPrice, toPrice, sortBy } = this.state
+
+    return (
+      <View style={styles.container}>
+        <View style={styles.containerFlatList}>
+          <FlatList
+            // .filter(item => item.stock > 0)
+            data={this.state.filteredIDs}
+            renderItem={({ item }) => {
+              const { companyPrice, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, productID } = item;
+              return (
+                <View style={{ paddingBottom: 8 }}>
+                  <ProductListItem
+                    name={productName}
+                    price={this.props.userInfo.selectedUserType === 'EK' ? price.replace(/,/, '.') : companyPrice.replace(/,/, '.')}
+                    salePrice={salePrice.replace(/,/, '.') != 0 ? 'UVP ' + salePrice.replace(/,/, '.') : ''}
+                    companyPrice={companyPrice.replace(/,/, '.')}
+                    rate={rate}
+                    stock={stock}
+                    id={productID}
+                    imageURL={previewImgURL}
+                    salePercent={productSalePercent ? productSalePercent.int : null}
+                  />
                 </View>
-            )
-        }
-    }
-
-    state = {
-        IDs: [],
-        data: [],
-        from: 0,
-        loaded: false
-    }
-
-    getProductsIDs() {
-        // const id = 1
-        const id = this.props.navigation.getParam('categoryID', null)
-        getProductsByCategory(id)
-            .then(response => response.json())
-            .then(responseJson => {
-                this.setState({
-                    data: responseJson.products,
-                    IDs: responseJson.productsCount,
-                    loaded: true,
-                });
-            });
-    }
-
-    getIDs(IDs) {
-        this.setState({ IDs, loaded: true })
-        this.getData(0)
-    }
-
-    // getData(from) {
-    //     this.setState({from})
-    //     const currentID = this.state.currentID 
-    //     console.log(currentID)
-    //     this.state.IDs.filter((id, key) => {
-    //         // console.log(id, key)
-    //         if(key >= from && key < (from + 12)) {
-    //             getPreviewProductData(id).then(res => {this.setState({data: [...this.state.data, {...res, id}]}); console.log('added')}).catch(e => console.log(id, e))
-    //             console.log(id)
-    //         }
-    //     })
-    // }
-
-    componentDidMount() {
-        this.getProductsIDs()
-    }
-
-    render() {
-        console.log("this.state RENDER() in products-by-category.js", this.state)
-        if (!this.state.loaded) {
-            return <Loading />
-        }
-        if (this.state.IDs.length < 1) {
-            return (
-                <View style={styles.noProductsContainer}>
-                    <Image source={require('../../assets/message-icons/no-categorie-products.png')} style={styles.noProductImage} />
-                    <Text style={styles.noProductText} >Kein Produkt gefunden</Text>
-                </View>
-            )
-        }
-        return (
-            <View>
-                <FlatList
-                    // contentContainerStyle={{paddingLeft: 18}}                    
-                    data={this.state.data.filter(item => item.stock > 0)}
-                    renderItem={({ item }) => {
-                        const { companyPrice, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, productID } = item
-                        return (
-                            <View style={{ paddingBottom: 8 }}>
-                                <ProductListItem
-                                    name={productName}
-                                    //price={price}
-                                    price={this.props.userInfo.selectedUserType === 'EK' ? price.toFixed(2) : companyPrice.toFixed(2)}
-                                    salePrice={salePrice != 0 ? 'UVP ' + salePrice.toFixed(2): ''}
-                                    companyPrice={companyPrice.toFixed(2)}
-                                    rate={rate}
-                                    stock={stock}
-                                    id={productID}
-                                    imageURL={previewImgURL}
-                                    salePercent={productSalePercent ? productSalePercent.int : null}
-                                />
-                            </View>
-                        )
-                        // }
-                    }}
-                    columnWrapperStyle={{ flexWrap: 'wrap' }}
-                    numColumns={4}
-                    ListFooterComponent={this.state.IDs.length > this.state.data.length && (this.state.from + 12 === this.state.data.length) ? <FooterButton text='Weitere Produkte' onPress={() => { this.getData(this.state.from + 12) }} /> : null}
-                    // ListFooterComponent={<TouchableOpacity onPress={() => {this.getData(this.state.from+12)}} ><Text>END</Text></TouchableOpacity>}
-                    initialNumToRender={12}
-                    windowSize={4}
-                    keyExtractor={item => item.siteURL}
-                />
-            </View>
-        )
-    }
+              );
+            }}
+            columnWrapperStyle={{ flexWrap: 'wrap' }}
+            numColumns={4}
+            ListHeaderComponent={
+              <FilterButton minPrice={minPrice} maxPrice={maxPrice} fromPrice={fromPrice} toPrice={toPrice} sortBy={sortBy} screenBack={this.props.navigation.state.routeName} />
+            }
+            initialNumToRender={12}
+            windowSize={4}
+            keyExtractor={item => item.siteURL}
+          />
+        </View>
+        <View style={styles.footer}>
+          <FooterNavBar />
+        </View>
+      </View >
+    );
+  }
 }
 
 
@@ -136,31 +212,16 @@ const mapStateToProps = ({ userID, userInfo }) => ({ userID, userInfo })
 export default connect(mapStateToProps)(ProductsByCategory)
 
 const styles = {
-    popularText: {
-        fontSize: 16,
-        color: '#030303',
-        marginLeft: 18,
-        marginTop: 18
-    },
-    productsLine: {
-        flexDirection: 'row',
-        marginLeft: 18,
-        flexWrap: 'wrap',
-        marginBottom: 16
-    },
-    noProductsContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    noProductImage: {
-        height: 80,
-        width: 80,
-        resizeMode: 'contain'
-    },
-    noProductText: {
-        marginTop: 10,
-        color: '#717171',
-        fontSize: 16
-    }
+  container: {
+    // height: sHeight,
+  },
+  containerFlatList: {
+    height: '95%',
+    justifyContent: 'space-around',
+   // alignItems: 'center',
+  },
+  footer: {
+    height: 5,
+    width: '100%',
+  },
 }

@@ -26,8 +26,7 @@ export async function initUserData(store) {
     if (!userSelectedType) {
         NavigationService.replace('Intro')
     } else store.dispatch(actions.setUserType(userSelectedType))
-    if (userID && userID !== 'notloggedin') {
-        console.log("userID in initapp.js", userID)
+    if (userID && userID !== 'notloggedin') {        
         store.dispatch(actions.setLoggedUserId(userID))
         getUserInfo(userID).then(userInfo => {
             store.dispatch(setLoadDone())

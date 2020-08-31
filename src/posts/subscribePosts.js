@@ -15,7 +15,8 @@ export function subscribeToEmail(email) {
         console.log(status)
         Toast.show(status.text, {
             shadow: false,
-            backgroundColor: '#505050'
+            backgroundColor: "#505050",
+            duration: 1500,
         })
         if(status.code==='success'){
             NavigationService.back()
@@ -37,7 +38,8 @@ export function subscribeToProduct(email, stock, priceDown, sale, productID) {
         console.log(status)
         Toast.show(status.text, {
             shadow: false,
-            backgroundColor: '#505050'
+            backgroundColor: "#505050",
+            duration: 1500,
         })
         if(status.code==='success'){
             NavigationService.back()
