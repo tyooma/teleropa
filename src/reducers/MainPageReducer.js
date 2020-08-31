@@ -5,22 +5,28 @@ const initialState = {
     newest: null,
     offers: null,
     topbanner: null,
+    services: null,
+
 }
 
-export default (state = initialState, action) => { 
+export default (state = initialState, action) => {
     // console.log(action, state)
-    switch(action.type) {
-        case 'SET_BRANDS': 
-            return {...state, ...{brands: action.payload}}
+    switch (action.type) {
+        case 'SET_BRANDS':
+            return { ...state, ...{ brands: action.payload } }
         case 'SET_CATEGORIES':
-            return {...state, ...{categories: action.payload}}
-        case 'SET_NEWEST': 
-            return {...state, ...{newest: action.payload}}
-        case 'SET_OFFERS': 
-            return {...state, ...{offers: action.payload}}
-        case 'SET_TOPBANNER': 
-            return {...state, ...{topbanner: action.payload}}
-        default: 
+            return { ...state, ...{ categories: action.payload } }
+        case 'SET_SERVICES':
+            return { ...state, ...{ services: action.payload } }
+        case 'SET_NEWEST':
+            return { ...state, ...{ newest: action.payload } }
+        // case 'SET_BONUSPRODUCTS':
+        //     return { ...state, ...{ bonusproducts: action.payload } }
+        case 'SET_OFFERS':
+            return { ...state, ...{ offers: action.payload } }
+        case 'SET_TOPBANNER':
+            return { ...state, ...{ topbanner: action.payload } }
+        default:
             return state;
     }
 }

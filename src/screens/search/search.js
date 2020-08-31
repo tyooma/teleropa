@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { View, Image, TextInput, TouchableOpacity, Text, SafeAreaView, Platform, ScrollView, StyleSheet, FlatList, ToastAndroid } from 'react-native';
+import { View, Image, TextInput, TouchableOpacity, Text, SafeAreaView, Platform, ScrollView, StyleSheet, FlatList } from 'react-native';
 
 import Toast from 'react-native-root-toast';
 
@@ -26,9 +26,9 @@ import ProductListItem from '../../common/product-list-item';
 
 import { connect } from 'react-redux';
 
-import { SearchBar } from "react-native-elements";
+// import { SearchBar } from "react-native-elements";
 
-import { sWidth } from '../../helpers/screenSize';
+// import { sWidth } from '../../helpers/screenSize';
 
 //import SearchHeader from './SearchHeader';
 
@@ -117,6 +117,7 @@ class Search extends Component {
         loaded: false,
         searchText: '',
         searchStory: [],
+        filteredIDs: [],
     }
 
     handleSearchSubmit() {
@@ -189,36 +190,36 @@ class Search extends Component {
                     ResponseServer.filter((a) => {
                         if (a.name.toLowerCase().indexOf(searchString) != -1) result.push(a);
                     })
-                    //this.getIDs(res.searchResult)
                     this.getIDs(result)
                 }
                 else this.showToastNoSearch()
             })
     }
 
-    findMinMaxPrice() {
+    findMinMaxPrice(ids) {
         if (this.props.userInfo.selectedUserType === 'EK') {
-            const prices = this.state.originalIDs.map(({ price }) => price)
+            const prices = ids.map(({ price }) => price)
             const maxPrice = Math.max(...prices)
             const minPrice = Math.min(...prices)
-            this.setState({ minPrice, maxPrice, fromPrice: minPrice, toPrice: maxPrice })
+            this.setState({ minPrice, maxPrice, fromPrice: minPrice, toPrice: maxPrice, originalIDs: ids, filteredIDs: ids, loaded: true, })
             this.getData(0)
         } else {
-            const companyPrice = this.state.originalIDs.map(({ companyPrice }) => companyPrice.toFixed(2));
+            const companyPrice = ids.map(({ companyPrice }) => companyPrice.toFixed(2));
             const maxPrice = Math.max(...companyPrice)
             const minPrice = Math.min(...companyPrice)
-            this.setState({ minPrice, maxPrice, fromPrice: minPrice, toPrice: maxPrice })
+            this.setState({ minPrice, maxPrice, fromPrice: minPrice, toPrice: maxPrice, originalIDs: ids, filteredIDs: ids, loaded: true, })
             this.getData(0)
         }
     }
 
     getIDs(ids, fromPrice, toPrice, sortBy) {
         if (fromPrice == 0 || toPrice == 0) {
-            ToastAndroid.showWithGravity(
-                "Prijs kan niet 0 zijn",
-                ToastAndroid.SHORT,
-                ToastAndroid.CENTER,
-            )
+
+            Toast.show("Prijs kan niet 0 zijn", {
+                shadow: false,
+                backgroundColor: "#505050",
+                duration: 1500,
+            })
         }
         if (fromPrice && toPrice) {
             this.setState({ fromPrice, toPrice, sortBy })
@@ -250,8 +251,8 @@ class Search extends Component {
                 .then(() =>
                     this.getData(0, sortBy))
         } else {
-            this.setState({ originalIDs: ids, filteredIDs: ids, loaded: true, })
-            this.findMinMaxPrice()
+            //this.setState({ originalIDs: ids, filteredIDs: ids, loaded: true, })
+            this.findMinMaxPrice(ids)
 
         }
     }
@@ -292,21 +293,22 @@ class Search extends Component {
     }
 
     showToastNoSearch() {
-        ToastAndroid.showWithGravity(
-            "Nichts gefunden",
-            ToastAndroid.SHORT,
-            ToastAndroid.CENTER,
-        )
-        this.setState({ loaded: false })
+        Toast.show("Nichts gefunden", {
+            shadow: false,
+            backgroundColor: "#505050",
+            duration: Toast.durations.LONG
+        })        
+        NavigationService.back()
+
     }
 
 
     showToast() {
-        ToastAndroid.showWithGravity(
-            "Nicht verfügbar",
-            ToastAndroid.SHORT,
-            ToastAndroid.CENTER,
-        )
+        Toast.show("Nicht verfügbar", {
+            shadow: false,
+            backgroundColor: "#505050",
+            duration: 1500,
+        })
     }
 
     renderHelper() {
@@ -314,7 +316,6 @@ class Search extends Component {
             return this.getSearchStory()
         }
         if (!this.state.loaded || this.state.products.length < 1) return <Loading />
-
         const { minPrice, maxPrice, fromPrice, toPrice, sortBy } = this.state
         let sorted = [];
         if (this.props.userInfo.selectedUserType == 'H') {
@@ -361,11 +362,9 @@ class Search extends Component {
                                 <View style={{ paddingBottom: 8 }}>
                                     <ProductListItem
                                         name={productName}
-                                        //price={this.props.price}
-                                        price={this.props.userInfo.selectedUserType === 'EK' ? price.toFixed(2) : companyPrice.toFixed(2)}
-                                        // salePrice={'UVP ' + salePrice.toFixed(2)}
-                                        salePrice={salePrice != 0 ? 'UVP ' + salePrice.toFixed(2): ''}
-                                        companyPrice={companyPrice.toFixed(2)}
+                                        price={this.props.userInfo.selectedUserType === 'EK' ? price.replace(/,/, '.') : companyPrice.replace(/,/, '.')}
+                                        salePrice={salePrice.replace(/,/, '.') != 0 ? 'UVP ' + salePrice.replace(/,/, '.') : ''}
+                                        companyPrice={companyPrice.replace(/,/, '.')}
                                         rate={rate}
                                         stock={stock}
                                         id={id}
@@ -378,9 +377,7 @@ class Search extends Component {
                         columnWrapperStyle={{ flexWrap: 'wrap' }}
                         numColumns={4}
                         ListHeaderComponent={
-                            this.state.products.length !== 0 ?
-                                <FilterButton minPrice={minPrice} maxPrice={maxPrice} fromPrice={fromPrice} toPrice={toPrice} sortBy={sortBy} />
-                                : null
+                            <FilterButton minPrice={minPrice} maxPrice={maxPrice} fromPrice={fromPrice} toPrice={toPrice} sortBy={sortBy} screenBack={this.props.navigation.state.routeName} />
                         }
                         ListFooterComponent={this.state.filteredIDs.length > this.state.products.length && (this.state.from + 12 === this.state.products.length) ? <FooterButton text='Weitere Produkte' onPress={() => { this.getData(this.state.from + 12) }} /> : null}
                         initialNumToRender={3}

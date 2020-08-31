@@ -1,18 +1,26 @@
 import React, { Component } from 'react';
-import { View, Alert } from 'react-native';
-import { connect } from 'react-redux'
-import { createMaterialTopTabNavigator, createAppContainer } from 'react-navigation'
 
-import { SearchButton } from '../../common/header-buttons'
-import ProductReviews from './product-reviews'
-import ProductDescription from './product-description'
-import ProductSpecs from './product-specs'
-import ProductPackage from './product-package'
-import ProductVideo from './product-video'
+import { View, Alert } from 'react-native';
+
+import { connect } from 'react-redux';
+
+import { createMaterialTopTabNavigator, createAppContainer } from 'react-navigation';
+
+import { SearchButton } from '../../common/header-buttons';
+
+import ProductReviews from './product-reviews';
+
+import ProductDescription from './product-description';
+
+import ProductSpecs from './product-specs';
+
+import ProductPackage from './product-package';
+
+import ProductVideo from './product-video';
+
 import { getFullProductData } from '../../gets/productPosts';
 
-// import * as actions from '../../actions/product-actions'
-// import init from './init-product'
+import FooterNavBar from '../../common/footer-navigation-bar/footer-navigation-bar';
 
 class Product extends Component {
 
@@ -51,7 +59,6 @@ class Product extends Component {
 
   initProduct = async (id) => {
     getFullProductData(id)
-      //Воть тут какаето хрень происходит
       .then(response => response.json())
       .then(responseJson => {
         if (responseJson.status == '404') {
@@ -60,7 +67,7 @@ class Product extends Component {
             "Error 404 niet gevonden",
             [
               {
-                text: "OK",
+                text: "Ja",
                 onPress: () => {
                   this.props.navigation.goBack();
                 },
@@ -68,7 +75,7 @@ class Product extends Component {
             ],
             { cancelable: false }
           );
-        }        
+        }
         this.setState({
           id: id,
           images: responseJson.imgURLs,
@@ -132,8 +139,6 @@ class Product extends Component {
         labelStyle: {
           color: '#fff',
           fontSize: 12,
-          // margin: 0,
-          // borderWidth: 1,
           height: 12,
           lineHeight: 12,
           textAlignVertical: 'center'
@@ -149,7 +154,7 @@ class Product extends Component {
         screen: props =>
           <ProductDescription
             {...props}
-            // id={this.state.id}
+            key={ID}
             id={ID}
             name={name}
             images={this.state.images}
@@ -157,11 +162,13 @@ class Product extends Component {
             productSimilar={this.state.productSimilar}
             productDescription={this.state.productDescription}
           />
+
       },
       'Technische Details': {
         screen: props =>
           <ProductSpecs
             {...props}
+            key={this.state.id}
             id={this.state.id}
             name={name}
             details={this.state.productDetails}
@@ -172,6 +179,7 @@ class Product extends Component {
           <ProductPackage
             {...props}
             id={this.state.id}
+            key={this.state.id}
             name={name}
             packageInfo={this.state.productPackage}
           />
@@ -180,6 +188,7 @@ class Product extends Component {
         screen: props =>
           <ProductVideo
             {...props}
+            key={this.state.id}
             id={this.state.id}
             name={name}
             videoID={this.state.productVideo}
@@ -189,6 +198,7 @@ class Product extends Component {
         screen: props =>
           <ProductReviews
             {...props}
+            key={this.state.id}
             id={this.state.id}
             name={name}
             reviews={this.state.productReviews}
@@ -198,10 +208,14 @@ class Product extends Component {
 
     const Aaa = createAppContainer(Tab);
     // return Tab;
-    return <Aaa />;
+    return (
+      <>
+        <Aaa />
+        <FooterNavBar />
+      </>
+    );
   }
-
 }
-// console.log(123);
-// const Container = createAppContainer(Tab);
 export default connect()(Product);
+
+

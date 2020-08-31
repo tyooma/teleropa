@@ -23,7 +23,7 @@ const Star = () => {
 
 // export default connect(mapStateToProps)(ProductListItem)
 export default function Rating({ rating }) {
-    console.log("RATING PLUS PLUS RATING", rating)
+    
     Stars = () => {
         let rate = rating;
         return [1, 2, 3, 4, 5].map((key) => {
@@ -45,7 +45,7 @@ export default function Rating({ rating }) {
     if (!rating) {
         return (
             <Text style={styles.noRating}>
-                Noch nicht bewertet
+                {/* Noch nicht bewertet */}
             </Text>
         )
     }

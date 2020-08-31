@@ -7,13 +7,13 @@ import { getPreviewAsyncProductData } from '../../gets/productPosts';
 import NavigationService from '../../navigation-service';
 
 const NewestListItem = ({ id, text, image, price, companyPrice, userInfo }) => {
-// const NewestListItem = ({ id, text, image, price, companyPrice, userInfo }) => {
+    // const NewestListItem = ({ id, text, image, price, companyPrice, userInfo }) => {
     const showingprice = userInfo.selectedUserType === 'EK' ? price : companyPrice;
     let pricefixed = parseFloat(showingprice).toFixed(2)
     let formattedprice = pricefixed.toString().replace('.', ',');
 
     return (
-        <TouchableOpacity style={styles.container} onPress={() => NavigationService.push('Product', { id: id, name: text, images: image, price: price, companyPrice: companyPrice })
+        <TouchableOpacity style={styles.container} onPress={() => NavigationService.push('Product', { id: id, name: text, images: image, price: price, companyPrice: companyPrice, methodMoney: 'buyOfMoney' })
         }>
             <View style={{ flex: 2, flexDirection: 'row', alignItems: 'flex-start' }}>
                 <View style={{ overflow: 'hidden', borderTopLeftRadius: 5, borderTopRightRadius: 5, flex: 5, alignContent: 'flex-start', alignContent: 'flex-start' }}>
@@ -21,13 +21,11 @@ const NewestListItem = ({ id, text, image, price, companyPrice, userInfo }) => {
                 </View>
 
                 <View style={{ flex: 6, flexDirection: 'column' }}>
-                    <View>
-                        <Text style={styles.name} numberOfLines={3}
-                        //  ellipsizeMode='middle'
-                        >{text}</Text>
+                    <View style={styles.descriptionContainer}>
+                        <Text style={styles.name} numberOfLines={5}>{text}</Text>
                     </View>
                     <View>
-                        <Text style={styles.price}>{formattedprice} €</Text>
+                        <Text style={styles.price}>{formattedprice}</Text>
                     </View>
                 </View>
             </View>
@@ -66,13 +64,20 @@ const styles = {
         height: 140,
         resizeMode: 'contain',
     },
+    descriptionContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        // alignSelf: 'center',
+    },
     name: {
         marginTop: 12,
-        height: 90,
-        fontSize: 16,
+        // height: 90,
+        fontSize: 14,
         fontWeight: '400',
         fontFamily: 'Poppins-Medium',
         color: '#040404',
+        flexWrap: 'wrap',
         paddingHorizontal: 8,
     },
     price: {

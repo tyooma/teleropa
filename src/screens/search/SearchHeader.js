@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
 
-import { View, Image, TextInput, TouchableOpacity, Text, SafeAreaView, Platform, ScrollView, StyleSheet, FlatList, ToastAndroid } from 'react-native';
+import { View, Image, TextInput, TouchableOpacity, Text, SafeAreaView, Platform, ScrollView, StyleSheet, FlatList } from 'react-native';
 
 import { SearchBar } from "react-native-elements";
 

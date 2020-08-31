@@ -1,3 +1,4 @@
+
 import React from 'react'
 
 import { View, Text, Image, TouchableOpacity } from 'react-native';
@@ -16,7 +17,8 @@ import NavigationService from '../../navigation-service';
 
 import { sWidth } from '../../helpers/screenSize';
 
-function ProductListItem({ imageURL, name, price, salePrice, favourite, id, stock, rate, salePercent, userID, deleteAction, companyPrice, ...props }) {
+function ProductListItem({ imageURL, name, price, salePrice, favourite, id, productID, stock, rate, salePercent, userID, userInfo, deleteAction, companyPrice }) {
+
     getStock = () => {
         if (stock > 0) {
             return (
@@ -49,16 +51,16 @@ function ProductListItem({ imageURL, name, price, salePrice, favourite, id, stoc
         }
     }
 
-    getPrice = () => {        
-        const showingPrice = props.userInfo.selectedUserType === 'EK' ? price : companyPrice
-        if (salePrice != '0' && salePrice) {
+    getPrice = () => {
+        const showingPrice = userInfo.selectedUserType === 'EK' ? price : companyPrice;
+        if (salePrice != 0 && salePrice) {
             return (
                 <>
                     <Text style={styles.prevPrice}>
-                        {salePrice}<Text style={{ fontSize: 10 }}>€</Text>
+                        {salePrice}<Text style={{ fontSize: 10 }}></Text>
                     </Text>
                     <Text style={styles.salePrice}>
-                        {showingPrice}<Text style={{ fontSize: 16 }}>€</Text>
+                        {showingPrice}<Text style={{ fontSize: 16 }}></Text>
                     </Text>
                 </>
             )
@@ -70,7 +72,7 @@ function ProductListItem({ imageURL, name, price, salePrice, favourite, id, stoc
                 </Text>
 
                 <Text style={styles.price}>
-                    {showingPrice}<Text style={{ fontSize: 16 }}>€</Text>
+                    {showingPrice}<Text style={{ fontSize: 16 }}></Text>
                 </Text>
             </>
         )
@@ -93,7 +95,7 @@ function ProductListItem({ imageURL, name, price, salePrice, favourite, id, stoc
             return (
                 <TouchableOpacity
                     style={[styles.cartButton, { backgroundColor: '#3f911b' }]}
-                    onPress={() => addToCart(id)}
+                    onPress={() => addToCart(id, undefined, 'buyOfMoney', )}
                 >
                     <Image style={{ width: 22, height: 18, resizeMode: 'contain' }} source={require('../../assets/icons-color/002-shopping2.png')} key={'cart'} />
                 </TouchableOpacity>
@@ -102,7 +104,6 @@ function ProductListItem({ imageURL, name, price, salePrice, favourite, id, stoc
         return (
             <TouchableOpacity
                 style={[styles.cartButton, { opacity: .4 }]}
-            // onPress={() => addToCart(id)}
             >
                 {/* <Image style={{width: 22, height: 18, resizeMode: 'contain'}} source={require('../../assets/icons-color/002-shopping-cart-green.png')} key={'cart'} /> */}
                 <Text>Nicht verfügbar</Text>
@@ -124,8 +125,8 @@ function ProductListItem({ imageURL, name, price, salePrice, favourite, id, stoc
     }
 
     return (
-        <TouchableOpacity style={styles.productContainer} onPress={() => NavigationService.push('Product', { id: id, name: name })} >
-            <View style={{ flex: 1 }}>             
+        <TouchableOpacity style={styles.productContainer} onPress={() => NavigationService.push('Product', { id: id, name: name, methodMoney: 'buyOfMoney' })} >
+            <View style={{ flex: 1 }}>
                 {this.getImage()}
             </View>
             {getFavButton()}

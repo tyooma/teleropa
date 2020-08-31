@@ -1,114 +1,133 @@
 import React, { Component } from 'react';
-import { View, Text, Image, ScrollView, ToastAndroid } from 'react-native';
-
+import { Alert, ScrollView, Text, View } from 'react-native';
 import FooterButton from '../../common/footer-button';
 import DeliveryOption from '../../common/delivery-option';
-import { BoxShadow } from 'react-native-shadow'
-import { sWidth } from '../../helpers/screenSize'
+import { BoxShadow } from 'react-native-shadow';
+import { sWidth } from '../../helpers/screenSize';
+import Loading from '../loading';
+import { getDeliverySuppliers } from '../../gets/ordersPosts';
+import NavigationService from '../../navigation-service';
 
-import Loading from '../loading'
-import { getDeliverySuppliers } from '../../gets/ordersPosts'
+const unit = '<DeliveryService>';
 
 export default class DeliveryService extends Component {
-    static navigationOptions = {
-        title: 'Versandart wählen'
+  static navigationOptions = { title: 'Versandart wählen' };
+  
+  constructor(props) {
+    super(props);
+    this.SelectionChange = this.SelectionChange.bind(this);
+  }
+
+  state = {
+    productsPrice: 0,
+    deliveryPrice: 0,
+    selected: null,
+    name: null,
+    services: [],
+    loaded: false
+  }
+
+  isSelected(id) { return id === this.state.selected }
+
+  componentWillMount() {
+    const productsPrice = this.props.navigation.getParam('data', null).discountValue;
+    console.log('productsPrice:', productsPrice);
+    getDeliverySuppliers()
+    .then(services => {
+      console.table('services:', services);
+      let delivery = [];
+      let tdelivery = null;
+      services.map(service => {
+        tdelivery = service.costs.reverse().find(({ from }) => productsPrice >= from );
+        console.log('tdelivery:', tdelivery);
+        if( tdelivery !== undefined ) { delivery.push(service) }
+      });
+      console.log('delivery:', delivery);
+
+      this.setState({ productsPrice: productsPrice, services: delivery, loaded: true });
+    })
+    .catch(err => {
+      console.log('getDeliverySuppliers fetchEror:', err);
+    });
+  }
+
+  DeliveryOptions() {
+    return this.state.services.map(({ id, name, description, shippingFree, costs }) => (
+      <DeliveryOption
+        key={id}
+        SelectionChange={this.SelectionChange}
+        selected={this.isSelected(id)}
+        id={id}
+        name={name}
+        shippingFree={shippingFree}
+        costs={costs}
+        description={description}
+      />
+    ));
+  }
+
+  SelectionChange(id, name, shippingFree, costs) {
+    console.log('..................................................');
+    console.log('SelectionChange => id:',id,'name:',name,'shippingFree:',shippingFree,'costs:',costs);
+    // const price = costs.reverse().find(({ from }) => from < this.state.productsPrice);
+    const price = costs.find(({ from }) => this.state.productsPrice >= from );
+    console.log('SelectionChange => price:', price);
+    const deliveryPrice = price.value;
+    console.log('SelectionChange => deliveryPrice:', deliveryPrice);
+
+    this.setState({ selected: id, name: name, deliveryPrice: deliveryPrice });
+  }
+
+  render() {
+    console.log(unit, 'RENDER => this.state:', this.state);
+
+    const shadowOpt = {
+      width: sWidth,
+      height: 50,
+      color: "#000",
+      border: 6,
+      radius: 1,
+      opacity: 0.1,
+      x: 0,
+      y: 0
     }
 
-    state = {
-        productsPrice: 0,
-        deliveryPrice: 0,
-        selected: null,
-        services: [],
-        loaded: false
-    }
+    if(!this.state.loaded) return <Loading />;
 
-    isSelected(id) {
-        return id === this.state.selected
-    }
-
-    componentDidMount() {
-        const productsPrice = this.props.navigation.getParam('productsPrice', 0)
-        this.setState({ productsPrice })
-        getDeliverySuppliers().then(services => {
-            console.log(services)
-            this.setState({ services, loaded: true })
-        })
-    }
-
-    getDeliveryOptions() {
-        return this.state.services.map(({ id, description, name }) => (
-            <DeliveryOption
-                onPress={() => this.handleSelectionChange(id)}
-                selected={this.isSelected(id)}
-                name={name}
-                description={description}
-                key={id}
-            />
-        ))
-    }
-
-    handleSelectionChange(selected) {
-        this.setState({ selected }, this.getDeliveryPrice)
-    }
-
-    getDeliveryPrice() {
-        const deliveryOption = this.state.services.find((service) => service.id === this.state.selected)
-        deliveryOption.costs.sort((first, second) => (first.from > second.from) ? 1 : ((second.from > first.from) ? -1 : 0))
-        const price = deliveryOption.costs.reverse().find(({ from }) => from < this.state.productsPrice)
-        console.log(price, deliveryOption)
-        if (price) this.setState({ deliveryPrice: price.value })
-        else this.setState({ deliveryPrice: deliveryOption.shippingFree })
-    }
-
-    handle
-
-    render() {
-        const shadowOpt = {
-            width: sWidth,
-            height: 50,
-            color: "#000",
-            border: 6,
-            radius: 1,
-            opacity: 0.1,
-            x: 0,
-            y: 0
-        }
-        if (!this.state.loaded) return <Loading />
-        return (
-            <View style={{ flex: 1 }}>
-                <ScrollView style={{ paddingHorizontal: 18 }}>
-                    {this.getDeliveryOptions()}
-                </ScrollView>
-                <BoxShadow setting={shadowOpt}>
-                    <View style={styles.footerSummaryContainer}>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
-                            <Text style={styles.summaryText} >Versandkosten:</Text>
-                            <Text style={styles.summaryText} >{this.state.deliveryPrice} €</Text>
-                        </View>
-                    </View>
-                </BoxShadow>
-                <FooterButton text='Weiter'
-                    onPress={() =>
-                        this.state.selected
-                            ?
-                            this.props.navigation.navigate('Payment', { data: { ...this.props.navigation.getParam('data', null), deliveryData: this.state } })
-                            :
-                            ToastAndroid.show(`Versandart wählen`, ToastAndroid.LONG)
-            } />
+    return (
+      <View style={{ flex: 1 }}>
+        <ScrollView style={{ paddingHorizontal: 18 }}>
+          {this.DeliveryOptions()}
+        </ScrollView>
+        <BoxShadow setting={shadowOpt}>
+          <View style={s.footerSummaryContainer}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <Text style={s.summaryText}>Versandkosten:</Text>
+              <Text style={s.summaryText}>{this.state.deliveryPrice.toFixed(2)} €</Text>
             </View>
-        )
-    }
+          </View>
+        </BoxShadow>
+        <FooterButton
+          text='Weiter'
+          onPress={() =>
+            this.state.selected
+            ?
+            NavigationService.navigate('CartPreview', { userInfo: { ...this.props.navigation.getParam('userInfo', null) }, data: { ...this.props.navigation.getParam('data', null) }, deliveryData: { ...this.state } })
+            :
+            Alert.alert('Versandart wählen', '', [{ text: 'Ja', onPress: () => null }], { cancelable: false })
+          }
+        />
+      </View>
+    );
+  }
 }
 
-const styles = {
-    footerSummaryContainer: {
-        height: 50,
-        paddingHorizontal: 18,
-        backgroundColor: '#fff',
-        justifyContent: 'center',
-    },
-    summaryText: {
-        color: '#040404',
-        fontSize: 16
-    }
+const s = {
+  footerSummaryContainer: {
+    height: 50,
+    paddingHorizontal: 18,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+  },
+  summaryText: { color: '#040404', fontSize: 16 },
 }

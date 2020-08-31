@@ -30,8 +30,7 @@ import reducers from '../reducers';
 import NavigationService from '../navigation-service';
 import { sWidth } from '../helpers/screenSize';
 
-
-import AmazonLoginWebView from '../screens/payment/AmazonLoginWebView'
+import AmazonLoginWebView from '../screens/payment/AmazonLoginWebView';
 import AskQuestion from '../screens/ask-question';
 import BackButton from '../common/header-buttons/back-button';
 import BecomePartner from '../screens/become-partner';
@@ -39,6 +38,7 @@ import Brands from '../screens/brands';
 import Career from '../screens/career';
 import Cart from '../screens/cart';
 import CartIconWithBadge from '../screens/cart/CartIconWithBadge';
+import CartPreview from '../screens/cart/CartPreview';
 import CategoriesList from '../screens/categories-list';
 import CategoryInfo from '../screens/category-info';
 import ChangePaymentAddress from '../screens/change-payment-address';
@@ -51,6 +51,7 @@ import DeliveryService from '../screens/delivery-service';
 import Favourite from '../screens/favourite';
 import Feedback from '../screens/feedback';
 import Filter from '../screens/filter';
+import FilterBonus from '../screens/filter-bonus';
 import HotLine from '../screens/hot-line';
 import Info from '../screens/info';
 import LeaveReview from '../screens/leave-review';
@@ -60,9 +61,9 @@ import NoNetwork from '../screens/no-network';
 import Orders from '../screens/orders';
 import OrderSuccess from '../screens/order-success';
 import Payment from '../screens/payment';
-import PaypalConfirm from '../screens/payment/paypalConfirm';
 import PersonalData from '../screens/personal-data';
 import Product from '../screens/product';
+import ProductsByPoint from '../screens/products-by-point';
 import ProductsByBrand from '../screens/products-by-brand';
 import ProductsByCategory from '../screens/products-by-category';
 import ProductsList from '../screens/products-list';
@@ -79,17 +80,24 @@ import TermsConfidentiality from '../screens/terms-confidentiality';
 import TermsDeliveryPayment from '../screens/terms-delivery-payment';
 import TermsReturn from '../screens/terms-return';
 import UserTypeSelection from '../screens/user-type-selection';
-import WebPayPal from '../screens/payment/WebPayPal'
-import WhatsApp from '../screens/whatsapp'
+// import WebPayPal from '../screens/payment/WebPayPal';
+// import PayPalRechnung from '../screens/payment/PayPalRechnung';
+import PayPal from '../screens/payment/PayPal';
+import WhatsApp from '../screens/whatsapp';
 
 import { YellowBox } from 'react-native';
 
 import { MenuButton, SearchButton } from '../common/header-buttons';
-import {
-  clearCart
-} from '../functions/cart-funcs';
+import { clearCart } from '../functions/cart-funcs';
 
 import Icons from 'react-native-vector-icons/Ionicons';
+
+//----------------------------------------------------------------[ELarin]
+import Agreement from '../screens/agreements/agreement';
+import PrePayment from '../screens/payment/PrePayment';
+//--------------------------------------------------------[Testing@ELarin]
+//import TestBox from '../Testing/TestBox'; // For Testing
+//------------------------------------------------------------------------
 
 YellowBox.ignoreWarnings(['Require cycle:']);
 console.disableYellowBox = true;
@@ -112,8 +120,6 @@ export default class App extends Component {
     // // КОД НА ПРОВЕРКУ ПЕРВОГО ЗАПУСКА
     // firstLaunchCheck()
   }
-
-
 
   async checkPermission() {
     const enabled = await firebase.messaging().hasPermission();
@@ -149,7 +155,6 @@ export default class App extends Component {
     }
   }
 
-
   async requestPermission() {
     try {
       await firebase.messaging().requestPermission();
@@ -179,7 +184,7 @@ export default class App extends Component {
     /*
     * If your app is in background, you can listen for when a notification is clicked / tapped / opened as follows:
     * */
-    this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {      
+    this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
       const { title, body } = notificationOpen.notification;
       this.showAlert(title, body);
     });
@@ -188,7 +193,7 @@ export default class App extends Component {
     * If your app is closed, you can check if it was opened by a notification being clicked / tapped / opened as follows:
     * */
     const notificationOpen = await firebase.notifications().getInitialNotification();
-    if (notificationOpen) {      
+    if (notificationOpen) {
       const { title, data } = notificationOpen.notification;
       this.showAlert(title, data.text);
     }
@@ -205,7 +210,7 @@ export default class App extends Component {
     Alert.alert(
       title, body,
       [
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
+        { text: 'Ja', onPress: () => console.log('OK Pressed') },
       ],
       { cancelable: false },
     );
@@ -217,7 +222,6 @@ export default class App extends Component {
   render() {
     const subscribe = store.subscribe(() => {
       const localStore = store.getState()
-      console.log('REDUX-STORE', localStore)
       if (this.state.isConnected !== localStore.network.isConnected) {
         this.setState({ isConnected: !this.state.isConnected })
       }
@@ -256,7 +260,6 @@ export default class App extends Component {
   }
 }
 
-
 handlePress = () => {
   Linking.canOpenURL('whatsapp://send?phone=491707046434')
     .then((supported) => {
@@ -269,8 +272,6 @@ handlePress = () => {
     .catch((err) => console.error('An error occurred', err));
 };
 
-
-
 const AppBottomBarNavigator = createBottomTabNavigator(
   {
     Main: Main,
@@ -278,17 +279,14 @@ const AppBottomBarNavigator = createBottomTabNavigator(
       screen: Cart,
       navigationOptions: {
         tabBarOnPress: ({ navigation }) => {
-          //navigation.navigate('Cart', { cartReceaved: false });
           NavigationService.navigate('Cart', { cartReceaved: false })
         }
       },
     },
     Help: {
-      screen: () => null,
-      navigationOptions: {
-        tabBarOnPress: handlePress
-      }
+      screen: () => null, navigationOptions: { tabBarOnPress: handlePress }
     },
+    // Help: TestBox,
     Profile: Profile
   },
   {
@@ -325,6 +323,12 @@ const AppBottomBarNavigator = createBottomTabNavigator(
 const AppStackNavigator = createStackNavigator(
   {
     Main: AppBottomBarNavigator,
+    //----------------------------------------------------------------[ELarin]
+    Agreement: Agreement,
+    PrePayment: PrePayment,
+    //--------------------------------------------------------[Testing@ELarin]
+    // TestBox: TestBox,
+    //------------------------------------------------------------------------
     Intro: UserTypeSelection,
     NoNetwork: NoNetwork,
     HotLine: HotLine,
@@ -347,6 +351,7 @@ const AppStackNavigator = createStackNavigator(
     SubcategoriesList: SubcategoriesList,
     ChangePersonalData: ChangePersonalData,
     Filter: Filter,
+    FilterBonus:FilterBonus,
     Product: Product,
     Cart: Cart,
     Search: Search,
@@ -368,16 +373,16 @@ const AppStackNavigator = createStackNavigator(
     ProductsByCategory: ProductsByCategory,
     CategoryInfo: CategoryInfo,
     DeliveryService: DeliveryService,
-    WebPayPal: WebPayPal,
-
-    PaypalConfirm: PaypalConfirm
+    CartPreview: CartPreview,
+    // WebPayPal: WebPayPal,
+    // PayPalRechnung: PayPalRechnung,
+    PayPal: PayPal,
+    ProductsByPoint: ProductsByPoint,
   },
   {
     headerTitleStyle: {
       color: 'rgb(0, 255, 63)',
     },
-    // initialRouteName: 'Main',    
-    // initialRouteName: 'Main',
     // initialRouteName: this.state.network ? 'Main' : <NoNetwork />,
     defaultNavigationOptions: ({ navigation }) => {
       try {
@@ -395,6 +400,11 @@ const AppStackNavigator = createStackNavigator(
                 <SearchButton />
               </View>
             ),
+            // headerRight: (
+            //   <TouchableOpacity onPress={() => { clearCart(); NavigationService.back() }} style={{ height: '100%', justifyContent: 'center' }}>
+            //     <Text style={{ color: '#fff', fontSize: 16, marginRight: 18 }}>löschen</Text>
+            //   </TouchableOpacity>
+            // ),
 
             headerBackImage: BackButton,
             headerBackTitle: null,
@@ -491,9 +501,10 @@ const AppStackNavigator = createStackNavigator(
               marginLeft: Platform.OS === 'ios' ? 0 : -10
             }
           }
-        }//else if end
-      } //try end
-      catch{
+
+        
+        }
+      } catch{
         return {
 
           headerLeft: (
@@ -536,7 +547,6 @@ const AppStackNavigator = createStackNavigator(
   }
 );
 
-
 const AppDrawerNavigator = createDrawerNavigator(
   { App: AppStackNavigator },
   {
@@ -546,11 +556,9 @@ const AppDrawerNavigator = createDrawerNavigator(
 );
 
 const AppSwitchNaigator = createSwitchNavigator(
-
   { drawer: AppDrawerNavigator },
   { AppDrawerNavigator, AppStackNavigator },
   { initialRouteName: "AppStackNavigator" }
 )
 
 const AppContainer = createAppContainer(AppSwitchNaigator);
-

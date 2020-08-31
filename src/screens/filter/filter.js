@@ -34,6 +34,7 @@ export default class Filter extends Component {
     min: this.props.navigation.getParam('minPrice', 0),
     max: this.props.navigation.getParam('maxPrice', 1000),
     sortBy: this.props.navigation.getParam('sortBy', 'popular'),
+    screenBack: this.props.navigation.getParam('screenBack'),
     scrollEnabled: true
   }
 
@@ -58,6 +59,7 @@ export default class Filter extends Component {
     }
     return styles.sortButtonText
   }
+
 
   render() {    
     return (
@@ -93,13 +95,9 @@ export default class Filter extends Component {
                 onChangeText={(from) => {
                   const newFrom = + from.replace(/[^0-9]/g, '')
                   if (newFrom > this.state.max) {
-                    this.setState({
-                      from: this.state.max
-                    })
+                    this.setState({ from: this.state.max })
                   } else {
-                    this.setState({
-                      from: newFrom
-                    })
+                    this.setState({ from: newFrom })
                   }
 
                 }}
@@ -114,13 +112,9 @@ export default class Filter extends Component {
                 onChangeText={(to) => {
                   const newTo = + to.replace(/[^0-9]/g, '')
                   if (newTo > this.state.max) {
-                    this.setState({
-                      to: this.state.max
-                    })
+                    this.setState({ to: this.state.max })
                   } else {
-                    this.setState({
-                      to: newTo
-                    })
+                    this.setState({ to: newTo })
                   }
                 }} />
             </View>
@@ -156,7 +150,9 @@ export default class Filter extends Component {
             />
           </View>
         </ScrollView>
-        <FooterButton onPress={() => { this.props.navigation.navigate('Search', { filterOptions: this.state }) }} text='Filtern' />
+        <FooterButton onPress={() => { this.props.navigation.navigate(`${this.state.screenBack}`, { filterOptions: this.state }) }} text='Filtern' />
+
+        {/* <FooterButton onPress={() => {this.props.navigation.navigate('Search', { filterOptions: this.state }) }} text='Filtern' /> */}
       </View>
 
     )

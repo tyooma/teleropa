@@ -1,10 +1,15 @@
 import React from 'react';
+
 import { Image, Text, TouchableOpacity, View } from 'react-native';
-import { connect } from 'react-redux'
+
+import { connect } from 'react-redux';
+
 import ImageLoader from '../../helpers/image-loader';
+
 import { sWidth } from '../../helpers/screenSize';
-import { getPreviewAsyncProductData } from '../../gets/productPosts';
+
 import NavigationService from '../../navigation-service';
+
 
 const OffersListItem = ({ id, text, image, price, companyPrice, salePrice, userInfo }) => {
 
@@ -15,22 +20,21 @@ const OffersListItem = ({ id, text, image, price, companyPrice, salePrice, userI
     let salepricefixed = parseFloat(salePrice).toFixed(2)
     let formattedsaleprice = salepricefixed.toString().replace('.', ',');
 
+
     return (
-        <TouchableOpacity style={styles.container} onPress={() => NavigationService.push('Product', { id: id, name: text, images: image, price: price, companyPrice: companyPrice, salePrice: salePrice })}>
+        <TouchableOpacity style={styles.container} onPress={() => NavigationService.push('Product', { id: id, name: text, images: image, price: price, companyPrice: companyPrice, salePrice: salePrice, methodMoney: 'buyOfMoney' })}>
             <View style={{ flex: 2, flexDirection: 'row', alignItems: 'flex-start' }}>
                 <View style={{ overflow: 'hidden', borderTopLeftRadius: 5, borderTopRightRadius: 5, flex: 5 }}>
                     <ImageLoader source={image} style={styles.image} key={image} />
                 </View>
 
                 <View style={{ flex: 6, flexDirection: 'column' }}>
-                    <View>
-                        <Text style={styles.name} numberOfLines={3}
-                        //  ellipsizeMode='middle'
-                        >{text}</Text>
+                <View style={styles.descriptionContainer}>
+                        <Text style={styles.name} numberOfLines={5} >{text}</Text>
                     </View>
-                    <View style={{ paddingBottom: 10 }}>
-                        <Text style={styles.saleprice}>uvp <Text style={[styles.saleprice, { textDecorationLine: 'line-through' }]}>{formattedsaleprice} €</Text></Text>
-                        <Text style={styles.price}>{formattedprice} €</Text>
+                    <View style={{ paddingЕщз: 5 }}>
+                        <Text style={styles.saleprice}>uvp <Text style={[styles.saleprice, { textDecorationLine: 'line-through' }]}>{formattedsaleprice}</Text></Text>
+                        <Text style={styles.price}>{formattedprice}</Text>
                     </View>
                 </View>
             </View>
@@ -38,9 +42,7 @@ const OffersListItem = ({ id, text, image, price, companyPrice, salePrice, userI
     )
 };
 
-const mapStateToProps = ({ userID, userInfo }) => (
-    { userID, userInfo }
-)
+const mapStateToProps = ({ userID, userInfo }) => ({ userID, userInfo })
 
 export default connect(mapStateToProps)(OffersListItem)
 
@@ -66,18 +68,22 @@ const styles = {
         height: 140,
         resizeMode: 'contain',
     },
-    name: {
-        marginTop: 12,
-        height: 75,
-        // lineHeight: 18,
-        fontSize: 16,
+    descriptionContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        // alignSelf: 'center',
+    },
+    name: {        
+        marginTop: 7,        
+        fontSize: 14,
         fontWeight: '400',
         fontFamily: 'Poppins-Medium',
         color: '#040404',
         paddingHorizontal: 8,
+        flexWrap: 'wrap',
     },
-    price: {
-        padding: 0,
+    price: {            
         fontSize: 20,
         // fontWeight: '800',
         fontFamily: 'Poppins-ExtraBoldItalic',
@@ -91,7 +97,7 @@ const styles = {
         paddingHorizontal: 8,
     },
     saleprice: {
-        fontSize: 13,
+        fontSize: 12,
         fontStyle: 'italic',
         fontFamily: 'Poppins-Medium',
         textShadowColor: 'gray',
