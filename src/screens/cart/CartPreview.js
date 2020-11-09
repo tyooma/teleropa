@@ -51,12 +51,12 @@ export const CartItemInPreview = ({id, bonus, methodMoney, name, pcs, price, com
               :
               selectedUserType === 'H' ?
                 <>
-                  <Text style={s.pricePerProduct}>{companyPrice} €\St</Text>
+                  <Text style={s.pricePerProduct}>{companyPrice} €</Text>
                   <Text style={s.price}>{(companyPrice * pcs).toFixed(2)} €</Text>
                 </>
                 :
                 <>
-                  <Text style={s.pricePerProduct}>{price} €\St</Text>
+                  <Text style={s.pricePerProduct}>{price} €</Text>
                   <Text style={s.price}>{(price * pcs).toFixed(2)} €</Text>
                 </>
             }
