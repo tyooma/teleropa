@@ -1,3 +1,3 @@
-import Payment from './Payment';
+import Payment from './payment';
 
 export default Payment;
