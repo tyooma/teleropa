@@ -72,12 +72,12 @@ export const CartItem = ({ img, name, pcs, price, companyPrice, selectedUserType
                 :
                 selectedUserType === 'H' ?
                   <>
-                    <Text style={styles.pricePerProduct}>{companyPrice} €\St</Text>
+                    <Text style={styles.pricePerProduct}>{companyPrice} €</Text>
                     <Text style={styles.price}>{(companyPrice * pcs).toFixed(2)} €</Text>
                   </>
                   :
                   <>
-                    <Text style={styles.pricePerProduct}>{price} €\St</Text>
+                    <Text style={styles.pricePerProduct}>{price} €</Text>
                     <Text style={styles.price}>{(price * pcs).toFixed(2)} €</Text>
                   </>
               }
