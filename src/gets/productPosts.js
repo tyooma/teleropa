@@ -25,6 +25,7 @@ export function getFullProductData(id) {
 }
 
 export function getPreviewProductData(id) {
+    console.log("getPreviewProductData  => ID:", id)
     return fetch('https://teleropa.de/WebiProgCommunicationApplicationArticle/getPreviewProductData', {
         method: 'POST',
         headers: {
@@ -38,6 +39,7 @@ export function getPreviewProductData(id) {
 }
 
 export async function getPreviewProductData1(id) {
+    console.log("getPreviewProductData1  => ID:", id)
     try {
         const response = await fetch('https://teleropa.de/WebiProgCommunicationApplicationArticle/getPreviewProductData', {
             method: 'POST',
@@ -210,6 +212,7 @@ export function getPromocodeData(promocode) {
 }
 
 export function getProductsBySupplier(supplierID) {
+    console.log("supplierID => ID => ", supplierID)
     return fetch(`https://teleropa.de/WebiProgCommunicationApplicationCategory/getProductsBy?id=${supplierID}&type=supplier`, {
         method: 'GET',
     })
