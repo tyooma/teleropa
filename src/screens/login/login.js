@@ -21,6 +21,7 @@ import Input from '../../common/input';
 import ModalView from '../../common/modal-view';
 
 import ButtonItem from '../../common/button-item';
+import ProgressBar from '../progress-bar';
 
 // import NavigationService from '../../navigation-service'
 // import { createStackNavigator, NavigationActions, withNavigationFocus } from "react-navigation";
@@ -122,9 +123,13 @@ class Login extends Component {
       return <Loading />
     }
 
-    if (this.props.userID === "notloggedin") {
-      return (
+    if (this.props.userID === "notloggedin") {    
+      return (    
         <View style={{ flex: 1 }}>
+          {this.state.routeName != null 
+          ? <ProgressBar step={'login'} />
+          : ''
+          }
           <ScrollView style={{ marginHorizontal: 18 }}>
             <Input
               placeholder='Ihre E-Mail'
