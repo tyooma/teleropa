@@ -6,6 +6,7 @@ import { sWidth } from '../../helpers/screenSize';
 import NavigationService from '../../navigation-service';
 import FooterButton from '../../common/footer-button';
 import { getPurchasePoints } from '../../functions/cart-funcs';
+import ProgressBar from '../progress-bar/progress-bar';
 
 const unit = '<CartPreview>';
 
@@ -136,6 +137,7 @@ export default class CartPreview extends Component {
     return (
       <View style={{ flex: 1 }}>
         <ScrollView>
+          <ProgressBar step={'preview'} />
           <View style={{ marginHorizontal: 18, marginTop: 22 }}>
             {this.getProductsCards()}
             <View style={s.line}>

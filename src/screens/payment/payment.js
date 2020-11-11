@@ -9,6 +9,7 @@ import FooterButton from '../../common/footer-button';
 import PaymentOption from '../../common/payment-option';
 
 import Loading from '../loading';
+import ProgressBar from '../progress-bar';
 
 class Payment extends Component {
   static navigationOptions = { title: 'Zahlungsweise' }
@@ -112,6 +113,7 @@ class Payment extends Component {
     if (this.state.loading) return <Loading />;
     return (
       <View style={{ flex: 1 }}>
+        <ProgressBar step={'payment'} />
         <ScrollView style={{ marginHorizontal: 18 }}>
           <PaymentOption
             onPress={() => this.setState({ selected: 'PayPal' })}
