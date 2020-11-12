@@ -45,64 +45,61 @@ export const CartItem = ({ img, name, pcs, price, companyPrice, selectedUserType
   // console.log("methodMoney in export const CartItem   ", methodMoney);
   // console.log("bonus in export const CartItem   ", bonus);
   return (
-    <>
-      <ProgressBar step={'cart'} />
-      <TouchableOpacity style={styles.cartItemContainer} onPress={() => NavigationService.push('Product', { id, name, bonus, methodMoney })}>
-        <View style={{ flexDirection: 'row' }}>
-          {img ?
+    <TouchableOpacity style={styles.cartItemContainer} onPress={() => NavigationService.push('Product', { id, name, bonus, methodMoney })}>
+      <View style={{ flexDirection: 'row' }}>
+        {img ?
+          <View>
+            <ImageLoader style={styles.cartItemImage} source={{ uri: img }} key={id + methodMoney + img} />
+          </View>
+          :
+          <View>
+            <Image style={styles.cartItemImage} source={require('../../assets/message-icons/no-photo.png')} key={id + methodMoney + 'no-image'} />
+          </View>
+        }
+        <View style={{ flex: 1 }}>
+          <Text style={styles.cartItemName} numberOfLines={2}>{name}</Text>
+          <View style={{ marginTop: 4, marginBottom: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <View>
-              <ImageLoader style={styles.cartItemImage} source={{ uri: img }} key={id + methodMoney + img} />
-            </View>
-            :
-            <View>
-              <Image style={styles.cartItemImage} source={require('../../assets/message-icons/no-photo.png')} key={id + methodMoney + 'no-image'} />
-            </View>
-          }
-          <View style={{ flex: 1 }}>
-            <Text style={styles.cartItemName} numberOfLines={2}>{name}</Text>
-            <View style={{ marginTop: 4, marginBottom: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-              <View>
-                {getStock(stock, order, pcs)}
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
-                  {getCounter(order, pcs, id, onMinus, onAdd, methodMoney)}
-                </View>
+              {getStock(stock, order, pcs)}
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
+                {getCounter(order, pcs, id, onMinus, onAdd, methodMoney)}
               </View>
-              <View style={{ marginRight: 10, alignItems: 'flex-end' }}>
-                {methodMoney == 'buyOfPoints' ?
+            </View>
+            <View style={{ marginRight: 10, alignItems: 'flex-end' }}>
+              {methodMoney == 'buyOfPoints' ?
+                <>
+                  <Text style={styles.price}>{(bonus * pcs).toFixed(0)} P.</Text>
+                </>
+                :
+                selectedUserType === 'H' ?
                   <>
-                    <Text style={styles.price}>{(bonus * pcs).toFixed(0)} P.</Text>
+                    <Text style={styles.pricePerProduct}>{companyPrice} €</Text>
+                    <Text style={styles.price}>{(companyPrice * pcs).toFixed(2)} €</Text>
                   </>
                   :
-                  selectedUserType === 'H' ?
-                    <>
-                      <Text style={styles.pricePerProduct}>{companyPrice} €</Text>
-                      <Text style={styles.price}>{(companyPrice * pcs).toFixed(2)} €</Text>
-                    </>
-                    :
-                    <>
-                      <Text style={styles.pricePerProduct}>{price} €</Text>
-                      <Text style={styles.price}>{(price * pcs).toFixed(2)} €</Text>
-                    </>
-                }
-              </View>
+                  <>
+                    <Text style={styles.pricePerProduct}>{price} €</Text>
+                    <Text style={styles.price}>{(price * pcs).toFixed(2)} €</Text>
+                  </>
+              }
             </View>
-            {orderReturnReason ?
-              <Text style={{ marginBottom: 5 }}>Grund für Rückgabe: {orderReturnReason}</Text>
-              :
-              null
-            }
           </View>
-          {
-            !order ?
-              <TouchableOpacity style={styles.deleteButton} onPress={() => onDelete(id)}>
-                <Image source={require('../../assets/icons/009-close.png')} style={styles.deleteButtonImage} key={id + methodMoney + 'deleteFromCartButton'} />
-              </TouchableOpacity>
-              :
-              null
+          {orderReturnReason ?
+            <Text style={{ marginBottom: 5 }}>Grund für Rückgabe: {orderReturnReason}</Text>
+            :
+            null
           }
         </View>
-      </TouchableOpacity>
-    </>
+        {
+          !order ?
+            <TouchableOpacity style={styles.deleteButton} onPress={() => onDelete(id)}>
+              <Image source={require('../../assets/icons/009-close.png')} style={styles.deleteButtonImage} key={id + methodMoney + 'deleteFromCartButton'} />
+            </TouchableOpacity>
+            :
+            null
+        }
+      </View>
+    </TouchableOpacity>
   );
 }
 
@@ -303,6 +300,7 @@ class Cart extends Component {
     return (
       <View style={{ flex: 1 }}>
         <ScrollView>
+          <ProgressBar step={'cart'} />
           <View style={{ marginHorizontal: 18 }}>
             {this.getProductsCards()}
 
