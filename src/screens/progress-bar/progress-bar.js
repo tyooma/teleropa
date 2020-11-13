@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 import { Text, View } from 'react-native';
 
 export default class ProgressBar extends Component {
@@ -248,7 +247,7 @@ const styles = {
 
     backgroundColor: '#fff',
     borderWidth: 1,
-    borderColor: '#1ae884',
+    borderColor: '#2ecc71',
     borderRadius: 100
   },
   progressBarCircleCurrent: {
@@ -282,7 +281,7 @@ const styles = {
   progressBarNumberCompleted: {
     fontSize: 18,
 
-    color: '#1ae884'
+    color: '#2ecc71'
   },
   progressBarNumberCurrent: {
     fontSize: 20,
@@ -300,7 +299,7 @@ const styles = {
     marginTop: 5,
 
     fontSize: 12,
-    color: '#1ae884'
+    color: '#2ecc71'
   },
   progressBarTextCurrent: {
     marginTop: 5,
@@ -320,7 +319,7 @@ const styles = {
     width: 50,
 
     borderWidth: 1,
-    borderColor: '#1ae884',
+    borderColor: '#2ecc71',
   },
   progressBarLineCurrent: {
     width: 50,
