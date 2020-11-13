@@ -7,6 +7,7 @@ import NavigationService from '../../navigation-service';
 import FooterButton from '../../common/footer-button';
 import { getPurchasePoints } from '../../functions/cart-funcs';
 import ProgressBar from '../progress-bar/progress-bar';
+import IPlantTreeItem from '../i-plant-tree-item';
 
 const unit = '<CartPreview>';
 
@@ -140,6 +141,7 @@ export default class CartPreview extends Component {
           <ProgressBar step={'preview'} />
           <View style={{ marginHorizontal: 18, marginTop: 22 }}>
             {this.getProductsCards()}
+            <IPlantTreeItem cartSum={this.state.cartInfo.discountValue} />
             <View style={s.line}>
               <Text style={s.summaryText}>Summe:</Text>
               <Text style={s.summaryText}>{this.state.cartInfo.discountValue.toFixed(2)} €</Text>

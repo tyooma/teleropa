@@ -12,6 +12,7 @@ import Loading from '../loading'
 import Input from '../../common/input';
 import ModalView from '../../common/modal-view';
 import ProgressBar from '../progress-bar';
+import IPlantTreeItem from '../i-plant-tree-item';
 import { getPreviewAsyncProductData, getPromocodeData } from '../../gets/productPosts';
 import { addToCart, minusFromCart, deleteFromCart, clearCart } from '../../functions/cart-funcs';
 
@@ -303,6 +304,8 @@ class Cart extends Component {
           <ProgressBar step={'cart'} />
           <View style={{ marginHorizontal: 18 }}>
             {this.getProductsCards()}
+
+            <IPlantTreeItem cartSum={this.state.discountValue} />
 
             <TouchableOpacity style={styles.promocodeButton} onPress={() => this.setState({ promocodeModalVisible: !this.state.promocodeModalVisible })} >
               <Text style={styles.promocodeButtonText}>Promo-Code eingeben</Text>

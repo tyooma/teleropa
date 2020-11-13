@@ -232,3 +232,16 @@ export async function getProductsByCategory(categoryID) {
         console.error(error);
     }
 }
+
+/*get I Plant Tree data*/ 
+export async function getIPlantTreeData() {
+    try {
+        const response = await fetch('https://teleropa.de/WebiProgCommunicationApplicationArticle/getIPlantTreeInfo', {
+            method: 'GET'
+        })
+        const result = await response.json();
+        return result
+    } catch (error) {
+        console.error(error)
+    }
+}
