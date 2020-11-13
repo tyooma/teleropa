@@ -22,7 +22,7 @@ const initialState = {
     productSimilar: []
 }
 
-export default (state = initialState, action) => {
+export default (state = initialState, action) => {    
     switch (action.type) {
         case 'SET_CURRENT_PRODUCT_ID':
             return { ...state, ...{ id: action.payload } }

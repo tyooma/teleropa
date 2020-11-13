@@ -125,11 +125,11 @@ class Payment extends Component {
             text={'Kauf auf Rechnung'}
             imageSource={require('../../assets/payments/Rechnung.png')}
           />
-          <PaymentOption
+          {/* <PaymentOption
             onPress={() => this.setState({ selected: 'AmazonPay' })}
             selected={this.isSelected('AmazonPay')}
             imageSource={require('../../assets/payments/AmazonPay.png')}
-          />
+          /> */}
           <PaymentOption
             onPress={() => this.setState({ selected: 'Vorkasse' })}
             selected={this.isSelected('Vorkasse')}

@@ -10,6 +10,8 @@ import {
   StyleSheet,
   LayoutAnimation,
   CheckBox,
+  Picker,
+  Alert
 } from "react-native";
 
 import { addToCart } from '../../functions/cart-funcs';
@@ -23,6 +25,7 @@ import { addToFavourite } from "../../posts/favouritesPosts";
 import {
   getPreviewProductData,
   getBonusProducts,
+  getFullProductData,
 } from "../../gets/productPosts";
 
 import Rating from "../../common/rating";
@@ -37,18 +40,19 @@ import NavigationService from "../../navigation-service";
 
 import HTML from "react-native-render-html";
 
+
 // import FooterAgreement from "../../common/footer-agreement/footer-agreement";
 
 // import Toast from "react-native-root-toast";
 
 class ProductDescription extends Component {
   componentDidMount() {
-    this.getSimilarToState(this.props.productSimilar);
-    this.getBonusToState(this.props.id);
+    this.getSimilarToState(this.state.productSimilar);
+    this.getBonusToState(this.state.id);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.productSimilar != nextProps.productSimilar) {
+    if (this.state.productSimilar != nextProps.productSimilar) {
       const productsIDs = nextProps.productSimilar;
       productsIDs ? this.getSimilarToState(productsIDs) : null;
     }
@@ -59,6 +63,27 @@ class ProductDescription extends Component {
   }
 
   state = {
+    id: this.props.id,
+    images: this.props.images,
+    productInfo: {
+      productName: this.props.productInfo.productName,
+      productSalePercent: this.props.productInfo.productSalePercent,
+      stock: this.props.productInfo.stock,
+      salePrice: this.props.productInfo.salePercent,
+      price: this.props.productInfo.price,
+      companyPrice: this.props.productInfo.companyPrice,
+      rate: this.props.productInfo.rate,
+      siteURL: this.props.productInfo.siteURL,
+      configurations: this.props.productInfo.configurations,
+      productOptions: this.props.productInfo.productOptions,
+      varaints: this.props.productInfo.varaints,
+    },
+    productDescription: this.props.productDescription,
+    productDetails: this.props.productDetails,
+    productPackage: this.props.productPackage,
+    productVideo: this.props.productVideo,
+    productReviews: this.props.productReviews,
+    productSimilar: this.props.productSimilar,
     showCheckBonus: false,
     descMore: false,
     similar: [],
@@ -66,6 +91,8 @@ class ProductDescription extends Component {
     loaded: false,
     stop: false,
     selected: "buyOfMoney",
+    selectedDropDownValue: this.props.productInfo.varaints[this.props.id],
+    // selectedDropDownValue: { 0: "weiß", 1: "S" },
   };
 
   getProductImages(images) {
@@ -227,6 +254,7 @@ class ProductDescription extends Component {
         stock,
         id,
         productID,
+        is_variable,
       } = product;
       return (
         <ProductListItem
@@ -238,14 +266,14 @@ class ProductDescription extends Component {
           stock={stock}
           id={id}
           imageURL={previewImgURL}
-          key={productID}
+          key={productName}
           favourite
           salePercent={productSalePercent ? productSalePercent.int : null}
+          is_variable={is_variable}
         />
       );
     });
   }
-
   getCartButton(stock, id) {
     if (stock > 0) {
       return (
@@ -262,8 +290,102 @@ class ProductDescription extends Component {
       );
     }
   }
+
+  onClickDropdown(value, index, item, i) {
+    console.log("value ==>:", value, "index ==>:", index, "||||||", "i ==>:", i, "item ==>:", item)
+    console.log("*********************************************************************************************",)
+    // this.setState((prevState) => {
+    //   var selectedDropDownValue = Object.assign({}, prevState.selectedDropDownValue, { [i]: value });
+    //   this.setState({ selectedDropDownValue: selectedDropDownValue })
+    // });
+  }
+
+  NewIDwithVariants() {
+    // NewArtikelnummer = Object.assign({}, this.state.selectedDropDownValue, { [1]: this.state.selectedDropDownValue[0], [3]: this.state.selectedDropDownValue[1], });
+    // delete NewArtikelnummer[0]
+    // var id = this.getKeyByValue(this.state.productInfo.varaints, NewArtikelnummer)
+    var id = this.getKeyByValue(this.state.productInfo.varaints, this.state.selectedDropDownValue)
+    // store.dispatch(actions.setLoggedUserInfo(userInfo))
+    if (this.state.id != id) {
+      getFullProductData(id)
+        .then(response => response.json())
+        .then(responseJson => {
+          if (responseJson.status == '404') {
+            Alert.alert(
+              "Alarm",
+              "Error 404 niet gevonden",
+              [
+                {
+                  text: "Ja",
+                  onPress: () => {
+                    this.props.navigation.goBack();
+                  },
+                },
+              ],
+              { cancelable: false }
+            );
+          }
+          this.setState({
+            id: id,
+            images: responseJson.imgURLs,
+            info: {
+              productName: responseJson.productName,
+              productSalePercent: responseJson.productSalePercent,
+              stock: responseJson.stock,
+              salePrice: responseJson.salePrice,
+              price: responseJson.price,
+              companyPrice: responseJson.companyPrice,
+              rate: responseJson.rate,
+              siteURL: responseJson.siteURL,
+              productOptions: responseJson.productOptions,
+              configurations: responseJson.configurations,
+              varaints: responseJson.varaints
+            },
+            productDescription: responseJson.description_long,
+            productDetails: responseJson.description_details,
+            productPackage: responseJson.description_package,
+            productVideo: responseJson.description_video,
+            productReviews: responseJson.reviews,
+            productSimilar: responseJson.similarProductIDs,
+
+          });
+        });
+    }
+    return id
+  }
+
+  getKeyByValue(object, value) {
+    let index = 0
+    Object.keys(object).find(key => {
+
+      if (this.shallowEqual(object[key], value)) {
+        index = key
+      }
+    });
+    return index
+  }
+
+  shallowEqual(object1, object2) {
+    const keys1 = Object.keys(object1);
+    const keys2 = Object.keys(object2);
+
+    if (keys1.length !== keys2.length) {
+      return false;
+    }
+
+    for (let key of keys1) {
+      if (object1[key] !== object2[key]) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+
   render() {
-    console.log("this props in product-descrition.js", this.props)
+    // console.log("STATE in product-descrition.js", this.state.selectedDropDownValue, "PROPS in prodcut-descrition.js", this.props.id)
+    // console.log("*********************************************************************************************",)
     var arr = [];
     if (this.props.cart.length != 0) {
       this.props.cart.map((x) => {
@@ -280,11 +402,10 @@ class ProductDescription extends Component {
       })
     }
 
-    const productInfo = this.props.productInfo;
+    const productInfo = this.state.productInfo;
     if (!this.state.loaded) {
       return <Loading />;
     }
-
     return (
       <View style={{ flex: 1 }}>
         <ScrollView>
@@ -309,15 +430,15 @@ class ProductDescription extends Component {
           <View style={styles.carousel}>
             <Slider
               data={
-                this.props.images
-                  ? this.getProductImages(this.props.images)
+                this.state.images
+                  ? this.getProductImages(this.state.images)
                   : null
               }
             />
             {this.props.userID !== "notloggedin" && this.props.userID ? (
               <TouchableOpacity
                 style={styles.favButton}
-                onPress={() => addToFavourite(this.props.userID, this.props.id)}
+                onPress={() => addToFavourite(this.props.userID, this.state.id)}
               >
                 <Image
                   style={styles.favImage}
@@ -351,8 +472,8 @@ class ProductDescription extends Component {
             <HTML
               staticContentMaxWidth={50}
               html={
-                this.props.productDescription
-                  ? this.props.productDescription
+                this.state.productDescription
+                  ? this.state.productDescription
                   : "Produktbeschreibung ist nicht vorhanden"
               }
               containerStyle={[
@@ -370,7 +491,7 @@ class ProductDescription extends Component {
 
           <TouchableOpacity
             style={styles.subscribeButton}
-            onPress={() => NavigationService.navigate("ProductSubscribe", { productID: this.props.id, })}>
+            onPress={() => NavigationService.navigate("ProductSubscribe", { productID: this.state.id, })}>
             <Text style={styles.subscribeButtonText}>Newsletter anmelden</Text>
           </TouchableOpacity>
           {this.getSimilarText()}
@@ -391,7 +512,7 @@ class ProductDescription extends Component {
         <View style={styles.RowLine}>
           <View style={[styles]}>
             {this.getStock(productInfo.stock)}
-            <Text style={styles.id}>Artikelnummer: {this.props.id} </Text>
+            <Text style={styles.id}>Artikelnummer: {this.state.productInfo.varaints != null ? this.NewIDwithVariants() : this.state.id} </Text>
           </View>
           <View style={[styles.lineTelePoints]}>
             <Text style={styles.id}>
@@ -400,6 +521,40 @@ class ProductDescription extends Component {
           </View>
         </View>
 
+        {this.state.productInfo.varaints != null ?
+          < View style={styles.RowLine}>
+            <View style={styles.getNameStyle}>
+              {
+                Object.values(this.state.productInfo.configurations).map((item, i) => {
+                  return (
+                    <View style={styles.DropDownColor}>
+                      < Text style={styles.OptionName} > {item.name}:</Text>
+                      <Picker
+                        style={styles.RowLinePicker}
+                        selectedValue={this.state.selectedDropDownValue[i]}
+                        onValueChange={(itemValue, itemIndex) => this.onClickDropdown(itemValue, itemIndex, item, i)
+                        }>
+                        {
+                          Object.values(item.values).map(el => {
+                            return (
+                              <Picker.Item
+                                key={el}
+                                label={el}
+                                value={el}
+                              />
+                            )
+                          })
+                        }
+                      </Picker>
+                    </View>
+                  )
+                })
+              }
+            </View>
+          </View>
+          :
+          null
+        }
 
         <View style={[styles.lineLeft]}>
           {this.state.showCheckBonus && Math.sign(this.state.points - this.props.userInfo.points) == -1 ? (
@@ -429,21 +584,16 @@ class ProductDescription extends Component {
 
           {this.getCartButton(
             productInfo.stock,
-            this.props.id,
+            this.state.id,
             this.state.selected
           )}
         </View>
-      </View>
+      </View >
     );
   }
 }
 
-const mapStateToProps = ({ userID, userInfo, cart }) => ({
-  userID,
-  userInfo,
-  cart,
-});
-
+const mapStateToProps = ({ userID, userInfo, cart }) => ({ userID, userInfo, cart, });
 export default connect(mapStateToProps)(ProductDescription);
 
 const HTMLStyles = StyleSheet.create({
@@ -474,18 +624,40 @@ const styles = {
     backgroundColor: "#fff",
   },
   RowLine: {
+    marginTop: 10,
     flexDirection: "row",
     marginHorizontal: 18,
     alignItems: "center",
-
   },
-
-  // ОТображение инфы о БОНУСАХ
+  getNameStyle: {
+    flexDirection: "column",
+    width: '100%'
+  },
+  RowLinePicker: {
+    flexDirection: "row",
+    marginHorizontal: 10,
+    alignItems: "center",
+    fontSize: 12,
+    color: "#050505",
+    width: '65%',
+    height: 30
+  },
+  DropDownColor: {
+    borderColor: '#3f911b',
+    borderRadius: 5,
+    borderWidth: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    fontSize: 12,
+    color: "#050505",
+    width: '45%',
+    marginBottom: 10,
+  },
   lineTelePoints: {
     alignItems: 'center',
     flexDirection: "row",
-    marginHorizontal: "5%",
-    width: "50%",
+    marginHorizontal: "15%",
+    width: "60%",
   },
   line: {
     flexDirection: "row",
@@ -559,6 +731,10 @@ const styles = {
   },
   id: {
     fontSize: 12,
+    color: "#050505",
+  },
+  OptionName: {
+    fontSize: 15,
     color: "#050505",
   },
   cartButton: {

@@ -41,6 +41,7 @@ getCounter = (order, pcs, id, onMinus, onAdd, methodMoney, bonus) => {
 }
 
 export const CartItem = ({ img, name, pcs, price, companyPrice, selectedUserType, stock, order, orderReturnReason, bonus, id, onAdd, onMinus, onDelete, methodMoney }) => {
+  console.log("TouchableOpacity ==> CartItem  ==> ID ==> ", id)
   // console.log("methodMoney in export const CartItem   ", methodMoney);
   // console.log("bonus in export const CartItem   ", bonus);
   return (

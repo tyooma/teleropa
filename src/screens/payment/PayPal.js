@@ -100,7 +100,6 @@ export class PayPal extends Component {
             },
           }
           console.log('PAYMENT:', PAYMENT);
-
           // Get "ApprovalURL" for PayPal with AccessToken
           // 'https://api.sandbox.paypal.com/v1/payments/payment'
           fetch('https://api.paypal.com/v1/payments/payment', {

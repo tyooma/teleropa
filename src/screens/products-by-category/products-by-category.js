@@ -1,9 +1,10 @@
-import React, { Component } from 'react'
-import { View, FlatList, Text, Image } from 'react-native'
+import React, { Component } from 'react';
+
+import { View, FlatList, Text, Image } from 'react-native';
 
 import { SearchButton } from '../../common/header-buttons';
 
-import CategoryInfoButton from '../../common/header-buttons/category-info-button'
+// import CategoryInfoButton from '../../common/header-buttons/category-info-button';
 
 import FilterButton from '../../common/filter-button';
 
@@ -16,7 +17,6 @@ import Loading from '../loading';
 import { connect } from 'react-redux';
 
 import FooterNavBar from '../../common/footer-navigation-bar/footer-navigation-bar';
-import { sHeight } from '../../helpers/screenSize';
 
 class ProductsByCategory extends Component {
 
@@ -27,8 +27,8 @@ class ProductsByCategory extends Component {
       title: name,
       headerRight: (
         <View style={{ flexDirection: 'row', marginRight: 9 }}>
-          {/* {cmsText ? <CategoryInfoButton cmsText={cmsText} name={name} /> : null} */}
-          <CategoryInfoButton cmsText={cmsText} name={name} />
+          {/* {cmsText ? <CategoryInfoButton cmsText={cmsText} name={name} /> : null} 
+          <CategoryInfoButton cmsText={cmsText} name={name} />*/}
           <SearchButton />
         </View>
       )
@@ -171,7 +171,7 @@ class ProductsByCategory extends Component {
             // .filter(item => item.stock > 0)
             data={this.state.filteredIDs}
             renderItem={({ item }) => {
-              const { companyPrice, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, productID } = item;
+              const { companyPrice, is_variable, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, productID } = item;
               return (
                 <View style={{ paddingBottom: 8 }}>
                   <ProductListItem
@@ -184,6 +184,7 @@ class ProductsByCategory extends Component {
                     id={productID}
                     imageURL={previewImgURL}
                     salePercent={productSalePercent ? productSalePercent.int : null}
+                    is_variable={is_variable}
                   />
                 </View>
               );
@@ -218,7 +219,7 @@ const styles = {
   containerFlatList: {
     height: '95%',
     justifyContent: 'space-around',
-   // alignItems: 'center',
+    // alignItems: 'center',
   },
   footer: {
     height: 5,

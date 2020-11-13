@@ -13,7 +13,6 @@ export function getProductInfo(id) {
 }
 
 export function getFullProductData(id) {
-    console.log("ID getFullProductData in productPosts.js", id)
     return fetch('https://teleropa.de/WebiProgCommunicationApplicationArticle/getFullProductData', {
         method: 'POST',
         headers: {
@@ -24,8 +23,7 @@ export function getFullProductData(id) {
     })
 }
 
-export function getPreviewProductData(id) {
-    console.log("getPreviewProductData  => ID:", id)
+export function getPreviewProductData(id) {    
     return fetch('https://teleropa.de/WebiProgCommunicationApplicationArticle/getPreviewProductData', {
         method: 'POST',
         headers: {
@@ -39,7 +37,6 @@ export function getPreviewProductData(id) {
 }
 
 export async function getPreviewProductData1(id) {
-    console.log("getPreviewProductData1  => ID:", id)
     try {
         const response = await fetch('https://teleropa.de/WebiProgCommunicationApplicationArticle/getPreviewProductData', {
             method: 'POST',
@@ -227,6 +224,8 @@ export async function getProductsByCategory(categoryID) {
             method: 'GET',
         })
         const json = await response.json();
+        console.log("getProductsByCategory  ==> categoryID => json", json);
+        console.log("********************************************************************************************************")
         return json
     } catch (error) {
         console.error(error);

@@ -357,7 +357,7 @@ class Search extends Component {
                     <FlatList
                         data={!sorted.length ? this.state.products : sorted}
                         renderItem={({ item }) => {
-                            const { companyPrice, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, id } = item
+                            const { companyPrice, is_variable, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, id } = item
                             return (
                                 <View style={{ paddingBottom: 8 }}>
                                     <ProductListItem
@@ -370,6 +370,7 @@ class Search extends Component {
                                         id={id}
                                         imageURL={previewImgURL}
                                         salePercent={productSalePercent ? productSalePercent.int : null}
+                                        is_variable={is_variable}
                                     />
                                 </View>
                             )
