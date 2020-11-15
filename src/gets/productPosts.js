@@ -64,10 +64,12 @@ export async function getPreviewAsyncProductData(id) {
         });
         if (response.ok && response.status == 200) {
             var json = await response.json();
+            console.log(`getPreviewAsyncProductData(${id}) ==>  json ==> :`, json)
             json.salePrice = parseFloat(json.salePrice.replace(/\./g, '').replace(',', '.'));
             json.companyPrice = parseFloat(json.companyPrice.replace(/\./g, '').replace(',', '.'));
             json.price = parseFloat(json.price.replace(/\./g, '').replace(',', '.'));
-            json.tax = parseFloat(json.tax.replace(/\./g, '').replace(',', '.'));            
+            json.tax = parseFloat(json.tax.replace(/\./g, '').replace(',', '.'));
+            
             return json;
         }
         // const json = await response.json();
@@ -232,5 +234,18 @@ export async function getProductsByCategory(categoryID) {
         return json
     } catch (error) {
         console.error(error);
+    }
+}
+
+/*get I Plant Tree data*/
+export async function getIPlantTreeData() {
+    try {
+        const response = await fetch('https://teleropa.de/WebiProgCommunicationApplicationArticle/getIPlantTreeInfo', {
+            method: 'GET'
+        })
+        const result = await response.json();
+        return result
+    } catch (error) {
+        console.error(error)
     }
 }

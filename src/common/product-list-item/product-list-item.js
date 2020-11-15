@@ -19,7 +19,7 @@ import { sWidth } from '../../helpers/screenSize';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
-function ProductListItem({ imageURL, is_variable, name, price, salePrice, favourite, id, productID, stock, rate, salePercent, userID, userInfo, deleteAction, companyPrice }) {
+function ProductListItem({ imageURL, is_variable, name, price, salePrice, favourite, id, productID, stock, rate, salePercent, userID, userInfo, deleteAction, companyPrice }) {    
     getStock = () => {
         if (stock > 0) {
             return (
