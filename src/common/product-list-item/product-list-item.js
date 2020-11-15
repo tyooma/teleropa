@@ -35,7 +35,7 @@ function ProductListItem({ imageURL, is_variable, name, price, salePrice, favour
         )
     }
 
-    getFavButton = (productID) => {
+    getFavButton = (id) => {
         if (userID !== 'notloggedin' && userID) {
             if (favourite) {
                 return (
@@ -91,7 +91,7 @@ function ProductListItem({ imageURL, is_variable, name, price, salePrice, favour
         }
     }
 
-    getCartButton = (is_variable) => {        
+    getCartButton = (is_variable) => {
         if (stock > 0) {
             return (
                 is_variable == '1' ?
@@ -100,20 +100,37 @@ function ProductListItem({ imageURL, is_variable, name, price, salePrice, favour
                         onPress={() => NavigationService.push('Product', { id: id, name: name, methodMoney: 'buyOfMoney' })}
                     >
 
-                        <Text style={{ textAlign: "center", fontSize: 11, color: '#fff' }}>
-                            Variante auswählen <Icon name='chevron-circle-right' size={15} />
+                        <Text style={{ textAlign: "center", fontSize: 15, color: '#fff' }}>
+                            Variante auswählen <Icon name='chevron-circle-right' size={18} />
                         </Text>
                     </TouchableOpacity>
                     :
-                    <TouchableOpacity
-                        style={[styles.cartButton, { backgroundColor: '#3f911b' }]}
-                        onPress={() => addToCart(id, undefined, 'buyOfMoney',)}
-                    >
-                        <Image style={{ width: 22, height: 18, resizeMode: 'contain' }} source={require('../../assets/icons-color/002-shopping2.png')} key={'cart'} />
-
-                    </TouchableOpacity>
-
-
+                    <View style={{ width: '100%' }}>
+                        <TouchableOpacity
+                            style={[styles.cartButton, { backgroundColor: '#3f911b' }]}
+                            onPress={() => addToCart(id, undefined, 'buyOfMoney',)}
+                        >
+                            <Image style={{ width: 22, height: 18, resizeMode: 'contain' }} source={require('../../assets/icons-color/002-shopping2.png')} key={'cart'} />
+                            <Text style={styles.cartButtonText}>In den Warenkorb</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={[styles.cartButton, { backgroundColor: '#3f911b' }]}
+                            onPress={() => {
+                                if (!userID || userID === "notloggedin") {
+                                    NavigationService.navigate('Login', { routeName: 'ProductListItem' });
+                                } else {
+                                    NavigationService.push('DeliveryService', { id: id, userInfo: userInfo })
+                                }
+                            }}
+                        >
+                            <Image
+                                style={{ width: 22, height: 18, resizeMode: 'contain' }}
+                                source={require("../../assets/icons/014-euro.png")}
+                                key={"cartImageOnProductListItem"}
+                            />
+                            <Text style={styles.cartButtonText}>Sofort kaufen</Text>
+                        </TouchableOpacity>
+                    </View>
             )
         }
         return (
@@ -257,6 +274,7 @@ const styles = {
         color: '#010101'
     },
     cartButton: {
+        flexDirection: "row",
         flex: 1,
         marginVertical: 10,
         marginHorizontal: 5,
@@ -267,6 +285,10 @@ const styles = {
         height: 32,
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    cartButtonImage: {
+        width: 22,
+        height: 18,
     },
     cartButtonText: {
         marginLeft: 8,

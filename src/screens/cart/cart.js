@@ -41,7 +41,7 @@ getCounter = (order, pcs, id, onMinus, onAdd, methodMoney, bonus) => {
 }
 
 export const CartItem = ({ img, name, pcs, price, companyPrice, selectedUserType, stock, order, orderReturnReason, bonus, id, onAdd, onMinus, onDelete, methodMoney }) => {
-  console.log("TouchableOpacity ==> CartItem  ==> ID ==> ", id)
+  console.log("TouchableOpacity ==> CartItem  ==> ID ==> ", price, ' Company Prise =>', companyPrice)
   // console.log("methodMoney in export const CartItem   ", methodMoney);
   // console.log("bonus in export const CartItem   ", bonus);
   return (
@@ -73,12 +73,12 @@ export const CartItem = ({ img, name, pcs, price, companyPrice, selectedUserType
                 :
                 selectedUserType === 'H' ?
                   <>
-                    <Text style={styles.pricePerProduct}>{companyPrice} €</Text>
+                    <Text style={styles.pricePerProduct}>{companyPrice.toFixed(2)} €</Text>
                     <Text style={styles.price}>{(companyPrice * pcs).toFixed(2)} €</Text>
                   </>
                   :
                   <>
-                    <Text style={styles.pricePerProduct}>{price} €</Text>
+                    <Text style={styles.pricePerProduct}>{price.toFixed(2)} €</Text>
                     <Text style={styles.price}>{(price * pcs).toFixed(2)} €</Text>
                   </>
               }
@@ -194,7 +194,6 @@ class Cart extends Component {
   }
 
   getDiscount(price) {
-    // console.log('getDiscount: ', this.state.promocodeData);
     if (this.state.promocodeData !== null) {
       const { percental, minimumcharge, value } = this.state.promocodeData;
       if (minimumcharge > price) {
@@ -214,26 +213,22 @@ class Cart extends Component {
 
   setPrices() {
     const products = this.state.products.filter(p => p.methodMoney === 'buyOfMoney');
-    let originalProductsPrice, orderVAT, discountProductsPrice;
 
-    originalProductsPrice = this.props.userInfo.selectedUserType === 'EK' ?
+
+    let originalProductsPrice = this.props.userInfo.selectedUserType === 'EK' ?
       products.reduce((sum, { price, count }) => { return sum + price * count }, 0)
       :
       products.reduce((sum, { companyPrice, count }) => { return sum + companyPrice * count }, 0);
-
+    
     //------------------------------------------------------------------------------------------------------------------------------
-    orderVAT = 0;
+    let orderVAT = 0;
     products.map((p) => {
       orderVAT += (p.tax / 100) * (this.props.userInfo.selectedUserType === 'H' ? p.companyPrice : p.price * p.count);
     });
     //------------------------------------------------------------------------------------------------------------------------------
 
-    discountProductsPrice = this.getDiscount(originalProductsPrice);
-
-    console.log('<setPrices> originalProductsPrice:', originalProductsPrice, '-', typeof originalProductsPrice);
-    console.log('<setPrices> orderVAT:', orderVAT, '-', typeof orderVAT);
-    console.log('<setPrices> discountProductsPrice:', discountProductsPrice, '-', typeof discountProductsPrice);
-
+    let discountProductsPrice = this.getDiscount(originalProductsPrice);
+  
     if (originalProductsPrice !== this.state.originalProductsPrice || discountProductsPrice !== this.state.discountProductsPrice) {
       this.setState({
         originalProductsPrice: originalProductsPrice,
@@ -265,7 +260,7 @@ class Cart extends Component {
       return (
         <View style={styles.line}>
           <Text style={styles.summaryText}>{this.state.promocodeData.description}:</Text>
-          <Text style={styles.summaryText}>-{this.state.discountValue} €</Text>
+          <Text style={styles.summaryText}>-{this.state.discountValue.toFixed(2)} €</Text>
         </View>
       );
     }

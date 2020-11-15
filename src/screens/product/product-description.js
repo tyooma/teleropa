@@ -84,6 +84,8 @@ class ProductDescription extends Component {
     productVideo: this.props.productVideo,
     productReviews: this.props.productReviews,
     productSimilar: this.props.productSimilar,
+
+
     showCheckBonus: false,
     descMore: false,
     similar: [],
@@ -91,8 +93,7 @@ class ProductDescription extends Component {
     loaded: false,
     stop: false,
     selected: "buyOfMoney",
-    selectedDropDownValue: this.props.productInfo.varaints[this.props.id],
-    // selectedDropDownValue: { 0: "weiß", 1: "S" },
+    selectedDropDownValue: { 0: "weiß", 1: "S" },
   };
 
   getProductImages(images) {
@@ -108,7 +109,7 @@ class ProductDescription extends Component {
     return <Text style={styles.inStock}>Produkt ist verfügbar</Text>;
   }
 
-  getPrices(price, salePrice, companyPrice, productInfo) {
+  getPrices(price, salePrice, companyPrice, productInfo) {    
     if (salePrice != 0) {
       const products = [productInfo];
       const productsVAT = products.reduce((sum, { price, companyPrice }) => {
@@ -292,24 +293,21 @@ class ProductDescription extends Component {
   }
 
   onClickDropdown(value, index, item, i) {
-    console.log("value ==>:", value, "index ==>:", index, "||||||", "i ==>:", i, "item ==>:", item)
-    console.log("*********************************************************************************************",)
-    // this.setState((prevState) => {
-    //   var selectedDropDownValue = Object.assign({}, prevState.selectedDropDownValue, { [i]: value });
-    //   this.setState({ selectedDropDownValue: selectedDropDownValue })
-    // });
+    this.setState((prevState) => {
+      var selectedDropDownValue = Object.assign({}, prevState.selectedDropDownValue, { [i]: value });
+      this.setState({ selectedDropDownValue: selectedDropDownValue })
+    });
   }
 
   NewIDwithVariants() {
-    // NewArtikelnummer = Object.assign({}, this.state.selectedDropDownValue, { [1]: this.state.selectedDropDownValue[0], [3]: this.state.selectedDropDownValue[1], });
-    // delete NewArtikelnummer[0]
-    // var id = this.getKeyByValue(this.state.productInfo.varaints, NewArtikelnummer)
-    var id = this.getKeyByValue(this.state.productInfo.varaints, this.state.selectedDropDownValue)
+    NewArtikelnummer = Object.assign({}, this.state.selectedDropDownValue, { [1]: this.state.selectedDropDownValue[0], [3]: this.state.selectedDropDownValue[1], });
+    delete NewArtikelnummer[0]
+    var id = this.getKeyByValue(this.state.productInfo.varaints, NewArtikelnummer)
     // store.dispatch(actions.setLoggedUserInfo(userInfo))
     if (this.state.id != id) {
       getFullProductData(id)
         .then(response => response.json())
-        .then(responseJson => {
+        .then(responseJson => {          
           if (responseJson.status == '404') {
             Alert.alert(
               "Alarm",
@@ -383,9 +381,7 @@ class ProductDescription extends Component {
   }
 
 
-  render() {
-    // console.log("STATE in product-descrition.js", this.state.selectedDropDownValue, "PROPS in prodcut-descrition.js", this.props.id)
-    // console.log("*********************************************************************************************",)
+  render() {    
     var arr = [];
     if (this.props.cart.length != 0) {
       this.props.cart.map((x) => {
@@ -521,6 +517,22 @@ class ProductDescription extends Component {
           </View>
         </View>
 
+
+        {/* this.props.cart.map((x) => {
+        if (x.selected == "buyOfPoint") {
+          arr.push(x.selected)
+
+
+          if (x.selected.length > 1 && this.state.showCheckBonus) {
+            this.setState({ showCheckBonus: false })
+          } else {
+            this.setState({ showCheckBonus: true })
+          }
+        }
+      }) */}
+
+
+
         {this.state.productInfo.varaints != null ?
           < View style={styles.RowLine}>
             <View style={styles.getNameStyle}>
@@ -534,11 +546,16 @@ class ProductDescription extends Component {
                         selectedValue={this.state.selectedDropDownValue[i]}
                         onValueChange={(itemValue, itemIndex) => this.onClickDropdown(itemValue, itemIndex, item, i)
                         }>
+                        {/* <Picker.Item
+                        label={'Bitte wählen'}
+                        value={-1}
+                        key={-1}
+                      /> */}
                         {
                           Object.values(item.values).map(el => {
                             return (
                               <Picker.Item
-                                key={el}
+                                key={el+i}
                                 label={el}
                                 value={el}
                               />

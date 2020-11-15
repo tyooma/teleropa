@@ -168,8 +168,8 @@ class ProductsByCategory extends Component {
       <View style={styles.container}>
         <View style={styles.containerFlatList}>
           <FlatList
-            // .filter(item => item.stock > 0)
-            data={this.state.filteredIDs}
+            // .filter(item => item.stock > 0)            
+            data={this.state.filteredIDs.filter(item => item.stock > 0)}
             renderItem={({ item }) => {
               const { companyPrice, is_variable, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, productID } = item;
               return (
