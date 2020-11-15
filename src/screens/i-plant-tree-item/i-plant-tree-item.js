@@ -7,7 +7,9 @@ export default class IPlantTreeItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      cartSum: 0, //product sum in cart
+      cartSum: 0,
+      iPlantTreeItem: null,
+      iPlantTreeData: null
     }
   }
 
@@ -16,6 +18,7 @@ export default class IPlantTreeItem extends Component {
       cartSum: this.props.cartSum
     })
     getIPlantTreeData().then(res => {
+      console.log('res res res res', res)
       getPreviewAsyncProductData(res.selectArticle).then(res1 => {
         this.setState({
           iPlantTreeItem: res1,

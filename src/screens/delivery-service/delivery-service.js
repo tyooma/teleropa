@@ -17,7 +17,6 @@ import { getDeliverySuppliers } from '../../gets/ordersPosts';
 import { getPreviewAsyncProductData } from '../../gets/productPosts';
 
 import NavigationService from '../../navigation-service';
-import ProgressBar from '../progress-bar';
 
 const unit = '<DeliveryService>';
 
@@ -51,11 +50,11 @@ export default class DeliveryService extends Component {
     }
   }
 
-  getProductBySofortKaufen(ProductID) {
+  getProductBySofortKaufen(ProductID) {    
     let userInfo = this.props.navigation.getParam('userInfo', null)
 
     getPreviewAsyncProductData(ProductID).then(res => {
-      res.id = ProductID      
+      res.id = ProductID
       this.setState({ data: res })
       userInfo.selectedUserType === 'EK' ?
         this.FuncgetDeliverySuppliers(res.price)
@@ -120,7 +119,6 @@ export default class DeliveryService extends Component {
 
     return (
       <View style={{ flex: 1 }}>
-        <ProgressBar step={'delivery'} />
         <ScrollView style={{ paddingHorizontal: 18 }}>
           {this.DeliveryOptions()}
         </ScrollView>

@@ -41,12 +41,8 @@ import CartIconWithBadge from '../screens/cart/CartIconWithBadge';
 import CartPreview from '../screens/cart/CartPreview';
 import CategoriesList from '../screens/categories-list';
 import CategoryInfo from '../screens/category-info';
-import ChangePaymentAddress from '../screens/change-payment-address';
-import ChangePersonalData from '../screens/change-personal-data';
 import Contacts from '../screens/contacts';
 import CreditCards from '../screens/credit-cards';
-import DeliveryAddress from '../screens/delivery-address';
-import DeliveryAddressOrder from '../screens/delivery-address-order';
 import DeliveryService from '../screens/delivery-service';
 import Favourite from '../screens/favourite';
 import Feedback from '../screens/feedback';
@@ -69,7 +65,6 @@ import ProductsByCategory from '../screens/products-by-category';
 import ProductsList from '../screens/products-list';
 import ProductSubscribe from '../screens/product-subscribe';
 import Profile from '../screens/profile';
-import Registration from '../screens/registration';
 import Return from '../screens/return';
 import SubcategoriesList from '../screens/subcategories-list';
 import SideMenuView from '../screens/side-menu-view';
@@ -95,8 +90,18 @@ import Icons from 'react-native-vector-icons/Ionicons';
 //----------------------------------------------------------------[ELarin]
 import Agreement from '../screens/agreements/agreement';
 import PrePayment from '../screens/payment/PrePayment';
+import Settings from '../screens/settings';
+
+import ChangeMainData from '../screens/change-main-data';
+import { getScreenTitle } from '../screens/change-main-data/user-funcs';
+
+// import Registration from '../screens/registration';
+// import ChangePaymentAddress from '../screens/change-payment-address';
+// import ChangePersonalData from '../screens/change-personal-data';
+// import DeliveryAddress from '../screens/delivery-address';
 //--------------------------------------------------------[Testing@ELarin]
 //import TestBox from '../Testing/TestBox'; // For Testing
+import TestRegister from '../Testing/TestRegister'; // For Testing
 //------------------------------------------------------------------------
 
 YellowBox.ignoreWarnings(['Require cycle:']);
@@ -228,8 +233,7 @@ export default class App extends Component {
       if (store.getState().app.loaded) {
         SplashScreen.hide();
       }
-    }
-    )
+    });
 
     // // КОД НА ПРОВЕРКУ ПЕРВОГО ЗАПУСКА
     // if (this.state.firstLaunch === null) {
@@ -240,9 +244,7 @@ export default class App extends Component {
 
     return (
       <Provider store={store}>
-        <ReduxNetworkProvider
-          pingServerUrl='https://www.teleropa.de/'
-        >
+        <ReduxNetworkProvider pingServerUrl='https://www.teleropa.de/'>
           {this.state.isConnected ?
             <View style={{ flex: 1 }}>
               <StatusBar backgroundColor="#c00017" barStyle="light-content" />
@@ -273,24 +275,22 @@ handlePress = () => {
 };
 
 const AppBottomBarNavigator = createBottomTabNavigator(
-  {
-    Main: Main,
-    Cart: {
-      screen: Cart,
-      navigationOptions: {
-        tabBarOnPress: ({ navigation }) => {
-          NavigationService.navigate('Cart', { cartReceaved: false })
-        }
-      },
+{
+  Main: Main,
+  Cart: {
+    screen: Cart,
+    navigationOptions: {
+      tabBarOnPress: ({ navigation }) => { NavigationService.navigate('Cart', { cartReceaved: false })}
     },
-    Help: {
-      screen: () => null, navigationOptions: { tabBarOnPress: handlePress }
-    },
-    // Help: TestBox,
-    Profile: Profile
   },
-  {
-    defaultNavigationOptions: ({ navigation }) => ({
+  Help: {
+    screen: () => null, navigationOptions: { tabBarOnPress: handlePress }
+  },
+  // Help: TestBox,
+  Profile: Profile,
+},
+{
+  defaultNavigationOptions: ({ navigation }) => ({
       tabBarIcon: ({ focused, horizontal, tintColor }) => {
         const { routeName } = navigation.state;
         let IconComponent = Icons;
@@ -307,18 +307,18 @@ const AppBottomBarNavigator = createBottomTabNavigator(
         }
         return <IconComponent name={iconName} size={25} color={tintColor} />;
       }
-    }),
-    tabBarOptions: {
-      activeTintColor: '#d7171f',
-      // activeTintColor: '#F8F8F8',
-      inactiveTintColor: '#586589',
-      style: {
-        backgroundColor: '#ffffff'
-        // backgroundColor: '#171F33'
-      },
-      tabStyle: {}
-    }
-  })
+  }),
+  tabBarOptions: {
+    activeTintColor: '#d7171f',
+    // activeTintColor: '#F8F8F8',
+    inactiveTintColor: '#586589',
+    style: {
+      backgroundColor: '#ffffff'
+      // backgroundColor: '#171F33'
+    },
+    tabStyle: {}
+  }
+});
 
 const AppStackNavigator = createStackNavigator(
   {
@@ -326,8 +326,21 @@ const AppStackNavigator = createStackNavigator(
     //----------------------------------------------------------------[ELarin]
     Agreement: Agreement,
     PrePayment: PrePayment,
+    Settings: Settings,
+
+		ChangeMainData: ChangeMainData,
+
+		// Registration: Registration,
+		// DeliveryAddress: DeliveryAddress,
+		// ChangePersonalData: ChangePersonalData,
+		// ChangePaymentAddress: ChangePaymentAddress,
+
+    Login: Login,
+    PersonalData: PersonalData,
+
     //--------------------------------------------------------[Testing@ELarin]
     // TestBox: TestBox,
+    TestRegister: TestRegister,
     //------------------------------------------------------------------------
     Intro: UserTypeSelection,
     NoNetwork: NoNetwork,
@@ -337,19 +350,12 @@ const AppStackNavigator = createStackNavigator(
     CategoriesList: CategoriesList,
     Profile: Profile,
     Feedback: Feedback,
-    ChangePaymentAddress: ChangePaymentAddress,
     LeaveReview: LeaveReview,
-    DeliveryAddress: DeliveryAddress,
-    DeliveryAddressOrder: DeliveryAddressOrder,
     BecomePartner: BecomePartner,
     AskQuestion: AskQuestion,
     Payment: Payment,
     AmazonLoginWebView: AmazonLoginWebView,
-    Login: Login,
-    Registration: Registration,
-    PersonalData: PersonalData,
     SubcategoriesList: SubcategoriesList,
-    ChangePersonalData: ChangePersonalData,
     Filter: Filter,
     FilterBonus:FilterBonus,
     Product: Product,
@@ -380,14 +386,16 @@ const AppStackNavigator = createStackNavigator(
     ProductsByPoint: ProductsByPoint,
   },
   {
-    headerTitleStyle: {
-      color: 'rgb(0, 255, 63)',
-    },
-    // initialRouteName: this.state.network ? 'Main' : <NoNetwork />,
-    defaultNavigationOptions: ({ navigation }) => {
+    headerTitleStyle: { color: 'rgb(0, 255, 63)' },
+    defaultNavigationOptions: (props) => {
+    // defaultNavigationOptions: ({ navigation }) => {
+      const navState = props.navigation.state;
+      // console.log('APP => navState:', navState);
+      const { index, params, routeName, routes } = navState;
       try {
-        const { routeName } = navigation.state.routes[navigation.state.index];
-        if (routeName == "Main") {
+        if (!params) {
+          const { routeName } = routes[index];
+          if (routeName == "Main") {
           return {
             headerLeft: (
               <>
@@ -429,7 +437,7 @@ const AppStackNavigator = createStackNavigator(
               marginLeft: Platform.OS === 'ios' ? 0 : -10
             }
           }
-        } else if (routeName == "Cart") {
+          } else if (routeName == "Cart") {
           return {
             title: 'Warenkorb',
             headerLeft: (
@@ -445,9 +453,7 @@ const AppStackNavigator = createStackNavigator(
             ),
             headerBackImage: BackButton,
             headerBackTitle: null,
-            headerStyle: {
-              backgroundColor: '#d10019'
-            },
+            headerStyle: { backgroundColor: '#d10019' },
             headerTintColor: '#fff',
             headerTitleStyle: {
               fontSize: 16,
@@ -461,75 +467,95 @@ const AppStackNavigator = createStackNavigator(
               left: 56,
               paddingLeft: 0
             },
-            headerLeftContainerStyle: {
-              flex: 1,
-              marginLeft: Platform.OS === 'ios' ? 0 : -10
+            headerLeftContainerStyle: { flex: 1, marginLeft: Platform.OS === 'ios' ? 0 : -10 }
+          }
+          } else if (routeName == "Profile") {
+            return {
+              title: 'Profil',
+              headerLeft: <MenuButton/>,
+              headerRight: <></>,
+              headerBackImage: BackButton,
+              headerBackTitle: null,
+              headerStyle: { backgroundColor: '#d10019' },
+              headerTintColor: '#FFFFFF',
+              headerTitleStyle: { fontSize: 16, marginLeft: 0, left: 0 },
+              headerTitleContainerStyle: {
+                width: sWidth - 95,
+                marginLeft: 0,
+                justifyContent: 'flex-start',
+                left: 56,
+                paddingLeft: 0
+              },
+              headerLeftContainerStyle: { flex: 1, marginLeft: Platform.OS === 'ios' ? 0 : -10 }
+            }
+          } else {
+            return {
+              headerLeft: <MenuButton/>,
+              headerRight: null,
+              headerBackImage: BackButton,
+              headerBackTitle: null,
+              headerStyle: { backgroundColor: '#d10019' },
+              headerTintColor: '#fff',
+              headerTitleStyle: { fontSize: 16, marginLeft: 0, left: 0 },
+              headerTitleContainerStyle: {
+                width: sWidth - 95,
+                marginLeft: 0,
+                justifyContent: 'flex-start',
+                left: 56,
+                paddingLeft: 0
+              },
+              headerLeftContainerStyle: { flex: 1, marginLeft: Platform.OS === 'ios' ? 0 : -10 }
             }
           }
-        } else if (routeName == "profile") {
-          return {
-            headerLeft: MenuButton,
-
-            headerRight: (
-              <View style={{ flexDirection: 'row', marginRight: 9 }}>
-                <SearchButton />
-              </View>
-            ),
-
-            title: 'Profil',
-
-            headerBackImage: BackButton,
-            headerBackTitle: null,
-            headerStyle: {
-              backgroundColor: '#d10019'
-            },
-            headerTintColor: '#fff',
-            headerTitleStyle: {
-              fontSize: 16,
-              marginLeft: 0,
-              left: 0
-            },
-            headerTitleContainerStyle: {
-              width: sWidth - 95,
-              marginLeft: 0,
-              justifyContent: 'flex-start',
-              left: 56,
-              paddingLeft: 0
-            },
-            headerLeftContainerStyle: {
-              flex: 1,
-              marginLeft: Platform.OS === 'ios' ? 0 : -10
+        } else {
+          if (routeName === 'ChangeMainData') {
+            return {
+              title: getScreenTitle(params.ScreenID),
+              headerLeft: <MenuButton/>,
+              headerRight: null,
+              headerBackImage: BackButton,
+              headerBackTitle: null,
+              headerStyle: { backgroundColor: '#d10019' },
+              headerTintColor: '#fff',
+              headerTitleStyle: { fontSize: 16, marginLeft: 0, left: 0 },
+              headerTitleContainerStyle: {
+                width: sWidth - 95,
+                marginLeft: 0,
+                justifyContent: 'flex-start',
+                left: 56,
+                paddingLeft: 0
+              },
+              headerLeftContainerStyle: { flex: 1, marginLeft: Platform.OS === 'ios' ? 0 : -10 }
+            }
+          } else {
+            return {
+              headerLeft: <MenuButton/>,
+              headerRight: null,
+              headerBackImage: BackButton,
+              headerBackTitle: null,
+              headerStyle: { backgroundColor: '#d10019' },
+              headerTintColor: '#fff',
+              headerTitleStyle: { fontSize: 16, marginLeft: 0, left: 0 },
+              headerTitleContainerStyle: {
+                width: sWidth - 95,
+                marginLeft: 0,
+                justifyContent: 'flex-start',
+                left: 56,
+                paddingLeft: 0
+              },
+              headerLeftContainerStyle: { flex: 1, marginLeft: Platform.OS === 'ios' ? 0 : -10 }
             }
           }
-
-        
         }
       } catch{
         return {
-
-          headerLeft: (
-            <>
-              <MenuButton />
-              {/* <Image style={{ width: 60, height: 30, resizeMode: 'contain' }} source={require('../../assets/teleropa-logo.png')} key={'menuTeleropaLogo'} /> */}
-            </>
-          ),
-          headerRight: (
-            <View style={{ flexDirection: 'row', marginRight: 9 }}>
-              <SearchButton />
-            </View>
-          ),
-
+          headerLeft: <MenuButton/>,
+          headerRight: <></>,
           headerBackImage: BackButton,
           headerBackTitle: null,
-          headerStyle: {
-            backgroundColor: '#d10019'
-          },
+          headerStyle: { backgroundColor: '#d10019' },
           headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontSize: 16,
-            marginLeft: 0,
-            left: 0
-          },
+          headerTitleStyle: { fontSize: 16, marginLeft: 0, left: 0 },
           headerTitleContainerStyle: {
             width: sWidth - 95,
             marginLeft: 0,
@@ -537,10 +563,7 @@ const AppStackNavigator = createStackNavigator(
             left: 56,
             paddingLeft: 0
           },
-          headerLeftContainerStyle: {
-            flex: 1,
-            marginLeft: Platform.OS === 'ios' ? 0 : -10
-          }
+          headerLeftContainerStyle: { flex: 1, marginLeft: Platform.OS === 'ios' ? 0 : -10 }
         }
       }
     },

@@ -27,7 +27,7 @@ getCounterInPreview = (order, pcs) => {
   }
 }
 
-export const CartItemInPreview = ({ id, bonus, methodMoney, name, pcs, price, companyPrice, selectedUserType, img, userType, stock, order, orderReturnReason }) => {    
+export const CartItemInPreview = ({ id, bonus, methodMoney, name, pcs, price, companyPrice, selectedUserType, img, userType, stock, order, orderReturnReason }) => {
   return (
     <TouchableOpacity style={s.cartItemContainer} onPress={() => NavigationService.push('Product', { id, name, methodMoney: 'buyOfMoney' })}>
       <View style={{ flexDirection: 'row' }}>
@@ -87,7 +87,7 @@ export default class CartPreview extends Component {
   }
 
   getProductsCards() {
-    if (Object.keys(this.state.cartInfo).length) {      
+    if (Object.keys(this.state.cartInfo).length) {
       return this.state.cartInfo.products.map(({ id, previewImgURL, productName, price, companyPrice, stock, count, bonus, methodMoney }) => {
         return <CartItemInPreview
           key={id + methodMoney}
@@ -106,7 +106,7 @@ export default class CartPreview extends Component {
           deliveryPrice={this.state.deliveryData.deliveryPrice}
         />;
       });
-    } else {      
+    } else {
       return <CartItemInPreview
         key={this.state.SofortKaufen.productName}
         img={this.state.SofortKaufen.previewImgURL}
@@ -129,7 +129,7 @@ export default class CartPreview extends Component {
     return totalPrice - this.zzglVAT();
   }
   productsVATBuySofortKaufen() {
-    const totalPrice = (this.state.userInfo.selectedUserType === 'H' ? this.state.SofortKaufen.companyPrice : this.state.SofortKaufen.price) + this.state.deliveryData.deliveryPrice;    
+    const totalPrice = (this.state.userInfo.selectedUserType === 'H' ? this.state.SofortKaufen.companyPrice : this.state.SofortKaufen.price) + this.state.deliveryData.deliveryPrice;
     return totalPrice - this.zzglVATBuySofortKaufen();
   }
 
@@ -171,7 +171,7 @@ export default class CartPreview extends Component {
           <ProgressBar step={'preview'} />
           <View style={{ marginHorizontal: 18, marginTop: 22 }}>
             {this.getProductsCards()}
-            <IPlantTreeItem cartSum={this.state.cartInfo.discountValue} />
+            <IPlantTreeItem cartSum={Object.keys(this.state.cartInfo).length ? this.state.cartInfo.discountValue.toFixed(2) : this.BuySofortKaufen()} />
             <View style={s.line}>
               <Text style={s.summaryText}>Summe:</Text>
               <Text style={s.summaryText}>{Object.keys(this.state.cartInfo).length ? this.state.cartInfo.discountValue.toFixed(2) : this.BuySofortKaufen()} €</Text>
