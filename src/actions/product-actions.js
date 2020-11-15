@@ -1,5 +1,6 @@
 
 export const setProductID = (id) => {
+    console.log("Product-actions ==> setProductID ==>  id: =>", id)
     return {
         type: 'SET_CURRENT_PRODUCT_ID',
         payload: id
@@ -14,7 +15,6 @@ export const setProductImages = (urls) => {
 }
 
 export const setProductInfo = (info) => {
-
     return {
         type: 'SET_CURRENT_PRODUCT_INFO',
         payload: info

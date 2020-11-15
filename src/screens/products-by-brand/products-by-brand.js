@@ -9,7 +9,7 @@ import FooterButton from '../../common/footer-button';
 
 import ProductListItem from '../../common/product-list-item';
 
-import { getPreviewProductData, getProductsBySupplier } from '../../gets/productPosts';
+import { getProductsBySupplier } from '../../gets/productPosts';
 
 
 import Loading from '../loading'
@@ -95,7 +95,7 @@ export default class ProductsByBrand extends Component {
                     data={this.state.data.filter(item => item.stock > 0)}
                     // data={this.state.data}
                     renderItem={({ item }, index) => {
-                        const { companyPrice, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, productID } = item
+                        const { companyPrice,is_variable, previewImgURL, price, productName, productSalePercent, rate, salePrice, stock, productID } = item
                         return (
                             <View style={{ paddingBottom: 8 }}>
                                 <ProductListItem
@@ -108,6 +108,7 @@ export default class ProductsByBrand extends Component {
                                     id={productID}
                                     imageURL={previewImgURL}
                                     salePercent={productSalePercent ? productSalePercent.int : null}
+                                    is_variable={is_variable}
                                 />
                             </View>
                         )

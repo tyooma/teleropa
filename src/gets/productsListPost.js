@@ -36,6 +36,7 @@ export async function getProductsByBrand(id) {
 
 
 export function getProductsByCategory(id) {
+    console.log("getProductsByCategory  ID => id", id)
     return fetch('https://teleropa.de/WebiProgCommunicationApplicationCategory/getProductsByCategoryID', {
         method: 'POST',
         headers: {

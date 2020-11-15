@@ -17,8 +17,9 @@ import NavigationService from '../../navigation-service';
 
 import { sWidth } from '../../helpers/screenSize';
 
-function ProductListItem({ imageURL, name, price, salePrice, favourite, id, productID, stock, rate, salePercent, userID, userInfo, deleteAction, companyPrice }) {
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
+function ProductListItem({ imageURL, is_variable, name, price, salePrice, favourite, id, productID, stock, rate, salePercent, userID, userInfo, deleteAction, companyPrice }) {
     getStock = () => {
         if (stock > 0) {
             return (
@@ -34,7 +35,7 @@ function ProductListItem({ imageURL, name, price, salePrice, favourite, id, prod
         )
     }
 
-    getFavButton = (productID) => {
+    getFavButton = (id) => {
         if (userID !== 'notloggedin' && userID) {
             if (favourite) {
                 return (
@@ -90,15 +91,46 @@ function ProductListItem({ imageURL, name, price, salePrice, favourite, id, prod
         }
     }
 
-    getCartButton = () => {
+    getCartButton = (is_variable) => {
         if (stock > 0) {
             return (
-                <TouchableOpacity
-                    style={[styles.cartButton, { backgroundColor: '#3f911b' }]}
-                    onPress={() => addToCart(id, undefined, 'buyOfMoney', )}
-                >
-                    <Image style={{ width: 22, height: 18, resizeMode: 'contain' }} source={require('../../assets/icons-color/002-shopping2.png')} key={'cart'} />
-                </TouchableOpacity>
+                is_variable == '1' ?
+                    <TouchableOpacity
+                        style={[styles.cartButton, { backgroundColor: '#3f911b' }]}
+                        onPress={() => NavigationService.push('Product', { id: id, name: name, methodMoney: 'buyOfMoney' })}
+                    >
+
+                        <Text style={{ textAlign: "center", fontSize: 15, color: '#fff' }}>
+                            Variante auswählen <Icon name='chevron-circle-right' size={18} />
+                        </Text>
+                    </TouchableOpacity>
+                    :
+                    <View style={{ width: '100%' }}>
+                        <TouchableOpacity
+                            style={[styles.cartButton, { backgroundColor: '#3f911b' }]}
+                            onPress={() => addToCart(id, undefined, 'buyOfMoney',)}
+                        >
+                            <Image style={{ width: 22, height: 18, resizeMode: 'contain' }} source={require('../../assets/icons-color/002-shopping2.png')} key={'cart'} />
+                            <Text style={styles.cartButtonText}>In den Warenkorb</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={[styles.cartButton, { backgroundColor: '#3f911b' }]}
+                            onPress={() => {
+                                if (!userID || userID === "notloggedin") {
+                                    NavigationService.navigate('Login', { routeName: 'ProductListItem' });
+                                } else {
+                                    NavigationService.push('DeliveryService', { id: id, userInfo: userInfo })
+                                }
+                            }}
+                        >
+                            <Image
+                                style={{ width: 22, height: 18, resizeMode: 'contain' }}
+                                source={require("../../assets/icons/014-euro.png")}
+                                key={"cartImageOnProductListItem"}
+                            />
+                            <Text style={styles.cartButtonText}>Sofort kaufen</Text>
+                        </TouchableOpacity>
+                    </View>
             )
         }
         return (
@@ -142,14 +174,14 @@ function ProductListItem({ imageURL, name, price, salePrice, favourite, id, prod
 
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'wrap', alignItems: 'center', marginBottom: 18, marginTop: 12 }}>
                 <Rating rating={rate} />
-                {this.getCartButton()}
+                {this.getCartButton(is_variable)}
             </View>
 
         </TouchableOpacity>
     )
 }
 
-// const width = Dimensions.get('window').width > 600 ? (Dimensions.get('window').width - 72)/3 > 0 ? alert(12) : alert(123) : (Dimensions.get('window').width - 54)/2 
+// const width = Dimensions.get('window').width > 600 ? (Dimensions.get('window').width - 72)/3 > 0 ? alert(12) : alert(123) : (Dimensions.get('window').width - 54)/2
 const width = sWidth > 600 ? sWidth > 900 ? (sWidth - 90) / 4 : (sWidth - 72) / 3 : (sWidth - 54) / 2
 
 const styles = {
@@ -242,6 +274,7 @@ const styles = {
         color: '#010101'
     },
     cartButton: {
+        flexDirection: "row",
         flex: 1,
         marginVertical: 10,
         marginHorizontal: 5,
@@ -252,7 +285,16 @@ const styles = {
         height: 32,
         justifyContent: 'center',
         alignItems: 'center'
-    }
+    },
+    cartButtonImage: {
+        width: 22,
+        height: 18,
+    },
+    cartButtonText: {
+        marginLeft: 8,
+        fontSize: 16,
+        color: "#fff",
+    },
 }
 
 const mapStateToProps = ({ userID, userInfo }) => (

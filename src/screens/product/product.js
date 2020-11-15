@@ -25,7 +25,6 @@ import FooterNavBar from '../../common/footer-navigation-bar/footer-navigation-b
 class Product extends Component {
 
   static navigationOptions = ({ navigation }) => {
-    navigation.getParam('id');
     return ({
       title: navigation.getParam('name'),
       headerRight: (
@@ -47,7 +46,10 @@ class Product extends Component {
       price: 0,
       companyPrice: 0,
       rate: 0,
-      siteURL: ''
+      siteURL: '',
+      configurations: [],
+      productOptions: [],
+      varaints: []
     },
     productDescription: '',
     productDetails: '',
@@ -55,12 +57,15 @@ class Product extends Component {
     productVideo: '',
     productReviews: '',
     productSimilar: [],
+    configurations: [],
+    productOptions: [],
+    varaints: []
   }
 
-  initProduct = async (id) => {
+  initProduct = async (id) => {    
     getFullProductData(id)
       .then(response => response.json())
-      .then(responseJson => {
+      .then(responseJson => {        
         if (responseJson.status == '404') {
           Alert.alert(
             "Alarm",
@@ -87,22 +92,25 @@ class Product extends Component {
             price: responseJson.price,
             companyPrice: responseJson.companyPrice,
             rate: responseJson.rate,
-            siteURL: responseJson.siteURL
+            siteURL: responseJson.siteURL,
+            productOptions: responseJson.productOptions,
+            configurations: responseJson.configurations,
+            varaints: responseJson.varaints
           },
           productDescription: responseJson.description_long,
           productDetails: responseJson.description_details,
           productPackage: responseJson.description_package,
           productVideo: responseJson.description_video,
           productReviews: responseJson.reviews,
-          productSimilar: responseJson.similarProductIDs
+          productSimilar: responseJson.similarProductIDs,
+
         });
       });
   }
 
   constructor(props) {
     super(props)
-    const ID = this.props.navigation.getParam('id')
-    this.initProduct(ID)
+    this.initProduct(this.props.navigation.getParam('id'))
   }
 
 
@@ -115,7 +123,7 @@ class Product extends Component {
 
 
   render() {
-    console.log('this.state  RENDER in product.js', this.state)
+    // console.log('this.state  RENDER in product.js', this.state)
     const tabOptions = {
       lazy: true,
       tabBarOptions: {
@@ -149,6 +157,7 @@ class Product extends Component {
 
     const ID = this.props.navigation.getParam('id')
     const name = this.props.navigation.getParam('name')
+
     const Tab = createMaterialTopTabNavigator({
       Beschreibung: {
         screen: props =>

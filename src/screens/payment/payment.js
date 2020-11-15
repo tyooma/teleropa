@@ -26,8 +26,8 @@ class Payment extends Component {
   }
 
   onPay() {
-    const products = this.props.cart.length;
-    if (products > 0) {
+    const products = this.props.cart.length;    
+    if (products > 0 || Object.keys(this.state.data.SofortKaufen).length) {
       const cart = this.state.data;
       switch (this.state.selected) {
         case 'PayPal':
@@ -53,7 +53,8 @@ class Payment extends Component {
           );
           break;
       }
-    } else {
+    }
+    else {
       Alert.alert(
         // 'Предупреждение!', 'Ваш заказ уже обработан. Вернитесь в главное меню, чтобы разместить новый заказ',
         'WARNUNG!', 'Ihre Bestellung wurde bereits bearbeitet. Kehren Sie zum Hauptmenü zurück, um eine neue Bestellung aufzugeben',
@@ -61,6 +62,7 @@ class Payment extends Component {
         { cancelable: false },
       );
     }
+
   }
 
   payWithApplePay() {
@@ -127,11 +129,11 @@ class Payment extends Component {
             text={'Kauf auf Rechnung'}
             imageSource={require('../../assets/payments/Rechnung.png')}
           />
-          <PaymentOption
+          {/* <PaymentOption
             onPress={() => this.setState({ selected: 'AmazonPay' })}
             selected={this.isSelected('AmazonPay')}
             imageSource={require('../../assets/payments/AmazonPay.png')}
-          />
+          /> */}
           <PaymentOption
             onPress={() => this.setState({ selected: 'Vorkasse' })}
             selected={this.isSelected('Vorkasse')}

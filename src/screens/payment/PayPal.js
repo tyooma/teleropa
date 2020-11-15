@@ -1,10 +1,17 @@
 import React, { Component } from 'react';
+
 import { connect } from 'react-redux';
+
 import { View, Alert } from 'react-native';
+
 import { WebView } from 'react-native-webview';
+
 import base64 from 'react-native-base64';
+
 import Loading from '../loading';
+
 import { ClearCartByProducts } from '../../functions/cart-funcs';
+
 import { ExecuteOrder } from './PrePaymentOrder';
 
 const unit = '<PayPal>';
@@ -22,9 +29,12 @@ export class PayPal extends Component {
       paymentName: this.props.navigation.getParam('Payment'),
 
       // CART
-      cart: this.props.navigation.getParam('CartData').cartInfo,
-      productsMoney: this.props.navigation.getParam('CartData').cartInfo.products.filter(p => p.methodMoney === 'buyOfMoney'),
-      productsBonus: this.props.navigation.getParam('CartData').cartInfo.products.filter(p => p.methodMoney === 'buyOfPoints'),
+      cart: this.props.navigation.getParam('CartData'),//.cartInfo,                      
+      productsMoney: Object.keys(this.props.navigation.getParam('CartData').cartInfo).length ? this.props.navigation.getParam('CartData').cartInfo.products.filter(p => p.methodMoney === 'buyOfMoney') : null,
+      productsBonus: Object.keys(this.props.navigation.getParam('CartData').cartInfo).length ? this.props.navigation.getParam('CartData').cartInfo.products.filter(p => p.methodMoney === 'buyOfPoints') : null,
+
+
+
 
       // DELIVERY
       deliveryID: this.props.navigation.getParam('CartData').deliveryData.selected,
@@ -42,17 +52,14 @@ export class PayPal extends Component {
   }
 
   componentWillMount() {
-    //const seller_username = 'Aa30wKqF5Jq5epDJ7wPnGLYBBnhtp4i8t91Qb0PNW7o82k-cQYoFp9t_4ujkCU84D27ke16unohfm3XX'; //Sandbox
-    //const seller_password = 'EPBftFl3oHshi5rBEYudrbsCho_aqm1-ynQYkJbW3T0z3APbEt4g76lI01EZs_zLnYexSWScCIU7Ex6K';//Sandbox
     const seller_username = 'AcIGgF0XrYF4her0z9zSlXCuUnqEDazkaM0DDU5emhhp70UggARzDbd5LW1yQhr8qEaV2Q7r-AmK3bHH';
     const seller_password = 'EHN2OcacoZFk8823hZ_oWXHoI_T-SmtDcs2XklW07F0Lwd57Tjjs9C63hdz_5woXimmEenYveCY2zMtF';
-    const token = base64.encode(`${seller_username}:${seller_password}`);
-    const orderPrice = this.state.cart.discountValue;
+    const token = base64.encode(`${seller_username}:${seller_password}`);    
+    const orderPrice = Object.keys(this.state.cart.cartInfo).length ? this.state.cart.cartInfo.discountValue : (this.state.user.selectedUserType === 'EK' ? this.state.cart.SofortKaufen.price : this.state.cart.SofortKaufen.companyPrice);    
     const deliveryPrice = this.state.delivery.deliveryPrice;
     const totalPrice = orderPrice + deliveryPrice;
+    console.log("totalPrice => :", totalPrice, 'orderPrice => :', orderPrice)
     try {
-      // Get AccessToken for PayPal
-      // 'https://api.sandbox.paypal.com/v1/oauth2/token'
       fetch('https://api.paypal.com/v1/oauth2/token', {
         method: 'POST',
         'Authorization': { 'TYPE': 'Basic Auth', 'Username': seller_username },
@@ -77,14 +84,23 @@ export class PayPal extends Component {
               },
               description: this.state.paymentName === 'PayPal' ? 'Teleropa PayPal payment.' : 'Teleropa PayPal Kauf auf Rechnung payment.',
               item_list: {
-                items: this.state.productsMoney.map((product) => {
-                  return {
-                    name: product.productName,
-                    quantity: product.count,
-                    price: this.state.user.selectedUserType === 'EK' ? product.price : product.companyPrice,
-                    currency: 'EUR'
-                  }
-                }),
+                items:
+                  Object.keys(this.state.cart.cartInfo).length ?
+                    (this.state.productsMoney.map((product) => {
+                      return {
+                        name: product.productName,
+                        quantity: product.count,
+                        price: this.state.user.selectedUserType === 'EK' ? product.price : product.companyPrice,
+                        currency: 'EUR'
+                      }
+                    }))
+                    :
+                    [{
+                      name: this.state.cart.SofortKaufen.productName,
+                      quantity: 1,
+                      price: this.state.user.selectedUserType === 'EK' ? this.state.cart.SofortKaufen.price : this.state.cart.SofortKaufen.companyPrice,
+                      currency: 'EUR'
+                    }],
                 shipping_address: {
                   recipient_name: `${this.state.user.name} ${this.state.user.surname}`,
                   line1: this.state.user.street,
@@ -100,7 +116,6 @@ export class PayPal extends Component {
             },
           }
           console.log('PAYMENT:', PAYMENT);
-
           // Get "ApprovalURL" for PayPal with AccessToken
           // 'https://api.sandbox.paypal.com/v1/payments/payment'
           fetch('https://api.paypal.com/v1/payments/payment', {
@@ -125,6 +140,7 @@ export class PayPal extends Component {
                   { cancelable: false },
                 );
               } else {
+                console.log('links for approvalUrl =>', links)
                 const approvalUrl = links.find(data => data.rel === 'approval_url');
                 if (this.state.paymentName === 'PayPal') {
                   this.setState({
@@ -254,7 +270,8 @@ export class PayPal extends Component {
           }
           if (json.failed_transactions.length == 0) {
             //---------------------------------------------------------------------------
-            ClearCartByProducts(this.state.productsMoney, 'buyOfMoney');
+            Object.keys(this.props.navigation.getParam('CartData').cartInfo).length ?
+              ClearCartByProducts(this.state.productsMoney, 'buyOfMoney') : null;
             console.log('<PayPalExecute> PayPal Execute Success:', json);
             //--------------------------------------------
             const orderInfo = {

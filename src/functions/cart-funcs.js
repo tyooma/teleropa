@@ -258,6 +258,7 @@ export function fixPrice(vprice, fixed) {
     switch (typeof price) {
         case 'string':
             price = price.replace(',', '.');
+            // price = price.replace(/\s/g, '');
             price = parseFloat(price);
             break;
         case 'number':
@@ -268,6 +269,8 @@ export function fixPrice(vprice, fixed) {
         default:
             typeof price;
     }
+    // console.log("------------------------------------------------------------------------------------------------------------------------------")
+    // console.log("fixPrice ==> vprice ==>", price)
     return price;
 }
 

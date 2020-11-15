@@ -14,10 +14,9 @@ export async function initUserData(store) {
     store.dispatch(setLoadDone())
     try {
         if (cart) {
-            console.log("store.dispatch(setCart(JSON.parse(cart)))",
-                store.dispatch(setCart(JSON.parse(cart))))
+            store.dispatch(setCart(JSON.parse(cart)))
         } else {
-            console.log("store.dispatch(setCart([]))", store.dispatch(setCart([])))
+            store.dispatch(setCart([]))
         }
     }
     catch (e) {
@@ -26,7 +25,7 @@ export async function initUserData(store) {
     if (!userSelectedType) {
         NavigationService.replace('Intro')
     } else store.dispatch(actions.setUserType(userSelectedType))
-    if (userID && userID !== 'notloggedin') {        
+    if (userID && userID !== 'notloggedin') {
         store.dispatch(actions.setLoggedUserId(userID))
         getUserInfo(userID).then(userInfo => {
             store.dispatch(setLoadDone())

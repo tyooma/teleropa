@@ -51,7 +51,7 @@ class ProductsByPoint extends Component {
         const checkURL = this.props.navigation.getParam('checkURL', null)
 
         this.props.navigation.addListener('didFocus', (route) => {
-            const filterOptions = this.props.navigation.getParam('filterOptions', null)            
+            const filterOptions = this.props.navigation.getParam('filterOptions', null)
             if (filterOptions) {
                 const { from, to, sortBy } = filterOptions
                 if (from !== this.state.fromBonuspoint || to !== this.state.toBonuspoint || sortBy !== this.state.sortBy) {
@@ -74,6 +74,8 @@ class ProductsByPoint extends Component {
                     count1 = 0;
                     getBonusProductsJSON.map((x) => {
                         let respJSON = getPreviewProductData1(x.productID)
+                        console.log("getPreviewProductData  ==> res", respJSON);
+                        console.log("********************************************************************************************************")
                         respJSON
                             .then(ResponseRespJSON => {
                                 count1++;
@@ -138,14 +140,14 @@ class ProductsByPoint extends Component {
             } else {
                 sorted = filtered
                 this.setState({ filteredIDs: sorted, from: 0, fromBonuspoint, toBonuspoint, sortBy, });
-            }        
+            }
         } else { this.findMinMaxPrice(ids) }
     }
 
 
 
     render() {
-    //    console.log("this.state in product-by-point.js ", this.state)
+        //    console.log("this.state in product-by-point.js ", this.state)
 
         if (!this.state.loaded) { return <Loading /> }
 

@@ -13,7 +13,6 @@ export function getProductInfo(id) {
 }
 
 export function getFullProductData(id) {
-    console.log("ID getFullProductData in productPosts.js", id)
     return fetch('https://teleropa.de/WebiProgCommunicationApplicationArticle/getFullProductData', {
         method: 'POST',
         headers: {
@@ -25,7 +24,6 @@ export function getFullProductData(id) {
 }
 
 export function getPreviewProductData(id) {
-    console.log("getPreviewProductData  => ID:", id)
     return fetch('https://teleropa.de/WebiProgCommunicationApplicationArticle/getPreviewProductData', {
         method: 'POST',
         headers: {
@@ -39,7 +37,6 @@ export function getPreviewProductData(id) {
 }
 
 export async function getPreviewProductData1(id) {
-    console.log("getPreviewProductData1  => ID:", id)
     try {
         const response = await fetch('https://teleropa.de/WebiProgCommunicationApplicationArticle/getPreviewProductData', {
             method: 'POST',
@@ -65,14 +62,20 @@ export async function getPreviewAsyncProductData(id) {
             headers: { Accept: 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `productID=${id}`
         });
-        const json = await response.json();
-        json.salePrice = fixPrice(json.salePrice, 2);
-        json.companyPrice = fixPrice(json.companyPrice, 2);
-        json.price = fixPrice(json.price, 2);
-        json.tax = fixPrice(json.tax, 2);
-        console.log('getPreviewAsyncProductData => JSON:', json);
-        //
-        return json;
+        if (response.ok && response.status == 200) {
+            var json = await response.json();
+            json.salePrice = parseFloat(json.salePrice.replace(/\./g, '').replace(',', '.'));
+            json.companyPrice = parseFloat(json.companyPrice.replace(/\./g, '').replace(',', '.'));
+            json.price = parseFloat(json.price.replace(/\./g, '').replace(',', '.'));
+            json.tax = parseFloat(json.tax.replace(/\./g, '').replace(',', '.'));            
+            return json;
+        }
+        // const json = await response.json();
+        // json.salePrice = fixPrice(json.salePrice, 2);
+        // json.companyPrice = fixPrice(json.companyPrice, 2);
+        // json.price = fixPrice(json.price, 2);
+        // json.tax = fixPrice(json.tax, 2);
+        // return json;
     } catch (err) {
         console.error('getPreviewAsyncProductData(id): ERROR = ', err);
     }

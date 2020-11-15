@@ -11,7 +11,7 @@ import {
 
 
 
-export default initProduct = async (id, actions) => {
+//export default initProduct = async (id, actions) => {
     
     const getImages = getFullSizeProductImages(id).then(images => {actions.setProductImages(images.imgURLs); return {imgs: images.imgURLs}})
     const getInfo = getProductInfo(id).then(info => actions.setProductInfo(info))
@@ -22,8 +22,9 @@ export default initProduct = async (id, actions) => {
     const getReviews = getProductReviews(id).then(reviews => actions.setProductReviews(reviews.reviewsItems))
     const getVideo = getProductVideo(id).then(video => actions.setProductVideo(video.data))
 
+
     Promise.all([getImages, getInfo, getDesc, getProducts, getPackage, getDetails, getReviews, getVideo]).then((p) => {
-        console.log(p)
+        console.log("Product => id: ", id)
         actions.setProductID(id)})
     // getFullSizeProductImages(id).then(images => actions.setProductImages(images.imgURLs))
     // getProductInfo(id).then(info => actions.setProductInfo(info))
