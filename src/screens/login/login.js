@@ -1,33 +1,18 @@
 import React, { Component } from 'react';
-
 import AsyncStorage from '@react-native-community/async-storage';
-
 import { View, Text, Image, TouchableOpacity, ScrollView, Alert } from 'react-native';
-
 import RNRestart from 'react-native-restart';
-
 import { connect } from 'react-redux';
-
 import * as actions from '../../actions/login-actions';
-
 import { logIn, resetPassword } from '../../posts/authPosts';
-
 import Loading from '../../screens/loading';
-
 import FooterButton from '../../common/footer-button';
-
 import Input from '../../common/input';
-
 import ModalView from '../../common/modal-view';
-
 import ButtonItem from '../../common/button-item';
 
-// import NavigationService from '../../navigation-service'
-// import { createStackNavigator, NavigationActions, withNavigationFocus } from "react-navigation";
-
-// const { routeName } = this.props.navigation.state.params;
-
 class Login extends Component {
+  static navigationOptions = { title: 'Anmeldung' }
 
   state = {
     passRecoveryVisible: false,
@@ -37,16 +22,11 @@ class Login extends Component {
     emailForReset: '',
     loading: false,
     userID: null,
-
     routeName: this.props.navigation.getParam('routeName', null)
   }
 
   handlerPassRecoveryVisible() {
     this.setState({ passRecoveryVisible: !this.state.passRecoveryVisible })
-  }
-
-  static navigationOptions = {
-    title: 'Anmeldung'
   }
 
   logInHandler() {
@@ -74,27 +54,17 @@ class Login extends Component {
       const userID = await AsyncStorage.getItem('userID')
       if (userID && userID !== 'notloggedin') {
         Alert.alert(
-          'Abmelden',
-          'Sind Sie sicher, dass Sie sich abmelden möchten?',
-          [
-            {
-              text: 'Nein',
-              onPress: () => this.props.navigation.goBack(),
-
-              style: 'cancel',
-            },
-            {
-              text: 'Ja',
-              onPress: async () => {
-                await this.props.setLoggedUserId('notloggedin')
-                await this.props.setLoggedUserInfo({})
-                await RNRestart.Restart()
-              }
-            }
-          ],
-          { cancelable: false })
+          'Abmelden', 'Sind Sie sicher, dass Sie sich abmelden möchten?',
+          [{ text: 'Nein', onPress: () => this.props.navigation.goBack(), style: 'cancel' },
+           { text: 'Ja', onPress: async () => {
+              await this.props.setLoggedUserId('notloggedin');
+              await this.props.setLoggedUserInfo({});
+              await RNRestart.Restart();
+            }}
+          ], { cancelable: false }
+        );
       }
-      this.setState({ userID })
+      this.setState({ userID });
     } catch (e) {
       // read error
     }
@@ -116,48 +86,36 @@ class Login extends Component {
 
   }
 
-
   render() {
-    if (this.state.loading && !this.props.userID) {
-      return <Loading />
-    }
+    if (this.state.loading && !this.props.userID) { return <Loading /> }
 
     if (this.props.userID === "notloggedin") {
       return (
         <View style={{ flex: 1 }}>
           <ScrollView style={{ marginHorizontal: 18 }}>
-            <Input
-              placeholder='Ihre E-Mail'
-              required
-              value={this.state.email}
-              onChangeText={(email) => this.setState({ email })}
-              autoCapitalize='none'
-            />
-            <Input
-              placeholder='Passwort'
-              password
-              autoCapitalize='none'
-              value={this.state.password}
-              onChangeText={(password) => this.setState({ password })}
-            />
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-              <TouchableOpacity onPress={() => this.handlerPassRecoveryVisible()}>
-                <Text style={styles.forgetPass}>
-                  Passwort vergessen?
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => this.props.navigation.navigate('Registration')}>
-                <Text style={styles.forgetPass}>
-                  Anmeldung
-                </Text>
-              </TouchableOpacity>
+            <Text style={s.PlaceholderControl}>Ihre E-Mail*</Text>
+            <Input onChangeText={(email) => this.setState({email})} value={this.state.email} autoCapitalize='none' required/>
+            
+            <Text style={s.PlaceholderControl}>Passwort*</Text>
+            <Input onChangeText={(password) => this.setState({password})} value={this.state.password} autoCapitalize='none' password/>
+            
+            <View style={s.ControlContainer}>
+              <View style={s.ControlLeft}>
+                <TouchableOpacity onPress={() => this.handlerPassRecoveryVisible()} style={s.ActionButton}>
+                  <Text style={s.ActionText}>Passwort vergessen?</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={s.ControlRight}>
+                <TouchableOpacity onPress={() => this.props.navigation.navigate('ChangeMainData', { ScreenID: 'RegistrationUser' })} style={s.ActionButton}>
+                  <Text style={s.ActionText}>Registrieren</Text>
+                </TouchableOpacity>
+              </View>
             </View>
+
           </ScrollView>
 
-
-
-
           <FooterButton text='Anmelden' onPress={() => { this.logInHandler() }} />
+          
           <ModalView
             title='Passwort zurücksetzen'
             buttonText='Senden'
@@ -168,67 +126,36 @@ class Login extends Component {
             <Input placeholder='Email' value={this.state.emailForReset} onChangeText={emailForReset => this.setState({ emailForReset })} autoCapitalize='none' />
           </ModalView>
         </View>
-      )
-    }
-
-    else {
+      );
+    } else {
       return (
-        <ScrollView style={{ marginHorizontal: 18 }} showsVerticalScrollIndicator={false} >
-          {/* <ScrollView style={styles.container} showsVerticalScrollIndicator={false} > */}
-          <Text style={styles.points}>
-            Ihre Punkte: {this.props.points}
-          </Text>
-          <ButtonItem text='Persönliche Angaben' onPress={() => this.props.navigation.navigate('PersonalData')} />
-          <ButtonItem text='Bestellungen' onPress={() => this.props.navigation.navigate('Orders')} />
-          <ButtonItem text='Widerrufsrecht  ' onPress={() => this.props.navigation.navigate('Orders', { selected: 'Retouren' })} />
-          <ButtonItem text='Paket verfolgen' onPress={() => { }} />
-          <ButtonItem text='Wunschzettel' onPress={() => { this.props.navigation.navigate('Favourite') }} />
-          <ButtonItem text='Abmelden' onPress={() => { this.props.navigation.navigate('Login') }} />
-        </ScrollView>
-      )
+        <></>
+      );
     }
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    userID: state.userID
-  }
-}
-
+const mapStateToProps = (state) => { return { userID: state.userID } }
 export default connect(mapStateToProps, actions)(Login)
 
-const styles = {
-  forgetPass: {
-    marginTop: 10,
-    fontSize: 12,
-    lineHeight: 24,
-    color: '#000',
+const s = {
+  PlaceholderControl: { fontSize: 12, color: '#A0A0A0', marginTop: 10, marginBottom: -5 },
+  InputControl: { fontSize: 16, marginTop: 0, marginBottom: -5 },
+
+  ControlContainer: { width: '100%', flexDirection: 'row', marginVertical: 40 },
+  
+  ControlLeft: {
+    width: '60%', height: 35, paddingRight: 20, justifyContent: 'center', alignItems: 'center'
   },
-  payPalButton: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 0.3,
-    borderColor: '#232c65',
-    borderRadius: 5,
-    marginHorizontal: 18,
-    height: 40,
-    marginBottom: 20
+
+  ControlRight: {
+    width: '40%', height: 35, paddingLeft: 20, justifyContent: 'center', alignItems: 'center'
   },
-  payPalButtonText: {
-    fontSize: 16,
-    color: '#030303'
+
+  ActionButton: {
+    width: '100%', height: 35, backgroundColor: '#d10019', alignItems: 'center', justifyContent: 'center'
+    // zIndex: 999, overflow: 'hidden',
   },
-  payPalImageStyle: {
-    height: 40,
-    marginLeft: 12,
-    resizeMode: 'contain'
-  },
-  points: {
-    marginVertical: 16,
-    color: '#d10019',
-    fontSize: 16,
-    fontWeight: 'bold',
-  }
+  
+  ActionText: { fontSize: 16, color: '#FFFFFF' }
 }

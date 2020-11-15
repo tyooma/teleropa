@@ -4,6 +4,8 @@ import { Text, View, ScrollView, Image } from 'react-native';
 
 import { SearchButton } from '../../common/header-buttons';
 
+import { getPreviewProductData } from '../../gets/productPosts';
+
 import Loading from '../loading'
 
 import { connect } from 'react-redux'

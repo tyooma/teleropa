@@ -3,9 +3,6 @@ import { View, TextInput, Image, TouchableOpacity } from 'react-native';
 
 export default class Input extends Component {
 
-
-
-
   constructor(props) {
     super(props);
     this.state = {

@@ -12,7 +12,7 @@ const ReviewsFooterButton = ({productID}) => (
         <View style={{height: 45, width: 1, backgroundColor: '#b3b3b3'}}></View>
         <TouchableOpacity style={styles.buttonContainer} onPress={() => NavigationService.navigate('LeaveReview', {productID})} >
             <Image source={require('../../assets/icons-color/033-survey2.png')} style={styles.buttonImage} key={'leaveReviewImage'} />
-            <Text>Bewertung schreiben</Text>
+            <Text>Bewertung schreibung</Text>
         </TouchableOpacity>
     </View>
 );
