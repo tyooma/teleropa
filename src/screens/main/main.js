@@ -159,8 +159,7 @@ class Main extends Component {
         sendToken(this.state.fcmToken)
     }
 
-    render() {
-        console.log("this.prosp", this.props)
+    render() {        
         if (
             !this.props.mainPage.categories ||
             // !this.props.mainPage.brands || 

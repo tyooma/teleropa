@@ -61,7 +61,7 @@ class Favourite extends Component {
     }
 
     getProductsCards() {
-        return this.state.products.map(({ previewImgURL, productName, price, salePrice, id, rate, productSalePercent }) => {
+        return this.state.products.map(({ is_variable, previewImgURL, productName, price, salePrice, id, rate, productSalePercent }) => {
             return (
                 <ProductListItem
                     key={id}
@@ -74,6 +74,7 @@ class Favourite extends Component {
                     deleteAction={() => this.deleteProduct(id)}
                     id={id}
                     rate={rate}
+                    is_variable={is_variable}
                 />
             )
         })

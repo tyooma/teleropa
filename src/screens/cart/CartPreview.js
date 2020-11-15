@@ -10,8 +10,8 @@ import { getPurchasePoints } from '../../functions/cart-funcs';
 const unit = '<CartPreview>';
 
 getStock = (stock, order, pcs) => {
-  if(!order) {
-    if(stock > 0) {
+  if (!order) {
+    if (stock > 0) {
       return <Text style={s.cartItemInStock}>Produkt ist verfügbar</Text>;
     }
     return <Text style={s.cartItemNotInStock}>nicht verfügbar</Text>;
@@ -20,21 +20,19 @@ getStock = (stock, order, pcs) => {
 }
 
 getCounterInPreview = (order, pcs) => {
-  if(!order) {
+  if (!order) {
     return <Text style={s.countText}>Anzahl: {pcs}</Text>;
   }
 }
 
-export const CartItemInPreview = ({id, bonus, methodMoney, name, pcs, price, companyPrice, selectedUserType, img, userType, stock, order, orderReturnReason }) => {
-  // console.log(`${unit} CartItemInPreview: ${bonus}`);
-  console.log(`id: ${id} | methodMoney: ${methodMoney} | bonus: ${bonus} - ${typeof bonus} totalBonus: ${bonus*pcs}`);
+export const CartItemInPreview = ({ id, bonus, methodMoney, name, pcs, price, companyPrice, selectedUserType, img, userType, stock, order, orderReturnReason }) => {    
   return (
     <TouchableOpacity style={s.cartItemContainer} onPress={() => NavigationService.push('Product', { id, name, methodMoney: 'buyOfMoney' })}>
-      <View style={{flexDirection: 'row'}}>
+      <View style={{ flexDirection: 'row' }}>
         {img ?
-        <View><ImageLoader style={s.cartItemImage} source={{uri:img}} key={id+name+img} /></View>
-        :
-        <View><Image style={s.cartItemImage} source={require('../../assets/message-icons/no-photo.png')} key={id+name+'no-image'} /></View>
+          <View><ImageLoader style={s.cartItemImage} source={{ uri: img }} key={id + name + img} /></View>
+          :
+          <View><Image style={s.cartItemImage} source={require('../../assets/message-icons/no-photo.png')} key={id + name + 'no-image'} /></View>
         }
         <View style={{ flex: 1 }}>
           <Text style={s.cartItemName} numberOfLines={2}>{name}</Text>
@@ -46,23 +44,23 @@ export const CartItemInPreview = ({id, bonus, methodMoney, name, pcs, price, com
               </View>
             </View>
             <View style={{ marginRight: 10, alignItems: 'flex-end' }}>
-            { (typeof methodMoney !== 'undefined' && methodMoney !== '' && methodMoney === 'buyOfPoints') ?
-              <Text style={s.price}>{bonus * pcs} P.</Text>
-              :
-              selectedUserType === 'H' ?
-                <>
-                  <Text style={s.pricePerProduct}>{companyPrice} €\St</Text>
-                  <Text style={s.price}>{(companyPrice * pcs).toFixed(2)} €</Text>
-                </>
+              {(typeof methodMoney !== 'undefined' && methodMoney !== '' && methodMoney === 'buyOfPoints') ?
+                <Text style={s.price}>{bonus * pcs} P.</Text>
                 :
-                <>
-                  <Text style={s.pricePerProduct}>{price} €\St</Text>
-                  <Text style={s.price}>{(price * pcs).toFixed(2)} €</Text>
-                </>
-            }
+                selectedUserType === 'H' ?
+                  <>
+                    <Text style={s.pricePerProduct}>{companyPrice} €</Text>
+                    <Text style={s.price}>{(companyPrice * pcs).toFixed(2)} €</Text>
+                  </>
+                  :
+                  <>
+                    <Text style={s.pricePerProduct}>{price} €</Text>
+                    <Text style={s.price}>{(price * pcs).toFixed(2)} €</Text>
+                  </>
+              }
             </View>
           </View>
-          { orderReturnReason ?
+          {orderReturnReason ?
             <Text style={{ marginBottom: 5 }}>Grund für Rückgabe: {orderReturnReason}</Text>
             :
             null
@@ -80,44 +78,76 @@ export default class CartPreview extends Component {
     super(props);
     this.state = {
       userInfo: this.props.navigation.getParam('userInfo', null),
-      cartInfo: this.props.navigation.getParam('data', null),
       deliveryData: this.props.navigation.getParam('deliveryData', null),
+      cartInfo: this.props.navigation.getParam('data', null),
+      SofortKaufen: this.props.navigation.getParam('SofortKaufen', null),
     }
   }
-  
+
   getProductsCards() {
-    return this.state.cartInfo.products.map(({ id, previewImgURL, productName, price, companyPrice, stock, count, bonus, methodMoney }) => {
+    if (Object.keys(this.state.cartInfo).length) {      
+      return this.state.cartInfo.products.map(({ id, previewImgURL, productName, price, companyPrice, stock, count, bonus, methodMoney }) => {
+        return <CartItemInPreview
+          key={id + methodMoney}
+          id={id}
+          img={previewImgURL}
+          name={productName}
+          pcs={count}
+          price={price}
+          companyPrice={companyPrice}
+          stock={stock}
+          methodMoney={methodMoney}
+          bonus={bonus}
+          selectedUserType={this.state.userInfo.selectedUserType}
+          userType={this.state.userInfo.userType}
+          orderVAT={this.state.cartInfo.orderVAT}
+          deliveryPrice={this.state.deliveryData.deliveryPrice}
+        />;
+      });
+    } else {      
       return <CartItemInPreview
-                key={id+methodMoney}
-                id={id}
-                img={previewImgURL}
-                name={productName}
-                pcs={count}
-                price={price}
-                companyPrice={companyPrice}
-                stock={stock}
-                methodMoney={methodMoney}
-                bonus={bonus}
-                selectedUserType={this.state.userInfo.selectedUserType}
-                userType={this.state.userInfo.userType}
-                orderVAT={this.state.cartInfo.orderVAT}
-                deliveryPrice={this.state.deliveryData.deliveryPrice}
-              />;
-    });
+        key={this.state.SofortKaufen.productName}
+        img={this.state.SofortKaufen.previewImgURL}
+        name={this.state.SofortKaufen.productName}
+        pcs={1}
+        price={this.state.SofortKaufen.price}
+        companyPrice={this.state.SofortKaufen.companyPrice}
+        stock={this.state.SofortKaufen.stock}
+        selectedUserType={this.state.userInfo.selectedUserType}
+        userType={this.state.userInfo.userType}
+        // orderVAT={this.state.SofortKaufen.orderVAT}
+        deliveryPrice={this.state.deliveryData.deliveryPrice}
+      />
+
+    }
   }
 
   productsVAT() {
     const totalPrice = this.state.cartInfo.discountValue + this.state.deliveryData.deliveryPrice;
     return totalPrice - this.zzglVAT();
   }
+  productsVATBuySofortKaufen() {
+    const totalPrice = (this.state.userInfo.selectedUserType === 'H' ? this.state.SofortKaufen.companyPrice : this.state.SofortKaufen.price) + this.state.deliveryData.deliveryPrice;    
+    return totalPrice - this.zzglVATBuySofortKaufen();
+  }
 
   zzglVAT() {
-    // let sum = 0;
     let sum = (this.state.deliveryData.deliveryPrice * (0.16));
-    this.state.cartInfo.products.filter(p => p.methodMoney==='buyOfMoney').map((p) => {
-      sum += (p.tax/100) * (this.state.userInfo.selectedUserType==='H' ? p.companyPrice:p.price * p.count);
+    this.state.cartInfo.products.filter(p => p.methodMoney === 'buyOfMoney').map((p) => {
+      sum += (p.tax / 100) * (this.state.userInfo.selectedUserType === 'H' ? p.companyPrice : p.price * p.count);
     });
     return sum;
+  }
+
+  zzglVATBuySofortKaufen() {
+    let sum = (this.state.deliveryData.deliveryPrice * (0.16));
+    sum += (this.state.SofortKaufen.tax / 100) * (this.state.userInfo.selectedUserType === 'H' ? this.state.SofortKaufen.companyPrice : this.state.SofortKaufen.price);
+    return sum;
+  }
+
+  BuySofortKaufen() {
+    let result = this.state.userInfo.selectedUserType === 'H' ? this.state.SofortKaufen.companyPrice : this.state.SofortKaufen.price
+    return result
   }
 
   render() {
@@ -140,7 +170,7 @@ export default class CartPreview extends Component {
             {this.getProductsCards()}
             <View style={s.line}>
               <Text style={s.summaryText}>Summe:</Text>
-              <Text style={s.summaryText}>{this.state.cartInfo.discountValue.toFixed(2)} €</Text>
+              <Text style={s.summaryText}>{Object.keys(this.state.cartInfo).length ? this.state.cartInfo.discountValue.toFixed(2) : this.BuySofortKaufen()} €</Text>
             </View>
             <View style={s.line}>
               <Text style={s.summaryText}>Versandkosten:</Text>
@@ -148,28 +178,28 @@ export default class CartPreview extends Component {
             </View>
             <View style={s.line}>
               <Text style={s.summaryTextBold}>Gesamtsumme:</Text>
-              <Text style={s.summaryTextBold}>{(this.state.cartInfo.discountValue+this.state.deliveryData.deliveryPrice).toFixed(2)} €</Text>
+              <Text style={s.summaryTextBold}>{Object.keys(this.state.cartInfo).length ? (this.state.cartInfo.discountValue + this.state.deliveryData.deliveryPrice).toFixed(2) : (this.BuySofortKaufen() + this.state.deliveryData.deliveryPrice).toFixed(2)} €</Text>
             </View>
             <View style={s.line}>
               <Text style={s.summaryText}>Gesamtsumme ohne MwSt.:</Text>
-              <Text style={s.summaryText}>{this.productsVAT().toFixed(2)} €</Text>
+              <Text style={s.summaryText}>{Object.keys(this.state.cartInfo).length ? this.productsVAT().toFixed(2) : this.productsVATBuySofortKaufen().toFixed(2)} €</Text>
             </View>
             <View style={s.line}>
               <Text style={s.summaryText}>zzgl. MwSt.:</Text>
-              <Text style={s.summaryText}>{this.zzglVAT().toFixed(2)} €</Text>
+              <Text style={s.summaryText}>{Object.keys(this.state.cartInfo).length ? this.zzglVAT().toFixed(2) : this.zzglVATBuySofortKaufen().toFixed(2)} €</Text>
             </View>
             <View style={s.line}>
               <Text style={s.summaryTextPoint}>Punkte für die Bestellung:</Text>
               <View style={s.linePoint}>
-                <Text style={s.summaryTextPointGreen}>{'+ ' + Math.floor(this.state.cartInfo.discountValue)}</Text>
+                <Text style={s.summaryTextPointGreen}>{Object.keys(this.state.cartInfo).length ? ('+ ' + Math.floor(this.state.cartInfo.discountValue)) : ('+ ' + Math.floor(this.BuySofortKaufen()))}</Text>
                 <Text style={s.radiusCircle}>P</Text>
               </View>
             </View>
             <View style={s.line}>
               <Text style={s.summaryTextPoint}>Punkte eingelöst:</Text>
               <View style={s.linePoint}>
-                <Text style={s.summaryTextPointRed}>{this.state.cartInfo.bonus}</Text>
-                <Text style={s.summaryTextPointRed}>{'- ' + getPurchasePoints(this.state.cartInfo.products)}</Text>
+                <Text style={s.summaryTextPointRed}>{Object.keys(this.state.cartInfo).length ? this.state.cartInfo.bonus : ''}</Text>
+                <Text style={s.summaryTextPointRed}>{Object.keys(this.state.cartInfo).length ? '- ' + getPurchasePoints(this.state.cartInfo.products) : '- ' + 0}</Text>
                 <Text style={s.radiusCircle}>P</Text>
               </View>
             </View>

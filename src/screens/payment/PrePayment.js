@@ -1,9 +1,15 @@
 import React, { PureComponent } from 'react';
+
 import { connect } from 'react-redux';
-import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+
+import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View, BackHandler } from 'react-native';
+
 import Icons from 'react-native-vector-icons/Ionicons';
+
 import Loading from '../loading';
+
 import { clearCart } from '../../functions/cart-funcs';
+
 import { ExecuteOrder } from './PrePaymentOrder';
 
 const unit = '<PrePayment>';
@@ -11,7 +17,10 @@ const unit = '<PrePayment>';
 class PrePayment extends PureComponent {
   static navigationOptions = ({ navigation }) => { return { title: navigation.getParam('Payment') } };
 
-  constructor(props) { super(props) }
+  constructor(props) {
+    super(props)
+    this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
+  }
 
   state = {
     // ORDER
@@ -20,7 +29,8 @@ class PrePayment extends PureComponent {
       customerID: this.props.userID,
       paymentID: this.props.navigation.getParam('PaymentID'),
       dispatchID: this.props.navigation.getParam('CartData').deliveryData.selected,
-      products: this.props.navigation.getParam('CartData').cartInfo.products,
+      products: Object.keys(this.props.navigation.getParam('CartData').cartInfo).length ? this.props.navigation.getParam('CartData').cartInfo.products : this.props.navigation.getParam('CartData').SofortKaufen,
+      sofortKaufen: Object.keys(this.props.navigation.getParam('CartData').cartInfo).length ? null : 'SofortKaufen'
     },
 
     // PAYMENT
@@ -44,9 +54,11 @@ class PrePayment extends PureComponent {
   }
 
   componentWillMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
     const method = '<componentWillMount>';
     console.log('................................................................................');
     console.log(unit + '.' + method);
+
     try {
       //.....................................................................................................
       // Dummy Fetch for Payment-Object
@@ -66,6 +78,20 @@ class PrePayment extends PureComponent {
     }
     console.log('................................................................................');
   }
+
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+  }
+
+
+
+  handleBackButtonClick() {
+    this.props.navigation.navigate('Main')
+    // BackHandler.exitApp();
+    return true;
+  }
+
 
   render() {
     console.log(`${unit}.<"${this.props.navigation.getParam('Payment')}"><RENDER>:`, this.state);
@@ -97,7 +123,7 @@ class PrePayment extends PureComponent {
               <Text style={s.ContentBaseTextItem}>Versandart: {this.state.deliveryName}</Text>
             </View>
           );
-          clearCart();
+          if (Object.keys(this.state.cart.cartInfo).length) clearCart();
           console.log(`${unit}.<RENDER> payment=success: clearCart()`);
           break;
         case 'error':

@@ -145,6 +145,7 @@ export default class ProductsList extends Component {
                                     id={item.id}
                                     stock={item.stock}
                                     rate={item.rate}
+                                    is_variable={is_variable}
                                 />
                             </View>
                         }

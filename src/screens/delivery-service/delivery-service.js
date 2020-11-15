@@ -1,18 +1,28 @@
 import React, { Component } from 'react';
+
 import { Alert, ScrollView, Text, View } from 'react-native';
+
 import FooterButton from '../../common/footer-button';
+
 import DeliveryOption from '../../common/delivery-option';
+
 import { BoxShadow } from 'react-native-shadow';
+
 import { sWidth } from '../../helpers/screenSize';
+
 import Loading from '../loading';
+
 import { getDeliverySuppliers } from '../../gets/ordersPosts';
+
+import { getPreviewAsyncProductData } from '../../gets/productPosts';
+
 import NavigationService from '../../navigation-service';
 
 const unit = '<DeliveryService>';
 
 export default class DeliveryService extends Component {
   static navigationOptions = { title: 'Versandart wählen' };
-  
+
   constructor(props) {
     super(props);
     this.SelectionChange = this.SelectionChange.bind(this);
@@ -23,32 +33,52 @@ export default class DeliveryService extends Component {
     deliveryPrice: 0,
     selected: null,
     name: null,
+    data: this.props.navigation.getParam('data'),
     services: [],
     loaded: false
+
   }
 
   isSelected(id) { return id === this.state.selected }
 
   componentWillMount() {
-    const productsPrice = this.props.navigation.getParam('data', null).discountValue;
-    console.log('productsPrice:', productsPrice);
-    getDeliverySuppliers()
-    .then(services => {
-      console.table('services:', services);
-      let delivery = [];
-      let tdelivery = null;
-      services.map(service => {
-        tdelivery = service.costs.reverse().find(({ from }) => productsPrice >= from );
-        console.log('tdelivery:', tdelivery);
-        if( tdelivery !== undefined ) { delivery.push(service) }
-      });
-      console.log('delivery:', delivery);
+    var ProductID = this.props.navigation.getParam('id', null)
+    if (ProductID) {
+      this.getProductBySofortKaufen(ProductID)
+    } else {
+      this.FuncgetDeliverySuppliers(this.state.data.discountValue)
+    }
+  }
 
-      this.setState({ productsPrice: productsPrice, services: delivery, loaded: true });
-    })
-    .catch(err => {
-      console.log('getDeliverySuppliers fetchEror:', err);
+  getProductBySofortKaufen(ProductID) {
+    let userInfo = this.props.navigation.getParam('userInfo', null)
+
+    getPreviewAsyncProductData(ProductID).then(res => {
+      res.id = ProductID      
+      this.setState({ data: res })
+      userInfo.selectedUserType === 'EK' ?
+        this.FuncgetDeliverySuppliers(res.price)
+        :
+        this.FuncgetDeliverySuppliers(res.companyPrice)
     });
+
+
+  }
+
+  FuncgetDeliverySuppliers(productsPrice) {
+    getDeliverySuppliers()
+      .then(services => {
+        let delivery = [];
+        let tdelivery = null;
+        services.map(service => {
+          tdelivery = service.costs.reverse().find(({ from }) => productsPrice >= from);
+          if (tdelivery !== undefined) { delivery.push(service) }
+        });
+        this.setState({ productsPrice: productsPrice, services: delivery, loaded: true });
+      })
+      .catch(err => {
+        console.error('getDeliverySuppliers fetchEror:', err);
+      });
   }
 
   DeliveryOptions() {
@@ -67,20 +97,13 @@ export default class DeliveryService extends Component {
   }
 
   SelectionChange(id, name, shippingFree, costs) {
-    console.log('..................................................');
-    console.log('SelectionChange => id:',id,'name:',name,'shippingFree:',shippingFree,'costs:',costs);
-    // const price = costs.reverse().find(({ from }) => from < this.state.productsPrice);
-    const price = costs.find(({ from }) => this.state.productsPrice >= from );
-    console.log('SelectionChange => price:', price);
+    const price = costs.find(({ from }) => this.state.productsPrice >= from);
     const deliveryPrice = price.value;
-    console.log('SelectionChange => deliveryPrice:', deliveryPrice);
-
     this.setState({ selected: id, name: name, deliveryPrice: deliveryPrice });
   }
 
   render() {
     console.log(unit, 'RENDER => this.state:', this.state);
-
     const shadowOpt = {
       width: sWidth,
       height: 50,
@@ -92,7 +115,7 @@ export default class DeliveryService extends Component {
       y: 0
     }
 
-    if(!this.state.loaded) return <Loading />;
+    if (!this.state.loaded) return <Loading />;
 
     return (
       <View style={{ flex: 1 }}>
@@ -111,10 +134,10 @@ export default class DeliveryService extends Component {
           text='Weiter'
           onPress={() =>
             this.state.selected
-            ?
-            NavigationService.navigate('CartPreview', { userInfo: { ...this.props.navigation.getParam('userInfo', null) }, data: { ...this.props.navigation.getParam('data', null) }, deliveryData: { ...this.state } })
-            :
-            Alert.alert('Versandart wählen', '', [{ text: 'Ja', onPress: () => null }], { cancelable: false })
+              ?
+              NavigationService.navigate('CartPreview', { userInfo: { ...this.props.navigation.getParam('userInfo', null) }, data: { ...this.props.navigation.getParam('data', null) }, SofortKaufen: { ...this.state.data }, deliveryData: { ...this.state } })
+              :
+              Alert.alert('Versandart wählen', '', [{ text: 'Ja', onPress: () => null }], { cancelable: false })
           }
         />
       </View>

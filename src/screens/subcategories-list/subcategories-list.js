@@ -8,7 +8,7 @@ import CategoriesListItem from '../../common/categories-list-item'
 
 import SearchButton from '../../common/header-buttons/search-button';
 
-import CategoryInfoButton from '../../common/header-buttons/category-info-button';
+// import CategoryInfoButton from '../../common/header-buttons/category-info-button';
 
 import Loading from '../loading'
 
@@ -23,7 +23,7 @@ export default class SubcategoriesList extends Component {
       title: navigation.getParam('name', 'Kategorien'),
       headerRight: (
         <View style={{ flexDirection: 'row', marginRight: 9 }}>
-          {cmsText ? <CategoryInfoButton cmsText={cmsText} name={name} /> : null}
+          {/* {cmsText ? <CategoryInfoButton cmsText={cmsText} name={name} /> : null} */}
           <SearchButton />
         </View>
       ),
