@@ -67,3 +67,4 @@ export const setProductSimilar = (similar) => {
         payload: similar
     }
 }
+

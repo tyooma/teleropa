@@ -11,7 +11,6 @@ import FooterButton from '../../common/footer-button';
 import Loading from '../loading'
 import Input from '../../common/input';
 import ModalView from '../../common/modal-view';
-import ProgressBar from '../progress-bar';
 import { getPreviewAsyncProductData, getPromocodeData } from '../../gets/productPosts';
 import { addToCart, minusFromCart, deleteFromCart, clearCart } from '../../functions/cart-funcs';
 
@@ -73,12 +72,12 @@ export const CartItem = ({ img, name, pcs, price, companyPrice, selectedUserType
                 :
                 selectedUserType === 'H' ?
                   <>
-                    <Text style={styles.pricePerProduct}>{companyPrice} €</Text>
+                    <Text style={styles.pricePerProduct}>{companyPrice} €\St</Text>
                     <Text style={styles.price}>{(companyPrice * pcs).toFixed(2)} €</Text>
                   </>
                   :
                   <>
-                    <Text style={styles.pricePerProduct}>{price} €</Text>
+                    <Text style={styles.pricePerProduct}>{price} €\St</Text>
                     <Text style={styles.price}>{(price * pcs).toFixed(2)} €</Text>
                   </>
               }
@@ -300,8 +299,7 @@ class Cart extends Component {
     return (
       <View style={{ flex: 1 }}>
         <ScrollView>
-          <ProgressBar step={'cart'} />
-          <View style={{ marginHorizontal: 18 }}>
+          <View style={{ marginHorizontal: 18, marginTop: 22 }}>
             {this.getProductsCards()}
 
             <TouchableOpacity style={styles.promocodeButton} onPress={() => this.setState({ promocodeModalVisible: !this.state.promocodeModalVisible })} >

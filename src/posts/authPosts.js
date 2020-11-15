@@ -1,8 +1,7 @@
+import Toast from 'react-native-root-toast'
 import { store } from '../app/app';
 import * as actions from '../actions/login-actions';
 import NavigationService from '../navigation-service';
-import Toast from 'react-native-root-toast'
-
 
 export function logIn(email, pass, route) {
     fetch('https://teleropa.de/WebiProgCommunicationApplicationUser/login', {
@@ -40,60 +39,63 @@ export function logIn(email, pass, route) {
                     store.dispatch(actions.setLoggedUserInfo(userData))
                 })
         })
-
-        // .then(route => {
-
-        // console.log('2+', route);
-        // route === 'Cart' ? NavigationService.navigate('Cart') : NavigationService.navigate('Main')
-        // }
-        // )
         .catch(e => e)
         .done
-    // store.dispatch(actions.setLoggedUserInfo({userName: 'Vasya'}))
 }
 
-// export function register(customerType, salutation, firstname, lastname, email, password, phone, birthday, street, zipcode, city ,country, company, department, vatId, subscribe) {
-//     fetch('https://teleropa.de/WebiProgCommunicationApplicationUser/register', {
-//         method: 'POST',
-//         headers: {
-//         Accept: 'application/json',
-//         'Content-Type': 'application/x-www-form-urlencoded',
-//         },
-//         body: `customerType=${customerType}&salutation=${salutation}&firstname=${firstname}&lastname=${lastname}&email=${email}&password=${password}&phone=${phone}&birthday=${birthday}&billingStreet=${street}&billingZipcode=${zipcode}&billingCity=${city}&billingCountry=${country}&billingCompany=${company}&billingDepartment=${department}&billingVatId=${vatId}&newsletterSubscribe=${subscribe}`
-//     })
-//     .then(res => res.json())
-//     .then(({status}) => {
-//         console.log(status)
-//         Toast.show(status.text, {
-//             shadow: false,
-//             backgroundColor: '#505050'
-//         })
-//         if(status.code==='success') {
-//             logIn(email, password)
-//         }
-//     })
-// }
-export function register(body, email, password) {
-    fetch('https://teleropa.de/WebiProgCommunicationApplicationUser/register', {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: body
-    })
-        .then(res => res.json())
-        .then(({ status }) => {
-            Toast.show(status.text, {
-                shadow: false,
-                backgroundColor: "#505050",
-                duration: 1500,
-            })
-            if (status.code === 'success') {
-                logIn(email, password)
-            }
-        })
+// -----------------------------------------------------------------------------------------------
+
+export const register = (regData) => {
+  const { 
+    customerType, billingCompany, billingDepartment, billingVatId,
+    salutation, firstname, lastname, phone, birthday,
+    email, password, billingStreet, billingZipcode, billingCity, billingCountry, newsletterSubscribe
+  } = regData;
+
+  const requestBody = `customerType=${customerType}&billingCompany=${billingCompany}&billingDepartment=${billingDepartment}&billingVatId=${billingVatId}&salutation=${salutation}&firstname=${firstname}&lastname=${lastname}&phone=${phone}&birthday=${birthday}&email=${email}&password=${password}&billingStreet=${billingStreet}&billingZipcode=${billingZipcode}&billingCity=${billingCity}&billingCountry=${billingCountry}&newsletterSubscribe=${newsletterSubscribe}`;
+
+  fetch('https://teleropa.de/WebiProgCommunicationApplicationUser/register', {
+    method: 'POST',
+    headers: { Accept: 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: requestBody
+  })
+  .then(res => res.json())
+  .then(({success, data, status}) => {
+    if (success) {
+      // {"success": true, "data": {"id": 26378, "location": "https://teleropa.de/api/customers/26378"}}
+      console.log('Register => Success => id:', data.id, ' location:', data.location);
+      logIn(regData.email, regData.password);
+    } else {
+      // {"status":{"code":"error_exists_user","text":"Der Benutzer mit der angegebenen E-Mail-Adresse existiert schon."}}
+      console.log('Register Error =>', status.code, ':', status.text);
+      alert(status.text);
+    }
+  });
 }
+
+/* registerRequest
+export const registerRequest = (formData) => {
+  fetch('https://teleropa.de/WebiProgCommunicationApplicationUser/register', {
+    method: 'POST',
+    headers: { Accept: 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: formData
+  })
+  .then(res => res.json())
+  .then(({success, data, status}) => {
+    if (success) {
+      // {"success": true, "data": {"id": 26378, "location": "https://teleropa.de/api/customers/26378"}}
+      console.log('Register => success => id:', data.id, ' location:', data.location);
+    //   logIn(formData.email, formData.password);
+    } else {
+      // {"status":{"code":"error_exists_user","text":"Der Benutzer mit der angegebenen E-Mail-Adresse existiert schon."}}
+      console.log('Register =>', status.code, ':', status.text);
+      alert(status.text);
+    }
+  });
+}
+*/
+
+// -----------------------------------------------------------------------------------------------
 
 export function resetPassword(email) {
     fetch('https://teleropa.de/WebiProgCommunicationApplicationUser/resetPassword', {

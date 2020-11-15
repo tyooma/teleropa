@@ -7,7 +7,6 @@ import { sWidth } from '../../helpers/screenSize';
 import Loading from '../loading';
 import { getDeliverySuppliers } from '../../gets/ordersPosts';
 import NavigationService from '../../navigation-service';
-import ProgressBar from '../progress-bar';
 
 const unit = '<DeliveryService>';
 
@@ -97,7 +96,6 @@ export default class DeliveryService extends Component {
 
     return (
       <View style={{ flex: 1 }}>
-        <ProgressBar step={'delivery'} />
         <ScrollView style={{ paddingHorizontal: 18 }}>
           {this.DeliveryOptions()}
         </ScrollView>

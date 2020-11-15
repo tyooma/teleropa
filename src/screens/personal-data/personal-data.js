@@ -1,77 +1,49 @@
-import React, { Component } from 'react';
-import { View, Image, Text, TouchableOpacity, ScrollView } from 'react-native';
-
+import React, { PureComponent } from 'react';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
-
-import * as actions from '../../actions/login-actions'
-
-import SearchButton from '../../common/header-buttons/search-button';
+import * as actions from '../../actions/login-actions';
 import ModalView from '../../common/modal-view';
 import Checkbox from '../../common/checkbox';
 import Input from '../../common/input';
-
-import { getUserBillingAddress, getUserShippingAddress, getUserInfo } from '../../gets/userPosts'
-
-import { changePassword } from '../../posts/userDataPosts'
-
+import { getUserBillingAddress, getUserShippingAddress, getUserInfo } from '../../gets/userPosts';
+import { changePassword } from '../../posts/userDataPosts';
 import Loading from '../loading';
 
-class PersonalData extends Component {
-  static navigationOptions = {
-    title: 'Persönliche Angaben',
-    headerRight: (
-      <View style = {{flexDirection: 'row', marginRight: 9}}>
-        <SearchButton />
-      </View>
-    )
-  }
-
-  state = {
-    passChangeVisible: false,
-    newPasswordOne: '',
-    newPasswordTwo: ''
-  }
+class PersonalData extends PureComponent {
+  static navigationOptions = { title: 'Persönliche Angaben' }
+  state = { passChangeVisible: false, newPasswordOne: '', newPasswordTwo: '' }
 
   componentDidMount() {
-      const {navigation} = this.props;
-      navigation.addListener ('willFocus', () =>{
-        getUserInfo(this.props.userID).then(res => this.props.setLoggedUserInfo(res))
-        getUserBillingAddress(this.props.userID).then(res => this.setState({paymentAddress: res}))
-        getUserShippingAddress(this.props.userID).then(res => this.setState({deliveryAddress: res}))
-      });
-      // getUserInfo(this.props.userID).then(res => this.setState({userInfo: res}))
-      // getUserBillingAddress(this.props.userID).then(res => this.setState({paymentAddress: res}))
-      // getUserShippingAddress(this.props.userID).then(res => this.setState({deliveryAddress: res}))
+    const {navigation} = this.props;
+    navigation.addListener('willFocus', () => {
+      getUserInfo(this.props.userID).then(res => this.props.setLoggedUserInfo(res))
+      getUserBillingAddress(this.props.userID).then(res => this.setState({paymentAddress: res}))
+      getUserShippingAddress(this.props.userID).then(res => this.setState({deliveryAddress: res}))
+    });
   }
 
-  handlePasswordChange() {
+  runPasswordChange() {
     if(this.isPasswordFormValid()) {
-        changePassword(this.props.userID, this.state.newPasswordOne)
+      changePassword(this.props.userID, this.state.newPasswordOne)
     }
   }
 
   isPasswordFormValid() {
-    const {newPasswordOne, newPasswordTwo} = this.state
+    const {newPasswordOne, newPasswordTwo} = this.state;
     if(newPasswordOne.length < 3 || newPasswordTwo.length < 3) {
-        alert('Das Passwort ist zu kurz')
-        return false
+      alert('Das Passwort ist zu kurz');
+      return false;
     }
     if(newPasswordOne !== newPasswordTwo) {
-        alert('Das Passwort stimmt nicht überein')
-        return false
+      alert('Das Passwort stimmt nicht überein');
+      return false;
     }
-    return true
+    return true;
   }
 
   render() {
-
-    const { name, surname, birthDate, email, gender } = this.props.userInfo
-
-    if (!name || !this.state.paymentAddress || !this.state.deliveryAddress) {
-      return <Loading />
-    }
-    console.log(this.props)
-    console.log(this.state)
+    const { name, surname, birthDate, email, gender } = this.props.userInfo;
+    if (!name || !this.state.paymentAddress || !this.state.deliveryAddress) { return <Loading /> }
     return(
       <View style={{flex: 1}}>
         <ScrollView>
@@ -81,7 +53,7 @@ class PersonalData extends Component {
             <Text style={styles.infoText}>{gender} {name} {surname}</Text>
             <Text style={styles.infoText}>{birthDate ? birthDate : 'Bitte das Geburtsdatum angeben'}</Text>
             <Text style={styles.infoText}>{email}</Text>
-            <TouchableOpacity onPress={() => this.props.navigation.navigate('ChangePersonalData')} style={styles.borderButton}>
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('ChangeMainData', { ScreenID: 'ChangeUserInfo' })} style={styles.borderButton}>
               <Text style={styles.borderButtonText}> Persönliche Angaben ändern</Text>
             </TouchableOpacity>
           </View>
@@ -91,7 +63,7 @@ class PersonalData extends Component {
             <Text style={styles.infoText}>{this.state.paymentAddress.street}</Text>
             <Text style={styles.infoText}>{this.state.paymentAddress.zipcode} {this.state.paymentAddress.city}</Text>
             <Text style={styles.infoText}>{this.state.paymentAddress.country}</Text>
-            <TouchableOpacity onPress={() => { this.props.navigation.navigate('ChangePaymentAddress')}} style={styles.borderButton}>
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('ChangeMainData', { ScreenID: 'ChangeUserBillingAddress' })} style={styles.borderButton}>
               <Text style={styles.borderButtonText}> Rechnungsadresse ändern</Text>
             </TouchableOpacity>
           </View>
@@ -101,44 +73,36 @@ class PersonalData extends Component {
             <Text style={styles.infoText}>{this.state.deliveryAddress.street}</Text>
             <Text style={styles.infoText}>{this.state.deliveryAddress.zipcode} {this.state.deliveryAddress.city}</Text>
             <Text style={styles.infoText}>{this.state.deliveryAddress.country}</Text>
-            <TouchableOpacity onPress={() => { this.props.navigation.navigate('DeliveryAddress')}} style={styles.borderButton}>
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('ChangeMainData', { ScreenID: 'ChangeUserShippingAddress' })} style={styles.borderButton}>
               <Text style={styles.borderButtonText}> Versandadresse ändern</Text>
             </TouchableOpacity>
           </View>
           <Text style={styles.subTitle}>Passwort</Text>
           <View style={{marginHorizontal: 18, marginBottom: 18}}>
             <TouchableOpacity onPress={() => {this.setState({passChangeVisible: true})}} style={styles.borderButton}>
-              <Text style={styles.borderButtonText}> Passwort ändern </Text>
+              <Text style={styles.borderButtonText}>Passwort ändern</Text>
             </TouchableOpacity>
             <Checkbox text='Ich möchte einen kostenlosen Newsletter erhalten'/>
-
           </View>
         </ScrollView>
 
         <ModalView
-          onSubmit={() => this.handlePasswordChange()}
+          onSubmit={() => this.runPasswordChange()}
           title='Passwort ändern'
           buttonText='Speichern'
           visible={this.state.passChangeVisible}
           onRequestClose={() => {this.setState({passChangeVisible: !this.state.passChangeVisible})}}
         >
-          <Input placeholder='Passwort' password value={this.state.newPasswordOne} onChangeText={newPasswordOne => this.setState({newPasswordOne})} />
-          <Input placeholder='Passwort wiederholen' password value={this.state.newPasswordTwo} onChangeText={newPasswordTwo => this.setState({newPasswordTwo})} />
+          <Input placeholder='Passwort' password value={this.state.newPasswordOne} onChangeText={newPasswordOne => this.setState({newPasswordOne})}/>
+          <Input placeholder='Passwort wiederholen' password value={this.state.newPasswordTwo} onChangeText={newPasswordTwo => this.setState({newPasswordTwo})}/>
         </ModalView>
-
 
       </View>
     )
   }
 }
 
-const mapStateToProps = ({userInfo, userID}) => {
-  return { 
-      userInfo: userInfo,
-      userID: userID       
-  }
-}
-
+const mapStateToProps = ({userInfo, userID}) => { return {userInfo: userInfo, userID: userID} }
 export default connect(mapStateToProps, actions)(PersonalData);
 
 const styles = {

@@ -229,12 +229,12 @@ const styles = {
         marginTop: 6,
         fontSize: 12,
         height: 14,
-        color: '#ff424f'
+        color: '#a0a0a0'
     },
     salePrice: {
         padding: 0,
         fontSize: 20,
-        color: '#1c1c1c'
+        color: '#d10019'
     },
     price: {
         padding: 0,

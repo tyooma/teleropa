@@ -6,7 +6,6 @@ import { sWidth } from '../../helpers/screenSize';
 import NavigationService from '../../navigation-service';
 import FooterButton from '../../common/footer-button';
 import { getPurchasePoints } from '../../functions/cart-funcs';
-import ProgressBar from '../progress-bar/progress-bar';
 
 const unit = '<CartPreview>';
 
@@ -52,12 +51,12 @@ export const CartItemInPreview = ({id, bonus, methodMoney, name, pcs, price, com
               :
               selectedUserType === 'H' ?
                 <>
-                  <Text style={s.pricePerProduct}>{companyPrice} €</Text>
+                  <Text style={s.pricePerProduct}>{companyPrice} €\St</Text>
                   <Text style={s.price}>{(companyPrice * pcs).toFixed(2)} €</Text>
                 </>
                 :
                 <>
-                  <Text style={s.pricePerProduct}>{price} €</Text>
+                  <Text style={s.pricePerProduct}>{price} €\St</Text>
                   <Text style={s.price}>{(price * pcs).toFixed(2)} €</Text>
                 </>
             }
@@ -137,7 +136,6 @@ export default class CartPreview extends Component {
     return (
       <View style={{ flex: 1 }}>
         <ScrollView>
-          <ProgressBar step={'preview'} />
           <View style={{ marginHorizontal: 18, marginTop: 22 }}>
             {this.getProductsCards()}
             <View style={s.line}>
