@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import * as actions from '../../actions/login-actions'
@@ -8,7 +8,7 @@ import CompanyButton from '../../common/start-buttons/company-button';
 import DeviceInfo from 'react-native-device-info';
 import FooterNavBar from '../../common/footer-navigation-bar/footer-navigation-bar';
 
-class Settings extends PureComponent {
+class Settings extends Component {
   static navigationOptions = { title: 'Einstellungen', headerLeft: <MenuButton/>, headerRight: <></> }
 
   state = {
@@ -35,7 +35,7 @@ class Settings extends PureComponent {
   }
 
   render() {
-    // console.log('Settings => props:', this.props);
+    console.log('Settings => props:', this.props);
     const userType = this.props.selectedUserType;
     const {
       infoSystemName, infoSystemVersion, infoManufacturer, infoModel, infoReadableVersion
