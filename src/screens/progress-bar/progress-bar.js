@@ -298,19 +298,19 @@ const styles = {
   progressBarTextCompleted: {
     marginTop: 5,
 
-    fontSize: 12,
+    fontSize: 10,
     color: '#2ecc71'
   },
   progressBarTextCurrent: {
     marginTop: 5,
 
-    fontSize: 14,
+    fontSize: 12,
     color: '#1a1a1a'
   },
   progressBarTextDisabled: {
     marginTop: 5,
 
-    fontSize: 12,
+    fontSize: 10,
     color: '#ccc'
   },
 
