@@ -10,6 +10,7 @@ import FooterButton from '../../common/footer-button';
 import Input from '../../common/input';
 import ModalView from '../../common/modal-view';
 import ButtonItem from '../../common/button-item';
+import ProgressBar from '../progress-bar';
 
 class Login extends Component {
   static navigationOptions = { title: 'Anmeldung' }
@@ -93,6 +94,10 @@ class Login extends Component {
       return (
         <View style={{ flex: 1 }}>
           <ScrollView style={{ marginHorizontal: 18 }}>
+            {this.state.routeName != null 
+            ? <ProgressBar step={'login'} />
+            : ''
+            }
             <Text style={s.PlaceholderControl}>Ihre E-Mail*</Text>
             <Input onChangeText={(email) => this.setState({email})} value={this.state.email} autoCapitalize='none' required/>
             

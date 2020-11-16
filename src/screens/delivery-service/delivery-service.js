@@ -18,6 +18,8 @@ import { getPreviewAsyncProductData } from '../../gets/productPosts';
 
 import NavigationService from '../../navigation-service';
 
+import ProgressBar from '../progress-bar';
+
 const unit = '<DeliveryService>';
 
 export default class DeliveryService extends Component {
@@ -120,6 +122,7 @@ export default class DeliveryService extends Component {
     return (
       <View style={{ flex: 1 }}>
         <ScrollView style={{ paddingHorizontal: 18 }}>
+          <ProgressBar step={'delivery'} />
           {this.DeliveryOptions()}
         </ScrollView>
         <BoxShadow setting={shadowOpt}>

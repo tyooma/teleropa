@@ -297,6 +297,7 @@ class Cart extends Component {
     return (
       <View style={{ flex: 1 }}>
         <ScrollView>
+          <ProgressBar step={'cart'} />
           <View style={{ marginHorizontal: 18, marginTop: 22 }}>
             {this.getProductsCards()}
 
