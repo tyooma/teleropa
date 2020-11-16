@@ -99,7 +99,7 @@ const styles = {
     resizeMode: 'contain'
   },
   iPlantTreeItemInfoContainer: {
-    width: '80%',
+    width: '60%',
   },
   iPlantTreeItemTitle: {
     marginTop: 10,
