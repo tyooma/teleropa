@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 import * as actions from '../../actions/login-actions';
@@ -9,7 +9,7 @@ import { getUserBillingAddress, getUserShippingAddress, getUserInfo } from '../.
 import { changePassword } from '../../posts/userDataPosts';
 import Loading from '../loading';
 
-class PersonalData extends PureComponent {
+class PersonalData extends Component {
   static navigationOptions = { title: 'Persönliche Angaben' }
   state = { passChangeVisible: false, newPasswordOne: '', newPasswordTwo: '', isAgree: false }
 
@@ -93,8 +93,22 @@ class PersonalData extends PureComponent {
           visible={this.state.passChangeVisible}
           onRequestClose={() => { this.setState({ passChangeVisible: !this.state.passChangeVisible }) }}
         >
-          <Input placeholder='Passwort' password value={this.state.newPasswordOne} onChangeText={newPasswordOne => this.setState({ newPasswordOne })} />
-          <Input placeholder='Passwort wiederholen' password value={this.state.newPasswordTwo} onChangeText={newPasswordTwo => this.setState({ newPasswordTwo })} />
+          <Text style={styles.PlaceholderControl}>Passwort <Text style={styles.PlaceholderRequiered}>*</Text></Text>
+          <Text style={styles.PlaceholderNotes}>Ihr Passwort muss mindestens 8 Zeichen umfassen. Die maximal 16 Zeichen.</Text>
+          <Input
+            onChangeText={newPasswordOne => this.setState({ newPasswordOne })}
+            value={this.state.newPasswordOne}
+            maxLength={16}
+            password
+          />
+          
+          <Text style={styles.PlaceholderControl}>Passwort wiederholen <Text style={styles.PlaceholderRequiered}>*</Text></Text>
+          <Input 
+            onChangeText={newPasswordTwo => this.setState({ newPasswordTwo })}
+            value={this.state.newPasswordTwo}
+            maxLength={16}
+            password
+          />
         </ModalView>
 
       </View>
@@ -106,6 +120,10 @@ const mapStateToProps = ({ userInfo, userID }) => { return { userInfo: userInfo,
 export default connect(mapStateToProps, actions)(PersonalData);
 
 const styles = {
+  PlaceholderControl: { fontSize: 13, color: '#A0A0A0', marginTop: 10, marginBottom: -5 },
+  PlaceholderNotes: { fontSize: 12, color: '#A0A0A0', marginTop: 10, marginBottom: -5 },
+  PlaceholderRequiered: { fontSize: 13, color: 'red' },
+
   welcomeText: {
     fontSize: 16,
     color: '#d10019',
