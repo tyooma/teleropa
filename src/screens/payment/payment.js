@@ -27,7 +27,7 @@ class Payment extends Component {
   }
 
   onPay() {
-    const products = this.props.cart.length;    
+    const products = this.props.cart.length;
     if (products > 0 || Object.keys(this.state.data.SofortKaufen).length) {
       const cart = this.state.data;
       switch (this.state.selected) {

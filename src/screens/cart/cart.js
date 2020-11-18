@@ -221,7 +221,7 @@ class Cart extends Component {
       products.reduce((sum, { price, count }) => { return sum + price * count }, 0)
       :
       products.reduce((sum, { companyPrice, count }) => { return sum + companyPrice * count }, 0);
-    
+
     //------------------------------------------------------------------------------------------------------------------------------
     let orderVAT = 0;
     products.map((p) => {
@@ -230,7 +230,7 @@ class Cart extends Component {
     //------------------------------------------------------------------------------------------------------------------------------
 
     let discountProductsPrice = this.getDiscount(originalProductsPrice);
-  
+
     if (originalProductsPrice !== this.state.originalProductsPrice || discountProductsPrice !== this.state.discountProductsPrice) {
       this.setState({
         originalProductsPrice: originalProductsPrice,

@@ -49,6 +49,7 @@ class ProductDescription extends Component {
   componentDidMount() {
     this.getSimilarToState(this.state.productSimilar);
     this.getBonusToState(this.state.id);
+    this.init(this.props.productInfo.configurations);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -61,6 +62,23 @@ class ProductDescription extends Component {
   componentWillUpdate(nextProps, nextState) {
     LayoutAnimation.easeInEaseOut();
   }
+
+  init(nameVariants) {
+    if (Object.keys(nameVariants).length > 0) {
+      if (Object.keys(nameVariants).length > 1) {
+        var tempValues = Object.values(nameVariants)[0].values;
+        var tempValues1 = Object.values(nameVariants)[1].values;
+        var keys = Object.keys(tempValues1)[0]
+        var TEMP = Object.assign({}, { [0]: Object.values(tempValues)[0], [1]: tempValues1[keys] });
+        this.setState({ selectedDropDownValue: TEMP })
+      } else {
+        var tempValues = Object.values(nameVariants)[0].values
+        var TEMP = Object.assign({}, { [0]: Object.values(tempValues)[0] });
+        this.setState({ selectedDropDownValue: TEMP })
+      }
+    }
+  }
+
 
   state = {
     id: this.props.id,
@@ -93,7 +111,7 @@ class ProductDescription extends Component {
     loaded: false,
     stop: false,
     selected: "buyOfMoney",
-    selectedDropDownValue: { 0: "weiß", 1: "S" },
+    selectedDropDownValue: null// { 0: "weiß", 1: "S" },
   };
 
   getProductImages(images) {
@@ -109,7 +127,7 @@ class ProductDescription extends Component {
     return <Text style={styles.inStock}>Produkt ist verfügbar</Text>;
   }
 
-  getPrices(price, salePrice, companyPrice, productInfo) {    
+  getPrices(price, salePrice, companyPrice, productInfo) {
     if (salePrice != 0) {
       const products = [productInfo];
       const productsVAT = products.reduce((sum, { price, companyPrice }) => {
@@ -243,7 +261,7 @@ class ProductDescription extends Component {
       return null;
     }
 
-    return this.state.similar.map((product) => {
+    return this.state.similar.map((product, index) => {
       const {
         companyPrice,
         previewImgURL,
@@ -267,7 +285,7 @@ class ProductDescription extends Component {
           stock={stock}
           id={id}
           imageURL={previewImgURL}
-          key={productName}
+          key={index + id}
           favourite
           salePercent={productSalePercent ? productSalePercent.int : null}
           is_variable={is_variable}
@@ -300,14 +318,24 @@ class ProductDescription extends Component {
   }
 
   NewIDwithVariants() {
-    NewArtikelnummer = Object.assign({}, this.state.selectedDropDownValue, { [1]: this.state.selectedDropDownValue[0], [3]: this.state.selectedDropDownValue[1], });
-    delete NewArtikelnummer[0]
-    var id = this.getKeyByValue(this.state.productInfo.varaints, NewArtikelnummer)
-    // store.dispatch(actions.setLoggedUserInfo(userInfo))
+    // if (Object.keys(nameVariants).length > 0) {
+    let id; let NewArtikelnummer = {};
+    if (Object.keys(this.state.productInfo.configurations).length > 1) {
+      NewArtikelnummer = Object.assign({}, this.state.selectedDropDownValue, { [1]: this.state.selectedDropDownValue[0], [3]: this.state.selectedDropDownValue[1], });
+      delete NewArtikelnummer[0]
+      id = this.getKeyByValue(this.state.productInfo.varaints, NewArtikelnummer)
+    } else {
+      delete Object.assign(NewArtikelnummer, this.state.selectedDropDownValue, { [1]: this.state.selectedDropDownValue[0] })[0];
+      id = this.getKeyByValue(this.state.productInfo.varaints, NewArtikelnummer)
+    }
+    // }  
+
     if (this.state.id != id) {
       getFullProductData(id)
         .then(response => response.json())
-        .then(responseJson => {          
+        .then(responseJson => {
+          console.log("RESPONSE STATE", this.state)
+          console.log(" RESPONSE ", responseJson)
           if (responseJson.status == '404') {
             Alert.alert(
               "Alarm",
@@ -323,6 +351,7 @@ class ProductDescription extends Component {
               { cancelable: false }
             );
           }
+
           this.setState({
             id: id,
             images: responseJson.imgURLs,
@@ -349,6 +378,7 @@ class ProductDescription extends Component {
           });
         });
     }
+    console.log("AFTER RESPONSE STATE", this.state)
     return id
   }
 
@@ -381,7 +411,8 @@ class ProductDescription extends Component {
   }
 
 
-  render() {    
+  render() {
+    console.log('THIS.STATE ========================> ::::::::::::++++++++++++++++==', this.state)
     var arr = [];
     if (this.props.cart.length != 0) {
       this.props.cart.map((x) => {
@@ -541,21 +572,16 @@ class ProductDescription extends Component {
                   return (
                     <View style={styles.DropDownColor}>
                       < Text style={styles.OptionName} > {item.name}:</Text>
-                      <Picker
+                      <Picker                        
                         style={styles.RowLinePicker}
                         selectedValue={this.state.selectedDropDownValue[i]}
                         onValueChange={(itemValue, itemIndex) => this.onClickDropdown(itemValue, itemIndex, item, i)
                         }>
-                        {/* <Picker.Item
-                        label={'Bitte wählen'}
-                        value={-1}
-                        key={-1}
-                      /> */}
                         {
                           Object.values(item.values).map(el => {
                             return (
                               <Picker.Item
-                                key={el+i}
+                                key={i}
                                 label={el}
                                 value={el}
                               />
@@ -649,15 +675,11 @@ const styles = {
   getNameStyle: {
     flexDirection: "column",
     width: '100%'
-  },
-  RowLinePicker: {
-    flexDirection: "row",
-    marginHorizontal: 10,
-    alignItems: "center",
-    fontSize: 12,
+  },  
+  RowLinePicker: {    
     color: "#050505",
-    width: '65%',
-    height: 30
+    width: '75%',
+    height: 30,
   },
   DropDownColor: {
     borderColor: '#3f911b',
@@ -667,8 +689,14 @@ const styles = {
     alignItems: "center",
     fontSize: 12,
     color: "#050505",
-    width: '45%',
-    marginBottom: 10,
+    width: '70%',
+    marginBottom: 10,  
+    justifyContent: 'space-between',
+  },
+  OptionName: {
+    fontSize: 15,
+    color: "#050505",
+    marginHorizontal: 10,    
   },
   lineTelePoints: {
     alignItems: 'center',
@@ -750,10 +778,7 @@ const styles = {
     fontSize: 12,
     color: "#050505",
   },
-  OptionName: {
-    fontSize: 15,
-    color: "#050505",
-  },
+
   cartButton: {
     flexDirection: "row",
     alignItems: "center",

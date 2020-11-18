@@ -11,30 +11,30 @@ import Loading from '../loading';
 
 class PersonalData extends PureComponent {
   static navigationOptions = { title: 'Persönliche Angaben' }
-  state = { passChangeVisible: false, newPasswordOne: '', newPasswordTwo: '' }
+  state = { passChangeVisible: false, newPasswordOne: '', newPasswordTwo: '', isAgree: false }
 
   componentDidMount() {
-    const {navigation} = this.props;
+    const { navigation } = this.props;
     navigation.addListener('willFocus', () => {
       getUserInfo(this.props.userID).then(res => this.props.setLoggedUserInfo(res))
-      getUserBillingAddress(this.props.userID).then(res => this.setState({paymentAddress: res}))
-      getUserShippingAddress(this.props.userID).then(res => this.setState({deliveryAddress: res}))
+      getUserBillingAddress(this.props.userID).then(res => this.setState({ paymentAddress: res }))
+      getUserShippingAddress(this.props.userID).then(res => this.setState({ deliveryAddress: res }))
     });
   }
 
   runPasswordChange() {
-    if(this.isPasswordFormValid()) {
+    if (this.isPasswordFormValid()) {
       changePassword(this.props.userID, this.state.newPasswordOne)
     }
   }
 
   isPasswordFormValid() {
-    const {newPasswordOne, newPasswordTwo} = this.state;
-    if(newPasswordOne.length < 3 || newPasswordTwo.length < 3) {
+    const { newPasswordOne, newPasswordTwo } = this.state;
+    if (newPasswordOne.length < 3 || newPasswordTwo.length < 3) {
       alert('Das Passwort ist zu kurz');
       return false;
     }
-    if(newPasswordOne !== newPasswordTwo) {
+    if (newPasswordOne !== newPasswordTwo) {
       alert('Das Passwort stimmt nicht überein');
       return false;
     }
@@ -44,8 +44,8 @@ class PersonalData extends PureComponent {
   render() {
     const { name, surname, birthDate, email, gender } = this.props.userInfo;
     if (!name || !this.state.paymentAddress || !this.state.deliveryAddress) { return <Loading /> }
-    return(
-      <View style={{flex: 1}}>
+    return (
+      <View style={{ flex: 1 }}>
         <ScrollView>
           <Text style={styles.welcomeText}>Herzlich willkommen, {name}!</Text>
           <Text style={styles.subTitle}>Persönliche Angaben</Text>
@@ -78,11 +78,11 @@ class PersonalData extends PureComponent {
             </TouchableOpacity>
           </View>
           <Text style={styles.subTitle}>Passwort</Text>
-          <View style={{marginHorizontal: 18, marginBottom: 18}}>
-            <TouchableOpacity onPress={() => {this.setState({passChangeVisible: true})}} style={styles.borderButton}>
+          <View style={{ marginHorizontal: 18, marginBottom: 18 }}>
+            <TouchableOpacity onPress={() => { this.setState({ passChangeVisible: true }) }} style={styles.borderButton}>
               <Text style={styles.borderButtonText}>Passwort ändern</Text>
             </TouchableOpacity>
-            <Checkbox text='Ich möchte einen kostenlosen Newsletter erhalten'/>
+            <Checkbox text='Ich möchte einen kostenlosen Newsletter erhalten' checked={this.state.isAgree} onPress={() => this.setState({ isAgree: !this.state.isAgree })} />
           </View>
         </ScrollView>
 
@@ -91,10 +91,10 @@ class PersonalData extends PureComponent {
           title='Passwort ändern'
           buttonText='Speichern'
           visible={this.state.passChangeVisible}
-          onRequestClose={() => {this.setState({passChangeVisible: !this.state.passChangeVisible})}}
+          onRequestClose={() => { this.setState({ passChangeVisible: !this.state.passChangeVisible }) }}
         >
-          <Input placeholder='Passwort' password value={this.state.newPasswordOne} onChangeText={newPasswordOne => this.setState({newPasswordOne})}/>
-          <Input placeholder='Passwort wiederholen' password value={this.state.newPasswordTwo} onChangeText={newPasswordTwo => this.setState({newPasswordTwo})}/>
+          <Input placeholder='Passwort' password value={this.state.newPasswordOne} onChangeText={newPasswordOne => this.setState({ newPasswordOne })} />
+          <Input placeholder='Passwort wiederholen' password value={this.state.newPasswordTwo} onChangeText={newPasswordTwo => this.setState({ newPasswordTwo })} />
         </ModalView>
 
       </View>
@@ -102,7 +102,7 @@ class PersonalData extends PureComponent {
   }
 }
 
-const mapStateToProps = ({userInfo, userID}) => { return {userInfo: userInfo, userID: userID} }
+const mapStateToProps = ({ userInfo, userID }) => { return { userInfo: userInfo, userID: userID } }
 export default connect(mapStateToProps, actions)(PersonalData);
 
 const styles = {

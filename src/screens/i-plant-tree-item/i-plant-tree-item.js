@@ -7,9 +7,7 @@ export default class IPlantTreeItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      cartSum: 0,
-      iPlantTreeItem: null,
-      iPlantTreeData: null
+      cartSum: 0, 
     }
   }
 
@@ -18,7 +16,6 @@ export default class IPlantTreeItem extends Component {
       cartSum: this.props.cartSum
     })
     getIPlantTreeData().then(res => {
-      console.log('res res res res', res)
       getPreviewAsyncProductData(res.selectArticle).then(res1 => {
         this.setState({
           iPlantTreeItem: res1,
@@ -36,11 +33,7 @@ export default class IPlantTreeItem extends Component {
     }
   }
 
-  render() {
-    console.log("Cart Sum (i-plant-tree-item.js): ", this.state.cartSum)
-    console.log("Cart Trigger (i-plant-tree-item.js): ", this.state.cartPrice)
-    console.log("I Plant Tree Data (i-plant-tree-item.js): ", this.state.iPlantTreeData)
-    console.log("I Plant Tree Item (i-plant-tree-item.js): ", this.state.iPlantTreeItem)
+  render() {    
     return (
       this.state.iPlantTreeData
         &&
@@ -95,7 +88,6 @@ const styles = {
   },
   iPlantTreeItemImage: {
     margin: 10,
-
     width: 80,
     height: 90,
 
@@ -106,10 +98,8 @@ const styles = {
   },
   iPlantTreeItemTitle: {
     marginTop: 10,
-
     fontSize: 10,
     lineHeight: 16,
-
     color: '#040404'
   },
   iPlantTreeItemDescription: {

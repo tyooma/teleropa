@@ -52,7 +52,7 @@ export default class DeliveryService extends Component {
     }
   }
 
-  getProductBySofortKaufen(ProductID) {    
+  getProductBySofortKaufen(ProductID) {
     let userInfo = this.props.navigation.getParam('userInfo', null)
 
     getPreviewAsyncProductData(ProductID).then(res => {

@@ -29,7 +29,7 @@ const OffersListItem = ({ id, text, image, price, companyPrice, salePrice, userI
                 </View>
 
                 <View style={{ flex: 6, flexDirection: 'column' }}>
-                <View style={styles.descriptionContainer}>
+                    <View style={styles.descriptionContainer}>
                         <Text style={styles.name} numberOfLines={5} >{text}</Text>
                     </View>
                     <View style={{ paddingЕщз: 5 }}>
@@ -74,8 +74,8 @@ const styles = {
         justifyContent: 'center',
         // alignSelf: 'center',
     },
-    name: {        
-        marginTop: 7,        
+    name: {
+        marginTop: 7,
         fontSize: 14,
         fontWeight: '400',
         fontFamily: 'Poppins-Medium',
