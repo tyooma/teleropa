@@ -7,7 +7,7 @@ export default class IPlantTreeItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      cartSum: 0, //product sum in cart
+      cartSum: 0, 
     }
   }
 
@@ -33,11 +33,7 @@ export default class IPlantTreeItem extends Component {
     }
   }
 
-  render() {
-    console.log("Cart Sum (i-plant-tree-item.js): ", this.state.cartSum)
-    console.log("Cart Trigger (i-plant-tree-item.js): ", this.state.cartPrice)
-    console.log("I Plant Tree Data (i-plant-tree-item.js): ", this.state.iPlantTreeData)
-    console.log("I Plant Tree Item (i-plant-tree-item.js): ", this.state.iPlantTreeItem)
+  render() {    
     return (
       this.state.iPlantTreeData
         &&
