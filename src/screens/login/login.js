@@ -23,8 +23,6 @@ import ModalView from '../../common/modal-view';
 import ButtonItem from '../../common/button-item';
 import ProgressBar from '../progress-bar';
 
-import ProgressBar from '../progress-bar';
-
 class Login extends Component {
   static navigationOptions = { title: 'Anmeldung' }
 
