@@ -3,8 +3,7 @@ import React, { Component } from 'react';
 import { TouchableWithoutFeedback, View, Text, Image } from 'react-native';
 
 export default class Checkbox extends Component {
-  render() {
-    console.log("this.props.checked in checkbox ===>", this.props.checked);
+  render() {    
     return (
       <TouchableWithoutFeedback style={styles.container} onPress={() => this.props.onPress()}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
