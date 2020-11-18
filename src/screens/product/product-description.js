@@ -765,7 +765,7 @@ const styles = {
   },
   salePrice: {
     fontSize: 20,
-    color: "#d10019",
+    color: "#000",
     marginTop: 8,
     flexDirection: "row",
   },
