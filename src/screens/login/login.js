@@ -1,15 +1,28 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
+
 import AsyncStorage from '@react-native-community/async-storage';
+
 import { View, Text, Image, TouchableOpacity, ScrollView, Alert } from 'react-native';
+
 import RNRestart from 'react-native-restart';
+
 import { connect } from 'react-redux';
+
 import * as actions from '../../actions/login-actions';
+
 import { logIn, resetPassword } from '../../posts/authPosts';
+
 import Loading from '../../screens/loading';
+
 import FooterButton from '../../common/footer-button';
+
 import Input from '../../common/input';
+
 import ModalView from '../../common/modal-view';
+
 import ButtonItem from '../../common/button-item';
+
+import ProgressBar from '../progress-bar';
 
 class Login extends Component {
   static navigationOptions = { title: 'Anmeldung' }
@@ -56,11 +69,13 @@ class Login extends Component {
         Alert.alert(
           'Abmelden', 'Sind Sie sicher, dass Sie sich abmelden möchten?',
           [{ text: 'Nein', onPress: () => this.props.navigation.goBack(), style: 'cancel' },
-           { text: 'Ja', onPress: async () => {
+          {
+            text: 'Ja', onPress: async () => {
               await this.props.setLoggedUserId('notloggedin');
               await this.props.setLoggedUserInfo({});
               await RNRestart.Restart();
-            }}
+            }
+          }
           ], { cancelable: false }
         );
       }
@@ -86,6 +101,10 @@ class Login extends Component {
 
   }
 
+
+  email = createRef();
+  password = createRef();
+
   render() {
     if (this.state.loading && !this.props.userID) { return <Loading /> }
 
@@ -93,12 +112,39 @@ class Login extends Component {
       return (
         <View style={{ flex: 1 }}>
           <ScrollView style={{ marginHorizontal: 18 }}>
+            {this.state.routeName != null
+              ? <ProgressBar step={'login'} />
+              : null
+            }
             <Text style={s.PlaceholderControl}>Ihre E-Mail*</Text>
-            <Input onChangeText={(email) => this.setState({email})} value={this.state.email} autoCapitalize='none' required/>
-            
+            <Input
+              onChangeText={(email) => this.setState({ email })}
+              value={this.state.email}
+              autoCapitalize='none'
+              required
+              maxLength={70}
+              ref={(input) => { this.email = input; }}
+              focus={true}
+              returnKeyType={"next"}
+              onSubmitEditing={this.password.tearger}
+              blurOnSubmit={false}
+            />
+
+
+
             <Text style={s.PlaceholderControl}>Passwort*</Text>
-            <Input onChangeText={(password) => this.setState({password})} value={this.state.password} autoCapitalize='none' password/>
-            
+            <Input
+              onChangeText={(password) => this.setState({ password })}
+              value={this.state.password}
+              autoCapitalize='none'
+              password
+              maxLength={16}
+              ref={(input) => { this.password = input; }}
+              focus={true}
+              returnKeyType={"next"}
+              blurOnSubmit={false}
+            />
+
             <View style={s.ControlContainer}>
               <View style={s.ControlLeft}>
                 <TouchableOpacity onPress={() => this.handlerPassRecoveryVisible()} style={s.ActionButton}>
@@ -107,7 +153,7 @@ class Login extends Component {
               </View>
               <View style={s.ControlRight}>
                 <TouchableOpacity onPress={() => this.props.navigation.navigate('ChangeMainData', { ScreenID: 'RegistrationUser' })} style={s.ActionButton}>
-                  <Text style={s.ActionText}>Registrieren</Text>
+                  <Text style={s.ActionText}>Anmelden</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -115,7 +161,7 @@ class Login extends Component {
           </ScrollView>
 
           <FooterButton text='Anmelden' onPress={() => { this.logInHandler() }} />
-          
+
           <ModalView
             title='Passwort zurücksetzen'
             buttonText='Senden'
@@ -143,7 +189,7 @@ const s = {
   InputControl: { fontSize: 16, marginTop: 0, marginBottom: -5 },
 
   ControlContainer: { width: '100%', flexDirection: 'row', marginVertical: 40 },
-  
+
   ControlLeft: {
     width: '60%', height: 35, paddingRight: 20, justifyContent: 'center', alignItems: 'center'
   },
@@ -156,6 +202,6 @@ const s = {
     width: '100%', height: 35, backgroundColor: '#d10019', alignItems: 'center', justifyContent: 'center'
     // zIndex: 999, overflow: 'hidden',
   },
-  
+
   ActionText: { fontSize: 16, color: '#FFFFFF' }
 }

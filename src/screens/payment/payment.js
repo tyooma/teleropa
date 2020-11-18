@@ -10,6 +10,9 @@ import PaymentOption from '../../common/payment-option';
 
 import Loading from '../loading';
 
+import ProgressBar from '../progress-bar';
+
+
 class Payment extends Component {
   static navigationOptions = { title: 'Zahlungsweise' }
 
@@ -25,7 +28,7 @@ class Payment extends Component {
   }
 
   onPay() {
-    const products = this.props.cart.length;    
+    const products = this.props.cart.length;
     if (products > 0 || Object.keys(this.state.data.SofortKaufen).length) {
       const cart = this.state.data;
       switch (this.state.selected) {
@@ -115,6 +118,7 @@ class Payment extends Component {
     return (
       <View style={{ flex: 1 }}>
         <ScrollView style={{ marginHorizontal: 18 }}>
+          <ProgressBar step={'payment'} />
           <PaymentOption
             onPress={() => this.setState({ selected: 'PayPal' })}
             selected={this.isSelected('PayPal')}

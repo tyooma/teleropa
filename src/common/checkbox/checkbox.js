@@ -4,14 +4,15 @@ import { TouchableWithoutFeedback, View, Text, Image } from 'react-native';
 
 export default class Checkbox extends Component {
   render() {
-    return(
+    console.log("this.props.checked in checkbox ===>", this.props.checked);
+    return (
       <TouchableWithoutFeedback style={styles.container} onPress={() => this.props.onPress()}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <View style={styles.checkboxStyle}>
-                {this.props.checked ? <Image source={require('../../assets/icons-color/041-tick2.png')} style={styles.image} key={'tickCheckbox'} /> : null}
-              </View>
-              <Text style={styles.checkboxTextStyle}>{this.props.text}</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={styles.checkboxStyle}>
+            {this.props.checked ? <Image source={require('../../assets/icons-color/041-tick2.png')} style={styles.image} key={'tickCheckbox'} /> : null}
           </View>
+          <Text style={styles.checkboxTextStyle}>{this.props.text}</Text>
+        </View>
       </TouchableWithoutFeedback>
     )
   }

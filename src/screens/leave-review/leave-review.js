@@ -14,7 +14,7 @@ import FooterButton from '../../common/footer-button';
 
 class LeaveReview extends Component {
   static navigationOptions = {
-    title: 'Bewertung schreibung',
+    title: 'Bewertung schreiben',
   }
   state = {
     name: this.props.name,

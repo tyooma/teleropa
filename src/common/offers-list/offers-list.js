@@ -29,7 +29,7 @@ const OffersListItem = ({ id, text, image, price, companyPrice, salePrice, userI
                 </View>
 
                 <View style={{ flex: 6, flexDirection: 'column' }}>
-                <View style={styles.descriptionContainer}>
+                    <View style={styles.descriptionContainer}>
                         <Text style={styles.name} numberOfLines={5} >{text}</Text>
                     </View>
                     <View style={{ paddingЕщз: 5 }}>
@@ -74,8 +74,8 @@ const styles = {
         justifyContent: 'center',
         // alignSelf: 'center',
     },
-    name: {        
-        marginTop: 7,        
+    name: {
+        marginTop: 7,
         fontSize: 14,
         fontWeight: '400',
         fontFamily: 'Poppins-Medium',
@@ -86,11 +86,11 @@ const styles = {
     price: {            
         fontSize: 20,
         // fontWeight: '800',
-        fontFamily: 'Poppins-ExtraBoldItalic',
+        //fontFamily: 'Poppins-ExtraBoldItalic',
         // fontStyle: 'italic',
-        textShadowColor: 'gray',
-        textShadowOffset: { width: 1, height: 1 },
-        textShadowRadius: 15,
+        // textShadowColor: 'gray',
+        // textShadowOffset: { width: 1, height: 1 },
+        // textShadowRadius: 15,
         color: '#000',
         textAlign: 'center',
         lineHeight: 23,
@@ -98,12 +98,12 @@ const styles = {
     },
     saleprice: {
         fontSize: 12,
-        fontStyle: 'italic',
-        fontFamily: 'Poppins-Medium',
-        textShadowColor: 'gray',
-        textShadowOffset: { width: 1, height: 1 },
-        textShadowRadius: 15,
-        color: '#000',
+        //fontStyle: 'italic',
+        //fontFamily: 'Poppins-Medium',
+        // textShadowColor: 'gray',
+        // textShadowOffset: { width: 1, height: 1 },
+        // textShadowRadius: 15,
+        color: '#ff424f',
         textAlign: 'center',
     }
 }

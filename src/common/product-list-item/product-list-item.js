@@ -19,7 +19,7 @@ import { sWidth } from '../../helpers/screenSize';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
-function ProductListItem({ imageURL, is_variable, name, price, salePrice, favourite, id, productID, stock, rate, salePercent, userID, userInfo, deleteAction, companyPrice }) {    
+function ProductListItem({ imageURL, is_variable, name, price, salePrice, favourite, id, productID, stock, rate, salePercent, userID, userInfo, deleteAction, companyPrice }) {
     getStock = () => {
         if (stock > 0) {
             return (
@@ -101,7 +101,8 @@ function ProductListItem({ imageURL, is_variable, name, price, salePrice, favour
                     >
 
                         <Text style={{ textAlign: "center", fontSize: 15, color: '#fff' }}>
-                            Variante auswählen <Icon name='chevron-circle-right' size={18} />
+                            Variante auswählen
+                             {/* <Icon name='chevron-circle-right' size={18} /> */}
                         </Text>
                     </TouchableOpacity>
                     :
@@ -111,7 +112,7 @@ function ProductListItem({ imageURL, is_variable, name, price, salePrice, favour
                             onPress={() => addToCart(id, undefined, 'buyOfMoney',)}
                         >
                             <Image style={{ width: 22, height: 18, resizeMode: 'contain' }} source={require('../../assets/icons-color/002-shopping2.png')} key={'cart'} />
-                            <Text style={styles.cartButtonText}>In den Warenkorb</Text>
+                            {/* <Text style={styles.cartButtonText}>In den Warenkorb</Text> */}
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={[styles.cartButton, { backgroundColor: '#3f911b' }]}
@@ -123,11 +124,11 @@ function ProductListItem({ imageURL, is_variable, name, price, salePrice, favour
                                 }
                             }}
                         >
-                            <Image
+                            {/* <Image
                                 style={{ width: 22, height: 18, resizeMode: 'contain' }}
                                 source={require("../../assets/icons/014-euro.png")}
                                 key={"cartImageOnProductListItem"}
-                            />
+                            /> */}
                             <Text style={styles.cartButtonText}>Sofort kaufen</Text>
                         </TouchableOpacity>
                     </View>
@@ -261,12 +262,12 @@ const styles = {
         marginTop: 6,
         fontSize: 12,
         height: 14,
-        color: '#a0a0a0'
+        color: '#ff424f'
     },
     salePrice: {
         padding: 0,
         fontSize: 20,
-        color: '#d10019'
+        color: '#1c1c1c'
     },
     price: {
         padding: 0,
@@ -283,6 +284,7 @@ const styles = {
         minWidth: 70,
         borderWidth: 1,
         height: 32,
+        height: 42,
         justifyContent: 'center',
         alignItems: 'center'
     },

@@ -7,9 +7,7 @@ export default class IPlantTreeItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      cartSum: 0,
-      iPlantTreeItem: null,
-      iPlantTreeData: null
+      cartSum: 0, //product sum in cart
     }
   }
 
@@ -18,7 +16,6 @@ export default class IPlantTreeItem extends Component {
       cartSum: this.props.cartSum
     })
     getIPlantTreeData().then(res => {
-      console.log('res res res res', res)
       getPreviewAsyncProductData(res.selectArticle).then(res1 => {
         this.setState({
           iPlantTreeItem: res1,
@@ -95,21 +92,18 @@ const styles = {
   },
   iPlantTreeItemImage: {
     margin: 10,
-
     width: 80,
     height: 90,
 
     resizeMode: 'contain'
   },
   iPlantTreeItemInfoContainer: {
-    width: '80%',
+    width: '74%',
   },
   iPlantTreeItemTitle: {
     marginTop: 10,
-
     fontSize: 10,
     lineHeight: 16,
-
     color: '#040404'
   },
   iPlantTreeItemDescription: {

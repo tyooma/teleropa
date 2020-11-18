@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 
-import { View, Alert } from 'react-native';
+import { View, Alert, Text, TouchableOpacity } from 'react-native';
 
 import { connect } from 'react-redux';
 
-import { createMaterialTopTabNavigator, createAppContainer } from 'react-navigation';
+//import { createMaterialTopTabNavigator, createAppContainer } from 'react-navigation';
 
 import { SearchButton } from '../../common/header-buttons';
 
@@ -57,15 +57,13 @@ class Product extends Component {
     productVideo: '',
     productReviews: '',
     productSimilar: [],
-    configurations: [],
-    productOptions: [],
-    varaints: []
+    screen: 'Beschreibung',
   }
 
-  initProduct = async (id) => {    
+  initProduct = async (id) => {
     getFullProductData(id)
       .then(response => response.json())
-      .then(responseJson => {        
+      .then(responseJson => {
         if (responseJson.status == '404') {
           Alert.alert(
             "Alarm",
@@ -124,103 +122,189 @@ class Product extends Component {
 
   render() {
     // console.log('this.state  RENDER in product.js', this.state)
-    const tabOptions = {
-      lazy: true,
-      tabBarOptions: {
-        activeTintColor: 'red',
-        upperCaseLabel: false,
-        scrollEnabled: true,
-        inactiveTintColor: 'rgba(255, 255, 255, 0.7)',
-        tabStyle: {
-          height: 42,
-        },
-        pressOpacity: 0,
-        indicatorStyle: {
-          backgroundColor: '#fff',
-          height: 1.7,
-          marginBottom: 1.7
-        },
-        style: {
-          height: 42,
-          backgroundColor: '#c00017'
-        },
-        labelStyle: {
-          color: '#fff',
-          fontSize: 12,
-          height: 12,
-          lineHeight: 12,
-          textAlignVertical: 'center'
-        }
-      },
+    // const tabOptions = {
+    //   lazy: true,
+    //   tabBarOptions: {
+    //     activeTintColor: 'red',
+    //     upperCaseLabel: false,
+    //     scrollEnabled: true,
+    //     inactiveTintColor: 'rgba(255, 255, 255, 0.7)',
+    //     tabStyle: {
+    //       height: 42,
+    //     },
+    //     pressOpacity: 0,
+    //     indicatorStyle: {
+    //       backgroundColor: '#fff',
+    //       height: 1.7,
+    //       marginBottom: 1.7
+    //     },
+    //     style: {
+    //       height: 42,
+    //       backgroundColor: '#c00017'
+    //     },
+    //     labelStyle: {
+    //       color: '#fff',
+    //       fontSize: 12,
+    //       height: 12,
+    //       lineHeight: 12,
+    //       textAlignVertical: 'center'
+    //     }
+    //   },
+    // }
+
+
+    // const ID = this.props.navigation.getParam('id')
+    // const name = this.props.navigation.getParam('name')
+
+    // const Tab = createMaterialTopTabNavigator({
+    //   Beschreibung: {
+    //     screen: props =>
+    //       <ProductDescription
+    //         {...props}
+    //         key={ID}
+    //         id={ID}
+    //         name={name}
+    //         images={this.state.images}
+    //         productInfo={this.state.info}
+    //         productSimilar={this.state.productSimilar}
+    //         productDescription={this.state.productDescription}
+    //       />
+
+    //   },
+    //   'Technische Details': {
+    //     screen: props =>
+    //       <ProductSpecs
+    //         {...props}
+    //         key={this.state.id}
+    //         id={this.state.id}
+    //         name={name}
+    //         details={this.state.productDetails}
+    //       />
+    //   },
+    //   Lieferumfang: {
+    //     screen: props =>
+    //       <ProductPackage
+    //         {...props}
+    //         id={this.state.id}
+    //         key={this.state.id}
+    //         name={name}
+    //         packageInfo={this.state.productPackage}
+    //       />
+    //   },
+    //   Video: {
+    //     screen: props =>
+    //       <ProductVideo
+    //         {...props}
+    //         key={this.state.id}
+    //         id={this.state.id}
+    //         name={name}
+    //         videoID={this.state.productVideo}
+    //       />
+    //   },
+    //   Bewertungen: {
+    //     screen: props =>
+    //       <ProductReviews
+    //         {...props}
+    //         key={this.state.id}
+    //         id={this.state.id}
+    //         name={name}
+    //         reviews={this.state.productReviews}
+    //       />
+    //   }
+    // }, tabOptions);
+
+    function chooseScreen(s, props) {
+      switch (s.screen) {
+        case 'Beschreibung':
+          console.log("SWITCH FROM PRODUCT:", s);
+          return <ProductDescription
+            {...props}
+            key={s.images.lenght + s.id}
+            id={s.id}
+            name={s.productPackage}
+            images={s.images}
+            productInfo={s.info}
+            productSimilar={s.productSimilar}
+            productDescription={s.productDescription}
+          />
+          break;
+        case 'Technische Details':
+          return <ProductSpecs
+            {...props}
+            key={s.id}
+            id={s.id}
+            name={s.productPackage}
+            details={s.productDetails}
+          />
+          break;
+        case 'Lieferumfang':
+          return <ProductPackage
+            {...props}
+            id={s.id}
+            key={s.id}
+            name={s.productPackage}
+            packageInfo={s.productPackage}
+          />
+          break;
+        case 'Video':
+          return <ProductVideo
+            {...props}
+            key={s.id}
+            id={s.id}
+            name={s.productPackage}
+            videoID={s.productVideo}
+          />
+          break;
+        case 'Bewertungen':
+          return <ProductReviews
+            {...props}
+            key={s.id}
+            id={s.id}
+            name={s.productPackage}
+            reviews={s.productReviews}
+          />
+          break;
+      }
     }
 
+    const CustomTopTapBar = (props) => {
+      return (
+        <View style={{ flex: 1 }}>
+          <View style={{ backgroundColor: "#c00015", flexDirection: "row", justifyContent: "space-around", paddingHorizontal: 10, alignItems: "center", height: 40 }}>
+            <TouchableOpacity onPress={() => this.setState({ screen: "Beschreibung" })}>
+              <Text style={this.state.screen == 'Beschreibung' ? { color: "white", fontWeight: 'bold' } : { color: "white" }}>Beschreibung</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => this.setState({ screen: "Technische Details" })}>
+              <Text style={this.state.screen == 'Technische Details' ? { color: "white", fontWeight: 'bold' } : { color: "white" }}>Technische Details</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={{ backgroundColor: "#c00015", flexDirection: "row", justifyContent: "space-around", paddingHorizontal: 10, alignItems: "center", height: 40 }}>
+            <TouchableOpacity onPress={() => this.setState({ screen: 'Lieferumfang' })}>
+              <Text style={this.state.screen == 'Lieferumfang' ? { color: "white", fontWeight: 'bold' } : { color: "white" }}>Lieferumfang</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => this.setState({ screen: "Video" })}>
+              <Text style={this.state.screen == 'Video' ? { color: "white", fontWeight: 'bold' } : { color: "white" }}>Video</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => { console.log(this.state.screen); this.setState({ screen: "Bewertungen" }) }}>
+              <Text style={this.state.screen == 'Bewertungen' ? { color: "white", fontWeight: 'bold' } : { color: "white" }}>Bewertungen</Text>
+            </TouchableOpacity>
+          </View>
 
-    const ID = this.props.navigation.getParam('id')
-    const name = this.props.navigation.getParam('name')
+          {chooseScreen(this.state, this.props)}
+        </View>
+      )
+    }
 
-    const Tab = createMaterialTopTabNavigator({
-      Beschreibung: {
-        screen: props =>
-          <ProductDescription
-            {...props}
-            key={ID}
-            id={ID}
-            name={name}
-            images={this.state.images}
-            productInfo={this.state.info}
-            productSimilar={this.state.productSimilar}
-            productDescription={this.state.productDescription}
-          />
-
-      },
-      'Technische Details': {
-        screen: props =>
-          <ProductSpecs
-            {...props}
-            key={this.state.id}
-            id={this.state.id}
-            name={name}
-            details={this.state.productDetails}
-          />
-      },
-      Lieferumfang: {
-        screen: props =>
-          <ProductPackage
-            {...props}
-            id={this.state.id}
-            key={this.state.id}
-            name={name}
-            packageInfo={this.state.productPackage}
-          />
-      },
-      Video: {
-        screen: props =>
-          <ProductVideo
-            {...props}
-            key={this.state.id}
-            id={this.state.id}
-            name={name}
-            videoID={this.state.productVideo}
-          />
-      },
-      Bewertungen: {
-        screen: props =>
-          <ProductReviews
-            {...props}
-            key={this.state.id}
-            id={this.state.id}
-            name={name}
-            reviews={this.state.productReviews}
-          />
-      }
-    }, tabOptions);
-
-    const Aaa = createAppContainer(Tab);
+    // const Aaa = createAppContainer(Tab);
     // return Tab;
     return (
       <>
-        <Aaa />
-        <FooterNavBar />
+        {/* <Aaa />        
+        <FooterNavBar /> */}
+        <View style={{ flex: 1 }}>
+          <CustomTopTapBar />
+          <FooterNavBar />
+        </View>
       </>
     );
   }
