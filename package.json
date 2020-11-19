@@ -1,6 +1,6 @@
 {
   "name": "teleropa",
-  "version": "1.5.1",
+  "version": "1.5.5",
   "private": true,
   "scripts": {
     "android": "react-native run-android",

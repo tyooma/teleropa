@@ -34,6 +34,7 @@ class ChangeMainData extends Component {
     // console.log('DidMount => userID:', this.props.userID);
 
     if (screenID === 'ChangeUserInfo') {
+      console.log("1111111111111 -- ChangeUserInfo", this.props.userInfo)
       const { name, surname, birthDate, gender } = this.props.userInfo;
 
       this.setState({
@@ -41,6 +42,7 @@ class ChangeMainData extends Component {
         salutation: gender, firstname: name, lastname: surname,
         birthDate: birthDate ? new Date(birthDate) : null,
       });
+      console.log("12321321 -- ChangeUserInfo state", this.state.birthDate)
     } else if (screenID === 'ChangeUserBillingAddress') {
       getCountries().then(({ countries }) => {
         this.setState({ countries: countries });
@@ -218,11 +220,23 @@ class ChangeMainData extends Component {
   }
 
   getBirthdayStr(date) {
-    return date ? `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}` : '';
+    var dd = date.getDate();
+    var mm = date.getMonth() + 1;
+    var yyyy = date.getFullYear();
+    if (dd < 10) {
+      dd = '0' + dd;
+    }
+
+    if (mm < 10) {
+      mm = '0' + mm;
+    }
+    return date ? `${yyyy}-${mm}-${dd}` : '';
+
   }
 
   BirthdayRender() {
     const { dateVisible, birthDate } = this.state;
+    // console.log("birthDate birthDate birthDate", birthDate)
     return Platform.OS === 'ios' ? (
       <>
         <TouchableOpacity onPress={() => this.setState({ dateVisible: !dateVisible })}>
@@ -395,7 +409,7 @@ class ChangeMainData extends Component {
           {this.Visible('salutation') && (
             <View>
               <Text style={styles.PlaceholderControl}>Geschlecht <Text style={styles.PlaceholderRequiered}>*</Text></Text>
-              <Picker                
+              <Picker
                 onValueChange={salutation => this.setState({ salutation })}
                 values={['Herr', 'Frau']}
                 selected={salutation} />
