@@ -1,27 +1,14 @@
 import React, { Component, createRef } from 'react';
-
 import AsyncStorage from '@react-native-community/async-storage';
-
-import { View, Text, Image, TouchableOpacity, ScrollView, Alert } from 'react-native';
-
+import { View, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import RNRestart from 'react-native-restart';
-
 import { connect } from 'react-redux';
-
 import * as actions from '../../actions/login-actions';
-
 import { logIn, resetPassword } from '../../posts/authPosts';
-
 import Loading from '../../screens/loading';
-
 import FooterButton from '../../common/footer-button';
-
 import Input from '../../common/input';
-
 import ModalView from '../../common/modal-view';
-
-import ButtonItem from '../../common/button-item';
-
 import ProgressBar from '../progress-bar';
 
 class Login extends Component {
@@ -46,7 +33,7 @@ class Login extends Component {
     const emailChecker = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
     const { email, password, routeName } = this.state;
 
-    if (emailChecker.test(email) && password.length >= 3) {
+    if (emailChecker.test(email) && password.length >= 8) {
       this.setState({ loading: true })
       this.props.setLoggedUserId(null)
       logIn(email, password, routeName)

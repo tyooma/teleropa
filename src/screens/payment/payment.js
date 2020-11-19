@@ -12,7 +12,6 @@ import Loading from '../loading';
 
 import ProgressBar from '../progress-bar';
 
-
 class Payment extends Component {
   static navigationOptions = { title: 'Zahlungsweise' }
 
