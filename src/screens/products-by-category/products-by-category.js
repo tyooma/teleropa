@@ -217,12 +217,12 @@ const styles = {
     // height: sHeight,
   },
   containerFlatList: {
-    height: '95%',
+    height: '93%',
     justifyContent: 'space-around',
     // alignItems: 'center',
   },
-  footer: {
-    height: 5,
+  footer: {    
+    // height: 5,
     width: '100%',
   },
 }

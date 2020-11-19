@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 
 import { View, TextInput, Image, TouchableOpacity } from 'react-native';
 
 export default class Input extends Component {
-  tearger = null;
+
 
   constructor(props) {
     super(props);
@@ -12,7 +12,7 @@ export default class Input extends Component {
       height: 56,
     }
 
-    this.tearger = React.createRef();
+    tearger = createRef();
 
     if (this.props.password) {
       this.state = {
@@ -22,12 +22,6 @@ export default class Input extends Component {
       }
     }
   }
-
-  inputs = {};
-  _focusInput = id => {
-    this.inputs[id].focus();
-  };
-
 
   showPass() {
     this.setState(prevState => ({
@@ -45,32 +39,31 @@ export default class Input extends Component {
   render() {
     const { onSubmitEditing, placeholder, multiline, numberOfLines, value, keyboardType, maxLength, onChangeText, containerStyle, ...remainingProps } = this.props
     return (
-
-      <View style={[styles.inputBox, { height: Math.max(56, this.state.height) }, containerStyle]}>       
-          <TextInput
-            ref={control => { this.tearger = control }}
-            onSubmitEditing={(text) => { onSubmitEditing ? onSubmitEditing.focus() : null }}
-            returnKeyType={"next"}
-            style={styles.inputStyle}
-            placeholder={placeholder}
-            placeholderTextColor='#a0a0a0'
-            multiline={multiline}
-            maxLength={maxLength}
-            keyboardType={keyboardType}
-            value={value}
-            onChangeText={text => { onChangeText ? onChangeText(text) : null }}
-            onContentSizeChange={(event) => {
-              this.setState({ height: event.nativeEvent.contentSize.height })
-            }}
-            numberOfLines={numberOfLines}
-            secureTextEntry={this.state.secure}
-            {...remainingProps}
-          />
-          {this.state.img ? (
-            <TouchableOpacity style={{ flex: .1 }} onPress={() => this.showPass()}>
-              <Image style={{ width: 24, height: 24, resizeMode: 'contain' }} source={this.state.img} key={'this.state.img'} />
-            </TouchableOpacity>
-          ) : null}        
+      <View style={[styles.inputBox, { height: Math.max(56, this.state.height) }, containerStyle]}>
+        <TextInput
+          ref={control => { this.tearger = control }}
+          onSubmitEditing={(text) => { onSubmitEditing ? onSubmitEditing.focus() : null }}
+          returnKeyType={"next"}
+          style={styles.inputStyle}
+          placeholder={placeholder}
+          placeholderTextColor='#a0a0a0'
+          multiline={multiline}
+          maxLength={maxLength}
+          keyboardType={keyboardType}
+          value={value}
+          onChangeText={text => { onChangeText ? onChangeText(text) : null }}
+          onContentSizeChange={(event) => {
+            this.setState({ height: event.nativeEvent.contentSize.height })
+          }}
+          numberOfLines={numberOfLines}
+          secureTextEntry={this.state.secure}
+          {...remainingProps}
+        />
+        {this.state.img ? (
+          <TouchableOpacity style={{ flex: .1 }} onPress={() => this.showPass()}>
+            <Image style={{ width: 24, height: 24, resizeMode: 'contain' }} source={this.state.img} key={'this.state.img'} />
+          </TouchableOpacity>
+        ) : null}
       </View>
     )
   }
