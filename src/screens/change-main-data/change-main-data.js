@@ -1,5 +1,5 @@
 import React, { Component, createRef } from 'react';
-import { Alert, DatePickerAndroid, DatePickerIOS, Platform, Text, TouchableOpacity, ScrollView, View } from 'react-native';
+import { Alert, DatePickerAndroid, DatePickerIOS, Platform, Text, TouchableOpacity, ScrollView, View, KeyboardAvoidingView } from 'react-native';
 import { connect } from 'react-redux';
 import * as actions from '../../actions/login-actions';
 
@@ -35,10 +35,7 @@ class ChangeMainData extends Component {
 
     if (screenID === 'ChangeUserInfo') {
       const { name, surname, birthDate, gender } = this.props.userInfo;
-      console.log('UserInfo => name:', name);
-      console.log('UserInfo => surname:', surname);
-      console.log('UserInfo => birthDate:', birthDate);
-      console.log('UserInfo => gender:', gender);
+
       this.setState({
         screenID: screenID, loaded: true, userID: userID,
         salutation: gender, firstname: name, lastname: surname,
@@ -313,15 +310,6 @@ class ChangeMainData extends Component {
     }
   }
 
-  CustomerChange(value) {
-    this.setState({ customerType: value });
-    if (value === 'Privatkunde') {
-      this.setState({ company: '', department: '', vatId: '' });
-    }
-  }
-  
-  department = createRef();
-  company = createRef();
   vatId = createRef();
   firstname = createRef();
   lastname = createRef();
@@ -332,10 +320,22 @@ class ChangeMainData extends Component {
   street = createRef();
   zipcode = createRef();
   city = createRef();
+  country = createRef();
+  salutation = createRef();
+  department = createRef();
+  company = createRef();
+
+
+  CustomerChange(value) {
+    this.setState({ customerType: value });
+    if (value === 'Privatkunde') {
+      this.setState({ company: '', department: '', vatId: '', });
+    }
+  }
+
+
 
   render() {
-    //console.log('RENDER => state:', this.state);
-
     const {
       loaded, customerType, company, department, vatId,
       salutation, firstname, lastname, phone, email, passwordOne, passwordTwo,
@@ -345,8 +345,11 @@ class ChangeMainData extends Component {
     if (!loaded) return <Loading />;
 
     return (
-      <View style={{ flex: 1 }}>
+
+      <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={{ flex: 1 }}>
+
         <ScrollView style={{ marginHorizontal: 15 }} showsVerticalScrollIndicator={false}>
+
           {this.Visible('customerType') && (
             <View>
               <Text style={styles.PlaceholderControl}>Ich bin Neukunde <Text style={styles.PlaceholderRequiered}>*</Text></Text>
@@ -362,9 +365,9 @@ class ChangeMainData extends Component {
                 onChangeText={company => this.setState({ company })}
                 value={company} maxLength={255}
                 ref={(input) => { this.company = input; }}
-                focus={true}                
+                focus={true}
                 returnKeyType={"next"}
-                onSubmitEditing={this.department.tearger}                
+                onSubmitEditing={this.department && this.department.tearger}
                 blurOnSubmit={true} />
               <Text style={styles.PlaceholderControl}>Abteilung</Text>
               <Text style={styles.PlaceholderNotes}>Die maximal 35 Zeichen.</Text>
@@ -374,7 +377,7 @@ class ChangeMainData extends Component {
                 ref={(input) => { this.department = input; }}
                 focus={true}
                 returnKeyType={"next"}
-                onSubmitEditing={this.vatId.tearger}
+                onSubmitEditing={this.vatId && this.vatId.tearger}
                 blurOnSubmit={false} />
 
               <Text style={styles.PlaceholderControl}>Steuernummer <Text style={styles.PlaceholderRequiered}>*</Text></Text>
@@ -384,10 +387,6 @@ class ChangeMainData extends Component {
                 value={vatId}
                 maxLength={50}
                 ref={(input) => { this.vatId = input; }}
-                focus={true}
-                returnKeyType={"next"}
-                onSubmitEditing={this.firstname.tearger}
-                blurOnSubmit={false}
               />
 
             </View>
@@ -396,7 +395,10 @@ class ChangeMainData extends Component {
           {this.Visible('salutation') && (
             <View>
               <Text style={styles.PlaceholderControl}>Geschlecht <Text style={styles.PlaceholderRequiered}>*</Text></Text>
-              <Picker onValueChange={salutation => this.setState({ salutation })} values={['Herr', 'Frau']} selected={salutation} />
+              <Picker                
+                onValueChange={salutation => this.setState({ salutation })}
+                values={['Herr', 'Frau']}
+                selected={salutation} />
             </View>
           )}
 
@@ -409,7 +411,7 @@ class ChangeMainData extends Component {
                 value={firstname}
                 maxLength={255}
                 ref={(input) => { this.firstname = input; }}
-                focus={true}
+                autoFocus={true}
                 returnKeyType={"next"}
                 onSubmitEditing={this.lastname.tearger}
                 blurOnSubmit={false}
@@ -556,12 +558,13 @@ class ChangeMainData extends Component {
                 maxLength={70}
                 ref={(input) => { this.city = input; }}
                 focus={true}
-                returnKeyType={"next"}
-                blurOnSubmit={false}
+              // returnKeyType={"next"}
+              // onSubmitEditing={this.country.tearger}
+              // blurOnSubmit={false}
               />
 
               <Text style={styles.PlaceholderControl}>Land <Text style={styles.PlaceholderRequiered}>*</Text></Text>
-              <Picker onValueChange={country => this.setState({ country })} values={countries.map(({ name }) => name)} selected={country} />
+              <Picker onValueChange={country => this.setState({ country })} ref={(input) => { this.country = input; }} values={countries.map(({ name }) => name)} selected={country} />
             </View>
           )}
 
@@ -576,10 +579,10 @@ class ChangeMainData extends Component {
               <Checkbox onPress={() => this.setState({ subscribe: !subscribe })} checked={subscribe} text='Newsletter anmelden' />
             </View>
           )}
-
         </ScrollView>
         <FooterButton onPress={() => this.Executing()} text={'Speichern'} />
-      </View>
+      </KeyboardAvoidingView>
+
     )
   }
 }
@@ -590,7 +593,7 @@ export default connect(mapStateToProps, actions)(ChangeMainData);
 const styles = {
   PlaceholderControl: { fontSize: 13, color: '#A0A0A0', marginTop: 10, marginBottom: -5 },
   PlaceholderNotes: { fontSize: 12, color: '#A0A0A0', marginTop: 10, marginBottom: -5 },
-  //InputControl: { fontSize: 16, height: 40, marginTop: 0, marginBottom: -5 },
+  //InputControl: {fontSize: 16, height: 40, marginTop: 0, marginBottom: -5 },
   PlaceholderRequiered: { fontSize: 13, color: 'red' },
 
   dateStyle: {
