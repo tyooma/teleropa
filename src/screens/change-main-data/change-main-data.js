@@ -14,6 +14,7 @@ import { getCountries } from '../../gets/mainPagePosts';
 import { getUserBillingAddress, getUserShippingAddress } from '../../gets/userPosts';
 import { ChangeUserInfo, ChangeUserAddress } from '../../posts/userDataPosts';
 import { register } from '../../posts/authPosts';
+import { sHeight } from '../../helpers/screenSize';
 
 class ChangeMainData extends Component {
 
@@ -33,16 +34,14 @@ class ChangeMainData extends Component {
     // console.log('DidMount => screenID:', screenID);
     // console.log('DidMount => userID:', this.props.userID);
 
-    if (screenID === 'ChangeUserInfo') {
-      console.log("1111111111111 -- ChangeUserInfo", this.props.userInfo)
+    if (screenID === 'ChangeUserInfo') {      
       const { name, surname, birthDate, gender } = this.props.userInfo;
 
       this.setState({
         screenID: screenID, loaded: true, userID: userID,
         salutation: gender, firstname: name, lastname: surname,
         birthDate: birthDate ? new Date(birthDate) : null,
-      });
-      console.log("12321321 -- ChangeUserInfo state", this.state.birthDate)
+      });      
     } else if (screenID === 'ChangeUserBillingAddress') {
       getCountries().then(({ countries }) => {
         this.setState({ countries: countries });
@@ -362,19 +361,19 @@ class ChangeMainData extends Component {
 
       <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={{ flex: 1 }}>
 
-        <ScrollView style={{ marginHorizontal: 15 }} showsVerticalScrollIndicator={false}>
+        <ScrollView style={{ marginHorizontal: 15, height: sHeight }} showsVerticalScrollIndicator={false}>
 
           {this.Visible('customerType') && (
-            <View>
-              <Text style={styles.PlaceholderControl}>Ich bin Neukunde <Text style={styles.PlaceholderRequiered}>*</Text></Text>
+        <View>
+              <Text style={styles.PlaceholderControl}>Ich bin Neukunde: <Text style={styles.PlaceholderRequiered}>*</Text></Text>
               <Picker onValueChange={(value) => this.CustomerChange(value)} values={['Privatkunde', 'Firma']} selected={customerType} />
             </View>
           )}
 
           {(customerType === 'Firma') && this.Visible('customerType') &&
-            <View>
-              <Text style={styles.PlaceholderControl}>Firmennamen <Text style={styles.PlaceholderRequiered}>*</Text></Text>
-              <Text style={styles.PlaceholderNotes}>Die maximal 255 Zeichen.</Text>
+          <View>
+              <Text style={styles.PlaceholderControl}>Firmennamen: <Text style={styles.PlaceholderRequiered}>*</Text></Text>
+              {/* <Text style={styles.PlaceholderNotes}>Die maximal 255 Zeichen.</Text> */}
               <Input
                 onChangeText={company => this.setState({ company })}
                 value={company} maxLength={255}
@@ -383,8 +382,8 @@ class ChangeMainData extends Component {
                 returnKeyType={"next"}
                 onSubmitEditing={this.department && this.department.tearger}
                 blurOnSubmit={true} />
-              <Text style={styles.PlaceholderControl}>Abteilung</Text>
-              <Text style={styles.PlaceholderNotes}>Die maximal 35 Zeichen.</Text>
+              <Text style={styles.PlaceholderControl}>Abteilung:</Text>
+              {/* <Text style={styles.PlaceholderNotes}>Die maximal 35 Zeichen.</Text> */}
               <Input
                 onChangeText={department => this.setState({ department })}
                 value={department} maxLength={35}
@@ -394,8 +393,8 @@ class ChangeMainData extends Component {
                 onSubmitEditing={this.vatId && this.vatId.tearger}
                 blurOnSubmit={false} />
 
-              <Text style={styles.PlaceholderControl}>Steuernummer <Text style={styles.PlaceholderRequiered}>*</Text></Text>
-              <Text style={styles.PlaceholderNotes}>Die maximal 50 Zeichen.</Text>
+              <Text style={styles.PlaceholderControl}>Steuernummer: <Text style={styles.PlaceholderRequiered}>*</Text></Text>
+              {/* <Text style={styles.PlaceholderNotes}>Die maximal 50 Zeichen.</Text> */}
               <Input
                 onChangeText={vatId => this.setState({ vatId })}
                 value={vatId}
@@ -407,8 +406,8 @@ class ChangeMainData extends Component {
           }
 
           {this.Visible('salutation') && (
-            <View>
-              <Text style={styles.PlaceholderControl}>Geschlecht <Text style={styles.PlaceholderRequiered}>*</Text></Text>
+          <View>
+              <Text style={styles.PlaceholderControl}>Geschlecht: <Text style={styles.PlaceholderRequiered}>*</Text></Text>
               <Picker
                 onValueChange={salutation => this.setState({ salutation })}
                 values={['Herr', 'Frau']}
@@ -417,9 +416,9 @@ class ChangeMainData extends Component {
           )}
 
           {this.Visible('firstname') && (
-            <View>
-              <Text style={styles.PlaceholderControl}>Vorname <Text style={styles.PlaceholderRequiered}>*</Text></Text>
-              <Text style={styles.PlaceholderNotes}>Die maximal 255 Zeichen.</Text>
+          <View>
+              <Text style={styles.PlaceholderControl}>Vorname: <Text style={styles.PlaceholderRequiered}>*</Text></Text>
+              {/* <Text style={styles.PlaceholderNotes}>Die maximal 255 Zeichen.</Text> */}
               <Input
                 onChangeText={firstname => this.setState({ firstname })}
                 value={firstname}
@@ -427,16 +426,16 @@ class ChangeMainData extends Component {
                 ref={(input) => { this.firstname = input; }}
                 autoFocus={true}
                 returnKeyType={"next"}
-                onSubmitEditing={this.lastname.tearger}
+                onSubmitEditing={this.lastname && this.lastname.tearger}                              
                 blurOnSubmit={false}
               />
             </View>
           )}
 
           {this.Visible('lastname') && (
-            <View>
-              <Text style={styles.PlaceholderControl}>Nachname <Text style={styles.PlaceholderRequiered}>*</Text></Text>
-              <Text style={styles.PlaceholderNotes}>Die maximal 255 Zeichen.</Text>
+          <View>
+              <Text style={styles.PlaceholderControl}>Nachname: <Text style={styles.PlaceholderRequiered}>*</Text></Text>
+              {/* <Text style={styles.PlaceholderNotes}>Die maximal 255 Zeichen.</Text> */}
               <Input
                 onChangeText={lastname => this.setState({ lastname })}
                 value={lastname}
@@ -444,24 +443,24 @@ class ChangeMainData extends Component {
                 ref={(input) => { this.lastname = input; }}
                 focus={true}
                 returnKeyType={"next"}
-                onSubmitEditing={this.phone.tearger}
+                onSubmitEditing={this.phone && this.phone.tearger}                                              
                 blurOnSubmit={false}
               />
             </View>
           )}
 
           {this.Visible('birthDate') && (
-            <View>
-              <Text style={styles.PlaceholderControl}>Geburtstag</Text>
+          <View>
+              <Text style={styles.PlaceholderControl}>Geburtstag:</Text>
               {this.BirthdayRender()}
             </View>
           )}
 
 
           {this.Visible('phone') && (
-            <View>
-              <Text style={styles.PlaceholderControl}>Telefon</Text>
-              <Text style={styles.PlaceholderNotes}>Die maximal 40 Zeichen.</Text>
+          <View>
+              <Text style={styles.PlaceholderControl}>Telefon:</Text>
+              {/* <Text style={styles.PlaceholderNotes}>Die maximal 40 Zeichen.</Text> */}
               <Input
                 onChangeText={phone => this.setState({ phone: `${phone.replace(/[^0-9]/gi, '')}` })}
                 value={phone} keyboardType='phone-pad'
@@ -469,16 +468,16 @@ class ChangeMainData extends Component {
                 ref={(input) => { this.phone = input; }}
                 focus={true}
                 returnKeyType={"next"}
-                onSubmitEditing={this.email.tearger}
+                onSubmitEditing={this.email && this.email.tearger}                                              
                 blurOnSubmit={false}
               />
             </View>
           )}
 
           {this.Visible('email') && (
-            <View>
-              <Text style={styles.PlaceholderControl}>Email <Text style={styles.PlaceholderRequiered}>*</Text></Text>
-              <Text style={styles.PlaceholderNotes}>Die maximal 70 Zeichen.</Text>
+          <View>
+              <Text style={styles.PlaceholderControl}>Email: <Text style={styles.PlaceholderRequiered}>*</Text></Text>
+              {/* <Text style={styles.PlaceholderNotes}>Die maximal 70 Zeichen.</Text> */}
               <Input
                 onChangeText={email => this.setState({ email })}
                 autoCapitalize='none'
@@ -487,25 +486,26 @@ class ChangeMainData extends Component {
                 ref={(input) => { this.email = input; }}
                 focus={true}
                 returnKeyType={"next"}
-                onSubmitEditing={this.passwordOne.tearger}
+                onSubmitEditing={this.passwordOne && this.passwordOne.tearger}                                                            
                 blurOnSubmit={false}
               />
             </View>
           )}
 
           {this.Visible('passwordOne') && (
-            <View>
-              <Text style={styles.PlaceholderControl}>Passwort <Text style={styles.PlaceholderRequiered}>*</Text></Text>
-              <Text style={styles.PlaceholderNotes}>Ihr Passwort muss mindestens 8 Zeichen umfassen. Die maximal 16 Zeichen.</Text>
+          <View>
+              <Text style={styles.PlaceholderControl}>Passwort: <Text style={styles.PlaceholderRequiered}>*</Text></Text>
+              {/* <Text style={styles.PlaceholderNotes}>Ihr Passwort muss mindestens 8 Zeichen umfassen. Die maximal 16 Zeichen.</Text> */}
               <Input
                 onChangeText={passwordOne => this.setState({ passwordOne })}
                 value={passwordOne}
                 maxLength={16}
                 password
+                autoCapitalize = 'none'
                 ref={(input) => { this.passwordOne = input; }}
                 focus={true}
                 returnKeyType={"next"}
-                onSubmitEditing={this.passwordTwo.tearger}
+                onSubmitEditing={this.passwordTwo && this.passwordTwo.tearger}                                                              
                 blurOnSubmit={false}
               />
             </View>
@@ -515,28 +515,29 @@ class ChangeMainData extends Component {
 
 
           {this.Visible('passwordTwo') && (
-            <View>
-              <Text style={styles.PlaceholderControl}>Passwort wiederholen <Text style={styles.PlaceholderRequiered}>*</Text></Text>
+         <View>
+              <Text style={styles.PlaceholderControl}>Passwort wiederholen: <Text style={styles.PlaceholderRequiered}>*</Text></Text>
               <Input
                 onChangeText={passwordTwo => this.setState({ passwordTwo })}
                 value={passwordTwo}
                 maxLength={16}
                 password
+                autoCapitalize = 'none'
                 ref={(input) => { this.passwordTwo = input; }}
                 focus={true}
                 returnKeyType={"next"}
-                onSubmitEditing={this.street.tearger}
+                onSubmitEditing={this.street && this.street.tearger}                                                                              
                 blurOnSubmit={false}
               />
             </View>
           )}
 
           {this.Visible('address') && (
-            <View>
+          <View>
               <Text style={{ marginTop: 10, fontSize: 16, fontWeight: 'bold' }}>Ihre Adresse</Text>
 
-              <Text style={styles.PlaceholderControl}>Straße und Nr. <Text style={styles.PlaceholderRequiered}>*</Text></Text>
-              <Text style={styles.PlaceholderNotes}>Die maximal 255 Zeichen.</Text>
+              <Text style={styles.PlaceholderControl}>Straße und Nr.: <Text style={styles.PlaceholderRequiered}>*</Text></Text>
+              {/* <Text style={styles.PlaceholderNotes}>Die maximal 255 Zeichen.</Text> */}
               <Input
                 onChangeText={street => this.setState({ street })}
                 value={street}
@@ -544,28 +545,27 @@ class ChangeMainData extends Component {
                 ref={(input) => { this.street = input; }}
                 focus={true}
                 returnKeyType={"next"}
-                onSubmitEditing={this.zipcode.tearger}
+                onSubmitEditing={this.zipcode && this.zipcode.tearger}                                                                              
                 blurOnSubmit={false}
               />
 
-
-              <Text style={styles.PlaceholderControl}>PLZ <Text style={styles.PlaceholderRequiered}>*</Text></Text>
-              <Text style={styles.PlaceholderNotes}>Die maximal 5 Zeichen.</Text>
+              <Text style={styles.PlaceholderControl}>PLZ: <Text style={styles.PlaceholderRequiered}>*</Text></Text>
+              {/* <Text style={styles.PlaceholderNotes}>Die maximal 5 Zeichen.</Text> */}
               <Input
                 onChangeText={zipcode => this.setState({ zipcode: zipcode.replace(/[^0-9]/gi, '') })}
-                value={zipcode}
+                value={zipcode}  keyboardType='phone-pad'
                 maxLength={5}
                 ref={(input) => { this.zipcode = input; }}
                 focus={true}
                 returnKeyType={"next"}
-                onSubmitEditing={this.city.tearger}
+                onSubmitEditing={this.city && this.city.tearger}                                                                                              
                 blurOnSubmit={false}
               />
 
 
 
-              <Text style={styles.PlaceholderControl}>Ort <Text style={styles.PlaceholderRequiered}>*</Text></Text>
-              <Text style={styles.PlaceholderNotes}>Die maximal 70 Zeichen.</Text>
+              <Text style={styles.PlaceholderControl}>Ort: <Text style={styles.PlaceholderRequiered}>*</Text></Text>
+              {/* <Text style={styles.PlaceholderNotes}>Die maximal 70 Zeichen.</Text> */}
               <Input
                 onChangeText={city => this.setState({ city })}
                 value={city}
@@ -620,11 +620,15 @@ const styles = {
   },
 
   dateBox: {
-    height: 56,
+    // height: 56,
+    height: 36,    
     borderBottomWidth: 0.7,
     borderColor: '#949494',
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
-  }
+  },
+  inpuSize: {
+    height: 36,
+  }  
 }

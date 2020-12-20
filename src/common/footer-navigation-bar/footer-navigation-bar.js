@@ -41,7 +41,7 @@ class FooterNavBar extends PureComponent {
       <View style={s.BarConteiner}>
         <TouchableOpacity onPress={() => NavigationService.navigate('Main')} style={s.ButtonConteiner}>
           <View style={s.BarIcon}><Icons name="ios-home" size={25} color="#586589" /></View>
-          <Text style={s.ButtonText}>Main</Text>
+          <Text style={s.ButtonText}>Startseite</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => NavigationService.navigate('Cart', { cartReceaved: false })} style={s.ButtonConteiner}>
           <View style={s.BarIcon}>{CartIcon}</View>
@@ -49,7 +49,7 @@ class FooterNavBar extends PureComponent {
         </TouchableOpacity>
         <TouchableOpacity onPress={() => this.HomePress()} style={s.ButtonConteiner}>
           <View style={s.BarIcon}><Icons name="ios-help-circle-outline" size={25} color="#586589" /></View>
-          <Text style={s.ButtonText}>Help</Text>
+          <Text style={s.ButtonText}>Hilfe</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => NavigationService.navigate('Profile')} style={s.ButtonConteiner}>
           <View style={s.BarIcon}><Icons name="ios-person" size={25} color="#586589" /></View>

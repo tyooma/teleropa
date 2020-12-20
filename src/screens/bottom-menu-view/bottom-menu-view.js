@@ -59,16 +59,17 @@ export default createBottomTabNavigator(
                 const { routeName } = navigation.state;
                 let IconComponent = Icons;
                 let iconName;
-                if (routeName === 'Main') {
+
+                if (routeName === 'Startseite') {
                     iconName = `ios-home`;
-                } else if (routeName === 'cart') {
+                  } else if (routeName === 'Cart') {
                     iconName = `ios-cart`;
                     IconComponent = CartIconWithBadge;
-                } else if (routeName === 'Help') {
+                  } else if (routeName === 'Hilfe') {
                     iconName = `ios-help-circle-outline`;
-                } else if (routeName === 'profile') {
+                  } else if (routeName === 'Profil') {
                     iconName = `ios-person`;
-                }
+                  }                
                 return <IconComponent name={iconName} size={25} color={tintColor} />;
             }
         }),

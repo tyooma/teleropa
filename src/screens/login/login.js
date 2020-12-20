@@ -113,12 +113,9 @@ class Login extends Component {
               ref={(input) => { this.email = input; }}
               focus={true}
               returnKeyType={"next"}
-              onSubmitEditing={this.password.tearger}
+              onSubmitEditing={this.password && this.password.tearger}              
               blurOnSubmit={false}
             />
-
-
-
             <Text style={s.PlaceholderControl}>Passwort*</Text>
             <Input
               onChangeText={(password) => this.setState({ password })}

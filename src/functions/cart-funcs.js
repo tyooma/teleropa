@@ -12,7 +12,10 @@ export async function getCart() {
 
 // фунция для додавання карточки в редукс 
 export async function addToCart(id, bonus, selected, userPoints) {
-    //перевірка чи приходить вибраний метод, якщо ні, то робимо його за Гроші
+    //перевірка чи приходить вибраний метод, якщо ні, то робимо його за Гроші    
+
+    console.log("id ======>",id,"bonus ======>", bonus,"selected ======>", selected, "userPoints ======>", userPoints);
+
     if (selected.length == 0) {
         return selected = 'buyOfMoney'
     }
@@ -22,11 +25,11 @@ export async function addToCart(id, bonus, selected, userPoints) {
         await AsyncStorage.getItem("Cart", (err, res) => {
             if (!res) {
                 //ящко рес повертає нам пусте  то кладемо карточку та викликаємо метод додавання карточки 
-                AsyncStorage.setItem("Cart", JSON.stringify([]));
-                addToCart(id, selected);
+                AsyncStorage.setItem("Cart", JSON.stringify([]));                
+                addToCart(id, bonus, selected, userPoints);
             } else {
                 // Парсим Джсон та записуємо до карточки
-                const cart = JSON.parse(res);
+                const cart = JSON.parse(res);                
                 const productInCart = cart.find((product) => id === product.id);
                 if (productInCart) {
                     const productBuyMethodCart = cart.find((product) => id === product.id && selected === product.selected);
@@ -92,8 +95,6 @@ export async function addToCart(id, bonus, selected, userPoints) {
                     }
                 }
                 else {
-                    console.log("cart.length!=0", cart.length)
-
                     if (cart.length != 0) {
                         var CheckMoney = cart.filter(noMoney => noMoney.selected == "buyOfMoney")
                         var CheckPoint = cart.filter(noPoint => noPoint.selected == "buyOfPoints")

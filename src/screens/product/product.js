@@ -64,6 +64,7 @@ class Product extends Component {
     getFullProductData(id)
       .then(response => response.json())
       .then(responseJson => {
+        console.log('responseJson ==>',responseJson)
         if (responseJson.status == '404') {
           Alert.alert(
             "Alarm",

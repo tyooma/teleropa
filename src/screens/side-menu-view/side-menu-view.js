@@ -85,8 +85,8 @@ const styles = {
     flexDirection: 'row', height: 40, width: '70%', borderRadius: 5,
     backgroundColor: '#3F911B', alignItems: 'center', justifyContent: 'center',
   },
-  WhatsAppImage: { width: 24, height: 24, resizeMode: 'contain' },
-  WhatsAppText: { fontSize: 16, color: '#fff', marginLeft: 0 },
+  WhatsAppImage: { width: 24, height: 24, resizeMode: 'contain', marginHorizontal: 18 },
+  WhatsAppText: { fontSize: 16, color: '#fff', marginLeft: 0, marginHorizontal: 18 },
 
   ScrollMenuItems: {
     flex: 8, marginHorizontal: 18, marginVertical: 10,

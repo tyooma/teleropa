@@ -177,7 +177,7 @@ class ProductsByCategory extends Component {
                   <ProductListItem
                     name={productName}
                     price={this.props.userInfo.selectedUserType === 'EK' ? price.replace(/,/, '.') : companyPrice.replace(/,/, '.')}
-                    salePrice={salePrice.replace(/,/, '.') != 0 ? 'UVP ' + salePrice.replace(/,/, '.') : ''}
+                    salePrice={salePrice.replace(/,/, '.') != 0 ? salePrice.replace(/,/, '.') + ' UVP' : ''}
                     companyPrice={companyPrice.replace(/,/, '.')}
                     rate={rate}
                     stock={stock}

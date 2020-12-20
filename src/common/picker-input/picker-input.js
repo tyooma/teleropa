@@ -92,6 +92,7 @@ const styles = {
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
+    height: 36,
   },
   arrowStyle: {
     width: 10,

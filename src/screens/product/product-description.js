@@ -11,10 +11,10 @@ import {
   LayoutAnimation,
   CheckBox,
   Picker,
-  Alert
+  Alert,
 } from "react-native";
 
-import { addToCart } from '../../functions/cart-funcs';
+import { addToCart } from "../../functions/cart-funcs";
 
 import { connect } from "react-redux";
 
@@ -39,7 +39,6 @@ import Slider from "../../common/slider";
 import NavigationService from "../../navigation-service";
 
 import HTML from "react-native-render-html";
-
 
 // import FooterAgreement from "../../common/footer-agreement/footer-agreement";
 
@@ -68,17 +67,19 @@ class ProductDescription extends Component {
       if (Object.keys(nameVariants).length > 1) {
         var tempValues = Object.values(nameVariants)[0].values;
         var tempValues1 = Object.values(nameVariants)[1].values;
-        var keys = Object.keys(tempValues1)[0]
-        var TEMP = Object.assign({}, { [0]: Object.values(tempValues)[0], [1]: tempValues1[keys] });
-        this.setState({ selectedDropDownValue: TEMP })
+        var keys = Object.keys(tempValues1)[0];
+        var TEMP = Object.assign(
+          {},
+          { [0]: Object.values(tempValues)[0], [1]: tempValues1[keys] }
+        );
+        this.setState({ selectedDropDownValue: TEMP });
       } else {
-        var tempValues = Object.values(nameVariants)[0].values
+        var tempValues = Object.values(nameVariants)[0].values;
         var TEMP = Object.assign({}, { [0]: Object.values(tempValues)[0] });
-        this.setState({ selectedDropDownValue: TEMP })
+        this.setState({ selectedDropDownValue: TEMP });
       }
     }
   }
-
 
   state = {
     id: this.props.id,
@@ -103,15 +104,14 @@ class ProductDescription extends Component {
     productReviews: this.props.productReviews,
     productSimilar: this.props.productSimilar,
 
-
     showCheckBonus: false,
     descMore: false,
     similar: [],
-    points: "",
+    points: 0,
     loaded: false,
     stop: false,
     selected: "buyOfMoney",
-    selectedDropDownValue: null// { 0: "weiß", 1: "S" },
+    selectedDropDownValue: null, // { 0: "weiß", 1: "S" },
   };
 
   getProductImages(images) {
@@ -137,7 +137,9 @@ class ProductDescription extends Component {
       return (
         <View>
           <Text style={styles.salePrice}>
-            {this.props.userInfo.selectedUserType === "EK" ? price : companyPrice}
+            {this.props.userInfo.selectedUserType === "EK"
+              ? price
+              : companyPrice}
           </Text>
         </View>
       );
@@ -145,7 +147,9 @@ class ProductDescription extends Component {
       return (
         <View>
           <Text style={styles.price}>
-            {this.props.userInfo.selectedUserType === "EK" ? price : companyPrice}
+            {this.props.userInfo.selectedUserType === "EK"
+              ? price
+              : companyPrice}
           </Text>
         </View>
       );
@@ -159,14 +163,18 @@ class ProductDescription extends Component {
         return sum + (parseFloat(companyPrice) - parseFloat(companyPrice)) * 1;
       }, 0);
       return (
-        <Text style={{ fontSize: 16, color: "#d10019", }}>
-          {this.props.userInfo.selectedUserType === "EK" ? Math.floor(parseFloat(price)) : Math.floor(parseFloat(companyPrice))}
+        <Text style={{ fontSize: 16, color: "#d10019" }}>
+          {this.props.userInfo.selectedUserType === "EK"
+            ? Math.floor(parseFloat(price))
+            : Math.floor(parseFloat(companyPrice))}
         </Text>
       );
     } else {
       return (
-        <Text style={{ fontSize: 16, color: "#d10019", }}>
-          {this.props.userInfo.selectedUserType === "EK" ? Math.floor(parseFloat(price)) : Math.floor(parseFloat(companyPrice))}
+        <Text style={{ fontSize: 16, color: "#d10019" }}>
+          {this.props.userInfo.selectedUserType === "EK"
+            ? Math.floor(parseFloat(price))
+            : Math.floor(parseFloat(companyPrice))}
         </Text>
       );
     }
@@ -210,17 +218,25 @@ class ProductDescription extends Component {
 
   getBonusToState(id) {
     const checkStatuspoint = this.props.cart.reduce((sum, { bonus, count }) => {
-      return (sum) + (bonus) * count;
+      return sum + bonus * count;
     }, 0);
-    var oddMoney = parseFloat(this.props.userInfo.points) - parseFloat(checkStatuspoint);
-
+    var oddMoney =
+      parseFloat(this.props.userInfo.points) - parseFloat(checkStatuspoint);
 
     getBonusProducts(id).then((res) => {
       res.map((elId) => {
         if (elId.productID == id) {
           if (this.props.userID !== "notloggedin") {
-            this.setState({ showCheckBonus: true, points: elId.required_points, loaded: true, checkedMoney: true, checkedPoint: false, selected: "buyOfMoney", });
-          } if (oddMoney <= required_points) {
+            this.setState({
+              showCheckBonus: true,
+              points: elId.required_points,
+              loaded: true,
+              checkedMoney: true,
+              checkedPoint: false,
+              selected: "buyOfMoney",
+            });
+          }
+          if (oddMoney <= required_points) {
             this.setState({ showCheckBonus: false });
           }
         }
@@ -256,6 +272,8 @@ class ProductDescription extends Component {
     );
   }
 
+  
+
   getSimilarProductsCards() {
     if (this.state.similar.length < 1) {
       return null;
@@ -278,9 +296,17 @@ class ProductDescription extends Component {
       return (
         <ProductListItem
           name={productName}
-          price={this.props.userInfo.selectedUserType === 'EK' ? price.replace(/,/, '.') : companyPrice.replace(/,/, '.')}
-          salePrice={salePrice.replace(/,/, '.') != 0 ? 'UVP ' + salePrice.replace(/,/, '.') : ''}
-          companyPrice={companyPrice.replace(/,/, '.')}
+          price={
+            this.props.userInfo.selectedUserType === "EK"
+              ? price.replace(/,/, ".")
+              : companyPrice.replace(/,/, ".")
+          }
+          salePrice={
+            salePrice.replace(/,/, ".") != 0
+              ? salePrice.replace(/,/, ".") +  " UVP"  
+              : ""
+          }
+          companyPrice={companyPrice.replace(/,/, ".")}
           rate={rate}
           stock={stock}
           id={id}
@@ -297,7 +323,7 @@ class ProductDescription extends Component {
     if (stock > 0) {
       return (
         <TouchableOpacity
-          style={styles.cartButton}
+          style={styles.cartButton}                  
           onPress={() => addToCart(id, this.state.points, this.state.selected, this.props.userInfo.points)}>
           <Image
             style={styles.cartButtonImage}
@@ -312,31 +338,47 @@ class ProductDescription extends Component {
 
   onClickDropdown(value, index, item, i) {
     this.setState((prevState) => {
-      var selectedDropDownValue = Object.assign({}, prevState.selectedDropDownValue, { [i]: value });
-      this.setState({ selectedDropDownValue: selectedDropDownValue })
+      var selectedDropDownValue = Object.assign(
+        {},
+        prevState.selectedDropDownValue,
+        { [i]: value }
+      );
+      this.setState({ selectedDropDownValue: selectedDropDownValue });
     });
   }
 
   NewIDwithVariants() {
     // if (Object.keys(nameVariants).length > 0) {
-    let id; let NewArtikelnummer = {};
+    let id;
+    let NewArtikelnummer = {};
     if (Object.keys(this.state.productInfo.configurations).length > 1) {
-      NewArtikelnummer = Object.assign({}, this.state.selectedDropDownValue, { [1]: this.state.selectedDropDownValue[0], [3]: this.state.selectedDropDownValue[1], });
-      delete NewArtikelnummer[0]
-      id = this.getKeyByValue(this.state.productInfo.varaints, NewArtikelnummer)
+      NewArtikelnummer = Object.assign({}, this.state.selectedDropDownValue, {
+        [1]: this.state.selectedDropDownValue[0],
+        [3]: this.state.selectedDropDownValue[1],
+      });
+      delete NewArtikelnummer[0];
+      id = this.getKeyByValue(
+        this.state.productInfo.varaints,
+        NewArtikelnummer
+      );
     } else {
-      delete Object.assign(NewArtikelnummer, this.state.selectedDropDownValue, { [1]: this.state.selectedDropDownValue[0] })[0];
-      id = this.getKeyByValue(this.state.productInfo.varaints, NewArtikelnummer)
+      delete Object.assign(NewArtikelnummer, this.state.selectedDropDownValue, {
+        [1]: this.state.selectedDropDownValue[0],
+      })[0];
+      id = this.getKeyByValue(
+        this.state.productInfo.varaints,
+        NewArtikelnummer
+      );
     }
-    // }  
+    // }
 
     if (this.state.id != id) {
       getFullProductData(id)
-        .then(response => response.json())
-        .then(responseJson => {
-          console.log("RESPONSE STATE", this.state)
-          console.log(" RESPONSE ", responseJson)
-          if (responseJson.status == '404') {
+        .then((response) => response.json())
+        .then((responseJson) => {
+          console.log("RESPONSE STATE", this.state);
+          console.log(" RESPONSE ", responseJson);
+          if (responseJson.status == "404") {
             Alert.alert(
               "Alarm",
               "Error 404 niet gevonden",
@@ -366,7 +408,7 @@ class ProductDescription extends Component {
               siteURL: responseJson.siteURL,
               productOptions: responseJson.productOptions,
               configurations: responseJson.configurations,
-              varaints: responseJson.varaints
+              varaints: responseJson.varaints,
             },
             productDescription: responseJson.description_long,
             productDetails: responseJson.description_details,
@@ -374,23 +416,21 @@ class ProductDescription extends Component {
             productVideo: responseJson.description_video,
             productReviews: responseJson.reviews,
             productSimilar: responseJson.similarProductIDs,
-
           });
         });
     }
-    console.log("AFTER RESPONSE STATE", this.state)
-    return id
+    console.log("AFTER RESPONSE STATE", this.state);
+    return id;
   }
 
   getKeyByValue(object, value) {
-    let index = 0
-    Object.keys(object).find(key => {
-
+    let index = 0;
+    Object.keys(object).find((key) => {
       if (this.shallowEqual(object[key], value)) {
-        index = key
+        index = key;
       }
     });
-    return index
+    return index;
   }
 
   shallowEqual(object1, object2) {
@@ -410,23 +450,24 @@ class ProductDescription extends Component {
     return true;
   }
 
-
   render() {
-    console.log('THIS.STATE ========================> ::::::::::::++++++++++++++++==', this.state)
+    console.log(
+      "THIS.STATE ========================> ::::::::::::++++++++++++++++==",
+      this.state
+    );
     var arr = [];
     if (this.props.cart.length != 0) {
       this.props.cart.map((x) => {
         if (x.selected == "buyOfPoint") {
-          arr.push(x.selected)
-
+          arr.push(x.selected);
 
           if (x.selected.length > 1 && this.state.showCheckBonus) {
-            this.setState({ showCheckBonus: false })
+            this.setState({ showCheckBonus: false });
           } else {
-            this.setState({ showCheckBonus: true })
+            this.setState({ showCheckBonus: true });
           }
         }
-      })
+      });
     }
 
     const productInfo = this.state.productInfo;
@@ -518,7 +559,12 @@ class ProductDescription extends Component {
 
           <TouchableOpacity
             style={styles.subscribeButton}
-            onPress={() => NavigationService.navigate("ProductSubscribe", { productID: this.state.id, })}>
+            onPress={() =>
+              NavigationService.navigate("ProductSubscribe", {
+                productID: this.state.id,
+              })
+            }
+          >
             <Text style={styles.subscribeButtonText}>Newsletter anmelden</Text>
           </TouchableOpacity>
           {this.getSimilarText()}
@@ -529,25 +575,35 @@ class ProductDescription extends Component {
           </View>
         </ScrollView>
 
-
         {/* цена в описании продукта (стики) */}
         {/* <View style={[styles.RowLine, { marginTop: 10 }]}>
           {this.getStock(productInfo.stock)}
         </View> */}
 
-
         <View style={styles.RowLine}>
           <View style={[styles]}>
             {this.getStock(productInfo.stock)}
-            <Text style={styles.id}>Artikelnummer: {this.state.productInfo.varaints != null ? this.NewIDwithVariants() : this.state.id} </Text>
+            <Text style={styles.id}>
+              Artikelnummer:{" "}
+              {this.state.productInfo.varaints != null
+                ? this.NewIDwithVariants()
+                : this.state.id}{" "}
+            </Text>
           </View>
           <View style={[styles.lineTelePoints]}>
             <Text style={styles.id}>
-              Beim Kauf dieses Artikels erhalten Sie: {this.getMathPrices(productInfo.price, productInfo.salePrice, productInfo.companyPrice, productInfo, productInfo.stock)} Telepoints
+              Beim Kauf dieses Artikels erhalten Sie:{" "}
+              {this.getMathPrices(
+                productInfo.price,
+                productInfo.salePrice,
+                productInfo.companyPrice,
+                productInfo,
+                productInfo.stock
+              )}{" "}
+              Telepoints
             </Text>
           </View>
         </View>
-
 
         {/* this.props.cart.map((x) => {
         if (x.selected == "buyOfPoint") {
@@ -562,68 +618,92 @@ class ProductDescription extends Component {
         }
       }) */}
 
-
-
-        {this.state.productInfo.varaints != null ?
-          < View style={styles.RowLine}>
+        {this.state.productInfo.varaints != null ? (
+          <View style={styles.RowLine}>
             <View style={styles.getNameStyle}>
-              {
-                Object.values(this.state.productInfo.configurations).map((item, i) => {
+              {Object.values(this.state.productInfo.configurations).map(
+                (item, i) => {
                   return (
                     <View style={styles.DropDownColor}>
-                      < Text style={styles.OptionName} > {item.name}:</Text>
-                      <Picker                        
+                      <Text style={styles.OptionName}> {item.name}:</Text>
+                      <Picker
                         style={styles.RowLinePicker}
                         selectedValue={this.state.selectedDropDownValue[i]}
-                        onValueChange={(itemValue, itemIndex) => this.onClickDropdown(itemValue, itemIndex, item, i)
-                        }>
-                        {
-                          Object.values(item.values).map(el => {
-                            return (
-                              <Picker.Item
-                                key={i}
-                                label={el}
-                                value={el}
-                              />
-                            )
-                          })
+                        onValueChange={(itemValue, itemIndex) =>
+                          this.onClickDropdown(itemValue, itemIndex, item, i)
                         }
+                      >
+                        {Object.values(item.values).map((el) => {
+                          return <Picker.Item key={i} label={el} value={el} />;
+                        })}
                       </Picker>
                     </View>
-                  )
-                })
-              }
+                  );
+                }
+              )}
             </View>
           </View>
-          :
-          null
-        }
+        ) : null}
 
         <View style={[styles.lineLeft]}>
-          {this.state.showCheckBonus && Math.sign(this.state.points - this.props.userInfo.points) == -1 ? (
+          {this.state.showCheckBonus &&
+          Math.sign(this.state.points - this.props.userInfo.points) == -1 ? (
             <View style={{ flexDirection: "column" }}>
               <View style={{ flexDirection: "row" }}>
                 <CheckBox
                   value={this.state.checkedMoney}
                   onValueChange={() =>
-                    this.setState({ selected: "buyOfMoney", checkedMoney: !this.state.checkedMoney, checkedPoint: false, loaded: true, })}
+                    this.setState({
+                      selected: "buyOfMoney",
+                      checkedMoney: !this.state.checkedMoney,
+                      checkedPoint: false,
+                      loaded: true,
+                    })
+                  }
                 />
-                {this.getPrices(productInfo.price, productInfo.salePrice, productInfo.companyPrice, productInfo, productInfo.stock)}
+                {this.getPrices(
+                  productInfo.price,
+                  productInfo.salePrice,
+                  productInfo.companyPrice,
+                  productInfo,
+                  productInfo.stock
+                )}
               </View>
               <View style={{ flexDirection: "row" }}>
                 <CheckBox
                   value={this.state.checkedPoint}
                   onValueChange={() =>
-                    this.setState({ selected: "buyOfPoints", checkedPoint: !this.state.checkedPoint, checkedMoney: false, loaded: true, })}
+                    this.setState({
+                      selected: "buyOfPoints",
+                      checkedPoint: !this.state.checkedPoint,
+                      checkedMoney: false,
+                      loaded: true,
+                    })
+                  }
                 />
-                <Text style={{ fontSize: 12, marginTop: 8, color: "#000", flexDirection: "row", flexWrap: 'wrap', textAlign: 'left' }}                  >
+                <Text
+                  style={{
+                    fontSize: 12,
+                    marginTop: 8,
+                    color: "#000",
+                    flexDirection: "row",
+                    flexWrap: "wrap",
+                    textAlign: "left",
+                  }}
+                >
                   {this.state.points} TELEPOINTS
                 </Text>
               </View>
             </View>
-          ) : (this.getPrices(productInfo.price, productInfo.salePrice, productInfo.companyPrice, productInfo, productInfo.stock))
-          }
-
+          ) : (
+            this.getPrices(
+              productInfo.price,
+              productInfo.salePrice,
+              productInfo.companyPrice,
+              productInfo,
+              productInfo.stock
+            )
+          )}
 
           {this.getCartButton(
             productInfo.stock,
@@ -631,12 +711,16 @@ class ProductDescription extends Component {
             this.state.selected
           )}
         </View>
-      </View >
+      </View>
     );
   }
 }
 
-const mapStateToProps = ({ userID, userInfo, cart }) => ({ userID, userInfo, cart, });
+const mapStateToProps = ({ userID, userInfo, cart }) => ({
+  userID,
+  userInfo,
+  cart,
+});
 export default connect(mapStateToProps)(ProductDescription);
 
 const HTMLStyles = StyleSheet.create({
@@ -674,35 +758,35 @@ const styles = {
   },
   getNameStyle: {
     flexDirection: "column",
-    width: '100%'
-  },  
-  RowLinePicker: {    
+    width: "100%",
+  },
+  RowLinePicker: {
     color: "#050505",
-    width: '75%',
+    width: "75%",
     height: 30,
   },
   DropDownColor: {
-    borderColor: '#3f911b',
+    borderColor: "#3f911b",
     borderRadius: 5,
     borderWidth: 1,
     flexDirection: "row",
     alignItems: "center",
     fontSize: 12,
     color: "#050505",
-    width: '70%',
-    marginBottom: 10,  
-    justifyContent: 'space-between',
+    width: "70%",
+    marginBottom: 10,
+    justifyContent: "space-between",
   },
   OptionName: {
     fontSize: 15,
     color: "#050505",
-    marginHorizontal: 10,    
+    marginHorizontal: 10,
   },
   lineTelePoints: {
-    alignItems: 'center',
+    alignItems: "center",
     flexDirection: "row",
-    marginHorizontal: "15%",
-    width: "60%",
+    marginHorizontal: 18,
+    width: "55%",
   },
   line: {
     flexDirection: "row",
@@ -785,13 +869,14 @@ const styles = {
     justifyContent: "center",
     backgroundColor: "#3f911b",
     height: 40,
-    width: 164,
+    width: 180,
     borderRadius: 5,
+    marginBottom: 10  
   },
-  cartButtonText: {
-    marginLeft: 8,
+  cartButtonText: {   
+    marginLeft: 6, 
     fontSize: 16,
-    color: "#fff",
+    color: "#fff",  
   },
   cartButtonImage: {
     width: 22,

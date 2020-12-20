@@ -276,18 +276,18 @@ handlePress = () => {
 
 const AppBottomBarNavigator = createBottomTabNavigator(
 {
-  Main: Main,
+  Startseite: Main,
   Cart: {
     screen: Cart,
     navigationOptions: {
       tabBarOnPress: ({ navigation }) => { NavigationService.navigate('Cart', { cartReceaved: false })}
     },
   },
-  Help: {
+  Hilfe: {
     screen: () => null, navigationOptions: { tabBarOnPress: handlePress }
   },
   // Help: TestBox,
-  Profile: Profile,
+  Profil:Profile,
 },
 {
   defaultNavigationOptions: ({ navigation }) => ({
@@ -295,14 +295,14 @@ const AppBottomBarNavigator = createBottomTabNavigator(
         const { routeName } = navigation.state;
         let IconComponent = Icons;
         let iconName;
-        if (routeName === 'Main') {
+        if (routeName === 'Startseite') {
           iconName = `ios-home`;
         } else if (routeName === 'Cart') {
           iconName = `ios-cart`;
           IconComponent = CartIconWithBadge;
-        } else if (routeName === 'Help') {
+        } else if (routeName === 'Hilfe') {
           iconName = `ios-help-circle-outline`;
-        } else if (routeName === 'Profile') {
+        } else if (routeName === 'Profil') {
           iconName = `ios-person`;
         }
         return <IconComponent name={iconName} size={25} color={tintColor} />;
@@ -395,7 +395,7 @@ const AppStackNavigator = createStackNavigator(
       try {
         if (!params) {
           const { routeName } = routes[index];
-          if (routeName == "Main") {
+          if (routeName == "Startseite") {
           return {
             headerLeft: (
               <>
@@ -469,7 +469,7 @@ const AppStackNavigator = createStackNavigator(
             },
             headerLeftContainerStyle: { flex: 1, marginLeft: Platform.OS === 'ios' ? 0 : -10 }
           }
-          } else if (routeName == "Profile") {
+          } else if (routeName == "Profil") {
             return {
               title: 'Profil',
               headerLeft: <MenuButton/>,

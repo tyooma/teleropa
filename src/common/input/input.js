@@ -9,7 +9,7 @@ export default class Input extends Component {
     super(props);
     this.state = {
       secure: false,
-      height: 56,
+      height: 36,        
     }
 
     tearger = createRef();
@@ -18,7 +18,8 @@ export default class Input extends Component {
       this.state = {
         secure: true,
         img: require('../../assets/icons/040-eye-1.png'),
-        height: 56
+        // height: 56
+        height: 36,      
       }
     }
   }
@@ -39,7 +40,7 @@ export default class Input extends Component {
   render() {
     const { onSubmitEditing, placeholder, multiline, numberOfLines, value, keyboardType, maxLength, onChangeText, containerStyle, ...remainingProps } = this.props
     return (
-      <View style={[styles.inputBox, { height: Math.max(56, this.state.height) }, containerStyle]}>
+      <View style={[styles.inputBox, { height: Math.max(36, this.state.height) }, containerStyle]}>
         <TextInput
           ref={control => { this.tearger = control }}
           onSubmitEditing={(text) => { onSubmitEditing ? onSubmitEditing.focus() : null }}
@@ -79,7 +80,7 @@ const styles = {
     flex: 1
   },
   inputBox: {
-    height: 56,
+    height: 36,
     borderBottomWidth: 0.7,
     borderColor: '#949494',
     flexDirection: 'row',
