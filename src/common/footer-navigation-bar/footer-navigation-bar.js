@@ -1,8 +1,11 @@
 import React, { PureComponent } from 'react';
+
 import { Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+
 import Icons from 'react-native-vector-icons/Ionicons';
-import AsyncStorage from '@react-native-community/async-storage';
+
 import NavigationService from '../../navigation-service';
+
 import { connect } from 'react-redux';
 
 class FooterNavBar extends PureComponent {
@@ -22,7 +25,7 @@ class FooterNavBar extends PureComponent {
       .catch((err) => console.error('An error occurred', err));
   };
 
-  render() {
+  render() {    
     const CartIcon = (
       <View style={s.CartConteiner}>
         <View style={s.IconConteiner}><Icons name="ios-cart" size={25} color="#586589" /></View>
@@ -30,7 +33,7 @@ class FooterNavBar extends PureComponent {
           {this.props.cart.length > 0 && (
             <View style={s.BadgeCircle}>
               <Text style={s.BadgeMarker}>
-                {this.props.cart.reduce((sum, { count }) => { return (sum + count) }, 0)}
+                { this.props.cart.reduce((sum, { count }) => { return ( sum + count) }, 0) }
               </Text></View>
           )}
         </View>

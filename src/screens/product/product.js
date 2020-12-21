@@ -299,9 +299,7 @@ class Product extends Component {
     // const Aaa = createAppContainer(Tab);
     // return Tab;
     return (
-      <>
-        {/* <Aaa />        
-        <FooterNavBar /> */}
+      <>                
         <View style={{ flex: 1 }}>
           <CustomTopTapBar />
           <FooterNavBar />

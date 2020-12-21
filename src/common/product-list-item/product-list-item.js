@@ -245,11 +245,10 @@ function ProductListItem({
       <View
         style={{
           flexDirection: "row",
-          justifyContent: "space-between",
+          justifyContent: "center",
           flexWrap: "wrap",
           alignItems: "center",
-          marginBottom: 18,
-          //marginTop: 12,
+          marginBottom: 18,                            
         }}
       >
         <Rating rating={rate} />
@@ -359,28 +358,27 @@ const styles = {
   cartButton: {
     flexDirection: "row",
     flex: 1,
-    marginVertical: 10,
-    marginHorizontal: 5,
+    marginVertical: 10,    
     borderRadius: 5,
     borderColor: "#3f911b",
     minWidth: 70,
-    borderWidth: 1,
-    height: 32,
+    borderWidth: 1,    
     height: 42,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center",    
   },
   cartButtonImage: {
     width: 22,
     height: 18,
-    resizeMode: 'contain',
-    marginLeft: 10,
+    resizeMode: 'contain',  
+    marginLeft: 8,          
     //style={{marginLeft: 8, width: 22, height: 18, resizeMode: "contain" }}
   },
   cartButtonText: {
-    marginHorizontal: 8,
+    marginLeft: 5,
+    marginRight:8,
     //fontSize: 16,
-    color: "#fff",
+    color: "#fff",    
     justifyContent: "center",
   },  
 };
