@@ -136,7 +136,7 @@ class Login extends Component {
                 </TouchableOpacity>
               </View>
               <View style={s.ControlRight}>
-                <TouchableOpacity onPress={() => this.props.navigation.navigate('ChangeMainData', { ScreenID: 'RegistrationUser' })} style={s.ActionButton}>
+                <TouchableOpacity onPress={() => { this.logInHandler() }} style={s.ActionButton}>
                   <Text style={s.ActionText}>Anmelden</Text>
                 </TouchableOpacity>
               </View>
