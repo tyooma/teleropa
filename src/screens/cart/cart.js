@@ -114,14 +114,14 @@ export const CartItem = ({
             />
           </View>
         ) : (
-          <View>
-            <Image
-              style={styles.cartItemImage}
-              source={require("../../assets/message-icons/no-photo.png")}
-              key={id + methodMoney + "no-image"}
-            />
-          </View>
-        )}
+            <View>
+              <Image
+                style={styles.cartItemImage}
+                source={require("../../assets/message-icons/no-photo.png")}
+                key={id + methodMoney + "no-image"}
+              />
+            </View>
+          )}
         <View style={{ flex: 1 }}>
           <Text style={styles.cartItemName} numberOfLines={2}>
             {name}
@@ -164,13 +164,13 @@ export const CartItem = ({
                   </Text>
                 </>
               ) : (
-                <>
-                  <Text style={styles.pricePerProduct}>
-                    {price.toFixed(2)} €
+                    <>
+                      <Text style={styles.pricePerProduct}>
+                        {price.toFixed(2)} €
                   </Text>
-                  <Text style={styles.price}>{(price * pcs).toFixed(2)} €</Text>
-                </>
-              )}
+                      <Text style={styles.price}>{(price * pcs).toFixed(2)} €</Text>
+                    </>
+                  )}
             </View>
           </View>
           {orderReturnReason ? (
@@ -374,11 +374,11 @@ class Cart extends Component {
     let originalProductsPrice =
       this.props.userInfo.selectedUserType === "EK"
         ? products.reduce((sum, { price, count }) => {
-            return sum + price * count;
-          }, 0)
-        : products.reduce((sum, { companyPrice, count }) => {
-            return sum + companyPrice * count;
-          }, 0);
+          return sum + price * count;
+        }, 0)
+        : products.reduce((sum, { companyPrice, count, tax }) => {
+          return sum + (companyPrice + (companyPrice / 100 * tax) ) * count;
+        }, 0);
 
     //------------------------------------------------------------------------------------------------------------------------------
     let orderVAT = 0;
@@ -397,12 +397,20 @@ class Cart extends Component {
       originalProductsPrice !== this.state.originalProductsPrice ||
       discountProductsPrice !== this.state.discountProductsPrice
     ) {
-      this.setState({
-        originalProductsPrice: originalProductsPrice,
-        discountProductsPrice: discountProductsPrice,
-        discountValue: originalProductsPrice - discountProductsPrice,
-        orderVAT: orderVAT,
-      });
+      // this.props.userInfo.selectedUserType === "H"
+      //   ? this.setState({
+      //     originalProductsPrice: originalProductsPrice + orderVAT,
+      //     discountProductsPrice: discountProductsPrice,
+      //     discountValue: (  originalProductsPrice + orderVAT) - discountProductsPrice,
+      //     orderVAT: orderVAT,
+      //   })
+      //   :
+         this.setState({
+          originalProductsPrice: originalProductsPrice,
+          discountProductsPrice: discountProductsPrice,
+          discountValue: originalProductsPrice - discountProductsPrice,
+          orderVAT: orderVAT,
+        });
     }
   }
 
@@ -493,6 +501,11 @@ class Cart extends Component {
             <View style={styles.line}>
               <Text style={styles.summaryText}>Summe:</Text>
               <Text style={styles.summaryText}>
+                {/* {
+                  this.props.userInfo.selectedUserType === "H"
+                    ? (this.state.originalProductsPrice + this.state.orderVAT).toFixed(2)
+                    : this.state.originalProductsPrice.toFixed(2)
+                } € */}
                 {this.state.originalProductsPrice.toFixed(2)} €
               </Text>
             </View>
@@ -500,6 +513,8 @@ class Cart extends Component {
             <View style={styles.line}>
               <Text style={styles.summaryText}>Gesamtsumme ohne MwSt.:</Text>
               <Text style={styles.summaryText}>
+                {/* {this.state.orderVAT.toFixed(2)} € */}
+
                 {(
                   this.state.originalProductsPrice - this.state.orderVAT
                 ).toFixed(2)}{" "}
@@ -510,6 +525,15 @@ class Cart extends Component {
             <View style={styles.line}>
               <Text style={styles.summaryText}>zzgl. MwSt.:</Text>
               <Text style={styles.summaryText}>
+                {/* {
+                  this.props.userInfo.selectedUserType === "H"
+                    ? this.state.originalProductsPrice.toFixed(2)
+                    : (this.state.originalProductsPrice - this.state.orderVAT).toFixed(2)
+
+                } € */}
+
+
+
                 {this.state.orderVAT.toFixed(2)} €
               </Text>
             </View>

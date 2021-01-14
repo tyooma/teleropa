@@ -122,13 +122,13 @@ export async function addToCart(id, bonus, selected, userPoints) {
 
                             }
                         } else if (selected == "buyOfMoney") {
-                            if (CheckMoney.length > 2) {
-                                Toast.show("Nicht mehr als 3 Artikel pro €", {
-                                    shadow: false,
-                                    backgroundColor: "#505050",
-                                    duration: 1500,
-                                });
-                            } else {
+                            // if (CheckMoney.length > 2) {
+                            //     Toast.show("Nicht mehr als 3 Artikel pro €", {
+                            //         shadow: false,
+                            //         backgroundColor: "#505050",
+                            //         duration: 1500,
+                            //     });
+                            // } else {
                                 const newProduct = { id, count: 1, bonus, selected };
                                 console.log("Добавление за бабосики и когда меньше 3 товаров", newProduct)
                                 cart.push(newProduct);
@@ -140,7 +140,7 @@ export async function addToCart(id, bonus, selected, userPoints) {
                                     backgroundColor: "#505050",
                                     duration: 1500,
                                 });
-                            }
+                            // }
                         }
                     }
                     else {
