@@ -98,7 +98,7 @@ export default class DeliveryService extends Component {
 
   DeliveryOptions() {
     console.log(
-      "this.state.services ==> Delivery-service.js ==>",
+      "DELIVERY SERVICES: ",
       this.state.services
     );
     return this.state.services.map(

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react'
 
 import {
   View,
@@ -10,32 +10,32 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
-  FlatList,
-} from "react-native";
+  FlatList
+} from 'react-native'
 
-import Toast from "react-native-root-toast";
+import Toast from 'react-native-root-toast'
 
-import FooterButton from "../../common/footer-button";
+import FooterButton from '../../common/footer-button'
 
-import NavigationService from "../../navigation-service";
+import NavigationService from '../../navigation-service'
 
-import BackButton from "../../common/header-buttons/back-button";
+import BackButton from '../../common/header-buttons/back-button'
 
-import AsyncStorage from "@react-native-community/async-storage";
+import AsyncStorage from '@react-native-community/async-storage'
 
-import ScannerButton from "../../common/header-buttons/scanner-button";
+import ScannerButton from '../../common/header-buttons/scanner-button'
 
-import { getSearchResult } from "../../gets/productsListPost";
+import { getSearchResult } from '../../gets/productsListPost'
 
-import { getPreviewProductData } from "../../gets/productPosts";
+import { getPreviewProductData } from '../../gets/productPosts'
 
-import Loading from "../loading";
+import Loading from '../loading'
 
-import FilterButton from "../../common/filter-button";
+import FilterButton from '../../common/filter-button'
 
-import ProductListItem from "../../common/product-list-item";
+import ProductListItem from '../../common/product-list-item'
 
-import { connect } from "react-redux";
+import { connect } from 'react-redux'
 
 // import { SearchBar } from "react-native-elements";
 
@@ -46,7 +46,7 @@ import { connect } from "react-redux";
 // const CustomHeader = ({ value, updateSearch, syka, onEndEditing }) => {
 const CustomHeader = ({ value, onChangeText, onEndEditing }) => {
   return (
-    <SafeAreaView style={{ backgroundColor: "#d1D0019" }}>
+    <SafeAreaView style={{ backgroundColor: '#d1D0019' }}>
       <View style={styles.headerStyle}>
         <TouchableOpacity
           style={styles.backStyle}
@@ -72,53 +72,53 @@ const CustomHeader = ({ value, onChangeText, onEndEditing }) => {
         <TextInput
           autoFocus
           value={value}
-          placeholderTextColor="rgba(255, 255, 255, 0.7)"
+          placeholderTextColor='rgba(255, 255, 255, 0.7)'
           style={styles.searchInputStyle}
-          placeholder="Bitte geben Sie den Artikelnamen ein"
-          onChangeText={(value) => onChangeText(value)}
+          placeholder='Bitte geben Sie den Artikelnamen ein'
+          onChangeText={value => onChangeText(value)}
           onEndEditing={() => onEndEditing()}
         />
-        <ScannerButton />
+        {/* <ScannerButton /> */}
       </View>
     </SafeAreaView>
-  );
-};
+  )
+}
 
-const updateSearch1 = (value) => {
-  return value;
-};
+const updateSearch1 = value => {
+  return value
+}
 
 const SearchStoryItem = ({ text, onPress }) => {
   return (
     <TouchableOpacity style={styles.searchStoryItem} onPress={() => onPress()}>
       <Image
         style={styles.searchStoryItemImage}
-        source={require("../../assets/icons/006-search.png")}
-        key={"searchImageInput"}
+        source={require('../../assets/icons/006-search.png')}
+        key={'searchImageInput'}
       />
       <Text style={styles.searchStoryItemText}>{text}</Text>
     </TouchableOpacity>
-  );
-};
+  )
+}
 
 class Search extends Component {
   static navigationOptions = ({ navigation }) => {
-    const { params = {} } = navigation.state;
+    const { params = {} } = navigation.state
     // console.log(" navigation.getParam++++++++", navigation.getParam('searchText', ''));
     return {
       header: (
         <CustomHeader
           value={params.searchText}
           // updateSearch={value => params.onChangeSearch(value)}
-          onChangeText={(value) => params.onChangeSearch(value)}
+          onChangeText={value => params.onChangeSearch(value)}
           // syka={navigation.getParam('SearchText', '')}
           onEndEditing={() => {
-            if (params.searchText) params.onSubmit();
+            if (params.searchText) params.onSubmit()
           }}
         />
-      ),
-    };
-  };
+      )
+    }
+  }
 
   state = {
     showResult: false,
@@ -129,97 +129,97 @@ class Search extends Component {
     maxPrice: 0,
     fromPrice: 0,
     toPrice: 0,
-    sortBy: "",
+    sortBy: '',
     loaded: false,
-    searchText: "",
+    searchText: '',
     searchStory: [],
-    filteredIDs: [],
-  };
+    filteredIDs: []
+  }
 
   handleSearchSubmit() {
     try {
-      AsyncStorage.getItem("searchStory").then((res) => {
+      AsyncStorage.getItem('searchStory').then(res => {
         if (!res) {
-          AsyncStorage.setItem("searchStory", JSON.stringify([]));
-          this.handleSearchSubmit();
+          AsyncStorage.setItem('searchStory', JSON.stringify([]))
+          this.handleSearchSubmit()
         } else {
-          const story = JSON.parse(res);
-          if (story.length > 4) story.pop();
-          story.unshift(this.state.searchText);
-          AsyncStorage.setItem("searchStory", JSON.stringify(story));
+          const story = JSON.parse(res)
+          if (story.length > 4) story.pop()
+          story.unshift(this.state.searchText)
+          AsyncStorage.setItem('searchStory', JSON.stringify(story))
         }
-      });
+      })
     } catch (e) {
-      console.warn(e);
+      console.warn(e)
     }
   }
 
   componentWillReceiveProps() {
-    const searchFromProps = this.props.navigation.getParam("searchText", "");
+    const searchFromProps = this.props.navigation.getParam('searchText', '')
     if (searchFromProps.length >= 4) {
-      this.setState({ showResult: true });
+      this.setState({ showResult: true })
     }
   }
 
   componentDidMount() {
-    this.props.navigation.addListener("didFocus", (route) => {
+    this.props.navigation.addListener('didFocus', route => {
       const filterOptions = this.props.navigation.getParam(
-        "filterOptions",
+        'filterOptions',
         null
-      );
+      )
       if (filterOptions) {
-        const { from, to, sortBy } = filterOptions;
+        const { from, to, sortBy } = filterOptions
         if (
           from !== this.state.fromPrice ||
           to !== this.state.toPrice ||
           sortBy !== this.state.sortBy
         ) {
-          this.getIDs(this.state.ids, from, to, sortBy);
+          this.getIDs(this.state.ids, from, to, sortBy)
         }
       }
-    });
-    AsyncStorage.getItem("searchStory").then((searchStory) => {
-      this.setState({ searchStory: JSON.parse(searchStory) });
-    });
+    })
+    AsyncStorage.getItem('searchStory').then(searchStory => {
+      this.setState({ searchStory: JSON.parse(searchStory) })
+    })
 
     this.props.navigation.setParams({
       searchText: this.state.searchText,
-      onChangeSearch: (value) => this.onSearchChange(value),
-      onSubmit: () => this.handleSearchSubmit(),
-    });
+      onChangeSearch: value => this.onSearchChange(value),
+      onSubmit: () => this.handleSearchSubmit()
+    })
     if (this.state.searchText.length >= 4) {
-      this.setState({ showResult: true });
+      this.setState({ showResult: true })
     }
   }
 
   onSearchChange(searchText) {
-    this.setState({ searchText });
-    this.props.navigation.setParams({ searchText });
-    this.setState({ showResult: searchText.length >= 4 });
+    this.setState({ searchText })
+    this.props.navigation.setParams({ searchText })
+    this.setState({ showResult: searchText.length >= 4 })
     if (searchText.length >= 4) {
-      this.setState({ loaded: false, products: [], from: 0, ids: [] });
-      this.getProductsIDs(searchText);
+      this.setState({ loaded: false, products: [], from: 0, ids: [] })
+      this.getProductsIDs(searchText)
     }
   }
   getProductsIDs(searchText) {
-    var result = [];
-    getSearchResult(searchText).then((res) => {
+    var result = []
+    getSearchResult(searchText).then(res => {
       if (res.searchResult.length > 0) {
-        let searchString = searchText.toLowerCase().trim();
-        let ResponseServer = res.searchResult;
-        ResponseServer.filter((a) => {
-          if (a.name.toLowerCase().indexOf(searchString) != -1) result.push(a);
-        });
-        this.getIDs(result);
-      } else this.showToastNoSearch();
-    });
+        let searchString = searchText.toLowerCase().trim()
+        let ResponseServer = res.searchResult
+        ResponseServer.filter(a => {
+          if (a.name.toLowerCase().indexOf(searchString) != -1) result.push(a)
+        })
+        this.getIDs(result)
+      } else this.showToastNoSearch()
+    })
   }
 
   findMinMaxPrice(ids) {
-    if (this.props.userInfo.selectedUserType === "EK") {
-      const prices = ids.map(({ price }) => price);
-      const maxPrice = Math.max(...prices);
-      const minPrice = Math.min(...prices);
+    if (this.props.userInfo.selectedUserType === 'EK') {
+      const prices = ids.map(({ price }) => price)
+      const maxPrice = Math.max(...prices)
+      const minPrice = Math.min(...prices)
       this.setState({
         minPrice,
         maxPrice,
@@ -227,15 +227,15 @@ class Search extends Component {
         toPrice: maxPrice,
         originalIDs: ids,
         filteredIDs: ids,
-        loaded: true,
-      });
-      this.getData(0);
+        loaded: true
+      })
+      this.getData(0)
     } else {
       const companyPrice = ids.map(({ companyPrice }) =>
         companyPrice.toFixed(2)
-      );
-      const maxPrice = Math.max(...companyPrice);
-      const minPrice = Math.min(...companyPrice);
+      )
+      const maxPrice = Math.max(...companyPrice)
+      const minPrice = Math.min(...companyPrice)
       this.setState({
         minPrice,
         maxPrice,
@@ -243,99 +243,99 @@ class Search extends Component {
         toPrice: maxPrice,
         originalIDs: ids,
         filteredIDs: ids,
-        loaded: true,
-      });
-      this.getData(0);
+        loaded: true
+      })
+      this.getData(0)
     }
   }
 
   getIDs(ids, fromPrice, toPrice, sortBy) {
     if (fromPrice == 0 || toPrice == 0) {
-      Toast.show("Prijs kan niet 0 zijn", {
+      Toast.show('Prijs kan niet 0 zijn', {
         shadow: false,
-        backgroundColor: "#505050",
-        duration: 1500,
-      });
+        backgroundColor: '#505050',
+        duration: 1500
+      })
     }
     if (fromPrice && toPrice) {
-      this.setState({ fromPrice, toPrice, sortBy });
+      this.setState({ fromPrice, toPrice, sortBy })
       const filtered = this.state.originalIDs.filter(
         ({ price }) => price >= fromPrice && price <= toPrice
-      );
-      let sorted = [];
+      )
+      let sorted = []
       if (sortBy.length != 0) {
         switch (sortBy) {
-          case "popular":
+          case 'popular':
             sorted = filtered.sort((first, second) =>
               first.popularity > second.popularity
                 ? -1
                 : second.popularity > first.popularity
                 ? 1
                 : 0
-            );
-            break;
-          case "alphabet":
+            )
+            break
+          case 'alphabet':
             sorted = filtered.sort((first, second) =>
               first.name > second.name ? 1 : second.name > first.name ? -1 : 0
-            );
-            break;
-          case "price_down":
+            )
+            break
+          case 'price_down':
             sorted = filtered.sort((first, second) =>
               first.price > second.price
                 ? -1
                 : second.price > first.price
                 ? 1
                 : 0
-            );
-            break;
-          case "price_up":
+            )
+            break
+          case 'price_up':
             sorted = filtered.sort((first, second) =>
               first.price < second.price
                 ? -1
                 : second.price < first.price
                 ? 1
                 : 0
-            );
-            break;
+            )
+            break
           default:
-            break;
+            break
         }
       } else {
-        sorted = filtered;
+        sorted = filtered
       }
-      new Promise((resolve) => {
-        this.setState({ filteredIDs: sorted, products: [], from: 0 });
-        setTimeout(() => resolve(), 200);
-      }).then(() => this.getData(0, sortBy));
+      new Promise(resolve => {
+        this.setState({ filteredIDs: sorted, products: [], from: 0 })
+        setTimeout(() => resolve(), 200)
+      }).then(() => this.getData(0, sortBy))
     } else {
       //this.setState({ originalIDs: ids, filteredIDs: ids, loaded: true, })
-      this.findMinMaxPrice(ids);
+      this.findMinMaxPrice(ids)
     }
   }
 
   getData(from) {
-    this.setState({ from });
+    this.setState({ from })
     this.state.filteredIDs.filter(({ productID }, key) => {
       if (key >= from && key < from + 12) {
         getPreviewProductData(productID)
-          .then((res) => {
+          .then(res => {
             const isProductContainInList = this.state.filteredIDs.find(
-              (product) => product.productID === productID
-            );
+              product => product.productID === productID
+            )
             const isProductAlreadyShows = this.state.products.find(
-              (product) => product.productID === productID
-            );
+              product => product.productID === productID
+            )
             if (isProductContainInList && !isProductAlreadyShows) {
               this.setState({
-                products: [...this.state.products, { ...res, id: productID }],
-              });
+                products: [...this.state.products, { ...res, id: productID }]
+              })
             }
           })
-          .catch((e) => console.log(productID, e));
+          .catch(e => console.log(productID, e))
       }
-    });
+    })
     if (!this.state.products && !this.state.filteredIDs) {
-      this.showToast();
+      this.showToast()
     }
   }
 
@@ -352,62 +352,61 @@ class Search extends Component {
             />
           ))}
         </View>
-      );
+      )
     }
-    return null;
+    return null
   }
 
   showToastNoSearch() {
-    Toast.show("Nichts gefunden", {
+    Toast.show('Nichts gefunden', {
       shadow: false,
-      backgroundColor: "#505050",
-      duration: Toast.durations.LONG,
-    });
-    NavigationService.back();
+      backgroundColor: '#505050',
+      duration: Toast.durations.LONG
+    })
+    NavigationService.back()
   }
 
   showToast() {
-    Toast.show("Nicht verfügbar", {
+    Toast.show('Nicht verfügbar', {
       shadow: false,
-      backgroundColor: "#505050",
-      duration: 1500,
-    });
+      backgroundColor: '#505050',
+      duration: 1500
+    })
   }
 
   renderHelper() {
     if (!this.state.showResult) {
-      return this.getSearchStory();
+      return this.getSearchStory()
     }
-    if (!this.state.loaded || this.state.products.length < 1)
-      return <Loading />;
-    const { minPrice, maxPrice, fromPrice, toPrice, sortBy } = this.state;
-    let sorted = [];
-    if (this.props.userInfo.selectedUserType == "H") {
+    if (!this.state.loaded || this.state.products.length < 1) return <Loading />
+    const { minPrice, maxPrice, fromPrice, toPrice, sortBy } = this.state
+    let sorted = []
+    if (this.props.userInfo.selectedUserType == 'H') {
       switch (sortBy) {
-        case "popular":
+        case 'popular':
           sorted = this.state.products.sort((first, second) =>
             parseFloat(first.popularity) > parseFloat(second.popularity)
               ? -1
               : parseFloat(second.popularity) > parseFloat(first.popularity)
               ? 1
               : 0
-          );
-          break;
-        case "alphabet":
+          )
+          break
+        case 'alphabet':
           sorted = this.state.products.sort((first, second) =>
             first.name > second.name ? 1 : second.name > first.name ? -1 : 0
-          );
-          break;
-        case "price_down":
+          )
+          break
+        case 'price_down':
           sorted = this.state.products.sort((first, second) =>
             parseFloat(first.companyPrice) > parseFloat(second.companyPrice)
               ? -1
               : parseFloat(second.companyPrice) > parseFloat(first.companyPrice)
               ? 1
               : 0
-          );
-          break;
-        case "price_up":
+          )
+          break
+        case 'price_up':
           sorted = this.state.products.sort((first, second) =>
             parseFloat(first.companyPrice) < parseFloat(second.companyPrice)
               ? -1
@@ -415,47 +414,47 @@ class Search extends Component {
                 parseFloat(first.companyPrice)
               ? 1
               : 0
-          );
-          break;
+          )
+          break
         default:
-          break;
+          break
       }
     } else {
       switch (sortBy) {
-        case "popular":
+        case 'popular':
           sorted = this.state.products.sort((first, second) =>
             parseFloat(first.popularity) > parseFloat(second.popularity)
               ? -1
               : parseFloat(second.popularity) > parseFloat(first.popularity)
               ? 1
               : 0
-          );
-          break;
-        case "alphabet":
+          )
+          break
+        case 'alphabet':
           sorted = this.state.products.sort((first, second) =>
             first.name > second.name ? 1 : second.name > first.name ? -1 : 0
-          );
-          break;
-        case "price_down":
+          )
+          break
+        case 'price_down':
           sorted = this.state.products.sort((first, second) =>
             parseFloat(first.price) > parseFloat(second.price)
               ? -1
               : parseFloat(second.price) > parseFloat(first.price)
               ? 1
               : 0
-          );
-          break;
-        case "price_up":
+          )
+          break
+        case 'price_up':
           sorted = this.state.products.sort((first, second) =>
             parseFloat(first.price) < parseFloat(second.price)
               ? -1
               : parseFloat(second.price) < parseFloat(first.price)
               ? 1
               : 0
-          );
-          break;
+          )
+          break
         default:
-          break;
+          break
       }
     }
     return (
@@ -464,8 +463,8 @@ class Search extends Component {
           <FlatList
             data={
               !sorted.length
-                ? this.state.products.filter((item) => item.stock > 0)
-                : sorted.filter((item) => item.stock > 0)
+                ? this.state.products.filter(item => item.stock > 0)
+                : sorted.filter(item => item.stock > 0)
             }
             renderItem={({ item }) => {
               const {
@@ -478,23 +477,23 @@ class Search extends Component {
                 rate,
                 salePrice,
                 stock,
-                id,
-              } = item;
+                id
+              } = item
               return (
                 <View style={{ paddingBottom: 8 }}>
                   <ProductListItem
                     name={productName}
                     price={
-                      this.props.userInfo.selectedUserType === "EK"
-                        ? price.replace(/,/, ".")
-                        : companyPrice.replace(/,/, ".")
+                      this.props.userInfo.selectedUserType === 'EK'
+                        ? price.replace(/,/, '.')
+                        : companyPrice.replace(/,/, '.')
                     }
                     salePrice={
-                      salePrice.replace(/,/, ".") != 0
-                        ? salePrice.replace(/,/, ".") + " UVP"
-                        : ""
+                      salePrice.replace(/,/, '.') != 0
+                        ? salePrice.replace(/,/, '.') + ' UVP'
+                        : ''
                     }
-                    companyPrice={companyPrice.replace(/,/, ".")}
+                    companyPrice={companyPrice.replace(/,/, '.')}
                     rate={rate}
                     stock={stock}
                     id={id}
@@ -505,9 +504,9 @@ class Search extends Component {
                     is_variable={is_variable}
                   />
                 </View>
-              );
+              )
             }}
-            columnWrapperStyle={{ flexWrap: "wrap" }}
+            columnWrapperStyle={{ flexWrap: 'wrap' }}
             numColumns={4}
             ListHeaderComponent={
               <FilterButton
@@ -523,76 +522,76 @@ class Search extends Component {
               this.state.filteredIDs.length > this.state.products.length &&
               this.state.from + 12 === this.state.products.length ? (
                 <FooterButton
-                  text="Weitere Produkte"
+                  text='Weitere Produkte'
                   onPress={() => {
-                    this.getData(this.state.from + 12);
+                    this.getData(this.state.from + 12)
                   }}
                 />
               ) : null
             }
             initialNumToRender={3}
             windowSize={2}
-            keyExtractor={(item) => item.id}
+            keyExtractor={item => item.id}
           />
         </View>
       </View>
-    );
+    )
   }
 
   render() {
-    return this.renderHelper();
+    return this.renderHelper()
   }
 }
 
-const mapStateToProps = ({ userInfo, cart }) => ({ userInfo, cart });
+const mapStateToProps = ({ userInfo, cart }) => ({ userInfo, cart })
 
-export default connect(mapStateToProps)(Search);
+export default connect(mapStateToProps)(Search)
 
 const styles = StyleSheet.create({
   headerStyle: {
-    backgroundColor: "#d10019",
-    height: Platform.OS === "ios" ? 44 : 56,
-    flexDirection: "row",
+    backgroundColor: '#d10019',
+    height: Platform.OS === 'ios' ? 44 : 56,
+    flexDirection: 'row'
   },
   backStyle: {
     paddingHorizontal: 1,
-    justifyContent: "center",
-    height: "100%",
+    justifyContent: 'center',
+    height: '100%'
   },
   searchInputStyle: {
     flex: 1,
-    color: "#fff",
-    fontSize: 16,
+    color: '#fff',
+    fontSize: 16
     // backgroundColor: '#d10019'
   },
   searchStory: {
-    paddingHorizontal: 18,
+    paddingHorizontal: 18
   },
   searchStoryTextHelper: {
     marginVertical: 20,
-    color: "#a0a0a0",
-    fontSize: 12,
+    color: '#a0a0a0',
+    fontSize: 12
   },
   searchStoryItemImage: {
     height: 17,
     width: 17,
-    resizeMode: "contain",
-    marginRight: 15,
+    resizeMode: 'contain',
+    marginRight: 15
   },
   searchStoryItemText: {
     fontSize: 16,
-    color: "#505050",
+    color: '#505050'
   },
   searchStoryItem: {
     marginBottom: 15,
     height: 30,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   productsLine: {
-    flexDirection: "row",
+    flexDirection: 'row',
     // marginTop: 6,
     // marginBottom: 30,
-    flexWrap: "wrap",
-  },
-});
+    flexWrap: 'wrap'
+  }
+})
