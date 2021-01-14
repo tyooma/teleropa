@@ -95,5 +95,4 @@ export function getDeliverySuppliers() {
     }
   )
     .then(res => res.json())
-    .then(res => console.log('SSSSSSEEEEEEEEE: ', res.json()))
 }
